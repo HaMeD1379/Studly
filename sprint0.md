@@ -5,7 +5,7 @@
 - [Summary & Vision](#project-summary-&-vision)
 - [Functional Features](#functional-features--user-stories)
 - [Non-Functional Feature](#non-functional-reliability-feature)
-- [Nice to Have Features](#nice-to-have-features---private-messages--gifting-badges)
+- [Nice to Have Features](#nice-to-have-features)
 - [Initial Architecture](#initial-architecture)
 - [Architecture Diagram](./worksheets/sprint0/diagram.png)
 - [Work Division & Coordination](#work-division--coordination)
@@ -72,7 +72,9 @@ For many students, studying can be hard at times and Studly aims to fill this ga
 ##### Server Caching
 - In the event of database failure, we have limited functionality through server caching in memory.
 
-### Nice to Have Features - Private Messages & Gifting Badges
+# Nice to Have Features
+- Private messages
+- Gifting badges
 
 # Initial Architecture
 
