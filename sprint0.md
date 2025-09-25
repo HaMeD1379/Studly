@@ -70,7 +70,7 @@ For many students, studying can be hard at times and Studly aims to fill this ga
 
 ## Non-functional Reliability Feature
 #### Server Caching
-- In the event of database failure, we have limited functionality through server caching in memory.
+- In the event of database failure, we have limited functionality through server caching in memory so the application can still work.
 
 # Nice to Have Features
 - Private messages
