@@ -4,7 +4,7 @@
 - [Presentation Slides](./worksheets/sprint0/presentation.pdf)
 - [Summary & Vision](#project-summary-&-vision)
 - [Functional Features](#functional-features--user-stories)
-- [Non-Functional Feature](#non-functional-reliability-feature)
+- [Non-Functional Feature](#non-functional-reliability-feature---server-caching)
 - [Nice to Have Features](#nice-to-have-features)
 - [Initial Architecture](#initial-architecture)
 - [Architecture Diagram](./worksheets/sprint0/diagram.png)
@@ -68,8 +68,7 @@ For many students, studying can be hard at times and Studly aims to fill this ga
 - As a user I want to be able to see my friends statistics so that I can see how many badges they have collected alongside their personal statistics.
 - As a user I want to be able to hide my statistics to the public so that I can keep my own statistics private.
 
-### Non-functional Reliability Feature
-#### Server Caching
+### Non-functional Reliability Feature - Server Caching
 ##### Acceptance Crtieria
 - Given I am a user, when I go to the application during a known outage, then the app will still work to a limited degree with badge tracking and meetups.
 
