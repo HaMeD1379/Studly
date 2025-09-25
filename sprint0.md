@@ -74,7 +74,7 @@ For many students, studying can be hard at times and Studly aims to fill this ga
 
 ##### User Stories
 - As a user I want to be able to still track study sessions and badges even when there is a reported outage so that my study habits don't fall through.
-- As a user I want to be able to meetup with friends while there is a reported outage so that I can still plan studying with friends.
+- As a user I want to be able to meetup with friends while there is a reported outage so that I can still plan studying sessions with friends.
 
 # Nice to Have Features
 - Private messages
