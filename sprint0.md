@@ -16,9 +16,9 @@ Studly is an application platform for students to enhance their studying abiliti
 
 For many students, studying can be hard at times and Studly aims to fill this gap where students need it the most. By encouraging studying through methods that are more approachable, fun and positive, these problems can be made easier to resolve. Not only is it more fun, friends are able to hold each other accountable through meetups and feeds, or have friendly competitions to see who can get badges faster. Both of these examples demonstrate how Studly can solve studying issues to make studying easier to manage. The goal of Studly is to develop positive habits that help students achieve better grades, better habits and overall stronger academic performance that everyone can be happy about.
 
-# Functional Features & User Stories
+# Core Features - MVP
+## Functional Features & User Stories
 
-## Core Features - MVP
 ### Badges
 ##### Acceptance Criteria
 - Given I am a student that is actively studying, when I track my study sessions, then I gain badges as rewards on my profile as a collection.
@@ -72,7 +72,7 @@ For many students, studying can be hard at times and Studly aims to fill this ga
 ##### Server Caching
 - In the event of database failure, we have limited functionality through server caching in memory.
 
-## Nice to Have Features - Private Messages & Gifting Badges
+### Nice to Have Features - Private Messages & Gifting Badges
 
 # Initial Architecture
 
