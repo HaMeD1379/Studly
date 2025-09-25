@@ -3,7 +3,7 @@
 - [Repo](https://github.com/HaMeD1379/Studly)
 - [Presentation Slides](./worksheets/sprint0/presentation.pdf)
 - [Summary & Vision](#project-summary-&-vision)
-- [Functional Features](#functional-features-&-user-stories)
+- [Functional Features](#functional-features--user-stories)
 - [Non-Functional Feature](#non-functional-reliability-feature)
 - [Nice to Have Features](#nice-to-have-features---private-messages--gifting-badges)
 - [Initial Architecture](#initial-architecture)
