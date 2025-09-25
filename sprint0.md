@@ -70,7 +70,12 @@ For many students, studying can be hard at times and Studly aims to fill this ga
 
 ### Non-functional Reliability Feature
 #### Server Caching
-- In the event of database failure, we have limited functionality through server caching in memory so the application can still work.
+##### Acceptance Crtieria
+- Given I am a user, when I go to the application during a known outage, then the app will still work to a limited degree with badge tracking and meetups.
+
+##### User Stories
+- As a user I want to be able to still track study sessions and badges even when there is a reported outage so that my study habits don't fall through.
+- As a user I want to be able to meetup with friends while there is a reported outage so that I can still plan studying with friends.
 
 # Nice to Have Features
 - Private messages
