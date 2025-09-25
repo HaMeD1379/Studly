@@ -68,8 +68,8 @@ For many students, studying can be hard at times and Studly aims to fill this ga
 - As a user I want to be able to see my friends statistics so that I can see how many badges they have collected alongside their personal statistics.
 - As a user I want to be able to hide my statistics to the public so that I can keep my own statistics private.
 
-### Non-functional Reliability Feature
-##### Server Caching
+## Non-functional Reliability Feature
+#### Server Caching
 - In the event of database failure, we have limited functionality through server caching in memory.
 
 # Nice to Have Features
