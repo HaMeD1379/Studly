@@ -70,7 +70,7 @@ For many students, studying can be hard at times and Studly aims to fill this ga
 
 ### Non-functional Reliability Feature - Server Caching
 ##### Acceptance Crtieria
-- Given I am a user, when I go to the application during a known outage, then the app will still work to a limited degree with badge tracking and meetups.
+- Given I am a user, when I go to the application during a known outage, then the application will still work to a limited degree with badge tracking and meetups.
 
 ##### User Stories
 - As a user I want to be able to still track study sessions and badges even when there is a reported outage so that my study habits don't fall through.
