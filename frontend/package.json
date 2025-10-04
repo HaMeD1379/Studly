@@ -1,0 +1,48 @@
+{
+  "name": "studly",
+  "version": "1.0.0",
+  "description": "Gamified studying to promote academic success",
+  "main": "index.ts",
+  "scripts": {
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test:unit": "vitest",
+    "test:unit:coverage": "vitest --coverage",
+    "test:unit:ui": "vitest --ui --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HaMeD1379/Studly.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HaMeD1379/Studly/issues"
+  },
+  "homepage": "https://github.com/HaMeD1379/Studly#readme",
+  "dependencies": {
+    "@mantine/core": "^8.3.3",
+    "@mantine/hooks": "^8.3.3",
+    "@mantine/notifications": "^8.3.3",
+    "path": "^0.12.7",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^24.6.2",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.0.4",
+    "@vitest/coverage-v8": "^3.2.4",
+    "@vitest/ui": "^3.2.4",
+    "jsdom": "^27.0.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.9",
+    "vitest": "^3.2.4"
+  }
+}

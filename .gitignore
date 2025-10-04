@@ -74,6 +74,8 @@ junit.xml
 apps/*/node_modules/
 apps/*/dist/
 apps/*/build/
+apps/*/coverage/
+apps/*/.env/
 packages/*/node_modules/
 packages/*/dist/
 
