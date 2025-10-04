@@ -1,0 +1,13 @@
+name: Docs Check
+on:
+  pull_request:
+    paths:
+      - '**/*.md'
+jobs:
+  md-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Basic Markdown check
+        run: |
+          echo "Docs changed — remember to keep ADRs and README up to date."

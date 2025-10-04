@@ -1,0 +1,82 @@
+# ============================================================
+# 🔧 Studly Monorepo .gitignore
+#   Covers: Node.js (frontend + backend), Docker, JetBrains,
+#            Python venv, environment files, build outputs
+# ============================================================
+
+# --- JetBrains / Editor ---
+.idea/
+.vscode/
+*.iml
+
+# --- Python / Virtual Environments ---
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# --- Node / Dependencies ---
+node_modules/
+yarn.lock
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# --- Builds / Outputs ---
+dist/
+build/
+out/
+coverage/
+.cache/
+.next/
+*.tsbuildinfo
+
+# --- Environment / Config Files ---
+.env
+.env.*
+!.env.example     # keep example templates for sharing
+*.local
+
+# --- Logs ---
+logs/
+*.log
+
+# --- OS / Misc ---
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.tmp
+
+# --- Docker / Compose ---
+*.pid
+*.seed
+docker-compose.override.yml
+infra/docker/data/
+
+# --- Testing / Reports ---
+reports/
+coverage-final.json
+lcov-report/
+junit.xml
+
+# --- CI / Misc Artifacts ---
+*.bak
+*.orig
+*.rej
+*.patch
+*.tgz
+.nyc_output/
+
+# --- Project-specific ignored folders ---
+# (keep empty marker files like .gitkeep if needed)
+apps/*/node_modules/
+apps/*/dist/
+apps/*/build/
+packages/*/node_modules/
+packages/*/dist/
+
+# --- Ignore local scripts or playgrounds ---
+scratch/
+sandbox/

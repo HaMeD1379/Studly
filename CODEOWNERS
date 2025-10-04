@@ -1,0 +1,6 @@
+# Map folders to reviewer groups/owners
+# Replace @studly/* with real GitHub handles or teams
+/apps/frontend/   @studly/frontend
+/apps/backend/    @studly/backend
+/packages/        @studly/core
+/docs/            @studly/docs

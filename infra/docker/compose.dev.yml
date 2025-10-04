@@ -1,0 +1,25 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: studly
+      POSTGRES_PASSWORD: studly
+      POSTGRES_DB: studly
+    ports:
+      - "5432:5432"
+  backend:
+    build:
+      context: ../../apps/backend
+    env_file:
+      - ../../apps/backend/.env.local
+    depends_on: [db]
+    ports:
+      - "3000:3000"
+  frontend:
+    build:
+      context: ../../apps/frontend
+    env_file:
+      - ../../apps/frontend/.env.local
+    ports:
+      - "5173:5173"

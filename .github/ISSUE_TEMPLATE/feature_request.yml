@@ -1,0 +1,24 @@
+name: "✨ Feature request"
+description: Suggest an idea for Studly
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      placeholder: What problem does this feature solve?
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      placeholder: User story, acceptance criteria, edge cases.
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Mockups/Screenshots (optional)
