@@ -82,3 +82,8 @@ packages/*/dist/
 # --- Ignore local scripts or playgrounds ---
 scratch/
 sandbox/
+frontend/node_modules/
+frontend/build/
+frontend/.env
+frontend/coverage/
+.vscode
