@@ -101,7 +101,7 @@ For many students, studying can be hard at times and Studly aims to fill this ga
 - Supabase Storage (profile images, if needed)
 
 ### Cross-tier protocols
-- Frontend ↔ Backend: HTTPS REST API (CORS configured)
+- Frontend ↔ Backend:  HTTPS REST API (CORS configured)
 - Backend ↔ Supabase/Postgres: Supabase SDK / REST API (over TLS)
 - Backend ↔ Frontend: WebSocket (Socket.io realtime)
 - Python CLI ↔ Backend: HTTPS REST API
