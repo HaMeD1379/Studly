@@ -86,4 +86,7 @@ frontend/node_modules/
 frontend/build/
 frontend/.env
 frontend/coverage/
+frontend/cypress/downloads/
+frontend/cypress/screenshots/
+frontend/cypress/videos/
 .vscode
