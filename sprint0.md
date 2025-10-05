@@ -92,16 +92,19 @@ For many students, studying can be hard at times and Studly aims to fill this ga
 
 ### Backend - Hosted on Railway
 - Node.js + Express
-- Socket.io server (realtime)
-- Supabase JavaScript client (server-side calls to Supabase services)
+- Socket.io server (for realtime features)
+- Supabase JavaScript SDK (service role for database operations)
 - REST/JSON endpoints
 #### Database & Auth
 - Supabase (PostgreSQL)
+- Supabase Auth (user authentication)
+- Supabase Storage (profile images, if needed)
 
 ### Cross-tier protocols
-- Frontend ↔ Backend: HTTPS (CORS allowed)
+- Frontend ↔ Backend: HTTPS REST API (CORS configured)
 - Backend ↔ Supabase/Postgres: Supabase SDK / REST API (over TLS)
 - Backend ↔ Frontend: WebSocket (Socket.io realtime)
+- Python CLI ↔ Backend: HTTPS REST API
 
 This architecture is a good fit for the project because it is modern, clear, and lightweight while still meeting course requirements. The web frontend uses React with TypeScript and is hosted on Vercel, providing fast performance and automatic redeployments. The backend is built with Node.js and Express on Railway, giving the team a reliable always-on API that can serve both the primary web frontend and the planned Python CLI frontend. Supabase provides a managed PostgreSQL database with built-in authentication and row-level security, reducing development effort and increasing reliability. The clear separation between frontend, backend, and database makes the system easy to extend and maintain, while still being realistic to implement within the course timeline. This setup is cost-effective, scalable, and supports features like Socket.io for real-time updates when needed.
 
