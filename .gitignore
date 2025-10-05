@@ -75,7 +75,7 @@ apps/*/node_modules/
 apps/*/dist/
 apps/*/build/
 apps/*/coverage/
-apps/*/.env/
+apps/*/.env
 apps/frontend/cypress/downloads/
 apps/frontend/cypress/screenshots/
 apps/frontend/cypress/videos/
