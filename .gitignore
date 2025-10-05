@@ -74,6 +74,11 @@ junit.xml
 apps/*/node_modules/
 apps/*/dist/
 apps/*/build/
+apps/*/coverage/
+apps/*/.env
+apps/frontend/cypress/downloads/
+apps/frontend/cypress/screenshots/
+apps/frontend/cypress/videos/
 packages/*/node_modules/
 packages/*/dist/
 
