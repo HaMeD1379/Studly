@@ -76,17 +76,12 @@ apps/*/dist/
 apps/*/build/
 apps/*/coverage/
 apps/*/.env/
+apps/frontend/cypress/downloads/
+apps/frontend/cypress/screenshots/
+apps/frontend/cypress/videos/
 packages/*/node_modules/
 packages/*/dist/
 
 # --- Ignore local scripts or playgrounds ---
 scratch/
 sandbox/
-frontend/node_modules/
-frontend/build/
-frontend/.env
-frontend/coverage/
-frontend/cypress/downloads/
-frontend/cypress/screenshots/
-frontend/cypress/videos/
-.vscode
