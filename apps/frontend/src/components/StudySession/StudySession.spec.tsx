@@ -4,10 +4,15 @@ const mockOnStop = vi.fn();
 import { render } from '~/utilities/testing'
 import { StudySession } from './StudySession'
 import { screen } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event'
 import { expect, vi } from 'vitest';
 
 describe('StudySession', () => {
+
+  beforeEach(() => {
+    vi.resetAllMocks();
+    vi.useFakeTimers();
+  })
+
   it('renders', () => {
     render(<StudySession onStartStudy={mockOnStart} onStopStudy={mockOnStop}/>);
 
@@ -19,7 +24,9 @@ describe('StudySession', () => {
     expect(screen.getByRole('button', { name: 'Stop' })).not.toBeNull();
   });
 
-  it('clicking start and stop study session calls functions and disables self', async () => {
+  it('clicking start study session calls functions and disables self', async () => {
+    vi.setSystemTime('2025-01-01');
+
     let mockStartTimestamp = 0;
     let mockEndTimestamp = 0;
 
@@ -38,7 +45,7 @@ describe('StudySession', () => {
     expect(startButton.getAttribute('disabled')).toBeNull();
     expect(stopButton.getAttribute('disabled')).not.toBeNull();
 
-    await userEvent.click(startButton);
+    startButton.click();
 
     expect(mockOnStart).toHaveBeenCalled();
 
@@ -54,20 +61,17 @@ describe('StudySession', () => {
       />
     );
 
-    startButton = screen.getByRole('button', { name: 'Start' });
-    stopButton = screen.getByRole('button', { name: 'Stop' });
+    expect(screen.getByRole('button', { name: 'Start' }).getAttribute('disabled')).not.toBeNull();
+  
+  });
 
-    expect(startButton.getAttribute('disabled')).not.toBeNull();
-    expect(stopButton.getAttribute('disabled')).toBeNull();
+  it('clicking stop study session calls functions and disables self', async () => {
+    vi.setSystemTime('2025-01-01');
 
-    await userEvent.click(stopButton);
+    const mockStartTimestamp = Date.now();
+    const mockEndTimestamp = Date.now() + 60000;
 
-    expect(mockOnStop).toHaveBeenCalled();
-
-    mockStartTimestamp = 0;
-    mockEndTimestamp = 0;
-
-    rerender(
+    const { rerender } = render(
       <StudySession
         startStudyTimestamp={mockStartTimestamp}
         endStudyTimestamp={mockEndTimestamp}
@@ -75,11 +79,60 @@ describe('StudySession', () => {
         onStopStudy={mockOnStop}
       />
     );
+    const stopButton = screen.getByRole('button', { name: 'Stop' });
 
-    startButton = screen.getByRole('button', { name: 'Start' });
-    stopButton = screen.getByRole('button', { name: 'Stop' });
+    expect(stopButton.getAttribute('disabled')).toBeNull();
 
-    expect(startButton.getAttribute('disabled')).toBeNull();
-    expect(stopButton.getAttribute('disabled')).not.toBeNull();
+    stopButton.click();
+
+    expect(mockOnStop).toHaveBeenCalled();
+
+    rerender(
+      <StudySession
+        startStudyTimestamp={0}
+        endStudyTimestamp={0}
+        onStartStudy={mockOnStart}
+        onStopStudy={mockOnStop}
+      />
+    )
+    expect(screen.getByRole('button', { name: 'Stop' }).getAttribute('disabled')).not.toBeNull();
   });
+
+  it('giving a start and end timestamp starts the countdown', () => {
+    vi.setSystemTime('2025-01-01');
+
+    const mockStartTimestamp = Date.now();
+    const mockEndTimestamp = mockStartTimestamp + 3600000;
+
+    render(<StudySession
+      startStudyTimestamp={mockStartTimestamp}
+      endStudyTimestamp={mockEndTimestamp}
+      onStartStudy={mockOnStart}
+      onStopStudy={mockOnStop}
+    />)
+
+    expect(screen.getByText('1:00'));
+    expect(screen.getByText('1 hours and 0 minutes remaining'));
+  });
+
+  it('giving start > end results in onStop being called', () => {
+    vi.setSystemTime('2025-01-01');
+
+    const mockStartTimestamp = Date.now();
+    const mockEndTimestamp = mockStartTimestamp - 1000;
+
+    render(<StudySession
+        startStudyTimestamp={mockStartTimestamp}
+        endStudyTimestamp={mockEndTimestamp}
+        onStartStudy={mockOnStart}
+        onStopStudy={mockOnStop}
+      />
+    );
+
+    expect(mockOnStop).toHaveBeenCalled();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  })
 })
