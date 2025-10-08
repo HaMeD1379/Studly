@@ -1,13 +1,24 @@
 {
   "name": "studly-backend",
+  "version": "1.0.0",
+  "description": "Studly backend service",
   "private": true,
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
-    "dev": "node --watch src/server.js",
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "test": "jest --runInBand",
+    "test:unit": "jest --runInBand --testPathPattern=tests/unit",
+    "test:integration": "jest --runInBand --testPathPattern=tests/integration",
+    "lint": "echo \"no lint configured\""
+  },
+  "engines": {
+    "node": ">=20 <23"
   },
   "dependencies": {
-    "express": "^4.19.2",
-    "cors": "^2.8.5"
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.4"
   }
 }
