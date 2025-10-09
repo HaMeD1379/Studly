@@ -1,0 +1,34 @@
+body {
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  min-height: 100vh; 
+  margin: 0;
+}
+
+.title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+}
+
+.subtitle {
+  color: var(--mantine-color-dimmed);
+  font-size: var(--mantine-font-size-sm);
+  text-align: center;
+  margin-top: 5px;
+}
+
+.subtitle_2 {
+  font-size: var(--mantine-font-size-xs);
+  text-align: center;
+  margin-top: 5px;
+}
+
+.button {
+    background-color: black;
+}
+
+.a {
+    color: black;
+}
+
