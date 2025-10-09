@@ -10,32 +10,28 @@ import {
   TextInput,
   Title,
   createTheme,
-  MantineProvider,
   Image,
   Center,
 } from "@mantine/core";
-import classes from "./AuthenticationTitle.module.css";
+import classes from "~/Styles/AuthenticationTitle.module.css";
 import placeholder from "~/assets/landscape-placeholder.svg";
 import { useNavigate } from "react-router-dom";
+import { validateEmail } from "~/utilities/testing/emailValidation";
+import { useRef } from "react";
+import { notifications } from "@mantine/notifications";
 
 export function LoginForm() {
   const navigate = useNavigate();
-  const theme = createTheme({
-    fontSizes: {
-      xs: "0.5rem",
-      sm: "0.9rem",
-      md: "1.1rem",
-      lg: "1.25rem",
-      xl: "1.5rem",
-    },
+  const email = useRef<HTMLInputElement>(null);
+  const passw = useRef<HTMLInputElement>(null);
 
-    fontFamily: "Verdana, sans-serif",
-    fontFamilyMonospace: "Monaco, Courier, monospace",
-
-    headings: {
-      fontFamily: "Outfit, sans-serif",
-    },
-  });
+  const handleClick = () => {
+    if (email.current) {
+      if (validateEmail(email.current.value)) {
+        navigate("/study");
+      }
+    }
+  };
 
   return (
     <Container size={420} my={40}>
@@ -59,6 +55,7 @@ export function LoginForm() {
           placeholder="you@mantine.dev"
           required
           radius="md"
+          ref={email}
         />
         <PasswordInput
           label="Password"
@@ -91,6 +88,7 @@ export function LoginForm() {
               "&:hover": { backgroundColor: "#222" },
             },
           }}
+          onClick={handleClick}
         >
           Sign in
         </Button>

@@ -9,49 +9,12 @@ import {
   Text,
   TextInput,
   Title,
-  createTheme,
-  MantineProvider,
-  Image,
-  Center,
 } from "@mantine/core";
-import classes from "./AuthenticationTitle.module.css";
+import classes from "~/Styles/AuthenticationTitle.module.css";
 import { useNavigate } from "react-router";
-import { notifications } from "@mantine/notifications";
 import { useRef } from "react";
-
-function equalPasswords(password_1: string, password_2: string): boolean {
-  if (password_1 && password_2) {
-    if (password_1 === password_2) {
-      return true;
-    } else {
-      notifications.show({
-        title: "Mismatch",
-        message: "The passwords do not match",
-        color: "red",
-      });
-      return false;
-    }
-  }
-  return false;
-}
-//StackOverflow: https://stackoverflow.com/questions/46155/how-can-i-validate-an-email-address-in-javascript
-function validateEmail(email: string): boolean {
-  if (
-    email
-      .toLowerCase()
-      .match(
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      )
-  ) {
-    return true;
-  }
-  notifications.show({
-    title: "Mismatch",
-    message: "Provide a valid Email",
-    color: "red",
-  });
-  return false;
-}
+import { validateEmail } from "~/utilities/testing/emailValidation";
+import { equalPasswords } from "~/utilities/testing/passwordValidation";
 
 export function SignUpForm() {
   const navigate = useNavigate();
