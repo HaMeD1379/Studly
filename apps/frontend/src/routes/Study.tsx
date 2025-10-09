@@ -24,9 +24,9 @@ export const Study = () => {
   }
 
   return (
-    <Box mt={32} mx={64}>
+    <Box pt={32} mx={64}>
       <Text size='xl' fw={700}>Study Session</Text>
-      <Text size='md' fw={300} mb={32}>Focus and track your study time</Text>
+      <Text size='md' fw={300} pb={32}>Focus and track your study time</Text>
       <Grid grow>
         <Grid.Col span='auto'>
           <StudySession
