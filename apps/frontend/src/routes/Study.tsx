@@ -24,7 +24,7 @@ export const Study = () => {
   }
 
   return (
-    <Box pt={32} mx={64}>
+    <Box mx={48}>
       <Text size='xl' fw={700}>Study Session</Text>
       <Text size='md' fw={300} pb={32}>Focus and track your study time</Text>
       <Grid grow>

@@ -1,7 +1,7 @@
 import { MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import { BrowserRouter, Routes, Route } from 'react-router';
-import { Study } from '~/routes'
+import { Study, Home } from '~/routes'
 
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
@@ -12,15 +12,15 @@ export const App = () => {
 
   return (
     <MantineProvider>
-      <Navbar>
-        <Notifications/>
-        <BrowserRouter>
+      <BrowserRouter>
+        <Navbar>
+          <Notifications/>
           <Routes>
-              <Route path='/' element={<Study/>}/>
-              <Route path='/study' element={<Study/>}/>
+            <Route path='/' element={<Home/>}/>
+            <Route path='/study' element={<Study/>}/>
           </Routes>
-        </BrowserRouter>
-      </Navbar>
+        </Navbar>
+      </BrowserRouter>
     </MantineProvider>
   )
 };
