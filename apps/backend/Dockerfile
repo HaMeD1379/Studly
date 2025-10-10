@@ -19,4 +19,4 @@ EXPOSE 3000
 
 # Run the app
 ENV NODE_ENV=production
-CMD ["node", "src/server.js"]
+CMD ["node", "src/index.js"]
