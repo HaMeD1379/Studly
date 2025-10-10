@@ -9,7 +9,6 @@ import {
   Text,
   TextInput,
   Title,
-  createTheme,
   Image,
   Center,
 } from "@mantine/core";
@@ -18,16 +17,20 @@ import placeholder from "~/assets/landscape-placeholder.svg";
 import { useNavigate } from "react-router-dom";
 import { validateEmail } from "~/utilities/testing/emailValidation";
 import { useRef } from "react";
-import { notifications } from "@mantine/notifications";
-
+import { equalPasswords } from "~/utilities/testing/passwordValidation";
 export function LoginForm() {
   const navigate = useNavigate();
   const email = useRef<HTMLInputElement>(null);
   const passw = useRef<HTMLInputElement>(null);
+  const PASSWORD_LENGTH = 8;
 
   const handleClick = () => {
-    if (email.current) {
-      if (validateEmail(email.current.value)) {
+    if (email.current && passw.current) {
+      let p1 = passw.current.value;
+      if (
+        validateEmail(email.current.value) &&
+        equalPasswords(p1, p1, PASSWORD_LENGTH)
+      ) {
         navigate("/study");
       }
     }
@@ -63,6 +66,7 @@ export function LoginForm() {
           required
           mt="md"
           radius="md"
+          ref={passw}
         />
         <Group justify="space-between" mt="lg">
           <Checkbox label="Remember me" />
