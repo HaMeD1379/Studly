@@ -1,10 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App';
-import { MantineProvider } from '@mantine/core';
-import { Notifications } from '@mantine/notifications';
-import '@mantine/core/styles.css';
-import '@mantine/notifications/styles.css';
 
 const container = document.getElementById('root');
 if (!container) {
@@ -14,9 +10,6 @@ if (!container) {
 const root = createRoot(container);
 root.render(
   <StrictMode>
-    <MantineProvider>
-      <Notifications />
-      <App />
-    </MantineProvider>
+    <App/>
   </StrictMode>
 );
