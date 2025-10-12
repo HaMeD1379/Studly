@@ -1,8 +1,71 @@
-const { createClient } = require('@supabase/supabase-js');
+/**
+ * ────────────────────────────────────────────────────────────────────────────────
+ *  File: src/config/supabase.js
+ *  Group: Group 3 — COMP 4350: Software Engineering 2
+ *  Project: Studly
+ *  Assisted-by: ChatGPT (GPT-5 Thinking) for comments, documentation, debugging,
+ *               and partial code contributions
+ *  Last-Updated: 2025-10-11
+ * ────────────────────────────────────────────────────────────────────────────────
+ *  Summary
+ *  -------
+ *  Initializes and exports the Supabase client used for all database interactions.
+ *  The client is dynamically imported at runtime to avoid hard dependency errors
+ *  in test or mock environments (e.g., when @supabase/supabase-js is not installed).
+ *
+ *  Features
+ *  --------
+ *  • Graceful fallback when the Supabase library is unavailable.
+ *  • Uses environment variables SUPABASE_URL and SUPABASE_SERVICE_KEY.
+ *  • Emits a warning if initialization fails (so devs see it early).
+ *
+ *  Design Principles
+ *  -----------------
+ *  • Fail safely: service modules throw explicit errors if Supabase is unavailable.
+ *  • Config isolation: credentials handled only in this layer.
+ *  • Environment-agnostic: supports CI, local dev, and serverless runtimes.
+ *
+ *  TODOs
+ *  -----
+ *  • [SECURITY] Ensure env variables are managed securely in deployment.
+ *  • [OBSERVABILITY] Integrate structured logging instead of console.warn.
+ *  • [TESTABILITY] Mock this module in unit tests to avoid external calls.
+ *
+ *  @module config/supabase
+ *  @see https://supabase.com/docs/reference/javascript
+ * ────────────────────────────────────────────────────────────────────────────────
+ */
 
+let createClient;
+let clientLoadError;
+
+try {
+  // Dynamically import to avoid breaking environments where supabase-js isn't installed
+  ({ createClient } = await import('@supabase/supabase-js'));
+} catch (error) {
+  clientLoadError = error;
+
+  // Fallback stub: throws descriptive error when used
+  createClient = () => ({
+    from() {
+      throw new Error(
+        `Supabase client is unavailable. Install @supabase/supabase-js to enable database access. Original error: ${error.message}`
+      );
+    },
+  });
+}
+
+// Create a client with env vars or empty strings (for safety in mock mode)
 const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY
+  process.env.SUPABASE_URL ?? '',
+  process.env.SUPABASE_SERVICE_KEY ?? ''
 );
 
-module.exports = supabase;
+// Warn only once if the import failed
+if (clientLoadError) {
+  console.warn(
+    '⚠️ Supabase client could not be initialized. Database operations will fail until the dependency is installed.'
+  );
+}
+
+export default supabase;
