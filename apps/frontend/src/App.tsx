@@ -5,6 +5,7 @@ import { Study, Home } from '~/routes'
 
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
+import '@mantine/dates/styles.css';
 import { Navbar } from './components';
 
 export const App = () => {
