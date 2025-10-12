@@ -1,0 +1,19 @@
+export const setupStudySessionOptions: string[] = [
+  'Mathematics',
+  'Biology',
+  'Chemistry',
+  'Physics',
+  'Agriculture',
+  'Computer Science',
+  'Psychology',
+  'Environmental Sciences',
+  'Geology',
+  'Geography',
+  'Kinesiology',
+  'Business',
+  'History',
+  'Anthropology',
+  'Language Studies',
+  'Social Work',
+  'Communications'
+]
