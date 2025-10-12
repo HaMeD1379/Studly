@@ -5,6 +5,7 @@ import { Study } from '~/routes'
 
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
+import '@mantine/dates/styles.css';
 
 export const App = () => {
   // TODO: Change routing once login page and home page is implemented

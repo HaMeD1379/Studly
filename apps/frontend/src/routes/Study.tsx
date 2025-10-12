@@ -1,6 +1,6 @@
-import { StudySession } from '~/components'
+import { StudySession, SetupStudySession } from '~/components'
 import { useState } from 'react'
-import { Box, Grid, Text } from '@mantine/core';
+import { Box, Grid, Text, Flex } from '@mantine/core';
 import { StudyTips } from '~/components/StudyTips';
 
 const TEMP_STUDY_TIMEFRAME = 1 * 10 * 1000 // 10 mins for now until user input is allowed
@@ -27,14 +27,20 @@ export const Study = () => {
     <Box mt={32} mx={64}>
       <Text size='xl' fw={700}>Study Session</Text>
       <Text size='md' fw={300} mb={32}>Focus and track your study time</Text>
-      <Grid grow>
+      <Grid grow gutter='lg'>
         <Grid.Col span='auto'>
-          <StudySession
-            startStudyTimestamp={startStudyTimestamp}
-            endStudyTimestamp={endStudyTimestamp}
-            onStartStudy={startStudySession}
-            onStopStudy={stopStudySession}
-          />
+          <Flex direction='column' gap='lg'>
+            <StudySession
+              startStudyTimestamp={startStudyTimestamp}
+              endStudyTimestamp={endStudyTimestamp}
+              onStartStudy={startStudySession}
+              onStopStudy={stopStudySession}
+            />
+            <SetupStudySession
+              onUpdateSubject={() => {}}
+              onUpdateLength={() => {}}
+            />
+          </Flex>
         </Grid.Col>
         <Grid.Col span='auto'>
           <StudyTips/>
