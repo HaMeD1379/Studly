@@ -30,7 +30,7 @@ describe('Navbar', () => {
     const studySessionButton = screen.getByRole('button', { name: 'Study Session' });
 
     homeButton.click();
-    expect(mockUseNavigation).toHaveBeenCalledWith('/');
+    expect(mockUseNavigation).toHaveBeenCalledWith('/home');
 
     studySessionButton.click();
     expect(mockUseNavigation).toHaveBeenCalledWith('/study');
