@@ -82,6 +82,25 @@ describe('sessions.controller', () => {
       assert.equal(next.mock.calls.length, 0);
     });
 
+    it('returns 400 when subject is missing', async () => {
+      const service = {
+        createSession: mock.fn(),
+        completeSession: mock.fn(),
+        listSessions: mock.fn(),
+      };
+      const { startSession } = createSessionsController(service);
+      const req = { body: { userId: 'user-1' } };
+      const res = createMockResponse();
+      const next = mock.fn();
+
+      await startSession(req, res, next);
+
+      assert.equal(res.statusCode, 400);
+      assert.deepEqual(res.body, { error: 'subject is required' });
+      assert.equal(service.createSession.mock.calls.length, 0);
+      assert.equal(next.mock.calls.length, 0);
+    });
+
     it('creates a session and returns 201', async () => {
       // Arrange
       const createdSession = { id: 'session-1' };
@@ -188,6 +207,25 @@ describe('sessions.controller', () => {
       assert.equal(res.statusCode, 404);
       assert.deepEqual(res.body, { error: 'Session not found' });
       assert.equal(service.completeSession.mock.calls.length, 1);
+      assert.equal(next.mock.calls.length, 0);
+    });
+
+    it('returns 400 when endedAt is missing', async () => {
+      const service = {
+        createSession: mock.fn(),
+        completeSession: mock.fn(),
+        listSessions: mock.fn(),
+      };
+      const { completeSession } = createSessionsController(service);
+      const req = { params: { id: 'session-1' }, body: {} };
+      const res = createMockResponse();
+      const next = mock.fn();
+
+      await completeSession(req, res, next);
+
+      assert.equal(res.statusCode, 400);
+      assert.deepEqual(res.body, { error: 'endedAt is required' });
+      assert.equal(service.completeSession.mock.calls.length, 0);
       assert.equal(next.mock.calls.length, 0);
     });
 
