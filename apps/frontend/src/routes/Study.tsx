@@ -1,8 +1,8 @@
-import { StudySession, SetupStudySession, TodaysStudyStatistics } from '~/components'
+import { StudySession, SetupStudySession, RecentStudySessions, TodaysStudyStatistics } from '~/components'
 import { useState } from 'react'
 import { Box, Grid, Text, Flex } from '@mantine/core';
 import { StudyTips } from '~/components/StudyTips';
-import { mockTimesStudied, mockTotalTimeStudied } from '~/mocks';
+import { mockRecentStudySessions, mockTimesStudied, mockTotalTimeStudied } from '~/mocks';
 
 const TEMP_STUDY_TIMEFRAME = 1 * 10 * 1000 // 10 mins for now until user input is allowed
 
@@ -44,6 +44,7 @@ export const Study = () => {
         <Grid.Col span='auto'>
           <Flex direction='column' gap='lg'>
             <TodaysStudyStatistics totalTimeStudied={mockTotalTimeStudied} timesStudied={mockTimesStudied}/>
+            <RecentStudySessions recentStudySessions={mockRecentStudySessions} />
             <StudyTips/>
           </Flex>
         </Grid.Col>
