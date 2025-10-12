@@ -1,28 +1,27 @@
-import { StudySession, SetupStudySession } from '~/components'
+import { StudySession, SetupStudySession, TodaysStudyStatistics } from '~/components'
 import { useState } from 'react'
 import { Box, Grid, Text, Flex } from '@mantine/core';
 import { StudyTips } from '~/components/StudyTips';
+import { mockTimesStudied, mockTotalTimeStudied } from '~/mocks';
 
 const TEMP_STUDY_TIMEFRAME = 1 * 10 * 1000 // 10 mins for now until user input is allowed
 
 export const Study = () => {
   const [startStudyTimestamp, setStartStudyTimestamp] = useState<number>(0);
   const [endStudyTimestamp, setEndStudyTimestamp] = useState<number>(0);
-
+  
   const startStudySession = () => {
     const studyTimestamp = Date.now();
-
     setStartStudyTimestamp(studyTimestamp);
     setEndStudyTimestamp(studyTimestamp + TEMP_STUDY_TIMEFRAME);
   }
-
+  
   const stopStudySession = () => {
     setStartStudyTimestamp(0);
     setEndStudyTimestamp(0);
-
     // TODO: upload results to supabase and trigger badge
   }
-
+  
   return (
     <Box mx={48}>
       <Text size='xl' fw={700}>Study Session</Text>
@@ -43,7 +42,10 @@ export const Study = () => {
           </Flex>
         </Grid.Col>
         <Grid.Col span='auto'>
-          <StudyTips/>
+          <Flex direction='column' gap='lg'>
+            <TodaysStudyStatistics totalTimeStudied={mockTotalTimeStudied} timesStudied={mockTimesStudied}/>
+            <StudyTips/>
+          </Flex>
         </Grid.Col>
       </Grid>
     </Box>
