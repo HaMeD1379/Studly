@@ -1,5 +1,3 @@
-// https://mantine.dev/hooks/use-interval/
-// Mantine docs used for interval
 import { Text, Flex, Progress, Button } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { useInterval } from '@mantine/hooks'
