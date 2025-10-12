@@ -20,11 +20,11 @@ describe('RecentStudySessions', () => {
     expect(screen.getByText('Subject')).not.toBeNull();
     expect(screen.getByText('Length')).not.toBeNull();
 
-    expect(screen.getByText('2025/09/06 - 9:09 PM')).not.toBeNull();
+    expect(screen.getByText('2025/09/06 - 10:09 PM')).not.toBeNull();
     expect(screen.getByText('Mathematics')).not.toBeNull();
     expect(screen.getByText('1 hour and 1 minute')).not.toBeNull();
 
-    expect(screen.getByText('2025/09/05 - 5:21 PM')).not.toBeNull();
+    expect(screen.getByText('2025/09/05 - 1:28 PM')).not.toBeNull();
     expect(screen.getByText('Computer Science')).not.toBeNull();
     expect(screen.getByText('4 minutes')).not.toBeNull();
 

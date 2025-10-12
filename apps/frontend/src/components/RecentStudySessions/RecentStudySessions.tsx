@@ -17,7 +17,7 @@ export const RecentStudySessions = ({ recentStudySessions }: RecentStudySessions
     const hours = date.getHours();
     const minutes = String(date.getMinutes()).padStart(2, '0');
   
-    return `${year}/${month}/${days} - ${hours % 12}:${minutes} ${hours >= 12 ? 'PM' : 'AM'}`
+    return `${year}/${month}/${days} - ${hours % 11}:${minutes} ${hours >= 12 ? 'PM' : 'AM'}`
   }
   
   const formatStudySessionLength = (millis: number) => {

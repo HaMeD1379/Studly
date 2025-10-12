@@ -7,7 +7,7 @@ export const mockRecentStudySessions: StudySessionType[] = [
     subject: 'Mathematics'
   },
   {
-    endStudyTimestamp: 1760134904000,
+    endStudyTimestamp: 1760117302000,
     sessionLength: 257409,
     subject: 'Computer Science'
   },
