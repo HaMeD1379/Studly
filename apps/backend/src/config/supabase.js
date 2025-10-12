@@ -44,27 +44,43 @@ try {
   ({ createClient } = await import('@supabase/supabase-js'));
 } catch (error) {
   clientLoadError = error;
-
-  // Fallback stub: throws descriptive error when used
-  createClient = () => ({
-    from() {
-      throw new Error(
-        `Supabase client is unavailable. Install @supabase/supabase-js to enable database access. Original error: ${error.message}`
-      );
-    },
-  });
 }
 
-// Create a client with env vars or empty strings (for safety in mock mode)
-const supabase = createClient(
-  process.env.SUPABASE_URL ?? '',
-  process.env.SUPABASE_SERVICE_KEY ?? ''
-);
+const createUnavailableClient = (reason) =>
+  new Proxy(
+    {},
+    {
+      get(_, prop) {
+        if (prop === 'then') return undefined; // prevent await-related surprises
 
-// Warn only once if the import failed
+        return () => {
+          const method = typeof prop === 'symbol' ? 'unknown symbol' : prop.toString();
+          throw new Error(`Supabase client is unavailable: ${reason}. Attempted to call \`${method}\`.`);
+        };
+      },
+    }
+  );
+
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY;
+
+let supabase;
+let warningMessage;
+
 if (clientLoadError) {
+  warningMessage = `Supabase client dependency could not be loaded (${clientLoadError.message}).`;
+  supabase = createUnavailableClient(warningMessage);
+} else if (!supabaseUrl || !supabaseServiceKey) {
+  warningMessage = 'SUPABASE_URL and SUPABASE_SERVICE_KEY must be set to initialize Supabase.';
+  supabase = createUnavailableClient(warningMessage);
+} else {
+  supabase = createClient(supabaseUrl, supabaseServiceKey);
+}
+
+if (warningMessage) {
   console.warn(
-    '⚠️ Supabase client could not be initialized. Database operations will fail until the dependency is installed.'
+    '⚠️ Supabase client could not be fully initialized. Database operations will throw until configuration issues are resolved.\n' +
+      `   Reason: ${warningMessage}`
   );
 }
 
