@@ -15,7 +15,7 @@ import {
 } from "@mantine/core";
 import classes from "~/Styles/AuthenticationTitle.module.css";
 import placeholder from "~/assets/landscape-placeholder.svg";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { validateEmail } from "~/utilities/testing/emailValidation";
 import { useRef } from "react";
 import { notifications } from "@mantine/notifications";
@@ -41,7 +41,6 @@ export function LoginForm() {
             h={200}
             w="auto"
             src={placeholder}
-            alt="Description of your image"
           />
         </Center>
         <Title ta="center" ff="Inter, sans-serif">
@@ -52,7 +51,7 @@ export function LoginForm() {
         </Text>
         <TextInput
           label="Email"
-          placeholder="you@mantine.dev"
+          placeholder="Your email"
           required
           radius="md"
           ref={email}
@@ -80,14 +79,6 @@ export function LoginForm() {
           fullWidth
           mt="xl"
           radius="md"
-          styles={{
-            root: {
-              backgroundColor: "black",
-              color: "white",
-              fontWeight: 500,
-              "&:hover": { backgroundColor: "#222" },
-            },
-          }}
           onClick={handleClick}
         >
           Sign in

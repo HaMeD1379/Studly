@@ -1,22 +1,23 @@
 import { MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Login, Study, SignUp, Forgot } from "~/routes";
+import { BrowserRouter, Routes, Route } from 'react-router';
+import { Study, Home, SignUp, Forgot, Login } from '~/routes'
 
-import "@mantine/core/styles.css";
-import "@mantine/notifications/styles.css";
+import '@mantine/core/styles.css';
+import '@mantine/notifications/styles.css';
+import '@mantine/dates/styles.css';
 
 export const App = () => {
-  // TODO: Change routing once login page and home page is implemented
   return (
     <MantineProvider>
-      <Notifications />
       <BrowserRouter>
+      <Notifications/>
         <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/forgot-password" element={<Forgot />} />
-          <Route path="/study" element={<Study />} />
+          <Route path='/home' element={<Home/>}/>
+          <Route path='/study' element={<Study/>}/>
+          <Route path='/' element={<Login />} />
+          <Route path='/signup' element={<SignUp />} />
+          <Route path='/forgot-password' element={<Forgot />} />
         </Routes>
       </BrowserRouter>
     </MantineProvider>

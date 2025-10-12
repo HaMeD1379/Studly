@@ -3,11 +3,17 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node --watch src/server.js",
-    "start": "node src/server.js"
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js",
+    "test": "node --test",
+    "test:watch": "node --test --watch",
+    "test:coverage": "node --test --experimental-test-coverage",
+    "test:unit": "node --test tests/unit",
+    "test:integration": "node --test tests/integration"
   },
   "dependencies": {
-    "express": "^4.19.2",
-    "cors": "^2.8.5"
+    "@supabase/supabase-js": "^2.75.0",
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
   }
 }

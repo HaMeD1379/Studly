@@ -21,6 +21,7 @@ export function SignUpForm() {
   const password_1 = useRef<HTMLInputElement>(null);
   const password_2 = useRef<HTMLInputElement>(null);
   const email = useRef<HTMLInputElement>(null);
+
   const handleClick = () => {
     if (password_1.current && password_2.current && email.current) {
       if (
@@ -77,14 +78,6 @@ export function SignUpForm() {
           fullWidth
           mt="xl"
           radius="md"
-          styles={{
-            root: {
-              backgroundColor: "black",
-              color: "white",
-              fontWeight: 500,
-              "&:hover": { backgroundColor: "#222" },
-            },
-          }}
           onClick={handleClick}
         >
           Sign Up

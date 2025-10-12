@@ -20,16 +20,15 @@ import { notifications } from "@mantine/notifications";
 export function ForgotPassword() {
   const navigate = useNavigate();
   const email = useRef<HTMLInputElement>(null);
+
   const handleClick = () => {
-    if (email.current) {
-      if (validateEmail(email.current.value)) {
-        notifications.show({
-          title: "Accepted",
-          message: "A reset link has been sent to your email",
-          color: "green",
-        });
-        navigate("/");
-      }
+    if (email.current && validateEmail(email.current.value)) {
+      notifications.show({
+        title: "Accepted",
+        message: "A reset link has been sent to your email",
+        color: "green",
+      });
+      navigate("/");
     }
   };
   return (
@@ -50,25 +49,16 @@ export function ForgotPassword() {
         />
         <Group justify="space-between" mt="lg" className={classes.controls}>
           <Anchor c="dimmed" size="sm" className={classes.control}>
-            <Center inline>
+            <Center inline onClick={() => navigate('/')}>
               <IconArrowLeft
                 size={12}
                 stroke={1.5}
-                onClick={() => navigate("/")}
               />
               <Box ml={5}>Back to the login page</Box>
             </Center>
           </Anchor>
           <Button
             className={classes.control}
-            styles={{
-              root: {
-                backgroundColor: "black",
-                color: "white",
-                fontWeight: 500,
-                "&:hover": { backgroundColor: "#222" },
-              },
-            }}
             onClick={handleClick}
           >
             Reset password

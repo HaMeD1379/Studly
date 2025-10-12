@@ -1,9 +1,7 @@
-import { ForgotPassword } from "~/components/ForgotPassword/ForgotPassword";
+import { ForgotPassword } from "~/components";
 
 export const Forgot = () => {
   return (
-    <div>
-      <ForgotPassword />
-    </div>
+    <ForgotPassword />
   );
 };
