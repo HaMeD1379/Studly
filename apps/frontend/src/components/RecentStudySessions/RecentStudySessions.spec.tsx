@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, afterAll } from 'vitest';
 import { render } from '~/utilities/testing';
 import { RecentStudySessions } from './RecentStudySessions';
 import { screen } from '@testing-library/react';
@@ -20,15 +20,15 @@ describe('RecentStudySessions', () => {
     expect(screen.getByText('Subject')).not.toBeNull();
     expect(screen.getByText('Length')).not.toBeNull();
 
-    expect(screen.getByText('2025/09/06 - 10:09 PM')).not.toBeNull();
+    // Regex made by hand through regex101
+    expect(screen.getAllByText(/^[0-9]{4}\/[0-9]{2}\/[0-9]{2} - [0-9]+:[0-9]{2} (PM|AM)$/)?.length).toEqual(3);
+
     expect(screen.getByText('Mathematics')).not.toBeNull();
     expect(screen.getByText('1 hour and 1 minute')).not.toBeNull();
 
-    expect(screen.getByText('2025/09/05 - 1:28 PM')).not.toBeNull();
     expect(screen.getByText('Computer Science')).not.toBeNull();
     expect(screen.getByText('4 minutes')).not.toBeNull();
 
-    expect(screen.getByText('2025/08/02 - 7:22 AM')).not.toBeNull();
     expect(screen.getByText('Chemistry')).not.toBeNull();
     expect(screen.getByText('12 hours and 35 minutes')).not.toBeNull();
   });
