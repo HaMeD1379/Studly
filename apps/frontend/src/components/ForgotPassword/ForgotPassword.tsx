@@ -43,7 +43,7 @@ export function ForgotPassword() {
       <Paper withBorder shadow="md" p={30} radius="md" mt="xl">
         <TextInput
           label="Your email"
-          placeholder="me@mantine.dev"
+          placeholder="Your email"
           required
           ref={email}
         />
