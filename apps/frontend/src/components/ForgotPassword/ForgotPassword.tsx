@@ -11,7 +11,6 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
-import classes from "~/Styles/ForgotPassword.module.css";
 import { useNavigate } from "react-router";
 import { validateEmail } from "~/utilities/testing/emailValidation";
 import { useRef } from "react";
@@ -33,7 +32,14 @@ export function ForgotPassword() {
   };
   return (
     <Container size={460} my={30}>
-      <Title className={classes.title} ta="center">
+      <Title
+        style={{
+          fontSize: "26px",
+          fontweight: "500",
+          fontfamily: "Outfit, var(--mantine-font-family)",
+          textAlign: "center",
+        }}
+      >
         Forgot your password?
       </Title>
       <Text c="dimmed" fz="sm" ta="center">
@@ -47,18 +53,41 @@ export function ForgotPassword() {
           required
           ref={email}
         />
-        <Group justify="space-between" mt="lg" className={classes.controls}>
-          <Anchor c="dimmed" size="sm" className={classes.control}>
-            <Center inline onClick={() => navigate('/')}>
+        <Group
+          style={{
+            flexDirection: "column",
+          }}
+          justify="space-between"
+          mt="lg"
+        >
+          <Anchor
+            c="dimmed"
+            size="sm"
+            style={{
+              textAlign: "center",
+              width: "100%",
+            }}
+          >
+            <Center inline>
               <IconArrowLeft
                 size={12}
                 stroke={1.5}
+                onClick={() => navigate("/")}
               />
               <Box ml={5}>Back to the login page</Box>
             </Center>
           </Anchor>
           <Button
-            className={classes.control}
+            styles={{
+              root: {
+                backgroundColor: "black",
+                color: "white",
+                fontWeight: 500,
+                textAlign: "center", // move inside root
+                width: "100%", // move inside root
+                "&:hover": { backgroundColor: "#222" },
+              },
+            }}
             onClick={handleClick}
           >
             Reset password
