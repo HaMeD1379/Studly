@@ -1,21 +1,20 @@
-// mock useNavigate
-const mockNavigate = vi.fn();
-vi.mock("react-router-dom", async () => {
-  const actual = await vi.importActual<typeof import("react-router")>(
-    "react-router"
-  );
-  return { ...actual, useNavigate: () => mockNavigate };
-});
-
 import { describe, it, expect } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { LoginForm } from "./LoginForm";
 import { vi } from "vitest";
 import "@testing-library/jest-dom";
 import { MantineProvider } from "@mantine/core";
-import { MemoryRouter } from "react-router";
+import { MemoryRouter } from "react-router-dom";
 import { notifications } from "@mantine/notifications";
 
+// mock useNavigate
+const mockNavigate = vi.fn();
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual<typeof import("react-router-dom")>(
+    "react-router-dom"
+  );
+  return { ...actual, useNavigate: () => mockNavigate };
+});
 vi.mock("@mantine/notifications", () => ({
   notifications: {
     show: vi.fn(),

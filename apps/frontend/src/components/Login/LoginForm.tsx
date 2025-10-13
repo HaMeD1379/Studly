@@ -14,7 +14,7 @@ import {
   Box,
 } from "@mantine/core";
 import placeholder from "~/assets/landscape-placeholder.svg";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { validateEmail } from "~/utilities/testing/emailValidation";
 import { useRef } from "react";
 import { equalPasswords } from "~/utilities/testing/passwordValidation";
