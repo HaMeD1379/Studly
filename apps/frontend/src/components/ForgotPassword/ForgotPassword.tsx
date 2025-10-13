@@ -70,6 +70,7 @@ export function ForgotPassword() {
           >
             <Center inline>
               <IconArrowLeft
+                data-testid="back-arrow"
                 size={12}
                 stroke={1.5}
                 onClick={() => navigate("/")}

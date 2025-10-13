@@ -20,6 +20,11 @@ describe("Password Validation Tests", () => {
 
   it("returns false for different passwords", () => {
     expect(equalPasswords("Pass123*", "Pass1234*")).toBe(false);
+    expect(notifications.show).toHaveBeenCalledWith({
+      title: "Mismatch",
+      message: "Passwords do not match",
+      color: "red",
+    });
   });
   it("returns weak password for no lowercase letters", () => {
     render(
