@@ -3,9 +3,8 @@ import { screen, fireEvent } from "@testing-library/react";
 import { LoginForm } from "./LoginForm";
 import { vi } from "vitest";
 import "@testing-library/jest-dom";
-import { MantineProvider } from "@mantine/core";
-import { MemoryRouter } from "react-router";
 import { notifications } from "@mantine/notifications";
+import { render } from "~/utilities/testing";
 
 // mock useNavigate
 const mockNavigate = vi.fn();
