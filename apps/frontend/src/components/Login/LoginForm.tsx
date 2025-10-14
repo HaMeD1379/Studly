@@ -44,7 +44,7 @@ export function LoginForm() {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        minHeight: "center",
+        minHeight: "100vh",
         margin: "0",
       }}
     >
