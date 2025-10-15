@@ -6,7 +6,7 @@
  *  Author: Hamed Esmaeilzadeh (team member)
  *  Assisted-by: ChatGPT (GPT-5 Thinking) for comments, documentation, debugging,
  *               and partial code contributions
- *  Last-Updated: 2025-10-11
+ *  Last-Updated: 2025-10-16
  * ────────────────────────────────────────────────────────────────────────────────
  *  Summary
  *  -------
@@ -16,9 +16,10 @@
  *
  *  Functions
  *  ----------
- *  • createSession(session)       → inserts a new session record
- *  • completeSession(id, updates) → updates an existing session (marks complete)
- *  • listSessions(filters)        → retrieves sessions (optionally filtered)
+ *  • createSession(session)         → inserts a new session record
+ *  • completeSession(id, updates)   → updates an existing session (marks complete)
+ *  • listSessions(filters)          → retrieves sessions (optionally filtered)
+ *  • summarizeSessionsByDate(query) → aggregates study metrics for dashboards
  *
  *  Design Principles
  *  -----------------
@@ -38,6 +39,36 @@
  */
 
 import supabase from '../config/supabase.js'; // Initialized Supabase client instance
+
+const MILLIS_IN_MINUTE = 60_000;
+
+const toMinutes = (millis) => {
+  if (millis === null || millis === undefined) return null;
+  return Math.round((millis / MILLIS_IN_MINUTE) * 1000) / 1000;
+};
+
+const toMillis = (minutes) => {
+  if (minutes === null || minutes === undefined) return null;
+  return Math.round(minutes * MILLIS_IN_MINUTE);
+};
+
+const mapDbSessionToApi = (session) => {
+  if (!session) return session;
+
+  return {
+    id: session.id,
+    userId: session.user_id,
+    subject: session.subject,
+    status: session.status,
+    startTimestamp: session.started_at ?? null,
+    endStudyTimestamp: session.ended_at ?? null,
+    targetDurationMillis: toMillis(session.target_duration_minutes),
+    sessionLength: toMillis(session.duration_minutes),
+    notes: session.notes ?? null,
+    createdAt: session.created_at ?? null,
+    updatedAt: session.updated_at ?? null,
+  };
+};
 
 /**
  * Factory function for creating a session service instance.
@@ -65,7 +96,7 @@ export const createSessionsService = (client = supabase) => {
       throw new Error(`Failed to create session: ${error.message}`);
     }
 
-    return data;
+    return mapDbSessionToApi(data);
   };
 
   /**
@@ -87,7 +118,7 @@ export const createSessionsService = (client = supabase) => {
       throw new Error(`Failed to complete session: ${error.message}`);
     }
 
-    return data;
+    return mapDbSessionToApi(data);
   };
 
   /**
@@ -99,23 +130,79 @@ export const createSessionsService = (client = supabase) => {
   const listSessions = async (filters = {}) => {
     let query = client.from('sessions').select('*');
 
-    // Apply dynamic filters if provided
     if (filters.userId) query = query.eq('user_id', filters.userId);
     if (filters.subject) query = query.eq('subject', filters.subject);
+    if (filters.status) query = query.eq('status', filters.status);
+    if (filters.endedAfter) query = query.gte('ended_at', filters.endedAfter);
+    if (filters.endedBefore) query = query.lte('ended_at', filters.endedBefore);
+    if (filters.limit) query = query.limit(filters.limit);
 
-    // Always order by most recent start time
-    const { data, error } = await query.order('started_at', { ascending: false });
+    const { data, error } = await query.order('ended_at', {
+      ascending: false,
+      nullsFirst: false,
+    });
 
     if (error) {
       throw new Error(`Failed to list sessions: ${error.message}`);
     }
 
-    // Ensure return type is always an array
-    return data ?? [];
+    const rows = data ?? [];
+    return rows.map(mapDbSessionToApi);
+  };
+
+  const summarizeSessionsByDate = async ({
+    userId,
+    from,
+    to,
+    status = 'completed',
+  }) => {
+    let query = client
+      .from('sessions')
+      .select('duration_minutes, ended_at, status')
+      .eq('user_id', userId);
+
+    if (status) {
+      query = query.eq('status', status);
+    }
+    if (from) {
+      query = query.gte('ended_at', from);
+    }
+    if (to) {
+      query = query.lte('ended_at', to);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      throw new Error(`Failed to summarize sessions: ${error.message}`);
+    }
+
+    const rows = data ?? [];
+    const completedRows = status ? rows : rows.filter((row) => row.status === 'completed');
+
+    const totalMinutes = completedRows.reduce(
+      (acc, row) => acc + (row.duration_minutes ?? 0),
+      0,
+    );
+
+    return {
+      totalTimeStudied: toMillis(totalMinutes),
+      timesStudied: completedRows.length,
+    };
   };
 
   // Return a service object for controllers or tests to consume
-  return { createSession, completeSession, listSessions };
+  return {
+    createSession,
+    completeSession,
+    listSessions,
+    summarizeSessionsByDate,
+    __private: {
+      toMinutes,
+      toMillis,
+      mapDbSessionToApi,
+    },
+  };
 };
 
 // Default export: production instance using the configured Supabase client

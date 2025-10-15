@@ -3,9 +3,10 @@
  *  File: src/routes/v1/sessions.routes.js
  *  Group: Group 3 — COMP 4350: Software Engineering 2
  *  Project: Studly
- *  Author: Shiv Bhagat
- *  Comments: Curated by GPT (Large Language Model)
- *  Last-Updated: 2025-10-15
+ *  Author: Hamed Esmaeilzadeh (team member)
+ *  Assisted-by: ChatGPT (GPT-5 Thinking) for comments, documentation, debugging,
+ *               and partial code contributions
+ *  Last-Updated: 2025-10-16
  * ────────────────────────────────────────────────────────────────────────────────
  *  Summary
  *  -------
@@ -16,8 +17,9 @@
  *  Features
  *  --------
  *  • POST /sessions → start a new session.
- *  • PATCH /sessions/:id/complete → mark a session as complete.
- *  • GET /sessions → list sessions with optional query filters.
+ *  • PATCH /sessions/:sessionId → mark a session as complete.
+ *  • GET /sessions → list sessions with optional query filters (userId, status, limit).
+ *  • GET /sessions/summary → provide aggregated study metrics.
  *
  *  Design Principles
  *  -----------------
@@ -40,12 +42,14 @@ import {
   startSession,
   completeSession,
   listSessions,
+  getSessionsSummary,
 } from '../../controllers/sessions.controller.js';
 
 const router = Router();
 
 router.post('/', startSession);
-router.patch('/:id/complete', completeSession);
+router.patch('/:sessionId', completeSession);
 router.get('/', listSessions);
+router.get('/summary', getSessionsSummary);
 
 export default router;

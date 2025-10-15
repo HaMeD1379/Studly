@@ -6,7 +6,7 @@
  *  Author: Hamed Esmaeilzadeh (team member)
  *  Assisted-by: ChatGPT (GPT-5 Thinking) for comments, documentation, debugging,
  *               and partial code contributions
- *  Last-Updated: 2025-10-11
+ *  Last-Updated: 2025-10-16
  * ────────────────────────────────────────────────────────────────────────────────
  *  Summary
  *  -------
@@ -15,9 +15,10 @@
  *  the sessions service.
  *
  *  Endpoints (paired with router):
- *  • startSession(req, res)        → POST   /         : create a new session
- *  • completeSession(req, res)     → PATCH  /:id/complete : mark session complete
- *  • listSessions(req, res)        → GET    /         : list sessions by user
+ *  • startSession(req, res)        → POST   /           : create a new session
+ *  • completeSession(req, res)     → PATCH  /:sessionId : mark session complete
+ *  • listSessions(req, res)        → GET    /           : list sessions by user
+ *  • getSessionsSummary(req, res)  → GET    /summary    : aggregate study stats
  *
  *  Design Notes
  *  ------------
@@ -36,6 +37,22 @@
 
 import sessionsService from '../services/sessions.service.js';
 
+const MILLIS_IN_MINUTE = 60_000;
+
+const millisToMinutes = (millis) => {
+  if (millis === null || millis === undefined) return null;
+  return Math.round((millis / MILLIS_IN_MINUTE) * 1000) / 1000;
+};
+
+const parseLimit = (value) => {
+  if (value === undefined) return undefined;
+  const parsed = Number.parseInt(value, 10);
+  if (Number.isNaN(parsed) || parsed <= 0) {
+    throw new Error('limit must be a positive integer');
+  }
+  return parsed;
+};
+
 /**
  * Factory for sessions controller — allows injecting a mock service in tests.
  * @param {object} service - Sessions service with createSession, completeSession, listSessions
@@ -45,59 +62,67 @@ export const createSessionsController = (service = sessionsService) => {
   /**
    * POST /
    * Start a new session.
-   * Expected body: { userId: string, subject: string, startedAt?: ISOString, targetDurationMinutes?: number }
+   * Expected body: {
+   *   userId: string,
+   *   subject: string,
+   *   startTimestamp?: ISOString,
+   *   targetDurationMillis?: number
+   * }
    * Response: 201 Created { session }
    */
   const startSession = async (req, res, next) => {
     try {
-      const { userId, subject, startedAt, targetDurationMinutes } = req.body ?? {};
+      const { userId, subject, startTimestamp, targetDurationMillis } = req.body ?? {};
 
-      // Basic input checks — replace with schema validation later
       if (!userId) return res.status(400).json({ error: 'userId is required' });
       if (!subject) return res.status(400).json({ error: 'subject is required' });
 
-      // Map API payload → DB fields (snake_case)
       const sessionToCreate = {
         user_id: userId,
         subject,
-        started_at: startedAt ?? new Date().toISOString(), // default to now
-        target_duration_minutes: targetDurationMinutes ?? null,
+        started_at: startTimestamp ?? new Date().toISOString(),
+        target_duration_minutes: millisToMinutes(targetDurationMillis),
         status: 'in_progress',
       };
 
       const session = await service.createSession(sessionToCreate);
       return res.status(201).json({ session });
     } catch (error) {
-      // Let centralized error middleware handle logging/formatting
       return next(error);
     }
   };
 
   /**
-   * PATCH /:id/complete
+   * PATCH /:sessionId
    * Complete a session.
-   * Expected params: { id }
-   * Expected body: { endedAt: ISOString, durationMinutes?: number, notes?: string }
+   * Expected params: { sessionId }
+   * Expected body: {
+   *   endStudyTimestamp: ISOString,
+   *   sessionLengthMillis?: number,
+   *   notes?: string,
+   *   status?: string
+   * }
    * Response: 200 OK { session } | 404 if not found
    */
   const completeSession = async (req, res, next) => {
     try {
-      const { id } = req.params ?? {};
-      const { endedAt, durationMinutes, notes } = req.body ?? {};
+      const { sessionId } = req.params ?? {};
+      const { endStudyTimestamp, sessionLengthMillis, notes, status } =
+        req.body ?? {};
 
-      if (!id) return res.status(400).json({ error: 'session id is required' });
-      if (!endedAt) return res.status(400).json({ error: 'endedAt is required' });
+      if (!sessionId)
+        return res.status(400).json({ error: 'sessionId is required' });
+      if (!endStudyTimestamp)
+        return res.status(400).json({ error: 'endStudyTimestamp is required' });
 
-      // TODO[VALIDATION]: Validate id format (UUID/ObjectId) and ISO date for endedAt.
-      // Construct partial update payload for the DB
       const updates = {
-        ended_at: endedAt,
-        duration_minutes: durationMinutes ?? null,
+        ended_at: endStudyTimestamp,
+        duration_minutes: millisToMinutes(sessionLengthMillis),
         notes: notes ?? null,
-        status: 'completed',
+        status: status ?? 'completed',
       };
 
-      const session = await service.completeSession(id, updates);
+      const session = await service.completeSession(sessionId, updates);
       if (!session) return res.status(404).json({ error: 'Session not found' });
 
       return res.status(200).json({ session });
@@ -108,33 +133,78 @@ export const createSessionsController = (service = sessionsService) => {
 
   /**
    * GET /
-   * List sessions for a user (optionally filtered by subject).
-   * Expected query: ?userId=...&subject=...
+   * List sessions for a user (optionally filtered by subject/status/time range).
+   * Expected query: ?userId=...&subject=...&status=...&limit=...
    * Response: 200 OK { sessions: [] }
    */
   const listSessions = async (req, res, next) => {
     try {
-      const { userId, subject } = req.query ?? {};
+      const { userId, subject, status, limit, endedAfter, endedBefore } =
+        req.query ?? {};
       if (!userId) {
-        return res.status(400).json({ error: 'userId query parameter is required' });
+        return res
+          .status(400)
+          .json({ error: 'userId query parameter is required' });
       }
 
-      // Delegate filtering to service (keeps controller thin)
-      const sessions = await service.listSessions({ userId, subject });
+      let parsedLimit;
+      try {
+        parsedLimit = parseLimit(limit);
+      } catch (parseError) {
+        return res.status(400).json({ error: parseError.message });
+      }
+
+      const sessions = await service.listSessions({
+        userId,
+        subject,
+        status,
+        endedAfter,
+        endedBefore,
+        limit: parsedLimit,
+      });
       return res.status(200).json({ sessions });
     } catch (error) {
       return next(error);
     }
   };
 
-  return { startSession, completeSession, listSessions };
+  /**
+   * GET /summary
+   * Aggregates study time and session counts for dashboards.
+   * Expected query: ?userId=...&from=...&to=...
+   * Response: 200 OK { totalTimeStudied, timesStudied }
+   */
+  const getSessionsSummary = async (req, res, next) => {
+    try {
+      const { userId, from, to, status } = req.query ?? {};
+      if (!userId) {
+        return res
+          .status(400)
+          .json({ error: 'userId query parameter is required' });
+      }
+
+      const summary = await service.summarizeSessionsByDate({
+        userId,
+        from,
+        to,
+        status: status ?? 'completed',
+      });
+
+      return res.status(200).json(summary);
+    } catch (error) {
+      return next(error);
+    }
+  };
+
+  return { startSession, completeSession, listSessions, getSessionsSummary };
 };
 
 // Default instance for production wiring
 const defaultController = createSessionsController();
 
 // Named exports for router
-export const { startSession, completeSession, listSessions } = defaultController;
+export const { startSession, completeSession, listSessions, getSessionsSummary } =
+  defaultController;
 
 // Default export for direct imports
 export default defaultController;
