@@ -3,84 +3,86 @@
  *  File: src/config/supabase.js
  *  Group: Group 3 — COMP 4350: Software Engineering 2
  *  Project: Studly
- *  Assisted-by: ChatGPT (GPT-5 Thinking) for comments, documentation, debugging,
- *               and partial code contributions
- *  Last-Updated: 2025-10-11
+ *  Author: Shiv Bhagat
+ *  Comments: Curated by GPT (Large Language Model)
+ *  Last-Updated: 2025-10-15
  * ────────────────────────────────────────────────────────────────────────────────
  *  Summary
  *  -------
- *  Initializes and exports the Supabase client used for all database interactions.
- *  The client is dynamically imported at runtime to avoid hard dependency errors
- *  in test or mock environments (e.g., when @supabase/supabase-js is not installed).
+ *  Creates and exports a singleton Supabase client used throughout the backend.
+ *  The client transparently falls back to a stub implementation when environment
+ *  variables are missing, enabling tests to run without real credentials while
+ *  still surfacing actionable error messages.
  *
  *  Features
  *  --------
- *  • Graceful fallback when the Supabase library is unavailable.
- *  • Uses environment variables SUPABASE_URL and SUPABASE_SERVICE_KEY.
- *  • Emits a warning if initialization fails (so devs see it early).
+ *  • Reads Supabase credentials from environment variables.
+ *  • Disables session persistence/auto-refresh for server-side usage.
+ *  • Provides a predictable stub client when configuration is incomplete.
  *
  *  Design Principles
  *  -----------------
- *  • Fail safely: service modules throw explicit errors if Supabase is unavailable.
- *  • Config isolation: credentials handled only in this layer.
- *  • Environment-agnostic: supports CI, local dev, and serverless runtimes.
+ *  • Fail loudly at the point of use with descriptive errors.
+ *  • Keep configuration isolated from business logic for testability.
+ *  • Avoid leaking secrets by never logging raw environment values.
  *
  *  TODOs
  *  -----
- *  • [SECURITY] Ensure env variables are managed securely in deployment.
- *  • [OBSERVABILITY] Integrate structured logging instead of console.warn.
- *  • [TESTABILITY] Mock this module in unit tests to avoid external calls.
+ *  • [OBSERVABILITY] Replace console warnings with structured logging.
+ *  • [SECURITY] Rotate keys using a secret manager in production deployments.
  *
  *  @module config/supabase
- *  @see https://supabase.com/docs/reference/javascript
  * ────────────────────────────────────────────────────────────────────────────────
  */
 
-let createClient;
-let clientLoadError;
+import { createClient } from '@supabase/supabase-js';
+import STRINGS from './strings.js';
 
-try {
-  // Dynamically import to avoid breaking environments where supabase-js isn't installed
-  ({ createClient } = await import('@supabase/supabase-js'));
-} catch (error) {
-  clientLoadError = error;
-}
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
 
-const createUnavailableClient = (reason) =>
+const buildFailureMethod = (methodName) => async () => {
+  throw new Error(
+    `${STRINGS.SUPABASE.MISSING_ENV_CONFIGURATION}. Attempted to call \`${methodName}\`.`
+  );
+};
+
+const buildFallbackFrom = () =>
   new Proxy(
     {},
     {
-      get(_, prop) {
-        if (prop === 'then') return undefined; // prevent await-related surprises
-
-        return () => {
-          const method = typeof prop === 'symbol' ? 'unknown symbol' : prop.toString();
-          throw new Error(`Supabase client is unavailable: ${reason}. Attempted to call \`${method}\`.`);
-        };
+      get: (_, prop) => {
+        if (prop === 'then') return undefined;
+        const methodLabel = typeof prop === 'symbol' ? 'symbol' : `from().${prop}`;
+        return buildFailureMethod(methodLabel);
       },
     }
   );
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY;
+const createFallbackClient = () => ({
+  auth: {
+    signUp: buildFailureMethod('auth.signUp'),
+    signInWithPassword: buildFailureMethod('auth.signInWithPassword'),
+    signOut: buildFailureMethod('auth.signOut'),
+    resetPasswordForEmail: buildFailureMethod('auth.resetPasswordForEmail'),
+    updateUser: buildFailureMethod('auth.updateUser'),
+  },
+  from: () => buildFallbackFrom(),
+});
 
 let supabase;
-let warningMessage;
 
-if (clientLoadError) {
-  warningMessage = `Supabase client dependency could not be loaded (${clientLoadError.message}).`;
-  supabase = createUnavailableClient(warningMessage);
-} else if (!supabaseUrl || !supabaseServiceKey) {
-  warningMessage = 'SUPABASE_URL and SUPABASE_SERVICE_KEY must be set to initialize Supabase.';
-  supabase = createUnavailableClient(warningMessage);
+if (SUPABASE_URL && SUPABASE_ANON_KEY) {
+  supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+  });
 } else {
-  supabase = createClient(supabaseUrl, supabaseServiceKey);
-}
-
-if (warningMessage) {
+  supabase = createFallbackClient();
   console.warn(
-    '⚠️ Supabase client could not be fully initialized. Database operations will throw until configuration issues are resolved.\n' +
-    `   Reason: ${warningMessage}`
+    '⚠️ Supabase client initialized in fallback mode. Database and auth calls will reject until environment variables are configured.'
   );
 }
 
