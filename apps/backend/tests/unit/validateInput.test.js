@@ -9,108 +9,126 @@
  * ────────────────────────────────────────────────────────────────────────────────
  *  Summary
  *  -------
- *  Unit tests for the signup validation middleware, ensuring that various
- *  invalid payloads short-circuit the request with appropriate error messages.
+ *  Node.js test coverage for the signup validation middleware. Validates that
+ *  malformed payloads result in early failures and that well-formed payloads
+ *  progress to the next middleware in the chain.
  *
  *  Features
  *  --------
- *  • Covers missing fields, invalid email, and weak password scenarios.
- *  • Confirms the happy path invokes `next()` without error.
- *  • Utilizes STRINGS constants for consistent assertions.
+ *  • Exercises required field validation.
+ *  • Confirms email format and password length policies.
+ *  • Ensures next() executes when the payload is correct.
  *
  *  Design Principles
  *  -----------------
- *  • Keep middleware pure and easily testable with simple mocks.
- *  • Ensure each validation branch is exercised for regression safety.
+ *  • Use native node:test runner to avoid external dependencies.
+ *  • Keep expectations explicit with strict equality checks.
  *
  *  TODOs
  *  -----
- *  • [EXTENSIBILITY] Add tests for future validators (login, password reset, etc.).
+ *  • [VALIDATION] Extend middleware with configurable password strength rules.
  *
  *  @module tests/unit/validateInput
  * ────────────────────────────────────────────────────────────────────────────────
  */
 
-import { jest } from '@jest/globals';
+import test from 'node:test';
+import assert from 'node:assert/strict';
+
 import { validateSignup } from '../../src/middleware/validateInput.js';
 import STRINGS from '../../src/config/strings.js';
 
-describe(STRINGS.TEST.VALIDATE_SIGNUP, () => {
-  let req;
-  let res;
-  let next;
+const createMockContext = () => {
+  const resPayloads = [];
+  const resStatuses = [];
+  return {
+    req: { body: {} },
+    res: {
+      status(code) {
+        resStatuses.push(code);
+        return this;
+      },
+      json(payload) {
+        resPayloads.push(payload);
+        return payload;
+      },
+    },
+    nextCalls: [],
+    get outputs() {
+      return { resPayloads, resStatuses, nextCalls: this.nextCalls };
+    },
+    next(arg) {
+      this.nextCalls.push(arg ?? 'called');
+    },
+  };
+};
 
-  beforeEach(() => {
-    req = { body: {} };
-    res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
-    };
-    next = jest.fn();
-    jest.spyOn(console, STRINGS.GENERAL.ERROR).mockImplementation(() => {});
-  });
+test(STRINGS.TEST.VALIDATE_MISSING_FIELDS, () => {
+  const ctx = createMockContext();
+  ctx.req.body = {
+    email: STRINGS.MOCK.MOCK_EMPTY_STRING,
+    password: STRINGS.MOCK.MOCK_EMPTY_STRING,
+    full_name: STRINGS.MOCK.MOCK_EMPTY_STRING,
+  };
 
-  afterEach(() => jest.restoreAllMocks());
+  validateSignup(ctx.req, ctx.res, ctx.next.bind(ctx));
 
-  it(STRINGS.TEST.VALIDATE_MISSING_FIELDS, () => {
-    req.body = {
-      email: STRINGS.MOCK.MOCK_EMPTY_STRING,
-      password: STRINGS.MOCK.MOCK_EMPTY_STRING,
-      full_name: STRINGS.MOCK.MOCK_EMPTY_STRING,
-    };
+  const { resPayloads, resStatuses, nextCalls } = ctx.outputs;
+  assert.deepStrictEqual(resStatuses, [400]);
+  assert.deepStrictEqual(resPayloads, [
+    { error: STRINGS.VALIDATION.MISSING_REQUIRED_FIELDS },
+  ]);
+  assert.equal(nextCalls.length, 0);
+});
 
-    validateSignup(req, res, next);
+test(STRINGS.TEST.VALIDATE_INVALID_EMAIL, () => {
+  const ctx = createMockContext();
+  ctx.req.body = {
+    email: STRINGS.MOCK.MOCK_INVALID_EMAIL,
+    password: STRINGS.MOCK.MOCK_NEW_STRONG_PASSWORD,
+    full_name: STRINGS.MOCK.MOCK_NEW_USER_FULL_NAME,
+  };
 
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({
-      error: STRINGS.VALIDATION.MISSING_REQUIRED_FIELDS,
-    });
-    expect(next).not.toHaveBeenCalled();
-  });
+  validateSignup(ctx.req, ctx.res, ctx.next.bind(ctx));
 
-  it(STRINGS.TEST.VALIDATE_INVALID_EMAIL, () => {
-    req.body = {
-      email: STRINGS.MOCK.MOCK_INVALID_EMAIL,
-      password: STRINGS.MOCK.MOCK_NEW_STRONG_PASSWORD,
-      full_name: STRINGS.MOCK.MOCK_NEW_USER_FULL_NAME,
-    };
+  const { resPayloads, resStatuses, nextCalls } = ctx.outputs;
+  assert.deepStrictEqual(resStatuses, [400]);
+  assert.deepStrictEqual(resPayloads, [
+    { error: STRINGS.VALIDATION.INVALID_EMAIL_FORMAT },
+  ]);
+  assert.equal(nextCalls.length, 0);
+});
 
-    validateSignup(req, res, next);
+test(STRINGS.TEST.VALIDATE_SHORT_PASSWORD, () => {
+  const ctx = createMockContext();
+  ctx.req.body = {
+    email: STRINGS.MOCK.MOCK_VALID_EMAIL,
+    password: STRINGS.MOCK.MOCK_INVALID_PASSWORD,
+    full_name: STRINGS.MOCK.MOCK_NEW_USER_FULL_NAME,
+  };
 
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({
-      error: STRINGS.VALIDATION.INVALID_EMAIL_FORMAT,
-    });
-    expect(next).not.toHaveBeenCalled();
-  });
+  validateSignup(ctx.req, ctx.res, ctx.next.bind(ctx));
 
-  it(STRINGS.TEST.VALIDATE_SHORT_PASSWORD, () => {
-    req.body = {
-      email: STRINGS.MOCK.MOCK_VALID_EMAIL,
-      password: STRINGS.MOCK.MOCK_INVALID_PASSWORD,
-      full_name: STRINGS.MOCK.MOCK_NEW_USER_FULL_NAME,
-    };
+  const { resPayloads, resStatuses, nextCalls } = ctx.outputs;
+  assert.deepStrictEqual(resStatuses, [400]);
+  assert.deepStrictEqual(resPayloads, [
+    { error: STRINGS.VALIDATION.PASSWORD_CHAR_REQUIREMENTS },
+  ]);
+  assert.equal(nextCalls.length, 0);
+});
 
-    validateSignup(req, res, next);
+test(STRINGS.TEST.VALIDATE_SUCCESS, () => {
+  const ctx = createMockContext();
+  ctx.req.body = {
+    email: STRINGS.MOCK.MOCK_VALID_EMAIL,
+    password: STRINGS.MOCK.MOCK_NEW_STRONG_PASSWORD,
+    full_name: STRINGS.MOCK.MOCK_NEW_USER_FULL_NAME,
+  };
 
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({
-      error: STRINGS.VALIDATION.PASSWORD_CHAR_REQUIREMENTS,
-    });
-    expect(next).not.toHaveBeenCalled();
-  });
+  validateSignup(ctx.req, ctx.res, ctx.next.bind(ctx));
 
-  it(STRINGS.TEST.VALIDATE_SUCCESS, () => {
-    req.body = {
-      email: STRINGS.MOCK.MOCK_VALID_EMAIL,
-      password: STRINGS.MOCK.MOCK_NEW_STRONG_PASSWORD,
-      full_name: STRINGS.MOCK.MOCK_NEW_USER_FULL_NAME,
-    };
-
-    validateSignup(req, res, next);
-
-    expect(res.status).not.toHaveBeenCalled();
-    expect(res.json).not.toHaveBeenCalled();
-    expect(next).toHaveBeenCalledTimes(1);
-  });
+  const { resStatuses, resPayloads, nextCalls } = ctx.outputs;
+  assert.equal(resStatuses.length, 0);
+  assert.equal(resPayloads.length, 0);
+  assert.deepStrictEqual(nextCalls, ['called']);
 });

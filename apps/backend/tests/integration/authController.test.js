@@ -9,357 +9,392 @@
  * ────────────────────────────────────────────────────────────────────────────────
  *  Summary
  *  -------
- *  Integration tests for the authentication router. Supabase client calls are
- *  mocked to emulate various success and failure scenarios while exercising the
- *  Express app end-to-end via supertest.
+ *  End-to-end coverage for the authentication router using the native node:test
+ *  runner. The suite spins up the Express application, overrides Supabase client
+ *  methods with deterministic mocks, and performs HTTP requests via fetch.
  *
  *  Features
  *  --------
  *  • Covers signup, login, logout, forgot password, and reset password flows.
- *  • Utilizes jest.unstable_mockModule for ESM-compatible mocking.
- *  • Ensures HTTP status codes and response payloads align with STRINGS.
+ *  • Exercises success paths, validation failures, and Supabase error branches.
+ *  • Runs without third-party test libraries to keep the toolchain lightweight.
  *
  *  Design Principles
  *  -----------------
- *  • Keep tests hermetic by avoiding real network calls.
- *  • Reuse centralized STRINGS to minimize brittle literals.
- *  • Reset mocks between scenarios to avoid state bleed.
+ *  • Mutate the shared Supabase client in-place and restore after each test.
+ *  • Start a fresh HTTP server per test for isolation.
+ *  • Use descriptive string constants pulled from STRINGS for stability.
  *
  *  TODOs
  *  -----
- *  • [COVERAGE] Add multi-factor authentication scenarios when implemented.
- *  • [SECURITY] Exercise token validation edge cases once middleware exists.
+ *  • [MOCKING] Extract Supabase mock management into reusable helpers.
+ *  • [COVERAGE] Add integration tests for authenticated session routes.
  *
  *  @module tests/integration/authController
  * ────────────────────────────────────────────────────────────────────────────────
  */
 
-import { jest } from '@jest/globals';
-import request from 'supertest';
-import express from 'express';
+import test, { beforeEach, afterEach } from 'node:test';
+import assert from 'node:assert/strict';
+
 import STRINGS from '../../src/config/strings.js';
+import supabase from '../../src/config/supabase.js';
 
-await jest.unstable_mockModule('../../src/config/supabase.js', () => ({
-  __esModule: true,
-  default: {
-    auth: {
-      signUp: jest.fn(async ({ email, password, options }) => {
-        if (!email || !password) {
-          return {
-            data: null,
-            error: {
-              message: STRINGS.VALIDATION.MISSING_EMAIL_OR_PASSWORD,
-            },
-          };
-        }
-        if (email === STRINGS.MOCK.MOCK_EXISTING_USER_EMAIL) {
-          return {
-            data: null,
-            error: {
-              message: STRINGS.AUTH.USER_ALREADY_REGISTERED,
-            },
-          };
-        }
-        return {
-          data: {
-            user: {
-              id: STRINGS.MOCK.MOCK_ID,
-              email,
-              user_metadata: options?.data,
-            },
-          },
-          error: null,
-        };
-      }),
-      signInWithPassword: jest.fn(async ({ email }) => {
-        if (email === STRINGS.MOCK.MOCK_WRONG_USER_EMAIL) {
-          return {
-            data: null,
-            error: {
-              message: STRINGS.VALIDATION.INVALID_LOGIN_CREDENTIALS,
-            },
-          };
-        }
-        return {
-          data: {
-            session: {
-              access_token: STRINGS.MOCK.MOCK_TOKEN,
-              refresh_token: STRINGS.MOCK.MOCK_REFRESH,
-            },
-            user: {
-              id: STRINGS.MOCK.MOCK_ID,
-              email,
-              user_metadata: {
-                full_name: STRINGS.MOCK.MOCK_FULL_NAME,
-              },
-            },
-          },
-          error: null,
-        };
-      }),
-      signOut: jest.fn(async () => ({ error: null })),
-      resetPasswordForEmail: jest.fn(async (email) => {
-        if (!email) {
-          return {
-            data: null,
-            error: { message: STRINGS.VALIDATION.MISSING_EMAIL },
-          };
-        }
-        return { data: { email }, error: null };
-      }),
-      updateUser: jest.fn(async ({ password }) => {
-        if (!password) {
-          return {
-            data: null,
-            error: { message: STRINGS.VALIDATION.MISSING_PASSWORD },
-          };
-        }
-        return {
-          data: {
-            user: {
-              id: STRINGS.MOCK.MOCK_ID,
-              passwordChanged: true,
-            },
-          },
-          error: null,
-        };
-      }),
-    },
-  },
-}));
+process.env.NODE_ENV = 'test';
+const { default: app } = await import('../../src/index.js');
 
-const { default: supabase } = await import('../../src/config/supabase.js');
-const { default: authRoutes } = await import(
-  '../../src/routes/v1/authentication.routes.js'
-);
+const originalAuth = { ...supabase.auth };
 
-const app = express();
-app.use(express.json());
-app.use(STRINGS.API.AUTH_ROUTE, authRoutes);
-
-describe(STRINGS.API.AUTH_ROUTES_LITERAL, () => {
-  afterEach(() => jest.clearAllMocks());
-
-  describe(STRINGS.API.SIGNUP_AUTH_POST, () => {
-    it(STRINGS.TEST.SIGNUP_SUCCESS, async () => {
-      const res = await request(app).post(STRINGS.API.SIGNUP_AUTH).send({
-        email: STRINGS.MOCK.MOCK_NEW_EMAIL,
-        password: STRINGS.MOCK.MOCK_NEW_PASSWORD,
-        full_name: STRINGS.MOCK.MOCK_NEW_USER_FULL_NAME,
-      });
-      expect(res.statusCode).toBe(201);
-      expect(res.body.data.user.email).toBe(STRINGS.MOCK.MOCK_NEW_EMAIL);
-    });
-
-    it(STRINGS.TEST.MISSING_INPUT, async () => {
-      const res = await request(app).post(STRINGS.API.SIGNUP_AUTH).send({
-        email: STRINGS.MOCK.MOCK_EMPTY_STRING,
-        password: STRINGS.MOCK.MOCK_EMPTY_STRING,
-      });
-      expect(res.statusCode).toBe(400);
-      expect(res.body.error).toMatch(
-        STRINGS.VALIDATION.MISSING_REQUIRED_FIELDS
-      );
-    });
-
-    it(STRINGS.TEST.USER_EXISTS, async () => {
-      const res = await request(app).post(STRINGS.API.SIGNUP_AUTH).send({
-        email: STRINGS.MOCK.MOCK_EXISTING_USER_EMAIL,
-        password: STRINGS.MOCK.MOCK_EXISTING_PASSWORD,
-        full_name: STRINGS.MOCK.MOCK_EXISTING_FULL_NAME,
-      });
-      expect(res.statusCode).toBe(409);
-      expect(res.body.error).toBe(STRINGS.AUTH.USER_ALREADY_REGISTERED);
-    });
-
-    it(STRINGS.TEST.OTHER_SUPABASE_SIGNUP_ERRORS, async () => {
-      jest.spyOn(supabase.auth, STRINGS.GENERAL.SIGN_UP).mockResolvedValueOnce({
+const baseMocks = () => ({
+  async signUp({ email, password, options }) {
+    if (!email || !password) {
+      return {
         data: null,
-        error: { message: STRINGS.VALIDATION.INVALID_EMAIL_FORMAT },
-      });
+        error: { message: STRINGS.VALIDATION.MISSING_EMAIL_OR_PASSWORD },
+      };
+    }
 
-      const res = await request(app).post(STRINGS.API.SIGNUP_AUTH).send({
-        email: STRINGS.MOCK.MOCK_TEST_INVALID_EMAIL,
-        password: STRINGS.MOCK.MOCK_NEW_STRONG_PASSWORD,
-        full_name: STRINGS.MOCK.MOCK_NEW_USER_FULL_NAME,
-      });
-      expect(res.statusCode).toBe(400);
-      expect(res.body.error).toBe(STRINGS.VALIDATION.INVALID_EMAIL_FORMAT);
-    });
+    return {
+      data: {
+        user: {
+          id: STRINGS.MOCK.MOCK_ID,
+          email,
+          user_metadata: {
+            full_name: options?.data?.full_name ?? null,
+          },
+        },
+      },
+      error: null,
+    };
+  },
+  async signInWithPassword({ email }) {
+    return {
+      data: {
+        session: {
+          access_token: STRINGS.MOCK.MOCK_TOKEN,
+          refresh_token: STRINGS.MOCK.MOCK_REFRESH,
+        },
+        user: {
+          id: STRINGS.MOCK.MOCK_ID,
+          email,
+          user_metadata: { full_name: STRINGS.MOCK.MOCK_FULL_NAME },
+        },
+      },
+      error: null,
+    };
+  },
+  async signOut() {
+    return { error: null };
+  },
+  async resetPasswordForEmail(email) {
+    if (!email) {
+      return {
+        data: null,
+        error: { message: STRINGS.VALIDATION.MISSING_EMAIL },
+      };
+    }
 
-    it(STRINGS.TEST.UNEXPECT_SIGNUP_ERROR, async () => {
-      jest
-        .spyOn(supabase.auth, STRINGS.GENERAL.SIGN_UP)
-        .mockRejectedValueOnce(new Error(STRINGS.GENERAL.NETWORK_CRASH));
+    return { data: { email }, error: null };
+  },
+  async updateUser({ password }) {
+    if (!password) {
+      return {
+        data: null,
+        error: { message: STRINGS.VALIDATION.MISSING_PASSWORD },
+      };
+    }
 
-      const res = await request(app).post(STRINGS.API.SIGNUP_AUTH).send({
-        email: STRINGS.MOCK.MOCK_FAIL_EMAIL,
-        password: STRINGS.MOCK.MOCK_USER_PASSWORD,
-        full_name: STRINGS.MOCK.MOCK_FIAL_FULL_NAME,
-      });
-      expect(res.statusCode).toBe(500);
-      expect(res.body.error).toMatch(STRINGS.SERVER.INTERNAL_ERROR);
-    });
-  });
+    return {
+      data: { user: { id: STRINGS.MOCK.MOCK_ID, passwordChanged: true } },
+      error: null,
+    };
+  },
+});
 
-  describe(STRINGS.API.LOGIN_AUTH_POST, () => {
-    it(STRINGS.TEST.LOGIN_VALID_CREDENTIALS, async () => {
-      const res = await request(app).post(STRINGS.API.LOGIN_AUTH).send({
-        email: STRINGS.MOCK.MOCK_USER_EMAIL,
-        password: STRINGS.MOCK.MOCK_NEW_PASSWORD,
-      });
-      expect(res.statusCode).toBe(200);
-      expect(res.body.data.user.full_name).toBe(STRINGS.MOCK.MOCK_FULL_NAME);
-    });
+const restoreAuth = () => Object.assign(supabase.auth, originalAuth);
 
-    it(STRINGS.TEST.LOGIN_INVALID_CREDENTIALS, async () => {
-      const res = await request(app).post(STRINGS.API.LOGIN_AUTH).send({
-        email: STRINGS.MOCK.MOCK_WRONG_USER_EMAIL,
-        password: STRINGS.MOCK.MOCK_BAD_PASSWORD,
-      });
-      expect(res.statusCode).toBe(401);
-      expect(res.body.error).toBe(
-        STRINGS.VALIDATION.INVALID_LOGIN_CREDENTIALS
-      );
-    });
+beforeEach(() => {
+  Object.assign(supabase.auth, baseMocks());
+});
 
-    it(STRINGS.TEST.UNEXPECTED_LOGIN_ERROR, async () => {
-      jest
-        .spyOn(supabase.auth, STRINGS.GENERAL.SIGNIN_WITH_PASSWORD)
-        .mockRejectedValueOnce(new Error(STRINGS.GENERAL.AUTH_SERVICE_CRASH));
+afterEach(() => {
+  restoreAuth();
+});
 
-      const res = await request(app).post(STRINGS.API.LOGIN_AUTH).send({
-        email: STRINGS.MOCK.MOCK_X_EMAIL,
-        password: STRINGS.MOCK.MOCK_X_PASS,
-      });
-      expect(res.statusCode).toBe(500);
-      expect(res.body.error).toMatch(STRINGS.SERVER.INTERNAL_ERROR);
-    });
-  });
-
-  describe(STRINGS.API.LOGOUT_AUTH_POST, () => {
-    it(STRINGS.TEST.LOGOUT_SUCCESS, async () => {
-      const res = await request(app).post(STRINGS.API.LOGOUT_AUTH);
-      expect(res.statusCode).toBe(200);
-      expect(res.body.message).toBe(STRINGS.AUTH.LOGOUT_SUCCESS);
-    });
-
-    it(STRINGS.TEST.LOGOUT_SUPABASE_ERROR, async () => {
-      jest
-        .spyOn(supabase.auth, STRINGS.GENERAL.SIGN_OUT)
-        .mockResolvedValueOnce({
-          error: { message: STRINGS.AUTH.FAILED_TO_LOGOUT },
-        });
-
-      const res = await request(app).post(STRINGS.API.LOGOUT_AUTH);
-      expect(res.statusCode).toBe(400);
-      expect(res.body.error).toBe(STRINGS.AUTH.FAILED_TO_LOGOUT);
-    });
-
-    it(STRINGS.TEST.UNEXPECTED_LOGOUT_ERROR, async () => {
-      jest
-        .spyOn(supabase.auth, STRINGS.GENERAL.SIGN_OUT)
-        .mockRejectedValueOnce(new Error(STRINGS.GENERAL.SERVER_EXPLOSION));
-
-      const res = await request(app).post(STRINGS.API.LOGOUT_AUTH);
-      expect(res.statusCode).toBe(500);
-      expect(res.body.error).toMatch(STRINGS.SERVER.INTERNAL_ERROR);
+const startServer = () =>
+  new Promise((resolve) => {
+    const server = app.listen(0, () => {
+      const address = server.address();
+      resolve({ server, url: `http://127.0.0.1:${address.port}` });
     });
   });
 
-  describe(STRINGS.API.FORGOT_PASSWORD_AUTH_POST, () => {
-    it(STRINGS.TEST.FORGOT_PASSWORD_SUCCESS, async () => {
-      const res = await request(app)
-        .post(STRINGS.API.FORGOT_PASSWORD_AUTH)
-        .send({ email: STRINGS.MOCK.MOCK_USER_FORGET_EMAIL });
-      expect(res.statusCode).toBe(200);
-      expect(res.body.message).toBe(
-        STRINGS.AUTH.PASSWORD_RESET_EMAIL_SUCCESS
-      );
-    });
-
-    it(STRINGS.TEST.FORGOT_PASSWORD_MISSING_EMAIL, async () => {
-      const res = await request(app)
-        .post(STRINGS.API.FORGOT_PASSWORD_AUTH)
-        .send({});
-      expect(res.statusCode).toBe(400);
-      expect(res.body.error).toBe(STRINGS.VALIDATION.MISSING_EMAIL);
-    });
-
-    it(STRINGS.TEST.UNEXPECTED_FORGOT_PASSWORD_ERROR, async () => {
-      jest
-        .spyOn(supabase.auth, STRINGS.GENERAL.RESET_PASSWORD_FOR_EMAIL)
-        .mockRejectedValueOnce(new Error(STRINGS.GENERAL.API_CRASH));
-
-      const res = await request(app)
-        .post(STRINGS.API.FORGOT_PASSWORD_AUTH)
-        .send({ email: STRINGS.MOCK.MOCK_USER_FORGET_EMAIL });
-      expect(res.statusCode).toBe(500);
-      expect(res.body.error).toMatch(STRINGS.SERVER.INTERNAL_ERROR);
-    });
+const stopServer = (server) =>
+  new Promise((resolve, reject) => {
+    server.close((err) => (err ? reject(err) : resolve()));
   });
 
-  describe(STRINGS.API.RESET_PASSWORD_AUTH_POST, () => {
-    it(STRINGS.TEST.RESET_PASSWORD_SUCCESS, async () => {
-      const res = await request(app)
-        .post(
-          `${STRINGS.API.RESET_PASSWORD_AUTH_TOKEN}${STRINGS.MOCK.MOCK_TOKEN}`
-        )
-        .send({ newPassword: STRINGS.MOCK.MOCK_NEW_STRONG_PASSWORD });
-      expect(res.statusCode).toBe(200);
-      expect(res.body.message).toBe(STRINGS.AUTH.PASSWORD_RESET_SUCCESS);
-      expect(res.body.data.user.passwordChanged).toBe(true);
+const request = async (method, path, body) => {
+  const { server, url } = await startServer();
+
+  try {
+    const response = await fetch(`${url}${path}`, {
+      method,
+      headers: body ? { 'Content-Type': 'application/json' } : undefined,
+      body: body ? JSON.stringify(body) : undefined,
     });
 
-    it(STRINGS.TEST.RESET_PASSWORD_TOCKEN_MISSING, async () => {
-      const res = await request(app)
-        .post(STRINGS.API.RESET_PASSWORD_AUTH)
-        .send({ newPassword: STRINGS.MOCK.MOCK_NEW_STRONG_PASSWORD });
-      expect(res.statusCode).toBe(400);
-      expect(res.body.error).toBe(
-        STRINGS.VALIDATION.MISSING_RESET_PASSWORD_TOKEN
-      );
-    });
+    const text = await response.text();
+    let parsed;
+    try {
+      parsed = text ? JSON.parse(text) : undefined;
+    } catch {
+      parsed = undefined;
+    }
 
-    it(STRINGS.TEST.RESET_PASSWORD_MISSING_PASSWORD, async () => {
-      const res = await request(app)
-        .post(
-          `${STRINGS.API.RESET_PASSWORD_AUTH_TOKEN}${STRINGS.MOCK.MOCK_TOKEN}`
-        )
-        .send({});
-      expect(res.statusCode).toBe(400);
-      expect(res.body.error).toBe(STRINGS.VALIDATION.MISSING_PASSWORD);
-    });
+    return { status: response.status, body: parsed };
+  } finally {
+    await stopServer(server);
+  }
+};
 
-    it(STRINGS.TEST.RESET_PASSWORD_SUPABASE_ERROR, async () => {
-      jest
-        .spyOn(supabase.auth, STRINGS.GENERAL.UPDATE_USER)
-        .mockResolvedValueOnce({
-          data: null,
-          error: { message: STRINGS.GENERAL.INVALID_TOKEN_ERROR },
-        });
+const override = (method, impl) => {
+  supabase.auth[method] = impl;
+};
 
-      const res = await request(app)
-        .post(
-          `${STRINGS.API.RESET_PASSWORD_AUTH_TOKEN}${STRINGS.MOCK.MOCK_TOKEN}`
-        )
-        .send({ newPassword: STRINGS.MOCK.MOCK_NEW_STRONG_PASSWORD });
-      expect(res.statusCode).toBe(400);
-      expect(res.body.error).toBe(STRINGS.GENERAL.INVALID_TOKEN_ERROR);
-    });
-
-    it(STRINGS.TEST.UNEXPECTED_RESET_PASSWORD_ERROR, async () => {
-      jest
-        .spyOn(supabase.auth, STRINGS.GENERAL.UPDATE_USER)
-        .mockRejectedValueOnce(new Error(STRINGS.GENERAL.INTERNAL_FAIL));
-
-      const res = await request(app)
-        .post(
-          `${STRINGS.API.RESET_PASSWORD_AUTH_TOKEN}${STRINGS.MOCK.MOCK_TOKEN}`
-        )
-        .send({ newPassword: STRINGS.MOCK.MOCK_NEW_STRONG_PASSWORD });
-      expect(res.statusCode).toBe(500);
-      expect(res.body.error).toMatch(STRINGS.SERVER.INTERNAL_ERROR);
-    });
+test(STRINGS.TEST.SIGNUP_SUCCESS, async () => {
+  const response = await request('POST', STRINGS.API.SIGNUP_AUTH, {
+    email: STRINGS.MOCK.MOCK_NEW_EMAIL,
+    password: STRINGS.MOCK.MOCK_NEW_PASSWORD,
+    full_name: STRINGS.MOCK.MOCK_NEW_USER_FULL_NAME,
   });
+
+  assert.equal(response.status, 201);
+  assert.equal(response.body.data.user.email, STRINGS.MOCK.MOCK_NEW_EMAIL);
+});
+
+test(STRINGS.TEST.MISSING_INPUT, async () => {
+  const response = await request('POST', STRINGS.API.SIGNUP_AUTH, {
+    email: STRINGS.MOCK.MOCK_EMPTY_STRING,
+    password: STRINGS.MOCK.MOCK_EMPTY_STRING,
+  });
+
+  assert.equal(response.status, 400);
+  assert.equal(
+    response.body.error,
+    STRINGS.VALIDATION.MISSING_REQUIRED_FIELDS,
+  );
+});
+
+test(STRINGS.TEST.USER_EXISTS, async () => {
+  override('signUp', async () => ({
+    data: null,
+    error: { message: STRINGS.AUTH.USER_ALREADY_REGISTERED },
+  }));
+
+  const response = await request('POST', STRINGS.API.SIGNUP_AUTH, {
+    email: STRINGS.MOCK.MOCK_EXISTING_USER_EMAIL,
+    password: STRINGS.MOCK.MOCK_EXISTING_PASSWORD,
+    full_name: STRINGS.MOCK.MOCK_EXISTING_FULL_NAME,
+  });
+
+  assert.equal(response.status, 409);
+  assert.equal(response.body.error, STRINGS.AUTH.USER_ALREADY_REGISTERED);
+});
+
+test(STRINGS.TEST.OTHER_SUPABASE_SIGNUP_ERRORS, async () => {
+  override('signUp', async () => ({
+    data: null,
+    error: { message: STRINGS.VALIDATION.INVALID_EMAIL_FORMAT },
+  }));
+
+  const response = await request('POST', STRINGS.API.SIGNUP_AUTH, {
+    email: STRINGS.MOCK.MOCK_TEST_INVALID_EMAIL,
+    password: STRINGS.MOCK.MOCK_NEW_STRONG_PASSWORD,
+    full_name: STRINGS.MOCK.MOCK_NEW_USER_FULL_NAME,
+  });
+
+  assert.equal(response.status, 400);
+  assert.equal(response.body.error, STRINGS.VALIDATION.INVALID_EMAIL_FORMAT);
+});
+
+test(STRINGS.TEST.UNEXPECT_SIGNUP_ERROR, async () => {
+  override('signUp', async () => {
+    throw new Error(STRINGS.GENERAL.NETWORK_CRASH);
+  });
+
+  const response = await request('POST', STRINGS.API.SIGNUP_AUTH, {
+    email: STRINGS.MOCK.MOCK_FAIL_EMAIL,
+    password: STRINGS.MOCK.MOCK_USER_PASSWORD,
+    full_name: STRINGS.MOCK.MOCK_FIAL_FULL_NAME,
+  });
+
+  assert.equal(response.status, 500);
+  assert.equal(response.body.error, STRINGS.SERVER.INTERNAL_ERROR);
+});
+
+test(STRINGS.TEST.LOGIN_VALID_CREDENTIALS, async () => {
+  const response = await request('POST', STRINGS.API.LOGIN_AUTH, {
+    email: STRINGS.MOCK.MOCK_USER_EMAIL,
+    password: STRINGS.MOCK.MOCK_NEW_PASSWORD,
+  });
+
+  assert.equal(response.status, 200);
+  assert.equal(response.body.data.user.full_name, STRINGS.MOCK.MOCK_FULL_NAME);
+});
+
+test(STRINGS.TEST.LOGIN_INVALID_CREDENTIALS, async () => {
+  override('signInWithPassword', async () => ({
+    data: null,
+    error: { message: STRINGS.VALIDATION.INVALID_LOGIN_CREDENTIALS },
+  }));
+
+  const response = await request('POST', STRINGS.API.LOGIN_AUTH, {
+    email: STRINGS.MOCK.MOCK_WRONG_USER_EMAIL,
+    password: STRINGS.MOCK.MOCK_BAD_PASSWORD,
+  });
+
+  assert.equal(response.status, 401);
+  assert.equal(
+    response.body.error,
+    STRINGS.VALIDATION.INVALID_LOGIN_CREDENTIALS,
+  );
+});
+
+test(STRINGS.TEST.UNEXPECTED_LOGIN_ERROR, async () => {
+  override('signInWithPassword', async () => {
+    throw new Error(STRINGS.GENERAL.AUTH_SERVICE_CRASH);
+  });
+
+  const response = await request('POST', STRINGS.API.LOGIN_AUTH, {
+    email: STRINGS.MOCK.MOCK_X_EMAIL,
+    password: STRINGS.MOCK.MOCK_X_PASS,
+  });
+
+  assert.equal(response.status, 500);
+  assert.equal(response.body.error, STRINGS.SERVER.INTERNAL_ERROR);
+});
+
+test(STRINGS.TEST.LOGOUT_SUCCESS, async () => {
+  const response = await request('POST', STRINGS.API.LOGOUT_AUTH);
+
+  assert.equal(response.status, 200);
+  assert.equal(response.body.message, STRINGS.AUTH.LOGOUT_SUCCESS);
+});
+
+test(STRINGS.TEST.LOGOUT_SUPABASE_ERROR, async () => {
+  override('signOut', async () => ({
+    error: { message: STRINGS.AUTH.FAILED_TO_LOGOUT },
+  }));
+
+  const response = await request('POST', STRINGS.API.LOGOUT_AUTH);
+
+  assert.equal(response.status, 400);
+  assert.equal(response.body.error, STRINGS.AUTH.FAILED_TO_LOGOUT);
+});
+
+test(STRINGS.TEST.UNEXPECTED_LOGOUT_ERROR, async () => {
+  override('signOut', async () => {
+    throw new Error(STRINGS.GENERAL.SERVER_EXPLOSION);
+  });
+
+  const response = await request('POST', STRINGS.API.LOGOUT_AUTH);
+
+  assert.equal(response.status, 500);
+  assert.equal(response.body.error, STRINGS.SERVER.INTERNAL_ERROR);
+});
+
+test(STRINGS.TEST.FORGOT_PASSWORD_SUCCESS, async () => {
+  const response = await request('POST', STRINGS.API.FORGOT_PASSWORD_AUTH, {
+    email: STRINGS.MOCK.MOCK_USER_FORGET_EMAIL,
+  });
+
+  assert.equal(response.status, 200);
+  assert.equal(response.body.message, STRINGS.AUTH.PASSWORD_RESET_EMAIL_SUCCESS);
+});
+
+test(STRINGS.TEST.FORGOT_PASSWORD_MISSING_EMAIL, async () => {
+  const response = await request('POST', STRINGS.API.FORGOT_PASSWORD_AUTH, {});
+
+  assert.equal(response.status, 400);
+  assert.equal(response.body.error, STRINGS.VALIDATION.MISSING_EMAIL);
+});
+
+test(STRINGS.TEST.UNEXPECTED_FORGOT_PASSWORD_ERROR, async () => {
+  override('resetPasswordForEmail', async () => {
+    throw new Error(STRINGS.GENERAL.API_CRASH);
+  });
+
+  const response = await request('POST', STRINGS.API.FORGOT_PASSWORD_AUTH, {
+    email: STRINGS.MOCK.MOCK_USER_FORGET_EMAIL,
+  });
+
+  assert.equal(response.status, 500);
+  assert.equal(response.body.error, STRINGS.SERVER.INTERNAL_ERROR);
+});
+
+test(STRINGS.TEST.RESET_PASSWORD_SUCCESS, async () => {
+  const response = await request(
+    'POST',
+    `${STRINGS.API.RESET_PASSWORD_AUTH}?token=${STRINGS.MOCK.MOCK_TOKEN}`,
+    { newPassword: STRINGS.MOCK.MOCK_NEW_STRONG_PASSWORD },
+  );
+
+  assert.equal(response.status, 200);
+  assert.equal(response.body.message, STRINGS.AUTH.PASSWORD_RESET_SUCCESS);
+  assert.equal(response.body.data.user.passwordChanged, true);
+});
+
+test(STRINGS.TEST.RESET_PASSWORD_TOCKEN_MISSING, async () => {
+  const response = await request('POST', STRINGS.API.RESET_PASSWORD_AUTH, {
+    newPassword: STRINGS.MOCK.MOCK_NEW_STRONG_PASSWORD,
+  });
+
+  assert.equal(response.status, 400);
+  assert.equal(
+    response.body.error,
+    STRINGS.VALIDATION.MISSING_RESET_PASSWORD_TOKEN,
+  );
+});
+
+test(STRINGS.TEST.RESET_PASSWORD_MISSING_PASSWORD, async () => {
+  const response = await request(
+    'POST',
+    `${STRINGS.API.RESET_PASSWORD_AUTH}?token=${STRINGS.MOCK.MOCK_TOKEN}`,
+    {},
+  );
+
+  assert.equal(response.status, 400);
+  assert.equal(response.body.error, STRINGS.VALIDATION.MISSING_PASSWORD);
+});
+
+test(STRINGS.TEST.RESET_PASSWORD_SUPABASE_ERROR, async () => {
+  override('updateUser', async () => ({
+    data: null,
+    error: { message: STRINGS.GENERAL.INVALID_TOKEN_ERROR },
+  }));
+
+  const response = await request(
+    'POST',
+    `${STRINGS.API.RESET_PASSWORD_AUTH}?token=${STRINGS.MOCK.MOCK_TOKEN}`,
+    { newPassword: STRINGS.MOCK.MOCK_NEW_STRONG_PASSWORD },
+  );
+
+  assert.equal(response.status, 400);
+  assert.equal(response.body.error, STRINGS.GENERAL.INVALID_TOKEN_ERROR);
+});
+
+test(STRINGS.TEST.UNEXPECTED_RESET_PASSWORD_ERROR, async () => {
+  override('updateUser', async () => {
+    throw new Error(STRINGS.GENERAL.INTERNAL_FAIL);
+  });
+
+  const response = await request(
+    'POST',
+    `${STRINGS.API.RESET_PASSWORD_AUTH}?token=${STRINGS.MOCK.MOCK_TOKEN}`,
+    { newPassword: STRINGS.MOCK.MOCK_NEW_STRONG_PASSWORD },
+  );
+
+  assert.equal(response.status, 500);
+  assert.equal(response.body.error, STRINGS.SERVER.INTERNAL_ERROR);
 });

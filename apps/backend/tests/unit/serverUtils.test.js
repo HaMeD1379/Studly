@@ -9,90 +9,119 @@
  * ────────────────────────────────────────────────────────────────────────────────
  *  Summary
  *  -------
- *  Unit tests for the serverUtils helpers. Ensures both success and error
- *  response helpers behave consistently and log as expected.
+ *  Node.js test runner coverage for the shared server utility helpers. Exercises
+ *  both success and error helpers to ensure consistent HTTP response shapes.
  *
  *  Features
  *  --------
- *  • Verifies success responses include payload and status.
- *  • Verifies error responses default to generic server error when omitted.
- *  • Uses jest spies to silence console noise during test execution.
+ *  • Validates the success helper logs and serialises payloads correctly.
+ *  • Confirms the error helper applies defaults when arguments are omitted.
+ *  • Uses lightweight manual mocks to avoid external testing dependencies.
  *
  *  Design Principles
  *  -----------------
- *  • Keep tests deterministic by relying on shared STRINGS constants.
- *  • Reset mocks between runs to avoid bleed-over state.
- *  • Cover default parameter branches for regression safety.
+ *  • Prefer native tooling (node:test) to eliminate third-party dependencies.
+ *  • Keep mocks explicit for transparency and debuggability.
+ *  • Restore any mutated globals after each assertion to prevent bleed-over.
  *
  *  TODOs
  *  -----
- *  • [COVERAGE] Add tests for future helpers introduced in serverUtils.
+ *  • [OBSERVABILITY] Replace console.log with structured logging in helpers.
+ *  • [ROBUSTNESS] Extend helpers with error codes and tracing metadata.
  *
  *  @module tests/unit/serverUtils
  * ────────────────────────────────────────────────────────────────────────────────
  */
 
-import { jest } from '@jest/globals';
+import test from 'node:test';
+import assert from 'node:assert/strict';
+
 import { handleError, handleSuccess } from '../../src/utils/serverUtils.js';
 import STRINGS from '../../src/config/strings.js';
 
-describe(STRINGS.GENERAL.SERVER_UTILS_JS, () => {
-  let mockRes;
+const createMockResponse = () => {
+  const calls = { status: [], json: [] };
+  return {
+    calls,
+    status(code) {
+      calls.status.push(code);
+      return this;
+    },
+    json(payload) {
+      calls.json.push(payload);
+      return payload;
+    },
+  };
+};
 
-  beforeEach(() => {
-    mockRes = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
-    };
-    jest.spyOn(console, STRINGS.GENERAL.ERROR).mockImplementation(() => {});
-    jest.spyOn(console, STRINGS.GENERAL.LOG).mockImplementation(() => {});
-  });
+test(STRINGS.TEST.SERVER_UTILS_SUCCESS, () => {
+  const mockRes = createMockResponse();
+  const originalLog = console.log;
+  const logs = [];
+  console.log = (message) => logs.push(message);
 
-  afterEach(() => jest.restoreAllMocks());
-
-  it(STRINGS.TEST.SERVER_UTILS_SUCCESS, () => {
+  try {
     handleSuccess(mockRes, 200, STRINGS.GENERAL.OK, {
       foo: STRINGS.GENERAL.BAR,
     });
-    expect(console.log).toHaveBeenCalledWith(STRINGS.GENERAL.OK);
-    expect(mockRes.status).toHaveBeenCalledWith(200);
-    expect(mockRes.json).toHaveBeenCalledWith({
-      message: STRINGS.GENERAL.OK,
-      data: { foo: STRINGS.GENERAL.BAR },
-    });
-  });
 
-  it(STRINGS.TEST.SERVER_UTILS_SUCCESS_NULL_DATA, () => {
-    handleSuccess(mockRes, 201, STRINGS.GENERAL.CREATED, null);
-    expect(mockRes.json).toHaveBeenCalledWith({
-      message: STRINGS.GENERAL.CREATED,
-      data: null,
-    });
-  });
+    assert.deepStrictEqual(mockRes.calls.status, [200]);
+    assert.deepStrictEqual(mockRes.calls.json, [
+      { message: STRINGS.GENERAL.OK, data: { foo: STRINGS.GENERAL.BAR } },
+    ]);
+    assert.deepStrictEqual(logs, [STRINGS.GENERAL.OK]);
+  } finally {
+    console.log = originalLog;
+  }
+});
 
-  it(STRINGS.TEST.SERVER_UTILS_SUCCESS_UNDEFINED_DATA, () => {
+test(STRINGS.TEST.SERVER_UTILS_SUCCESS_NULL_DATA, () => {
+  const mockRes = createMockResponse();
+  handleSuccess(mockRes, 201, STRINGS.GENERAL.CREATED, null);
+
+  assert.deepStrictEqual(mockRes.calls.status, [201]);
+  assert.deepStrictEqual(mockRes.calls.json, [
+    { message: STRINGS.GENERAL.CREATED, data: null },
+  ]);
+});
+
+test(STRINGS.TEST.SERVER_UTILS_SUCCESS_UNDEFINED_DATA, () => {
+  const mockRes = createMockResponse();
+  const originalLog = console.log;
+  const logs = [];
+  console.log = (message) => logs.push(message);
+
+  try {
     handleSuccess(mockRes, 200, STRINGS.GENERAL.OK);
-    expect(console.log).toHaveBeenCalledWith(STRINGS.GENERAL.OK);
-    expect(mockRes.status).toHaveBeenCalledWith(200);
-    expect(mockRes.json).toHaveBeenCalledWith({
-      message: STRINGS.GENERAL.OK,
-      data: null,
-    });
-  });
 
-  it(STRINGS.TEST.SERVER_UTILS_ERROR_EXPLICIT, () => {
-    handleError(mockRes, 404, STRINGS.GENERAL.NOT_FOUND);
-    expect(mockRes.status).toHaveBeenCalledWith(404);
-    expect(mockRes.json).toHaveBeenCalledWith({
-      error: STRINGS.GENERAL.NOT_FOUND,
-    });
-  });
+    assert.deepStrictEqual(mockRes.calls.status, [200]);
+    assert.deepStrictEqual(mockRes.calls.json, [
+      { message: STRINGS.GENERAL.OK, data: null },
+    ]);
+    assert.deepStrictEqual(logs, [STRINGS.GENERAL.OK]);
+  } finally {
+    console.log = originalLog;
+  }
+});
 
-  it(STRINGS.TEST.SERVER_UTILS_ERROR_DEFAULTS, () => {
-    handleError(mockRes);
-    expect(mockRes.status).toHaveBeenCalledWith(500);
-    expect(mockRes.json).toHaveBeenCalledWith({
-      error: STRINGS.SERVER.INTERNAL_ERROR,
-    });
-  });
+test(STRINGS.TEST.SERVER_UTILS_ERROR_EXPLICIT, () => {
+  const mockRes = createMockResponse();
+
+  handleError(mockRes, 404, STRINGS.GENERAL.NOT_FOUND);
+
+  assert.deepStrictEqual(mockRes.calls.status, [404]);
+  assert.deepStrictEqual(mockRes.calls.json, [
+    { error: STRINGS.GENERAL.NOT_FOUND },
+  ]);
+});
+
+test(STRINGS.TEST.SERVER_UTILS_ERROR_DEFAULTS, () => {
+  const mockRes = createMockResponse();
+
+  handleError(mockRes);
+
+  assert.deepStrictEqual(mockRes.calls.status, [500]);
+  assert.deepStrictEqual(mockRes.calls.json, [
+    { error: STRINGS.SERVER.INTERNAL_ERROR },
+  ]);
 });

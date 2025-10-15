@@ -54,6 +54,11 @@ app.use(STRINGS.API.AUTH_ROUTE, authRoutes);
 app.use('/api/v1/sessions', sessionsRoutes);
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`🚀 Studly API listening on port :${port}`));
+
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(port, () =>
+    console.log(`🚀 Studly API listening on port :${port}`),
+  );
+}
 
 export default app;

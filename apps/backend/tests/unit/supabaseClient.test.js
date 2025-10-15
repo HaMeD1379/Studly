@@ -9,62 +9,65 @@
  * ────────────────────────────────────────────────────────────────────────────────
  *  Summary
  *  -------
- *  Sanity checks for the Supabase client configuration. Ensures the exported
- *  instance exposes the expected interface and behaves as a singleton.
+ *  Lightweight smoke tests for the Supabase client configuration. Ensures the
+ *  exported client exposes the expected surface area and remains a singleton.
  *
  *  Features
  *  --------
- *  • Confirms the client export exists and resembles an object.
- *  • Verifies core auth/database methods are accessible.
- *  • Confirms module caching returns the same instance.
+ *  • Verifies the client export exists and resembles an object.
+ *  • Confirms common auth/database methods are available.
+ *  • Ensures repeated imports share the same instance via module caching.
  *
  *  Design Principles
  *  -----------------
- *  • Keep environment-dependent logic isolated to config layer.
- *  • Provide predictable fallbacks when environment variables are missing.
+ *  • Keep environment-specific logic isolated to the configuration layer.
+ *  • Use native assertions to avoid third-party testing dependencies.
  *
  *  TODOs
  *  -----
- *  • [INTEGRATION] Add contract tests hitting a mocked Supabase REST API.
+ *  • [CONFIG] Extend tests to validate environment variable fallbacks.
  *
  *  @module tests/unit/supabaseClient
  * ────────────────────────────────────────────────────────────────────────────────
  */
 
-import { describe, it, expect } from '@jest/globals';
+import test from 'node:test';
+import assert from 'node:assert/strict';
+
 import supabase from '../../src/config/supabase.js';
 import STRINGS from '../../src/config/strings.js';
 
-describe(STRINGS.TEST.SUPABASE_CLIENT_CONFIGURATION, () => {
-  it(STRINGS.TEST.SUPABASE_EXPORT_CLIENT, () => {
-    expect(supabase).toBeDefined();
-    expect(typeof supabase).toBe(STRINGS.GENERAL.OBJECT);
-  });
+test(STRINGS.TEST.SUPABASE_EXPORT_CLIENT, () => {
+  assert.ok(supabase);
+  assert.equal(typeof supabase, STRINGS.GENERAL.OBJECT);
+});
 
-  it(STRINGS.TEST.SUPABASE_AUTH_METHODS, () => {
-    expect(supabase.auth).toBeDefined();
-    expect(typeof supabase.auth.signUp).toBe(STRINGS.GENERAL.FUNCTION);
-    expect(typeof supabase.auth.signInWithPassword).toBe(
-      STRINGS.GENERAL.FUNCTION
-    );
-    expect(typeof supabase.auth.signOut).toBe(STRINGS.GENERAL.FUNCTION);
-    expect(typeof supabase.auth.resetPasswordForEmail).toBe(
-      STRINGS.GENERAL.FUNCTION
-    );
-    expect(typeof supabase.auth.updateUser).toBe(STRINGS.GENERAL.FUNCTION);
-  });
+test(STRINGS.TEST.SUPABASE_AUTH_METHODS, () => {
+  assert.ok(supabase.auth);
+  assert.equal(typeof supabase.auth.signUp, STRINGS.GENERAL.FUNCTION);
+  assert.equal(
+    typeof supabase.auth.signInWithPassword,
+    STRINGS.GENERAL.FUNCTION,
+  );
+  assert.equal(typeof supabase.auth.signOut, STRINGS.GENERAL.FUNCTION);
+  assert.equal(
+    typeof supabase.auth.resetPasswordForEmail,
+    STRINGS.GENERAL.FUNCTION,
+  );
+  assert.equal(typeof supabase.auth.updateUser, STRINGS.GENERAL.FUNCTION);
+});
 
-  it(STRINGS.TEST.SUPABASE_DATABASE_METHODS, () => {
-    expect(supabase.from).toBeDefined();
-    expect(typeof supabase.from).toBe(STRINGS.GENERAL.FUNCTION);
-  });
+test(STRINGS.TEST.SUPABASE_DATABASE_METHODS, () => {
+  assert.equal(typeof supabase.from, STRINGS.GENERAL.FUNCTION);
+});
 
-  it(STRINGS.TEST.SUPABASE_SINGLETON, async () => {
-    const { default: supabaseAgain } = await import('../../src/config/supabase.js');
-    expect(supabase).toBe(supabaseAgain);
-  });
+test(STRINGS.TEST.SUPABASE_SINGLETON, async () => {
+  const { default: supabaseSecondImport } = await import(
+    '../../src/config/supabase.js'
+  );
+  assert.strictEqual(supabaseSecondImport, supabase);
+});
 
-  it(STRINGS.TEST.SUPABASE_MISSING_ENV, () => {
-    expect(supabase).toBeDefined();
-  });
+test(STRINGS.TEST.SUPABASE_MISSING_ENV, () => {
+  assert.ok(supabase);
 });
