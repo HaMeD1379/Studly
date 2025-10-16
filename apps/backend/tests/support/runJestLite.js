@@ -29,12 +29,17 @@ async function discoverTestFiles(dir) {
   return files.sort();
 }
 
-function shouldTrackFile(absolutePath) {
+function toNormalizedRelativePath(absolutePath) {
   const relativePath = relative(projectRoot, absolutePath);
-  if (!relativePath.startsWith('src/')) return false;
-  if (relativePath === 'src/index.js') return false;
-  if (relativePath === 'src/server.js') return false;
-  if (relativePath.startsWith('src/config/')) return false;
+  return relativePath.replace(/\\/g, '/');
+}
+
+function shouldTrackFile(absolutePath) {
+  const normalized = toNormalizedRelativePath(absolutePath);
+  if (!normalized.startsWith('src/')) return false;
+  if (normalized === 'src/index.js') return false;
+  if (normalized === 'src/server.js') return false;
+  if (normalized.startsWith('src/config/')) return false;
   return true;
 }
 
@@ -112,7 +117,7 @@ async function generateCoverageReport(v8Dir, outputDir) {
       if (!script.url || !script.url.startsWith('file://')) continue;
       const filePath = fileURLToPath(script.url);
       if (!shouldTrackFile(filePath)) continue;
-      const key = relative(projectRoot, filePath);
+      const key = toNormalizedRelativePath(filePath);
       let record = fileRecords.get(key);
       if (!record) {
         const source = await fs.readFile(filePath, 'utf8');
