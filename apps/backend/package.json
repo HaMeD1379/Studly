@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "node --watch src/index.js",
     "start": "node src/index.js",
-    "test": "node --test"
+    "test": "node tests/support/runJestLite.js",
+    "test:coverage": "node tests/support/runJestLite.js --coverage"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.75.0",
