@@ -4,8 +4,9 @@ export default {
   extensionsToTreatAsEsm: ['.js'],
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1',
+    '^node:test$': '<rootDir>/tests/support/jestNodeTestShim.js',
   },
-  
+
   testMatch: [
     '**/tests/**/*.test.js',
   ],
@@ -18,7 +19,7 @@ export default {
   ],
   
   // Coverage thresholds (Sprint 1 targets)
-  coverageThresholds: {
+  coverageThreshold: {
     global: {
       branches: 70,
       functions: 80,
@@ -26,7 +27,7 @@ export default {
       statements: 80,
     },
   },
-  
+
   testTimeout: 10000,
   
   setupFilesAfterEnv: ['<rootDir>/tests/setup.js'],
