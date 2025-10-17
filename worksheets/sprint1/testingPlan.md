@@ -44,6 +44,9 @@ This folder structure and consistent <filename>.test.js naming make it easy to i
 ## Coverage Targets  
 Specify measurable goals (e.g., 100% API method coverage, ≥80% logic class coverage) and link them to your grading or sprint requirements.
 
+###Frontend:
+Our measurable goals for the frontend are to achieve 80% line coverage, 100% branch coverage. 100% branch coverage allows us to ensure our code is robust to user input errors. Meeting this coverage threshold aligns with our Sprint1 grading requirements for code quality and maintainability.
+
 ### Backend:
 Our measurable goals for the backend are to achieve 100% API method, >= 80% logic coverage, 100% integration coverage (authController.test.js, sessions.test.js). Meeting this coverage threshold aligns with our Sprint1 grading requirements for code quality and maintainability.
 
