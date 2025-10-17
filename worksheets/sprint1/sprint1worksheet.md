@@ -6,7 +6,7 @@ This deliverable focuses on testing coverage, test importance, and environment r
 ## 1. Testing Plan
 
 * Link to testing plan is:
-[Testing Plan](https://github.com/HaMeD1379/Studly/blob/sprint1worksheets/worksheets/sprint1/testingPlan.md)
+[Testing Plan](./testingPlan.md)
 
 ## 2. Unit / Integration / Acceptance Testing
 
@@ -46,23 +46,23 @@ List your top 3 tests for each category:
 
 ### Unit Tests
 
-1. [`apps/backend/tests/unit/supabaseClient.test.js`](https://github.com/HaMeD1379/Studly/blob/main/apps/backend/tests/unit/supabaseClient.test.js) – Tests Supabase client configuration and initialization (verifies client exports correctly, auth/database methods exist, singleton pattern works)
+1. [`apps/backend/tests/unit/supabaseClient.test.js`](https://github.com/HaMeD1379/Studly/blob/main/apps/backend/tests/unit/supabaseClient.test.js) –Tests Supabase client configuration comprehensively - validates client export, auth methods (signUp, signIn, signOut, resetPassword, updateUser), database methods (from), singleton pattern enforcement, and environment variable handling (5 test cases total)
 
-2. [`apps/backend/tests/unit/sessions.service.test.js`](https://github.com/HaMeD1379/Studly/blob/main/apps/backend/tests/unit/sessions.service.test.js) – Tests the sessions service layer methods (createSession, completeSession, listSessions, summarizeSessionsByDate) with mocked database client
-
-3. [`apps/backend/tests/unit/serverUtils.test.js`](https://github.com/HaMeD1379/Studly/blob/main/apps/backend/tests/unit/serverUtils.test.js) – Tests server utility functions for standardized HTTP response handling (success/error responses with proper status codes and JSON formatting)
+2. [`apps/backend/tests/unit/sessions.service.test.js`](https://github.com/HaMeD1379/Studly/blob/main/apps/backend/tests/unit/sessions.service.test.js) – Comprehensive testing of sessions service layer with mocked Supabase client - covers createSession (2 tests), completeSession (3 tests), listSessions with filters (3 tests), and summarizeSessionsByDate aggregation (2 tests). Validates both success paths and error handling with descriptive error messages
+3. [`apps/backend/tests/unit/serverUtils.test.js`](https://github.com/HaMeD1379/Studly/blob/main/apps/backend/tests/unit/serverUtils.test.js) – Tests HTTP response utility functions (handleSuccess/handleError) - validates success responses with various data types (object, null, undefined), error responses with explicit and default values, proper status codes (200, 201, 404, 500), and consistent JSON payload structure (5 test cases)
 
 ### Integration Tests
+We do not have 3 seperate integration test files for this sprint, thus we have stated exact tests instead.
 
-1. [`apps/backend/tests/integration/authController.test.js`](https://github.com/HaMeD1379/Studly/blob/main/apps/backend/tests/integration/authController.test.js) – Tests successful user signup with email, password, and full name (Line 165)
+1. [`apps/backend/tests/integration/authController.test.js`](https://github.com/HaMeD1379/Studly/blob/main/apps/backend/tests/integration/authController.test.js) (Line 165) – Tests successful user signup flow with email, password, and full name; validates HTTP 201 response and user creation through the complete Express/Supabase stack
 
-2. [`apps/backend/tests/unit/sessions.controller.test.js`](https://github.com/HaMeD1379/Studly/blob/main/apps/backend/tests/unit/sessions.controller.test.js) – Tests creating a new study session (POST /api/v1/sessions) and completing/updating a session (PATCH /api/v1/sessions/:id)
+2. [`apps/backend/tests/integration/sessions.test.js`](https://github.com/HaMeD1379/Studly/blob/main/apps/backend/tests/integration/sessions.test.js) (Line 323) – Tests POST /api/v1/sessions endpoint for creating study sessions; validates camelCase field conversion, required field validation, and proper HTTP status codes
 
-3. [`apps/backend/tests/unit/sessions.controller.test.js`](https://github.com/HaMeD1379/Studly/blob/main/apps/backend/tests/unit/sessions.controller.test.js) – Tests session API endpoints return properly formatted camelCase fields and handle session lifecycle
+3. [`apps/backend/tests/integration/sessions.test.js`](https://github.com/HaMeD1379/Studly/blob/main/apps/backend/tests/integration/sessions.test.js) (Line 335) – Tests PATCH /api/v1/sessions/:id endpoint for completing sessions; validates session updates, duration calculations, and 404 handling for missing sessions
 
 ### Acceptance Tests
 
-**Note:** These tests are component level tests that verify user interactions with the frontend. While they validate user behaviors and workflows, they are not full end-to-end tests or acceptance tests as requested, as our frontend and backend integration was not connected for Sprint 1 so our acceptance tests are not fully complete. Thus we included these here.
+**Note:** These tests are component level tests that verify user interactions with the frontend. While they validate user behaviors and workflows, they are not full end-to-end tests or acceptance tests as requested, as our frontend and backend integration was not connected for Sprint 1 so our acceptance tests are not fully complete. Thus we included these here instead.
 
 1. [`apps/frontend/src/components/SetupStudySession/SetupStudySession.spec.tsx`](https://github.com/HaMeD1379/Studly/blob/main/apps/frontend/src/components/SetupStudySession/SetupStudySession.spec.tsx) – Tests user can select subject and set session duration (dropdown interaction + time selection)
    * **User Story:** [Issue #3 - Track studying and reward badges](https://github.com/HaMeD1379/Studly/issues/3)

@@ -11,4 +11,4 @@ COMP 4350 - Software Engineering 2 - Group Project
 ## Worksheet Links
 
 [Sprint 0](sprint0.md)
-[Sprint 1](https://github.com/HaMeD1379/Studly/blob/sprint1worksheets/worksheets/sprint1/sprint1worksheet.md)
+[Sprint 1](./worksheets/sprint1/sprint1worksheet.md)
