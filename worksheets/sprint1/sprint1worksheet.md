@@ -62,7 +62,7 @@ List your top 3 tests for each category:
 
 ### Acceptance Tests
 
-**Note:** These acceptance tests are component-level tests that verify user interactions with the frontend. While they validate user behaviors and workflows, they are not full end-to-end tests as our frontend and backend integration was not connected for Sprint 1.
+**Note:** These tests are component level tests that verify user interactions with the frontend. While they validate user behaviors and workflows, they are not full end-to-end tests or acceptance tests as requested, as our frontend and backend integration was not connected for Sprint 1 so our acceptance tests are not fully complete. Thus we included these here.
 
 1. [`apps/frontend/src/components/SetupStudySession/SetupStudySession.spec.tsx`](https://github.com/HaMeD1379/Studly/blob/main/apps/frontend/src/components/SetupStudySession/SetupStudySession.spec.tsx) – Tests user can select subject and set session duration (dropdown interaction + time selection)
    * **User Story:** [Issue #3 - Track studying and reward badges](https://github.com/HaMeD1379/Studly/issues/3)
