@@ -149,5 +149,4 @@ The multi-repository architecture added some coordination complexity. Synchroniz
 
 
 
-## Sprint 1 Quick Checklist
 
