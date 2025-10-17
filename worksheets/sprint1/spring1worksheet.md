@@ -2,11 +2,11 @@
 
 This deliverable focuses on testing coverage, test importance, and environment reproducibility.
 
-**Format:** Markdown file in your repository, linking to test files, coverage reports, and any supporting documentation.
 
 ## 1. Testing Plan
 
-* Link to your testing plan in the repository.
+* Link to file is below:
+[Testing Plan](https://github.com/HaMeD1379/Studly/blob/sprint1worksheets/worksheets/sprint1/testingPlan.md)
 
 ## 2. Unit / Integration / Acceptance Testing
 
