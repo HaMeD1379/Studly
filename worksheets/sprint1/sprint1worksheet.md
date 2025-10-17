@@ -6,7 +6,7 @@ This deliverable focuses on testing coverage, test importance, and environment r
 ## 1. Testing Plan
 
 * Link to testing plan is:
-[Testing Plan](https://github.com/HaMeD1379/Studly/blob/sprint1worksheets/worksheets/sprint1/testingPlan.md)
+[Testing Plan](./testingPlan.md)
 
 ## 2. Unit / Integration / Acceptance Testing
 
