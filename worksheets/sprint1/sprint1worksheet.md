@@ -5,7 +5,7 @@ This deliverable focuses on testing coverage, test importance, and environment r
 
 ## 1. Testing Plan
 
-* Link to file is below:
+* Link to testing plan is:
 [Testing Plan](https://github.com/HaMeD1379/Studly/blob/sprint1worksheets/worksheets/sprint1/testingPlan.md)
 
 ## 2. Unit / Integration / Acceptance Testing
@@ -36,8 +36,9 @@ If unit tests are missing for some classes/methods, explain why and how quality 
 
 ### Coverage Report
 * Provide class and line coverage reports (link or screenshot).
-[insert link for first image]
-[insert link for the second image]
+<img width="855" height="683" alt="image" src="https://github.com/user-attachments/assets/183744bd-87ef-47ab-bb94-2147ba9e3f8e" />
+<img width="1338" height="367" alt="image" src="https://github.com/user-attachments/assets/7db6b769-5d39-4099-a658-a205c5664e38" />
+
 
 ## 3. Testing Importance
 
@@ -139,7 +140,14 @@ The multi-repository architecture added some coordination complexity. Synchroniz
 * **Overall:** Strong documentation and structure with minor DevOps alignment improvements needed
 
 ### Screenshots
-[Insert screenshot links here]
+<img width="967" height="241" alt="image" src="https://github.com/user-attachments/assets/99f1219b-2afe-46a4-8d22-22b0ed602dcd" />
+<img width="871" height="616" alt="image" src="https://github.com/user-attachments/assets/e64480c8-1cf5-4cfa-8686-60ecca26cbd6" />
+<img width="762" height="625" alt="image" src="https://github.com/user-attachments/assets/07112f21-1cc6-4046-bebb-2b4fba502d55" />
+<img width="615" height="437" alt="image" src="https://github.com/user-attachments/assets/43b2e070-fd30-47cc-8445-c717d3a44556" />
+<img width="580" height="781" alt="image" src="https://github.com/user-attachments/assets/dee18e84-9963-45db-91c1-67fd075ccf5d" />
+
+
+
 
 ## Sprint 1 Quick Checklist
 
