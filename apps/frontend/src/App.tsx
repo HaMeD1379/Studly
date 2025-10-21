@@ -1,7 +1,7 @@
 import { MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Study, Home, SignUp, Forgot, Login } from "~/routes";
+import { Study, Home, SignUp, Forgot, Login, Badges } from "~/routes";
 
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
@@ -18,6 +18,7 @@ export const App = () => {
           <Route path="/" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/forgot-password" element={<Forgot />} />
+          <Route path="/badges" element={<Badges />} />
         </Routes>
       </BrowserRouter>
     </MantineProvider>

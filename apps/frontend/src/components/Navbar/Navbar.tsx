@@ -1,6 +1,6 @@
 import { AppShell, Button, Text, Flex, Divider } from '@mantine/core'
 import { useNavigate, useLocation } from 'react-router';
-import { IconMedal, IconHome, IconClock } from '@tabler/icons-react';
+import { IconMedal, IconHome, IconClock, IconMedal2 } from '@tabler/icons-react';
 
 type NavbarProps = {
   children: React.ReactNode;
@@ -36,6 +36,12 @@ export const Navbar = ({ children }: NavbarProps) => {
           <Flex align='center' gap={4}>
             <IconClock size={20} />
             Study Session
+          </Flex>
+        </StyledButton>
+        <StyledButton path='/badges'>
+          <Flex align='center' gap={4}>
+            <IconMedal2 size={20} />
+            Badges
           </Flex>
         </StyledButton>
       </AppShell.Navbar>
