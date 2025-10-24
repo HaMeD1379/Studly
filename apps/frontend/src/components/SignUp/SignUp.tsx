@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { useRef } from "react";
 import { validateEmail } from "~/utilities/testing/emailValidation";
 import { equalPasswords } from "~/utilities/testing/passwordValidation";
-import { notifications } from "@mantine/notifications";
+import { displayNotifications } from "~/utilities/testing/displayNotifications";
 import { useState } from "react";
 import { Box } from "@mantine/core";
 
@@ -42,11 +42,11 @@ export function SignUpForm() {
         validateEmail(email.current.value) &&
         equalPasswords(password_1.current.value, password_2.current.value)
       ) {
-        notifications.show({
-          title: "Account Created Successfully",
-          message: "Begin Your Gamified Learning experience now",
-          color: "green",
-        });
+        displayNotifications(
+          "Account Created Successfully",
+          "Begin Your Gamified Learning experience now",
+          "green"
+        );
         navigate("/study");
       }
     }
