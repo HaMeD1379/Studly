@@ -2,6 +2,11 @@ import { displayNotifications } from "./displayNotifications";
 
 //StackOverflow: https://stackoverflow.com/questions/46155/how-can-i-validate-an-email-address-in-javascript
 export function validateEmail(email: string): boolean {
+
+  return validEmailFormat(email);
+}
+
+const validEmailFormat = (email: string) => {
   if (
     email
       .toLowerCase()
@@ -10,7 +15,6 @@ export function validateEmail(email: string): boolean {
       )
   ) {
     return true;
-  }
-  displayNotifications("Mismatch","Provide a valid Email","red");
+  }displayNotifications("Mismatch","Provide a valid Email","red");
   return false;
 }
