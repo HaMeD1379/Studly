@@ -52,11 +52,8 @@ vi.mock("@supabase/supabase-js", () => ({
 // --- Import Supabase and your auth utilities ---
 import { createClient } from "@supabase/supabase-js";
 const supabase = createClient("mock-url", "mock-key");
-import { signIn, signUp, signOut } from "./auth";
+import { signIn, signUp } from "./auth";
 
-//
-// --- TESTS ---
-//
 describe("Supabase Sign In", () => {
   it("should successfully sign in a user with valid credentials", async () => {
     const result = await signIn("test@example.com", "password123*");
