@@ -9,6 +9,7 @@ import {
   Login,
   Badges,
   UserProfile,
+  passwordChange as PasswordChange,
 } from "~/routes";
 
 import "@mantine/core/styles.css";
@@ -28,6 +29,7 @@ export const App = () => {
           <Route path="/forgot-password" element={<Forgot />} />
           <Route path="/badges" element={<Badges />} />
           <Route path="/user" element={<UserProfile />} />
+          <Route path="/change-password" element={<PasswordChange />} />
         </Routes>
       </BrowserRouter>
     </MantineProvider>

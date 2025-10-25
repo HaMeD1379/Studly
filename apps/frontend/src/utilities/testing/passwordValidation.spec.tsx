@@ -5,7 +5,7 @@ import { MantineProvider } from "@mantine/core";
 import { MemoryRouter } from "react-router-dom";
 import { vi } from "vitest";
 import { notifications } from "@mantine/notifications";
-import { LoginForm } from "~/components";
+import { LoginForm, SignUpForm } from "~/components";
 
 vi.mock("@mantine/notifications", () => ({
   notifications: {
@@ -30,16 +30,23 @@ describe("Password Validation Tests", () => {
     render(
       <MemoryRouter>
         <MantineProvider>
-          <LoginForm />
+          <SignUpForm />
         </MantineProvider>
       </MemoryRouter>
     );
+    const nameInput = screen.getByLabelText(/full name/i);
     const emailInput = screen.getByLabelText(/email/i);
-    const passwordInput = screen.getByLabelText(/password/i);
+    const passwordInput = screen.getByLabelText(/create password/i);
+    const password_2 = screen.getByLabelText(/confirm password/i);
+    const checkbox = screen.getByLabelText(
+      /I agree to the Terms and Conditions/i
+    );
+    fireEvent.change(nameInput, { target: { value: "Test User" } });
     fireEvent.change(emailInput, { target: { value: "test@gmail.com" } });
     fireEvent.change(passwordInput, { target: { value: "PASSWORD123*" } }); // all uppercase
-
-    const submitButton = screen.getByRole("button", { name: /sign in/i });
+    fireEvent.change(password_2, { target: { value: "PASSWORD123*" } });
+    fireEvent.click(checkbox);
+    const submitButton = screen.getByRole("button", { name: /sign up/i });
     fireEvent.click(submitButton);
 
     expect(notifications.show).toHaveBeenCalledWith({
@@ -53,16 +60,23 @@ describe("Password Validation Tests", () => {
     render(
       <MemoryRouter>
         <MantineProvider>
-          <LoginForm />
+          <SignUpForm />
         </MantineProvider>
       </MemoryRouter>
     );
+    const nameInput = screen.getByLabelText(/full name/i);
     const emailInput = screen.getByLabelText(/email/i);
-    const passwordInput = screen.getByLabelText(/password/i);
+    const passwordInput = screen.getByLabelText(/create password/i);
+    const password_2 = screen.getByLabelText(/confirm password/i);
+    const checkbox = screen.getByLabelText(
+      /I agree to the Terms and Conditions/i
+    );
+    fireEvent.change(nameInput, { target: { value: "Test User" } });
     fireEvent.change(emailInput, { target: { value: "test@gmail.com" } });
-    fireEvent.change(passwordInput, { target: { value: "password12*" } });
-
-    const submitButton = screen.getByRole("button", { name: /sign in/i });
+    fireEvent.change(passwordInput, { target: { value: "password12*" } }); // all uppercase
+    fireEvent.change(password_2, { target: { value: "password12*" } });
+    fireEvent.click(checkbox);
+    const submitButton = screen.getByRole("button", { name: /sign up/i });
     fireEvent.click(submitButton);
 
     expect(notifications.show).toHaveBeenCalledWith({
@@ -75,16 +89,23 @@ describe("Password Validation Tests", () => {
     render(
       <MemoryRouter>
         <MantineProvider>
-          <LoginForm />
+          <SignUpForm />
         </MantineProvider>
       </MemoryRouter>
     );
+    const nameInput = screen.getByLabelText(/full name/i);
     const emailInput = screen.getByLabelText(/email/i);
-    const passwordInput = screen.getByLabelText(/password/i);
+    const passwordInput = screen.getByLabelText(/create password/i);
+    const password_2 = screen.getByLabelText(/confirm password/i);
+    const checkbox = screen.getByLabelText(
+      /I agree to the Terms and Conditions/i
+    );
+    fireEvent.change(nameInput, { target: { value: "Test User" } });
     fireEvent.change(emailInput, { target: { value: "test@gmail.com" } });
-    fireEvent.change(passwordInput, { target: { value: "Password123" } });
-
-    const submitButton = screen.getByRole("button", { name: /sign in/i });
+    fireEvent.change(passwordInput, { target: { value: "Password12" } }); // all uppercase
+    fireEvent.change(password_2, { target: { value: "Password12" } });
+    fireEvent.click(checkbox);
+    const submitButton = screen.getByRole("button", { name: /sign up/i });
     fireEvent.click(submitButton);
 
     expect(notifications.show).toHaveBeenCalledWith({
@@ -97,16 +118,23 @@ describe("Password Validation Tests", () => {
     render(
       <MemoryRouter>
         <MantineProvider>
-          <LoginForm />
+          <SignUpForm />
         </MantineProvider>
       </MemoryRouter>
     );
+    const nameInput = screen.getByLabelText(/full name/i);
     const emailInput = screen.getByLabelText(/email/i);
-    const passwordInput = screen.getByLabelText(/password/i);
+    const passwordInput = screen.getByLabelText(/create password/i);
+    const password_2 = screen.getByLabelText(/confirm password/i);
+    const checkbox = screen.getByLabelText(
+      /I agree to the Terms and Conditions/i
+    );
+    fireEvent.change(nameInput, { target: { value: "Test User" } });
     fireEvent.change(emailInput, { target: { value: "test@gmail.com" } });
-    fireEvent.change(passwordInput, { target: { value: "Password*" } });
-
-    const submitButton = screen.getByRole("button", { name: /sign in/i });
+    fireEvent.change(passwordInput, { target: { value: "Password*" } }); // all uppercase
+    fireEvent.change(password_2, { target: { value: "Password*" } });
+    fireEvent.click(checkbox);
+    const submitButton = screen.getByRole("button", { name: /sign up/i });
     fireEvent.click(submitButton);
 
     expect(notifications.show).toHaveBeenCalledWith({
@@ -119,16 +147,23 @@ describe("Password Validation Tests", () => {
     render(
       <MemoryRouter>
         <MantineProvider>
-          <LoginForm />
+          <SignUpForm />
         </MantineProvider>
       </MemoryRouter>
     );
+    const nameInput = screen.getByLabelText(/full name/i);
     const emailInput = screen.getByLabelText(/email/i);
-    const passwordInput = screen.getByLabelText(/password/i);
+    const passwordInput = screen.getByLabelText(/create password/i);
+    const password_2 = screen.getByLabelText(/confirm password/i);
+    const checkbox = screen.getByLabelText(
+      /I agree to the Terms and Conditions/i
+    );
+    fireEvent.change(nameInput, { target: { value: "Test User" } });
     fireEvent.change(emailInput, { target: { value: "test@gmail.com" } });
-    fireEvent.change(passwordInput, { target: { value: "Pass12*" } });
-
-    const submitButton = screen.getByRole("button", { name: /sign in/i });
+    fireEvent.change(passwordInput, { target: { value: "Pass12*" } }); // all uppercase
+    fireEvent.change(password_2, { target: { value: "Pass12*" } });
+    fireEvent.click(checkbox);
+    const submitButton = screen.getByRole("button", { name: /sign up/i });
     fireEvent.click(submitButton);
 
     expect(notifications.show).toHaveBeenCalledWith({

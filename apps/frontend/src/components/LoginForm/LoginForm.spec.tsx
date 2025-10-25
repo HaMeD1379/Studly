@@ -1,12 +1,11 @@
-import { describe, it, expect } from "vitest";
-import { screen, fireEvent } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { screen, fireEvent, waitFor } from "@testing-library/react";
 import { LoginForm } from "./LoginForm";
-import { vi } from "vitest";
 import "@testing-library/jest-dom";
+import { signIn } from "~/utilities/testing/auth";
 import { notifications } from "@mantine/notifications";
 import { render } from "~/utilities/testing";
 
-// mock useNavigate
 const mockNavigate = vi.fn();
 vi.mock("react-router-dom", async () => {
   const actual = await vi.importActual<typeof import("react-router-dom")>(
@@ -14,27 +13,37 @@ vi.mock("react-router-dom", async () => {
   );
   return { ...actual, useNavigate: () => mockNavigate };
 });
+
 vi.mock("@mantine/notifications", () => ({
-  notifications: {
-    show: vi.fn(),
-  },
+  notifications: { show: vi.fn() },
 }));
 
+vi.mock("~/utilities/testing/auth", () => ({
+  signIn: vi.fn(),
+}));
+const mockedSignIn = vi.mocked(signIn);
+
 describe("Login Tests", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it("Shows email and password fields", () => {
     render(<LoginForm />);
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Password/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
   });
+
   it("Shows an error if invalid email is provided", async () => {
     render(<LoginForm />);
-    const email = screen.getByLabelText(/email/i);
-    const password = screen.getByLabelText(/Password/i);
-    const signUpButton = screen.getByRole("button", { name: /sign in/i });
+    fireEvent.change(screen.getByLabelText(/email/i), {
+      target: { value: "invalidemail" },
+    });
+    fireEvent.change(screen.getByLabelText(/password/i), {
+      target: { value: "0106Abcd" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
 
-    fireEvent.change(email, { target: { value: "invalidemail" } });
-    fireEvent.change(password, { target: { value: "0106Abcd" } });
-    fireEvent.click(signUpButton);
     expect(notifications.show).toHaveBeenCalledWith({
       title: "Mismatch",
       message: "Provide a valid Email",
@@ -42,33 +51,62 @@ describe("Login Tests", () => {
     });
   });
 
-  it("navigates to home page (/study) after successful login", async () => {
+  it("Navigates to /study after successful login", async () => {
+    mockedSignIn.mockResolvedValueOnce({
+      user: {
+        id: "123",
+        email: "test@gmail.com",
+        app_metadata: {},
+        user_metadata: {},
+        aud: "authenticated",
+        created_at: new Date().toISOString(),
+      },
+      session: {} as any,
+    });
     render(<LoginForm />);
-    const email = screen.getByLabelText(/email/i);
-    const password = screen.getByLabelText(/Password/i);
-    const signInButton = screen.getByRole("button", { name: /sign in/i });
+    fireEvent.change(screen.getByLabelText(/email/i), {
+      target: { value: "test@gmail.com" },
+    });
+    fireEvent.change(screen.getByLabelText(/password/i), {
+      target: { value: "Pass123*" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
 
-    fireEvent.change(email, { target: { value: "test@gmail.com" } });
-    fireEvent.change(password, { target: { value: "Pass123*" } });
-    fireEvent.click(signInButton);
-    expect(mockNavigate).toHaveBeenCalledWith("/study");
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith("/study");
+    });
   });
 
-  it("navigates to forgot password page when clicking 'Forgot password?'", () => {
+  it("Navigates to forgot password page", () => {
     render(<LoginForm />);
-
-    const forgotPasswordLink = screen.getByText(/Forgot password\?/i);
-    fireEvent.click(forgotPasswordLink);
-
+    fireEvent.click(screen.getByText(/Forgot password\?/i));
     expect(mockNavigate).toHaveBeenCalledWith("/forgot-password");
   });
 
-  it("navigates to signup page when clicking 'Sign Up'", () => {
+  it("Navigates to signup page", () => {
     render(<LoginForm />);
-
-    const signUpLink = screen.getByText(/Sign Up/i);
-    fireEvent.click(signUpLink);
-
+    fireEvent.click(screen.getByText(/Sign Up/i));
     expect(mockNavigate).toHaveBeenCalledWith("/signup");
+  });
+
+  it("Shows error notification on Supabase failure", async () => {
+    mockedSignIn.mockRejectedValueOnce(new Error("Invalid login credentials"));
+
+    render(<LoginForm />);
+    fireEvent.change(screen.getByLabelText(/email/i), {
+      target: { value: "test@google.com" },
+    });
+    fireEvent.change(screen.getByLabelText(/password/i), {
+      target: { value: "WrongPass123" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
+
+    await waitFor(() => {
+      expect(notifications.show).toHaveBeenCalledWith({
+        title: "Login Error",
+        message: "Invalid Login Credentials",
+        color: "red",
+      });
+    });
   });
 });
