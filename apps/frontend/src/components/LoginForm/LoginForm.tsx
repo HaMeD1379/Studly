@@ -15,24 +15,28 @@ import {
 } from "@mantine/core";
 import placeholder from "~/assets/landscape-placeholder.svg";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { signIn } from "~/utilities/testing/auth";
+import { displayNotifications } from "~/utilities/testing/displayNotifications";
 import { validateEmail } from "~/utilities/testing/emailValidation";
-import { useRef } from "react";
-import { equalPasswords } from "~/utilities/testing/passwordValidation";
 export function LoginForm() {
   const navigate = useNavigate();
-  const email = useRef<HTMLInputElement>(null);
-  const passw = useRef<HTMLInputElement>(null);
   const PASSWORD_LENGTH = 8;
 
-  const handleClick = () => {
-    if (email.current && passw.current) {
-      let p1 = passw.current.value;
-      if (
-        validateEmail(email.current.value) &&
-        equalPasswords(p1, p1, PASSWORD_LENGTH)
-      ) {
+  const [error, setError] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      if (validateEmail(email)) {
+        await signIn(email, password);
         navigate("/study");
       }
+    } catch (err: any) {
+      displayNotifications("Login Error", "Invalid Login Credentials", "red");
+      setError(err.message);
     }
   };
 
@@ -71,49 +75,51 @@ export function LoginForm() {
           >
             Sign in to your account to continue your learning journey
           </Text>
-          <TextInput
-            label="Email"
-            placeholder="you@mantine.dev"
-            required
-            radius="md"
-            ref={email}
-          />
-          <PasswordInput
-            label="Password"
-            placeholder="Your password"
-            required
-            mt="md"
-            radius="md"
-            ref={passw}
-          />
-          <Group justify="space-between" mt="lg">
-            <Checkbox label="Remember me" />
-            <br />
-            <Anchor
-              c="black"
-              component="button"
-              size="sm"
-              onClick={() => navigate("/forgot-password")}
+          <form onSubmit={handleLogin}>
+            <TextInput
+              label="Email"
+              placeholder="you@mantine.dev"
+              required
+              radius="md"
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <PasswordInput
+              label="Password"
+              placeholder="Your password"
+              required
+              mt="md"
+              radius="md"
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <Group justify="space-between" mt="lg">
+              <Checkbox label="Remember me" />
+              <br />
+              <Anchor
+                c="black"
+                component="button"
+                size="sm"
+                onClick={() => navigate("/forgot-password")}
+              >
+                Forgot password?
+              </Anchor>
+            </Group>
+            <Button
+              type="submit"
+              fullWidth
+              mt="xl"
+              radius="md"
+              styles={{
+                root: {
+                  backgroundColor: "black",
+                  color: "white",
+                  fontWeight: 500,
+                  "&:hover": { backgroundColor: "#222" },
+                },
+              }}
             >
-              Forgot password?
-            </Anchor>
-          </Group>
-          <Button
-            fullWidth
-            mt="xl"
-            radius="md"
-            styles={{
-              root: {
-                backgroundColor: "black",
-                color: "white",
-                fontWeight: 500,
-                "&:hover": { backgroundColor: "#222" },
-              },
-            }}
-            onClick={handleClick}
-          >
-            Sign in
-          </Button>
+              Sign in
+            </Button>
+          </form>
           <br />
           <Text
             style={{

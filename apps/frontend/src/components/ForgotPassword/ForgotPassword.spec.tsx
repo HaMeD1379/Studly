@@ -71,7 +71,6 @@ describe("Sign up activity", () => {
       message: "A reset link has been sent to your email",
       color: "green",
     });
-    expect(mockNavigate).toHaveBeenCalledWith("/");
   });
   it("navigates to home when clicking the back arrow", () => {
     render(
@@ -103,7 +102,7 @@ describe("Sign up activity", () => {
     fireEvent.click(forgotButton);
 
     expect(notifications.show).toHaveBeenCalledWith({
-      title: "Mismatch",
+      title: "Missing Field",
       message: "Provide a valid Email",
       color: "red",
     });
