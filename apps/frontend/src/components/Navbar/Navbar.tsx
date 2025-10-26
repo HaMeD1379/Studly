@@ -1,13 +1,22 @@
+// ----------------------------------------------------------------------------
+// Group: Group 3 — COMP 4350: Software Engineering 2
+// Project: Studly
+// Author: Hamed Esmaeilzadeh (team member)
+// Generated / scaffolded with assistance from ChatGPT (GPT-5 Thinking mini)
+// Date: 2025-10-07
+// Modified: 2025-10-26
+// ----------------------------------------------------------------------------
 import { AppShell, Button, Text, Flex, Divider } from '@mantine/core'
-import { useNavigate, useLocation } from 'react-router';
 import { IconMedal, IconHome, IconClock, IconMedal2 } from '@tabler/icons-react';
+import { type ReactNode } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 type NavbarProps = {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 type StyledButtonProps = {
-  children: React.ReactNode,
+  children: ReactNode,
   path: string
 }
 
