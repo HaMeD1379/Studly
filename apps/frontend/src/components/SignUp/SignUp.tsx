@@ -11,8 +11,8 @@ import {
   Title,
 } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
-import { validateEmail } from "~/utilities/testing/emailValidation";
-import { equalPasswords } from "~/utilities/testing/passwordValidation";
+import { useRef } from "react";
+import { validateEmail, equalPasswords } from "~/utilities/validation";
 import { displayNotifications } from "~/utilities/testing/displayNotifications";
 import { useState } from "react";
 import { Box } from "@mantine/core";

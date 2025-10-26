@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Flex, Text, Select, Button, Group, Box } from '@mantine/core'
-import { setupStudySessionOptions } from '~/constants';
+import { SETUP_STUDY_SESSION_OPTIONS } from '~/constants';
 import { TimePicker } from '@mantine/dates';
 
 type SetupStudySessionProps = {
@@ -44,7 +44,7 @@ export const SetupStudySession = ({ onUpdateSubject, onUpdateLength }: SetupStud
       <Select
         label='Subject'
         placeholder='Select a subject'
-        data={setupStudySessionOptions}
+        data={SETUP_STUDY_SESSION_OPTIONS}
         value={subject}
         onChange={setSubject}
         searchable

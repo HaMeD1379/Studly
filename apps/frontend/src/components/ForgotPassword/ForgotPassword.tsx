@@ -12,10 +12,11 @@ import {
   Title,
 } from "@mantine/core";
 import { useNavigate } from "react-router";
-import { validateEmail } from "~/utilities/testing/emailValidation";
+import { validateEmail } from "~/utilities/validation";
 import { useState } from "react";
 import { displayNotifications } from "~/utilities/testing/displayNotifications";
 import { ForgotPassword as passwordReset } from "~/utilities/testing/auth";
+
 export function ForgotPassword() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
