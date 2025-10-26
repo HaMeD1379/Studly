@@ -1,4 +1,4 @@
-export const setupStudySessionOptions: string[] = [
+export const SETUP_STUDY_SESSION_OPTIONS: string[] = [
   'Mathematics',
   'Biology',
   'Chemistry',
