@@ -4,8 +4,8 @@ import { TimePicker } from "@mantine/dates";
 import { setupStudySessionOptions } from "~/constants";
 
 type SetupStudySessionProps = {
-  onUpdateSubject: (value: string | null) => void;
-  onUpdateLength: (value: number) => void;
+  onUpdateSubject: (_value: string | null) => void;
+  onUpdateLength: (_value: number) => void;
 };
 
 export const SetupStudySession = ({
