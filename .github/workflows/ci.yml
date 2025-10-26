@@ -26,39 +26,29 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Use Node from .nvmrc if present else 20
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-          node-version: 20
           cache: npm
           cache-dependency-path: |
+            package-lock.json
             apps/frontend/package-lock.json
             apps/backend/package-lock.json
 
-      - name: Install frontend deps
-        run: npm install --no-audit --no-fund
-        working-directory: apps/frontend
+      - name: Install dependencies
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci --no-audit --no-fund
+          else
+            npm install --no-audit --no-fund
+          fi
 
-      - name: Install backend deps
-        run: npm install --no-audit --no-fund
-        working-directory: apps/backend
-
-      - name: Run frontend lint
-        run: npm run lint
-        working-directory: apps/frontend
-
-      - name: Check frontend formatting
+      - name: Check formatting
         run: npm run format:check
-        working-directory: apps/frontend
 
-      - name: Run backend lint
+      - name: Run lint
         run: npm run lint
-        working-directory: apps/backend
-
-      - name: Check backend formatting
-        run: npm run format:check
-        working-directory: apps/backend
 
   backend:
     name: Backend (apps/backend)
@@ -71,16 +61,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Use Node from .nvmrc if present else 20
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-          node-version: 20
           cache: npm
           cache-dependency-path: apps/backend/package-lock.json
 
       - name: Install backend deps
-        run: npm install --no-audit --no-fund
+        run: npm ci --no-audit --no-fund
         working-directory: apps/backend
 
       - name: Run backend tests
@@ -102,16 +91,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Use Node from .nvmrc if present else 20
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-          node-version: 20
           cache: npm
           cache-dependency-path: apps/frontend/package-lock.json
 
       - name: Install frontend deps
-        run: npm install --no-audit --no-fund
+        run: npm ci --no-audit --no-fund
         working-directory: apps/frontend
 
       - name: Run frontend tests
