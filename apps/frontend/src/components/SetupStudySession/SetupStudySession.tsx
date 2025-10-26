@@ -15,11 +15,11 @@ export const SetupStudySession = ({ onUpdateSubject, onUpdateLength }: SetupStud
 
   useEffect(() => {
     onUpdateLength(sessionLengthMins * 60 * 1000);
-  }, [sessionLengthMins]);
+  }, [onUpdateLength, sessionLengthMins]);
 
   useEffect(() => {
     onUpdateSubject(subject);
-  }, [subject]);
+  }, [onUpdateSubject, subject]);
 
   const updateCustomTime = (time: string) => {
     const timeSplit = time.split(':');

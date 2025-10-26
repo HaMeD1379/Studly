@@ -156,36 +156,30 @@ const createSelectBuilder = (columns) => {
     return { data: selectColumns(rows, columns), error: null };
   };
 
-  const builder = {
-    eq(column, value) {
-      filters.eq.push({ column, value });
-      return builder;
-    },
-    gte(column, value) {
-      filters.gte.push({ column, value });
-      return builder;
-    },
-    lte(column, value) {
-      filters.lte.push({ column, value });
-      return builder;
-    },
-    limit(value) {
-      filters.limit = value;
-      return builder;
-    },
-    order(column, options) {
-      filters.order = { column, options };
-      const result = resolve();
-      return Promise.resolve(result);
-    },
-    then(onFulfilled, onRejected) {
-      try {
-        const result = resolve();
-        return Promise.resolve(onFulfilled ? onFulfilled(result) : result);
-      } catch (error) {
-        return onRejected ? Promise.resolve(onRejected(error)) : Promise.reject(error);
-      }
-    },
+  const execute = () => resolve();
+
+  const builder = Promise.resolve().then(execute);
+
+  builder.eq = (column, value) => {
+    filters.eq.push({ column, value });
+    return builder;
+  };
+  builder.gte = (column, value) => {
+    filters.gte.push({ column, value });
+    return builder;
+  };
+  builder.lte = (column, value) => {
+    filters.lte.push({ column, value });
+    return builder;
+  };
+  builder.limit = (value) => {
+    filters.limit = value;
+    return builder;
+  };
+  builder.order = (column, options) => {
+    filters.order = { column, options };
+    const result = execute();
+    return Promise.resolve(result);
   };
 
   return builder;

@@ -1,5 +1,5 @@
 import { Text, Flex, Progress, Button } from '@mantine/core'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useInterval } from '@mantine/hooks'
 
 type StudySessionProps = {
@@ -19,7 +19,7 @@ export const StudySession = ({
   const [formattedTimeLeft, setFormattedTimeLeft] = useState<string>('00:00');
   const [fullFormattedTimeLeft, setFullFormattedTimeLeft] = useState<string>('0 seconds');
 
-  const calculateNextInterval = () => {
+  const calculateNextInterval = useCallback(() => {
     const now = Date.now();
     
     const secondsLeft = Math.floor(Math.max(endStudyTimestamp - now, 0) / 1000);
@@ -49,9 +49,9 @@ export const StudySession = ({
     if (progressBarPercent >= 100) {
       onStopStudy();
     }
-  }
+  }, [endStudyTimestamp, onStopStudy, startStudyTimestamp])
 
-  const interval = useInterval(() => calculateNextInterval(), 1000);
+  const interval = useInterval(calculateNextInterval, 1000);
 
   useEffect(() => {
     if (startStudyTimestamp > 0) {
@@ -65,7 +65,7 @@ export const StudySession = ({
     }
 
     return () => interval.stop();
-  }, [startStudyTimestamp]);
+  }, [calculateNextInterval, interval, startStudyTimestamp]);
 
   return (
     <Flex p={24} direction='column' bd='1px solid lightgray' bdrs={8}>
