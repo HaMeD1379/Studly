@@ -64,3 +64,5 @@ export const allBadgesMock = [
     description: 'TEST_13_DESCRIPTION',
   }
 ];
+
+export const MOCK_UNLOCKED_BADGE_TIMESTAMP = 3256523562342;
