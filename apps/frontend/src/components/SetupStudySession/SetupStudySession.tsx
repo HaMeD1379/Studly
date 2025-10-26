@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
+import type { Dispatch, SetStateAction } from "react";
 import { Box, Button, Flex, Group, Select, Text } from "@mantine/core";
 import { TimePicker } from "@mantine/dates";
 import { setupStudySessionOptions } from "~/constants";
 
 type SetupStudySessionProps = {
-  onUpdateSubject: (subject: string | null) => void;
-  onUpdateLength: (length: number) => void;
+  onUpdateSubject: Dispatch<SetStateAction<string | null>>;
+  onUpdateLength: Dispatch<SetStateAction<number>>;
 };
 
 export const SetupStudySession = ({
