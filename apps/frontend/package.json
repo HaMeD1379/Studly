@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Gamified studying to promote academic success",
   "main": "index.ts",
+  "type": "module",
   "scripts": {
     "start": "vite",
     "dev": "vite",
