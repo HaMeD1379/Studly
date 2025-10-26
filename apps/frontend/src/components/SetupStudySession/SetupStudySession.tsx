@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import type { Dispatch, SetStateAction } from "react";
+import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import { Box, Button, Flex, Group, Select, Text } from "@mantine/core";
 import { TimePicker } from "@mantine/dates";
 import { setupStudySessionOptions } from "~/constants";
