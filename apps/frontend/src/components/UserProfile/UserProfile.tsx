@@ -1,4 +1,4 @@
-import Avatar from "~/utilities/testing/Avatar"; // Adjust the path as needed
+import Avatar from "~/utilities/avatar/avatar";
 import {
   SimpleGrid,
   Card,

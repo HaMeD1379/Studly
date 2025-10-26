@@ -13,10 +13,10 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useRef } from "react";
 import { validateEmail, equalPasswords } from "~/utilities/validation";
-import { displayNotifications } from "~/utilities/testing/displayNotifications";
+import { displayNotifications } from "~/utilities/notifications/displayNotifications";
 import { useState } from "react";
 import { Box } from "@mantine/core";
-import { signUp } from "~/utilities/testing/auth";
+import { signUp } from "~/utilities/authentication/auth";
 
 export function SignUpForm() {
   const navigate = useNavigate();

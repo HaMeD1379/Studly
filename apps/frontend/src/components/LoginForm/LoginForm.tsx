@@ -16,9 +16,9 @@ import {
 import placeholder from "~/assets/landscape-placeholder.svg";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { signIn } from "~/utilities/testing/auth";
-import { displayNotifications } from "~/utilities/testing/displayNotifications";
-import { validateEmail } from "~/utilities/testing/emailValidation";
+import { signIn } from "~/utilities/authentication/auth";
+import { displayNotifications } from "~/utilities/notifications/displayNotifications";
+import { validateEmail } from "~/utilities/validation";
 export function LoginForm() {
   const navigate = useNavigate();
   const PASSWORD_LENGTH = 8;

@@ -7,7 +7,7 @@ import {
   IconMedal2,
   IconLogout,
 } from "@tabler/icons-react";
-import { signOut } from "~/utilities/testing/auth";
+import { signOut } from "~/utilities/authentication/auth";
 
 type NavbarProps = {
   children: React.ReactNode;

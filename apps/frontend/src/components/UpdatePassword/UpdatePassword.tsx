@@ -1,9 +1,6 @@
 import {
-  Anchor,
   Button,
-  Checkbox,
   Container,
-  Group,
   Paper,
   PasswordInput,
   Text,
@@ -11,10 +8,10 @@ import {
 } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import { equalPasswords } from "~/utilities/testing/passwordValidation";
-import { displayNotifications } from "~/utilities/testing/displayNotifications";
+import { displayNotifications } from "~/utilities/notifications/displayNotifications";
 import { useState } from "react";
 import { Box } from "@mantine/core";
-import { passwordChange } from "~/utilities/testing/auth";
+import { passwordChange } from "~/utilities/authentication/auth";
 
 export function updatePassword() {
   let passwordLen = 8;

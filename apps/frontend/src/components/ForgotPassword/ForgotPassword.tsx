@@ -14,8 +14,8 @@ import {
 import { useNavigate } from "react-router";
 import { validateEmail } from "~/utilities/validation";
 import { useState } from "react";
-import { displayNotifications } from "~/utilities/testing/displayNotifications";
-import { ForgotPassword as passwordReset } from "~/utilities/testing/auth";
+import { displayNotifications } from "~/utilities/notifications/displayNotifications";
+import { ForgotPassword as passwordReset } from "~/utilities/authentication/auth";
 
 export function ForgotPassword() {
   const navigate = useNavigate();

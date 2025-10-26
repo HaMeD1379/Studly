@@ -12,7 +12,7 @@ vi.mock("@mantine/notifications", () => ({
     show: vi.fn(),
   },
 }));
-vi.mock("~/utilities/testing/auth", () => ({
+vi.mock("~/utilities/authentication/auth", () => ({
   signUp: vi.fn(),
 }));
 const mockedSignUp = vi.mocked(signUp);
@@ -24,7 +24,7 @@ import { SignUpForm } from "./SignUp";
 import "@testing-library/jest-dom";
 import { notifications } from "@mantine/notifications";
 import { render } from "~/utilities/testing";
-import { signUp } from "~/utilities/testing/auth";
+import { signUp } from "~/utilities/authentication/auth";
 
 describe("Sign up activity", () => {
   it("Shows email and password fields", () => {

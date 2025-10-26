@@ -1,4 +1,4 @@
-import { displayNotifications } from "~/utilities/notifications";
+import { displayNotifications } from "../notifications/displayNotifications";
 
 export function equalPasswords(
   password_1: string,

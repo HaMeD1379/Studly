@@ -1,11 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { screen, fireEvent, waitFor } from "@testing-library/react";
-import { LoginForm } from "./LoginForm";
-import "@testing-library/jest-dom";
-import { signIn } from "~/utilities/testing/auth";
-import { notifications } from "@mantine/notifications";
-import { render } from "~/utilities/testing";
-
 const mockNavigate = vi.fn();
 vi.mock("react-router-dom", async () => {
   const actual = await vi.importActual<typeof import("react-router-dom")>(
@@ -18,10 +10,18 @@ vi.mock("@mantine/notifications", () => ({
   notifications: { show: vi.fn() },
 }));
 
-vi.mock("~/utilities/testing/auth", () => ({
+vi.mock("~/utilities/authentication/auth", () => ({
   signIn: vi.fn(),
 }));
 const mockedSignIn = vi.mocked(signIn);
+
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { screen, fireEvent, waitFor } from "@testing-library/react";
+import { LoginForm } from "./LoginForm";
+import "@testing-library/jest-dom";
+import { signIn } from "~/utilities/authentication/auth";
+import { notifications } from "@mantine/notifications";
+import { render } from "~/utilities/testing";
 
 describe("Login Tests", () => {
   beforeEach(() => {
