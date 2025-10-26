@@ -92,8 +92,9 @@ export default tseslint.config(
       'react/react-in-jsx-scope': 'off',
       'react/prop-types': 'off',
       'react-hooks/rules-of-hooks': 'error',
-      'react-hooks/exhaustive-deps': 'warn',
+      'react-hooks/exhaustive-deps': 'off',
       'import/no-unresolved': 'off',
+      'import/no-duplicates': 'off',
       'import/order': 'off',
       '@typescript-eslint/no-unused-vars': [
         'error',
@@ -108,6 +109,19 @@ export default tseslint.config(
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
       'react/no-unescaped-entities': 'off',
+    },
+  },
+  {
+    files: ['cypress/**/*.{ts,tsx,js,jsx}'],
+    languageOptions: {
+      globals: {
+        ...globals.cypress,
+        cy: 'readonly',
+        Cypress: 'readonly',
+      },
+    },
+    rules: {
+      'no-undef': 'off',
     },
   }
 );

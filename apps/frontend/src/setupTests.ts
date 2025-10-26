@@ -1,15 +1,15 @@
-import { afterEach, expect, vi } from 'vitest';
-import * as matchers from '@testing-library/jest-dom/matchers';
-import { cleanup } from '@testing-library/react';
+import { afterEach, expect, vi } from "vitest";
+import * as matchers from "@testing-library/jest-dom/matchers";
+import { cleanup } from "@testing-library/react";
 
-const { getComputedStyle } = window;
+const getComputedStyle = window.getComputedStyle.bind(window);
 
 expect.extend(matchers);
 
 window.getComputedStyle = (elt) => getComputedStyle(elt);
 window.HTMLElement.prototype.scrollIntoView = () => {};
 
-Object.defineProperty(window, 'matchMedia', {
+Object.defineProperty(window, "matchMedia", {
   writable: true,
   value: vi.fn().mockImplementation((query) => ({
     matches: false,
@@ -29,7 +29,7 @@ class ResizeObserver {
   disconnect() {}
 }
 
-window.ResizeObserver = ResizeObserver;
+window.ResizeObserver = ResizeObserver as unknown as typeof window.ResizeObserver;
 
 afterEach(() => {
   cleanup();

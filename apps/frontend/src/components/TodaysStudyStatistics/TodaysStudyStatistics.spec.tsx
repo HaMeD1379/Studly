@@ -26,9 +26,9 @@ describe('TodaysStudyStatistics', () => {
   });
 
   it('renders with 0 gives 0m', () => {
-    const mockTotalTimeZero = 0;
-
-    render(<TodaysStudyStatistics totalTimeStudied={0} timesStudied={mockTimesStudied}/>);
+    render(
+      <TodaysStudyStatistics totalTimeStudied={0} timesStudied={mockTimesStudied} />
+    );
 
     expect(screen.getByText('0m')).not.toBeNull();
   });
