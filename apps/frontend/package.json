@@ -17,7 +17,7 @@
     "test:e2e:ui": "start-server-and-test 'npm run start' http://localhost:5173 'npx cypress open --e2e'",
     "lint": "npm install --no-save --no-package-lock @typescript-eslint/parser@8.16.0 @typescript-eslint/eslint-plugin@8.16.0 eslint-import-resolver-typescript@3.6.1 eslint-plugin-import@2.31.0 eslint-plugin-jsx-a11y@6.10.2 eslint-plugin-react@7.37.2 globals@15.12.0 typescript-eslint@8.16.0 && ESLINT_USE_FLAT_CONFIG=true eslint . --max-warnings=0",
     "lint:fix": "npm install --no-save --no-package-lock @typescript-eslint/parser@8.16.0 @typescript-eslint/eslint-plugin@8.16.0 eslint-import-resolver-typescript@3.6.1 eslint-plugin-import@2.31.0 eslint-plugin-jsx-a11y@6.10.2 eslint-plugin-react@7.37.2 globals@15.12.0 typescript-eslint@8.16.0 && ESLINT_USE_FLAT_CONFIG=true eslint . --max-warnings=0 --fix",
-    "format:check": "npx -y @biomejs/biome@1.9.4 format --set-exit-if-changed .",
+    "format:check": "npx -y @biomejs/biome@1.9.4 format --check .",
     "format:write": "npx -y @biomejs/biome@1.9.4 format --write ."
   },
   "repository": {
