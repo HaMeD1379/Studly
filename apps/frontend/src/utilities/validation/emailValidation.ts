@@ -1,7 +1,12 @@
-import { notifications } from "@mantine/notifications";
+import { displayNotifications } from "~/utilities/notifications";
 
 //StackOverflow: https://stackoverflow.com/questions/46155/how-can-i-validate-an-email-address-in-javascript
 export function validateEmail(email: string): boolean {
+
+  return validEmailFormat(email);
+}
+
+const validEmailFormat = (email: string) => {
   if (
     email
       .toLowerCase()
@@ -10,11 +15,6 @@ export function validateEmail(email: string): boolean {
       )
   ) {
     return true;
-  }
-  notifications.show({
-    title: "Mismatch",
-    message: "Provide a valid Email",
-    color: "red",
-  });
+  }displayNotifications("Mismatch","Provide a valid Email","red");
   return false;
 }

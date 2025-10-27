@@ -7,19 +7,25 @@ vi.mock("react-router-dom", async () => {
   return { ...actual, useNavigate: () => mockNavigate };
 });
 
-import { describe, it, expect } from "vitest";
-import { screen, fireEvent } from "@testing-library/react";
-import { vi } from "vitest";
-import { SignUpForm } from "./SignUp";
-import "@testing-library/jest-dom";
-import { notifications } from "@mantine/notifications";
-import { render } from "~/utilities/testing";
-
 vi.mock("@mantine/notifications", () => ({
   notifications: {
     show: vi.fn(),
   },
 }));
+vi.mock("~/utilities/authentication/auth", () => ({
+  signUp: vi.fn(),
+}));
+const mockedSignUp = vi.mocked(signUp);
+
+import { describe, it, expect } from "vitest";
+import { screen, fireEvent, waitFor } from "@testing-library/react";
+import { vi } from "vitest";
+import { SignUpForm } from "./SignUp";
+import "@testing-library/jest-dom";
+import { notifications } from "@mantine/notifications";
+import { render } from "~/utilities/testing";
+import type { Session } from "@supabase/supabase-js";
+import { signUp } from "~/utilities/authentication/auth";
 
 describe("Sign up activity", () => {
   it("Shows email and password fields", () => {
@@ -29,14 +35,19 @@ describe("Sign up activity", () => {
   });
   it("Shows an error if invalid email is provided", async () => {
     render(<SignUpForm />);
+    const nameInput = screen.getByLabelText(/full name/i);
     const email = screen.getByLabelText(/email/i);
     const password = screen.getByLabelText(/Create Password/i);
     const password_2 = screen.getByLabelText(/Confirm Password/i);
     const signUpButton = screen.getByRole("button", { name: /sign up/i });
-
+    const checkbox = screen.getByLabelText(
+      /I agree to the Terms and Conditions/i
+    );
+    fireEvent.change(nameInput, { target: { value: "Test User" } });
     fireEvent.change(email, { target: { value: "invalidemail" } });
     fireEvent.change(password, { target: { value: "0106Abcd" } });
     fireEvent.change(password_2, { target: { value: "0106Abcd" } });
+    fireEvent.click(checkbox);
     fireEvent.click(signUpButton);
     expect(notifications.show).toHaveBeenCalledWith({
       title: "Mismatch",
@@ -46,26 +57,49 @@ describe("Sign up activity", () => {
   });
 
   it("navigates to home page (/study) after successful signup", async () => {
+    mockedSignUp.mockResolvedValueOnce({
+      user: {
+        id: "123",
+        email: "test@gmail.com",
+        app_metadata: {},
+        user_metadata: {},
+        aud: "authenticated",
+        created_at: new Date().toISOString(),
+      },
+      session: {} as Session,
+    });
+
     render(<SignUpForm />);
+
     const nameInput = screen.getByLabelText(/Full Name/i);
     const email = screen.getByLabelText(/email/i);
     const password = screen.getByLabelText(/Create Password/i);
-    const password_2 = screen.getByLabelText(/Confirm Password/i);
+    const password2 = screen.getByLabelText(/Confirm Password/i);
+    const checkbox = screen.getByLabelText(
+      /I agree to the Terms and Conditions/i
+    );
     const signUpButton = screen.getByRole("button", { name: /sign up/i });
 
     fireEvent.change(nameInput, { target: { value: "dummyUser" } });
     fireEvent.change(email, { target: { value: "test@gmail.com" } });
     fireEvent.change(password, { target: { value: "Pass123*" } });
-    fireEvent.change(password_2, { target: { value: "Pass123*" } });
+    fireEvent.change(password2, { target: { value: "Pass123*" } });
+    fireEvent.click(checkbox);
     fireEvent.click(signUpButton);
-    expect(notifications.show).toHaveBeenCalledWith(
-      expect.objectContaining({
-        message: expect.stringMatching(
-          /Begin Your Gamified Learning experience now/i
-        ),
-      })
-    );
 
-    expect(mockNavigate).toHaveBeenCalledWith("/study");
+    // Wait for async effects to complete (signup + notification + navigation)
+    await waitFor(() => {
+      expect(notifications.show).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: expect.stringMatching(
+            /Begin Your Gamified Learning experience now/i
+          ),
+        })
+      );
+    });
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith("/study");
+    });
   });
 });

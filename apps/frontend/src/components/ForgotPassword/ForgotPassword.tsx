@@ -13,21 +13,27 @@ import {
 } from "@mantine/core";
 import { useNavigate } from "react-router";
 import { validateEmail } from "~/utilities/validation";
-import { useRef } from "react";
-import { notifications } from "@mantine/notifications";
+import { useState } from "react";
+import { displayNotifications } from "~/utilities/notifications/displayNotifications";
+import { ForgotPassword as passwordReset } from "~/utilities/authentication/auth";
 
 export function ForgotPassword() {
   const navigate = useNavigate();
-  const email = useRef<HTMLInputElement>(null);
+  const [email, setEmail] = useState("");
 
-  const handleClick = () => {
-    if (email.current && validateEmail(email.current.value)) {
-      notifications.show({
-        title: "Accepted",
-        message: "A reset link has been sent to your email",
-        color: "green",
-      });
-      navigate("/");
+  const handleClick = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) {
+      displayNotifications("Missing Field", "Provide a valid Email", "red");
+      return;
+    }
+    if (validateEmail(email)) {
+      displayNotifications(
+        "Accepted",
+        "A reset link has been sent to your email",
+        "green"
+      );
+      passwordReset(email);
     }
   };
   return (
@@ -47,53 +53,54 @@ export function ForgotPassword() {
       </Text>
 
       <Paper withBorder shadow="md" p={30} radius="md" mt="xl">
-        <TextInput
-          label="Your email"
-          placeholder="Your email"
-          required
-          ref={email}
-        />
-        <Group
-          style={{
-            flexDirection: "column",
-          }}
-          justify="space-between"
-          mt="lg"
-        >
-          <Anchor
-            c="dimmed"
-            size="sm"
+        <form onSubmit={handleClick}>
+          <TextInput
+            label="Your email"
+            placeholder="Your email"
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <Group
             style={{
-              textAlign: "center",
-              width: "100%",
+              flexDirection: "column",
             }}
+            justify="space-between"
+            mt="lg"
           >
-            <Center inline>
-              <IconArrowLeft
-                data-testid="back-arrow"
-                size={12}
-                stroke={1.5}
-                onClick={() => navigate("/")}
-              />
-              <Box ml={5}>Back to the login page</Box>
-            </Center>
-          </Anchor>
-          <Button
-            styles={{
-              root: {
-                backgroundColor: "black",
-                color: "white",
-                fontWeight: 500,
-                textAlign: "center", // move inside root
-                width: "100%", // move inside root
-                "&:hover": { backgroundColor: "#222" },
-              },
-            }}
-            onClick={handleClick}
-          >
-            Reset password
-          </Button>
-        </Group>
+            <Anchor
+              c="dimmed"
+              size="sm"
+              style={{
+                textAlign: "center",
+                width: "100%",
+              }}
+            >
+              <Center inline>
+                <IconArrowLeft
+                  data-testid="back-arrow"
+                  size={12}
+                  stroke={1.5}
+                  onClick={() => navigate("/")}
+                />
+                <Box ml={5}>Back to the login page</Box>
+              </Center>
+            </Anchor>
+            <Button
+              styles={{
+                root: {
+                  backgroundColor: "black",
+                  color: "white",
+                  fontWeight: 500,
+                  textAlign: "center", // move inside root
+                  width: "100%", // move inside root
+                  "&:hover": { backgroundColor: "#222" },
+                },
+              }}
+              type="submit"
+            >
+              Reset password
+            </Button>
+          </Group>
+        </form>
       </Paper>
     </Container>
   );
