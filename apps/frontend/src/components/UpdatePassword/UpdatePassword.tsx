@@ -46,7 +46,7 @@ export function UpdatePassword() {
         console.log(err);
       } else {
         setError("An unexpected error occurred");
-        console.log(err);
+        console.log(error);
       }
     }
   };

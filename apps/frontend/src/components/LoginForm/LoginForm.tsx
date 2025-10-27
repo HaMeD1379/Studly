@@ -36,7 +36,7 @@ export function LoginForm() {
     } catch (err: unknown) {
       let message = "Invalid Login Credentials";
       if (err instanceof Error) {
-        message = message;
+        message = message || err.message;
       }
 
       displayNotifications("Login Error", message, "red");
