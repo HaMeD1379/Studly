@@ -13,7 +13,7 @@ export const TodaysStudyStatistics = ({ totalTimeStudied, timesStudied }: Todays
 
   return (
     <Flex p={24} direction='column' bdrs={8} bd='1px solid lightgray' h={193}>
-      <Text>Today's Progress</Text>
+      <Text>Today&apos;s Progress</Text>
       <Flex h='100%' align='center' justify='space-evenly'>
         <Flex align='center' direction='column'>
           <IconClock size={48} color='#5598FF' />

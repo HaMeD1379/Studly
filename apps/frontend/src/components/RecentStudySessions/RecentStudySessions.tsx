@@ -1,4 +1,4 @@
-import { StudySessionType } from '~/types'
+import type { StudySessionType } from '~/types'
 import { Flex, Text, Table } from '@mantine/core'
 import { IconBook } from '@tabler/icons-react'
 

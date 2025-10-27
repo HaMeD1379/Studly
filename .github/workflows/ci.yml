@@ -4,6 +4,7 @@
 # Author: Hamed Esmaeilzadeh (team member)
 # Generated / scaffolded with assistance from ChatGPT (GPT-5 Thinking mini)
 # Date: 2025-10-07
+# Modified: 2025-02-17
 # ----------------------------------------------------------------------------
 name: CI
 
@@ -21,6 +22,9 @@ jobs:
   backend:
     name: Backend (apps/backend)
     runs-on: ubuntu-latest
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -37,6 +41,14 @@ jobs:
         run: npm ci
         working-directory: apps/backend
 
+      - name: Run backend lint (ESLint)
+        run: npm run lint
+        working-directory: apps/backend
+
+      - name: Run backend Biome check
+        run: npm run biome:check
+        working-directory: apps/backend
+
       - name: Run backend tests
         run: npm test
         working-directory: apps/backend
@@ -48,6 +60,11 @@ jobs:
   frontend:
     name: Frontend (apps/frontend)
     runs-on: ubuntu-latest
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+      VITE_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      VITE_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -62,6 +79,14 @@ jobs:
 
       - name: Install frontend deps
         run: npm ci
+        working-directory: apps/frontend
+
+      - name: Run frontend lint (ESLint)
+        run: npm run lint
+        working-directory: apps/frontend
+
+      - name: Run frontend Biome check
+        run: npm run biome:check
         working-directory: apps/frontend
 
       - name: Run frontend tests

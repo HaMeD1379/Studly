@@ -1,4 +1,4 @@
-import { describe, it, expect, afterAll } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { render } from '~/utilities/testing';
 import { RecentStudySessions } from './RecentStudySessions';
 import { screen } from '@testing-library/react';
