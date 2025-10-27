@@ -51,7 +51,7 @@ export const validateSignup = (req, res, next) => {
     return;
   }
 
-  if (typeof password !== STRINGS.GENERAL.STRING || password.length < 8) {
+  if (typeof password !== 'string' || password.length < 8) {
     handleError(res, 400, STRINGS.VALIDATION.PASSWORD_CHAR_REQUIREMENTS);
     return;
   }

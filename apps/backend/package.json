@@ -6,11 +6,38 @@
     "dev": "node --watch src/index.js",
     "start": "node src/index.js",
     "test": "node tests/support/runJestLite.js",
-    "test:coverage": "node tests/support/runJestLite.js --coverage"
+    "test:coverage": "node tests/support/runJestLite.js --coverage",
+    "lint": "eslint src tests --ext .js,.cjs,.mjs",
+    "lint:fix": "npm run lint -- --fix",
+    "format": "biome format --write src tests",
+    "biome:check": "biome check --linter-enabled=true --formatter-enabled=false --organize-imports-enabled=false src tests"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.75.0",
     "cors": "^2.8.5",
     "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "eslint": "^8.57.0"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true,
+      "es2022": true
+    },
+    "extends": [
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "ecmaVersion": "latest",
+      "sourceType": "module"
+    },
+    "ignorePatterns": [
+      "node_modules/",
+      "dist/",
+      "coverage/"
+    ]
   }
 }

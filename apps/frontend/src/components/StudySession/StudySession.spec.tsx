@@ -39,8 +39,8 @@ describe('StudySession', () => {
       />
     );
 
-    let startButton = screen.getByRole('button', { name: 'Start' });
-    let stopButton = screen.getByRole('button', { name: 'Stop' });
+    const startButton = screen.getByRole('button', { name: 'Start' });
+    const stopButton = screen.getByRole('button', { name: 'Stop' });
 
     expect(startButton.getAttribute('disabled')).toBeNull();
     expect(stopButton.getAttribute('disabled')).not.toBeNull();

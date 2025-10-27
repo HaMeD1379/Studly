@@ -27,16 +27,16 @@ export const BadgeCollection = ({ unlockedBadges, allBadges }: BadgeCollectionPr
   
     const mappedVisibleRows: VisibleBadgeValue[] = rowsVisible.map(row => {
       const foundBadge = unlockedBadges.find(unlockedBadge => unlockedBadge.name === row.name);
-  
+
       return {
         badge: row,
-        timeUnlocked: foundBadge && foundBadge.timeUnlocked
+        timeUnlocked: foundBadge?.timeUnlocked
       };
     });
 
     setTotalPages(Math.ceil(rowsUsed.length / BADGES_PER_COLLECTION_PAGE));
     setVisibleValues(mappedVisibleRows);
-  }, [page, filterStatus]);
+  }, [page, filterStatus, allBadges, unlockedBadges]);
 
   return (
     <Flex my='lg' gap='lg' direction='column'>
@@ -66,12 +66,12 @@ export const BadgeCollection = ({ unlockedBadges, allBadges }: BadgeCollectionPr
       ) :
       (
         <SimpleGrid cols={3} spacing='lg'>
-          {visibleValues.map((value, index) => {
+          {visibleValues.map(value => {
             const badge = value.badge;
             const timeUnlocked = value.timeUnlocked;
 
             return (
-              <Flex key={`badge-value-${index}`} p={24} gap={4} bd='1px solid lightgray' bdrs={8} direction='column'>
+              <Flex key={`badge-${badge.name}`} p={24} gap={4} bd='1px solid lightgray' bdrs={8} direction='column'>
                 <Text fw={700}>{badge.name}</Text>
                 <Text fw={300}>{badge.description}</Text>
                 {timeUnlocked ? (
