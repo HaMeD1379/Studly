@@ -4,7 +4,7 @@
 # Author: Hamed Esmaeilzadeh (team member)
 # Generated / scaffolded with assistance from ChatGPT (GPT-5 Thinking mini)
 # Date: 2025-10-07
-# Modified: 2025-02-15
+# Modified: 2025-02-17
 # ----------------------------------------------------------------------------
 name: CI
 
@@ -63,6 +63,8 @@ jobs:
     env:
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+      VITE_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      VITE_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
