@@ -13,8 +13,8 @@ import { useState } from "react";
 import { Box } from "@mantine/core";
 import { passwordChange } from "~/utilities/authentication/auth";
 
-export function updatePassword() {
-  let passwordLen = 8;
+export function UpdatePassword() {
+  const passwordLen = 8;
   const checkRules = (value: string) => ({
     matchesLen: value.length > passwordLen,
     hasLowercase: /[a-z]/.test(value),
@@ -42,6 +42,7 @@ export function updatePassword() {
       }
     } catch (err: any) {
       setError(err.message);
+      console.log(error);
     }
   };
 

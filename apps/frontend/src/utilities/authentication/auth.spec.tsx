@@ -1,6 +1,4 @@
-/// <reference types="vitest" />
 import { describe, it, expect, vi } from "vitest";
-import { AuthError } from "@supabase/supabase-js";
 
 // --- Mock Supabase client ---
 vi.mock("@supabase/supabase-js", () => ({
@@ -51,7 +49,6 @@ vi.mock("@supabase/supabase-js", () => ({
 
 // --- Import Supabase and your auth utilities ---
 import { createClient } from "@supabase/supabase-js";
-const supabase = createClient("mock-url", "mock-key");
 import { signIn, signUp } from "./auth";
 
 describe("Supabase Sign In", () => {

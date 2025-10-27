@@ -5,7 +5,7 @@ import { MantineProvider } from "@mantine/core";
 import { MemoryRouter } from "react-router-dom";
 import { vi } from "vitest";
 import { notifications } from "@mantine/notifications";
-import { LoginForm, SignUpForm } from "~/components";
+import { SignUpForm } from "~/components";
 
 vi.mock("@mantine/notifications", () => ({
   notifications: {

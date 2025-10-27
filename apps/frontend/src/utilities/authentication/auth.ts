@@ -28,7 +28,7 @@ if (error) {
     console.error("Supabase error:", error);
     throw error;
   }
-console.log(redirect)
+  return data;
 }
 
 export async function passwordChange(password:string){

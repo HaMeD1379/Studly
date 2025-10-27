@@ -21,7 +21,6 @@ import { displayNotifications } from "~/utilities/notifications/displayNotificat
 import { validateEmail } from "~/utilities/validation";
 export function LoginForm() {
   const navigate = useNavigate();
-  const PASSWORD_LENGTH = 8;
 
   const [error, setError] = useState("");
   const [email, setEmail] = useState("");
@@ -36,6 +35,7 @@ export function LoginForm() {
       }
     } catch (err: any) {
       displayNotifications("Login Error", "Invalid Login Credentials", "red");
+      console.log(error);
       setError(err.message);
     }
   };

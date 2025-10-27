@@ -1,7 +1,6 @@
 import { displayNotifications } from "./displayNotifications";
 import { describe, it, expect } from "vitest";
 import { notifications } from "@mantine/notifications";
-import { MemoryRouter } from "react-router-dom";
 import { vi } from "vitest";
 
 vi.mock("@mantine/notifications", () => ({

@@ -16,7 +16,7 @@ import { screen, fireEvent } from "@testing-library/react";
 import { render } from "~/utilities/testing";
 import { vi } from "vitest";
 import { notifications } from "@mantine/notifications";
-import { updatePassword as UpdatePassword } from "./UpdatePassword";
+import { UpdatePassword as UpdatePassword } from "./UpdatePassword";
 
 describe("Update Password tests", () => {
   it("Shows email and password fields and update password buttons", () => {
