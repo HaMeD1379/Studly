@@ -12,7 +12,7 @@ import {
   Title,
 } from "@mantine/core";
 import { useNavigate } from "react-router";
-import { validateEmail } from "~/utilities/testing/emailValidation";
+import { validateEmail } from "~/utilities/validation";
 import { useRef } from "react";
 import { notifications } from "@mantine/notifications";
 
