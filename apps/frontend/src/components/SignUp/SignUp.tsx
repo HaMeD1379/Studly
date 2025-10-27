@@ -50,25 +50,29 @@ export function SignUpForm() {
         );
         navigate("/study");
       }
-    } catch (err: any) {
-      console.log(error);
-      if (err.message.includes("User already registered")) {
+    } catch (err: unknown) {
+      let message = "An unknown error occurred.";
+
+      if (err instanceof Error) {
+        message = err.message;
+      } else if (typeof err === "object" && err !== null && "message" in err) {
+        message = String((err as { message?: unknown }).message);
+      }
+
+      if (message.includes("User already registered")) {
         displayNotifications(
           "Error",
           "An account with this email already exists.",
           "red"
         );
       } else {
-        displayNotifications(
-          "Error",
-          err.message || "An unknown error occurred.",
-          "red"
-        );
+        displayNotifications("Error", message, "red");
       }
-      setError(err.message);
+
+      setError(message);
+      console.log(error);
     }
   };
-
   return (
     <Box
       style={{

@@ -24,6 +24,7 @@ import { SignUpForm } from "./SignUp";
 import "@testing-library/jest-dom";
 import { notifications } from "@mantine/notifications";
 import { render } from "~/utilities/testing";
+import type { Session } from "@supabase/supabase-js";
 import { signUp } from "~/utilities/authentication/auth";
 
 describe("Sign up activity", () => {
@@ -65,7 +66,7 @@ describe("Sign up activity", () => {
         aud: "authenticated",
         created_at: new Date().toISOString(),
       },
-      session: {} as any,
+      session: {} as Session,
     });
 
     render(<SignUpForm />);

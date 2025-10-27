@@ -40,9 +40,14 @@ export function UpdatePassword() {
         displayNotifications("Password Change Successful", "", "green");
         navigate("/study");
       }
-    } catch (err: any) {
-      setError(err.message);
-      console.log(error);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+        console.log(err);
+      } else {
+        setError("An unexpected error occurred");
+        console.log(err);
+      }
     }
   };
 

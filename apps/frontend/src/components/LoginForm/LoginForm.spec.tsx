@@ -22,6 +22,7 @@ import "@testing-library/jest-dom";
 import { signIn } from "~/utilities/authentication/auth";
 import { notifications } from "@mantine/notifications";
 import { render } from "~/utilities/testing";
+import type { Session } from "@supabase/supabase-js";
 
 describe("Login Tests", () => {
   beforeEach(() => {
@@ -61,7 +62,7 @@ describe("Login Tests", () => {
         aud: "authenticated",
         created_at: new Date().toISOString(),
       },
-      session: {} as any,
+      session: {} as Session,
     });
     render(<LoginForm />);
     fireEvent.change(screen.getByLabelText(/email/i), {

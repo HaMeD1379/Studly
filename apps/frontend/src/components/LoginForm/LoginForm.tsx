@@ -33,10 +33,15 @@ export function LoginForm() {
         await signIn(email, password);
         navigate("/study");
       }
-    } catch (err: any) {
-      displayNotifications("Login Error", "Invalid Login Credentials", "red");
+    } catch (err: unknown) {
+      let message = "Invalid Login Credentials";
+      if (err instanceof Error) {
+        message = message;
+      }
+
+      displayNotifications("Login Error", message, "red");
+      setError(message);
       console.log(error);
-      setError(err.message);
     }
   };
 
