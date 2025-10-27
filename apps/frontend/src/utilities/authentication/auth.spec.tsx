@@ -47,8 +47,6 @@ vi.mock("@supabase/supabase-js", () => ({
   })),
 }));
 
-// --- Import Supabase and your auth utilities ---
-import { createClient } from "@supabase/supabase-js";
 import { signIn, signUp } from "./auth";
 
 describe("Supabase Sign In", () => {
