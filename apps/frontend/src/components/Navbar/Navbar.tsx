@@ -92,8 +92,8 @@ const StyledButton = ({ children, path, onClick }: StyledButtonProps) => {
   return (
     <Button
       onClick={handleClick}
-      variant={currentPath === path ? "filled" : "subtle"}
-      color={currentPath === path ? "blue" : "gray"}
+      variant={currentPath === path ? "filled" : "transparent"}
+      color={currentPath === path ? "blue" : "dark-gray"}
       justify="left"
       radius="md"
       fullWidth
