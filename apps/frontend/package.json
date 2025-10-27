@@ -13,7 +13,11 @@
     "test:unit:coverage": "vitest --coverage",
     "test:unit:ui": "vitest --ui --coverage",
     "test:e2e": "start-server-and-test 'npm run start' http://localhost:5173 'npx cypress run'",
-    "test:e2e:ui": "start-server-and-test 'npm run start' http://localhost:5173 'npx cypress open --e2e'"
+    "test:e2e:ui": "start-server-and-test 'npm run start' http://localhost:5173 'npx cypress open --e2e'",
+    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint .",
+    "lint:fix": "npm run lint -- --fix",
+    "format": "biome format --write src tests",
+    "biome:check": "biome check --linter-enabled=true --formatter-enabled=false --organize-imports-enabled=false src"
   },
   "repository": {
     "type": "git",
@@ -41,18 +45,68 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/user-event": "^14.6.1",
+    "@biomejs/biome": "^1.9.4",
     "@types/node": "^24.6.2",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
+    "@typescript-eslint/eslint-plugin": "^8.18.1",
+    "@typescript-eslint/parser": "^8.18.1",
     "@vitejs/plugin-react": "^5.0.4",
     "@vitest/coverage-v8": "^3.2.4",
     "@vitest/ui": "^3.2.4",
     "cypress": "^15.3.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^6.1.1",
+    "eslint-plugin-react-refresh": "^0.4.12",
     "jsdom": "^27.0.0",
     "start-server-and-test": "^2.1.2",
     "typescript": "^5.9.3",
     "vite": "^7.1.9",
     "vitest": "^3.2.4"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "browser": true,
+      "es2022": true
+    },
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "ecmaVersion": "latest",
+      "sourceType": "module"
+    },
+    "plugins": [
+      "@typescript-eslint",
+      "react",
+      "react-hooks",
+      "jsx-a11y",
+      "react-refresh"
+    ],
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:react/recommended",
+      "plugin:jsx-a11y/recommended"
+    ],
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    },
+    "rules": {
+      "react/react-in-jsx-scope": "off",
+      "react/prop-types": "off",
+      "react-refresh/only-export-components": "warn",
+      "@typescript-eslint/no-explicit-any": "off",
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn"
+    },
+    "ignorePatterns": [
+      "dist/",
+      "node_modules/",
+      "coverage/"
+    ]
   }
 }

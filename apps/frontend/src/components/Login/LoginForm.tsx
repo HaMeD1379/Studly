@@ -26,7 +26,7 @@ export function LoginForm() {
 
   const handleClick = () => {
     if (email.current && passw.current) {
-      let p1 = passw.current.value;
+      const p1 = passw.current.value;
       if (
         validateEmail(email.current.value) &&
         equalPasswords(p1, p1, PASSWORD_LENGTH)

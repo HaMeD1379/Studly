@@ -260,15 +260,7 @@ describe('sessions.service', () => {
         select: mock.fn(() => builder),
         eq: mock.fn(() => builder),
         gte: mock.fn(() => builder),
-        lte: mock.fn(() => builder),
-        then(onFulfilled, onRejected) {
-          try {
-            const value = onFulfilled ? onFulfilled(result) : result;
-            return Promise.resolve(value);
-          } catch (error) {
-            return onRejected ? Promise.resolve(onRejected(error)) : Promise.reject(error);
-          }
-        },
+        lte: mock.fn(async () => result),
       };
       const from = mock.fn(() => builder);
       const client = { from };
@@ -276,7 +268,7 @@ describe('sessions.service', () => {
       const service = createSessionsService(client);
 
       await assert.rejects(
-        () => service.summarizeSessionsByDate({ userId: 'user-1' }),
+        () => service.summarizeSessionsByDate({ userId: 'user-1', to: '2024-01-02' }),
         /Failed to summarize sessions: boom/,
       );
     });

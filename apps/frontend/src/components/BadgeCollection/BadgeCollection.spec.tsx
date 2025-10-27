@@ -71,9 +71,9 @@ describe('BadgeCollection', () => {
 const validateUnlockedRenderedPage = (pageNumber: number) => {
   const badgesPage = allUnlockedBadgesMock.slice((pageNumber - 1) * 6, pageNumber * 6);
 
-  badgesPage.forEach(unlockedBadge => {
+  for (const unlockedBadge of badgesPage) {
     expect(screen.getByText(unlockedBadge.name)).not.toBeNull();
     expect(screen.getByText(unlockedBadge.description)).not.toBeNull();
     expect(screen.getByText(`Unlocked ${formatToYYYYMMDD(unlockedBadge.timeUnlocked)}`)).not.toBeNull();
-  });
+  }
 };

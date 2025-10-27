@@ -1,4 +1,4 @@
-import { StudySessionType } from '~/types'
+import type { StudySessionType } from '~/types'
 
 export const mockRecentStudySessions: StudySessionType[] = [
   {
