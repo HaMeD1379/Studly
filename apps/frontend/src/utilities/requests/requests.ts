@@ -1,6 +1,6 @@
 // Usages of the fetch API were used here to create our utility: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
 import { API_KEY_HEADER, API_VERSION, CONTENT_TYPE } from "~/config/api";
-import { RequestMethods, RequestResolve } from "~/types"
+import type { RequestResolve, RequestMethods } from '~/types';
 
 export const request = async (method: RequestMethods, path: string, headers?: Record<string, string>, body?: string): Promise<RequestResolve> => {
   const requestHeaders = new Headers();
@@ -22,12 +22,12 @@ export const request = async (method: RequestMethods, path: string, headers?: Re
     return {
       data: response.json()
     }
-  } else {
-    return {
-      error: {
-        status: response.status,
-        message: `The HTTP request ${method} ${path} failed with status ${response.status}`
-      }
+  }
+
+  return {
+    error: {
+      status: response.status,
+      message: `The HTTP request ${method} ${path} failed with status ${response.status}`
     }
   }
 }
