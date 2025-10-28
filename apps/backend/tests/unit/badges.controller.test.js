@@ -44,7 +44,7 @@ test(STRINGS.TEST.BADGES_CONTROLLER_GET_ALL, async () => {
   const mockService = createMockService();
   const controller = createBadgesController(mockService);
   const mockRes = createMockResponse();
-  const mockNext = (_error) => assert.fail('Should not call next with error');
+  const mockNext = () => assert.fail('Should not call next with error');
   
   await controller.getAllBadges({}, mockRes, mockNext);
   
@@ -57,7 +57,7 @@ test(STRINGS.TEST.BADGES_CONTROLLER_USER_BADGES, async () => {
   const mockService = createMockService();
   const controller = createBadgesController(mockService);
   const mockRes = createMockResponse();
-  const mockNext = (_error) => assert.fail('Should not call next with error');
+  const mockNext = () => assert.fail('Should not call next with error');
   const mockReq = {
     validated: { userId: 'user123', includeProgress: true }
   };
@@ -73,7 +73,7 @@ test(STRINGS.TEST.BADGES_CONTROLLER_AWARD, async () => {
   const mockService = createMockService();
   const controller = createBadgesController(mockService);
   const mockRes = createMockResponse();
-  const mockNext = (_error) => { /* Error handler for next */ };
+  const mockNext = () => { /* Error handler for next */ };
   
   // Test successful award
   const mockReq = {
