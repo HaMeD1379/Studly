@@ -12,10 +12,6 @@ vi.mock("@mantine/notifications", () => ({
     show: vi.fn(),
   },
 }));
-vi.mock("~/utilities/authentication/auth", () => ({
-  signUp: vi.fn(),
-}));
-const mockedSignUp = vi.mocked(signUp);
 
 import { describe, it, expect } from "vitest";
 import { screen, fireEvent, waitFor } from "@testing-library/react";
@@ -24,8 +20,6 @@ import { SignUpForm } from "./SignUp";
 import "@testing-library/jest-dom";
 import { notifications } from "@mantine/notifications";
 import { render } from "~/utilities/testing";
-import type { Session } from "@supabase/supabase-js";
-import { signUp } from "~/utilities/authentication/auth";
 
 describe("Sign up activity", () => {
   it("Shows email and password fields", () => {
@@ -57,18 +51,6 @@ describe("Sign up activity", () => {
   });
 
   it("navigates to home page (/study) after successful signup", async () => {
-    mockedSignUp.mockResolvedValueOnce({
-      user: {
-        id: "123",
-        email: "test@gmail.com",
-        app_metadata: {},
-        user_metadata: {},
-        aud: "authenticated",
-        created_at: new Date().toISOString(),
-      },
-      session: {} as Session,
-    });
-
     render(<SignUpForm />);
 
     const nameInput = screen.getByLabelText(/Full Name/i);

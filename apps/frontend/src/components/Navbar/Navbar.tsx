@@ -7,7 +7,6 @@ import {
   IconMedal2,
   IconLogout,
 } from "@tabler/icons-react";
-import { signOut } from "~/utilities/authentication/auth";
 
 type NavbarProps = {
   children: React.ReactNode;
@@ -66,7 +65,7 @@ export const Navbar = ({ children }: NavbarProps) => {
           {/* Spacer pushes logout to bottom */}
           <Flex direction="column" mt="auto">
             <Divider my="sm" />
-            <StyledButton onClick={signOut} path="/">
+            <StyledButton path="/">
               <Flex align="center" gap={4}>
                 <IconLogout size={20} />
                 Logout

@@ -1,4 +1,4 @@
-import Avatar from "~/utilities/avatar/avatar";
+import Avatar from "~/components/";
 import {
   SimpleGrid,
   Card,

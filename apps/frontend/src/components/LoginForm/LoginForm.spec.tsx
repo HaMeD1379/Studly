@@ -10,19 +10,12 @@ vi.mock("@mantine/notifications", () => ({
   notifications: { show: vi.fn() },
 }));
 
-vi.mock("~/utilities/authentication/auth", () => ({
-  signIn: vi.fn(),
-}));
-const mockedSignIn = vi.mocked(signIn);
-
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { screen, fireEvent, waitFor } from "@testing-library/react";
 import { LoginForm } from "./LoginForm";
 import "@testing-library/jest-dom";
-import { signIn } from "~/utilities/authentication/auth";
 import { notifications } from "@mantine/notifications";
 import { render } from "~/utilities/testing";
-import type { Session } from "@supabase/supabase-js";
 
 describe("Login Tests", () => {
   beforeEach(() => {
@@ -53,17 +46,6 @@ describe("Login Tests", () => {
   });
 
   it("Navigates to /study after successful login", async () => {
-    mockedSignIn.mockResolvedValueOnce({
-      user: {
-        id: "123",
-        email: "test@gmail.com",
-        app_metadata: {},
-        user_metadata: {},
-        aud: "authenticated",
-        created_at: new Date().toISOString(),
-      },
-      session: {} as Session,
-    });
     render(<LoginForm />);
     fireEvent.change(screen.getByLabelText(/email/i), {
       target: { value: "test@gmail.com" },
@@ -88,26 +70,5 @@ describe("Login Tests", () => {
     render(<LoginForm />);
     fireEvent.click(screen.getByText(/Sign Up/i));
     expect(mockNavigate).toHaveBeenCalledWith("/signup");
-  });
-
-  it("Shows error notification on Supabase failure", async () => {
-    mockedSignIn.mockRejectedValueOnce(new Error("Invalid login credentials"));
-
-    render(<LoginForm />);
-    fireEvent.change(screen.getByLabelText(/email/i), {
-      target: { value: "test@google.com" },
-    });
-    fireEvent.change(screen.getByLabelText(/password/i), {
-      target: { value: "WrongPass123" },
-    });
-    fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
-
-    await waitFor(() => {
-      expect(notifications.show).toHaveBeenCalledWith({
-        title: "Login Error",
-        message: "Invalid Login Credentials",
-        color: "red",
-      });
-    });
   });
 });
