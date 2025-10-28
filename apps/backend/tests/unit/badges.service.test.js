@@ -53,13 +53,13 @@ const createMockRepository = () => {
   
   return {
     findAllBadges: async () => mockBadges,
-    findUserBadges: async (_userId) => mockUserBadges,
-    findUserBadgeByIds: async (_userId, _badgeId) => null,
+    findUserBadges: async () => mockUserBadges,
+    findUserBadgeByIds: async () => null,
     createUserBadge: async (data) => ({ 
       ...data, 
       badge_id: data.badge_id || 'new-ub' 
     }),
-    getUserSessionStats: async (_userId) => mockSessions
+    getUserSessionStats: async () => mockSessions
   };
 };
 
