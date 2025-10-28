@@ -16,7 +16,6 @@ import {
 import placeholder from "~/assets/landscape-placeholder.svg";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { signIn } from "~/utilities/authentication/auth";
 import { displayNotifications } from "~/utilities/notifications/displayNotifications";
 import { validateEmail } from "~/utilities/validation";
 export function LoginForm() {
@@ -28,21 +27,13 @@ export function LoginForm() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      if (validateEmail(email)) {
-        await signIn(email, password);
-        navigate("/study");
+    if (email && password) {
+      if (!validateEmail(email)) {
+        displayNotifications("Mismatch", "Provide a valid Email", "red");
       }
-    } catch (err: unknown) {
-      let message = "Invalid Login Credentials";
-      if (err instanceof Error) {
-        message = message || err.message;
-      }
-
-      displayNotifications("Login Error", message, "red");
-      setError(message);
-      console.log(error);
+      navigate("/study");
     }
+    console.log(error);
   };
 
   return (

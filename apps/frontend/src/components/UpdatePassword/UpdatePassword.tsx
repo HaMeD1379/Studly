@@ -11,7 +11,6 @@ import { equalPasswords } from "~/utilities/testing/passwordValidation";
 import { displayNotifications } from "~/utilities/notifications/displayNotifications";
 import { useState } from "react";
 import { Box } from "@mantine/core";
-import { passwordChange } from "~/utilities/authentication/auth";
 
 export function UpdatePassword() {
   const passwordLen = 8;
@@ -36,7 +35,6 @@ export function UpdatePassword() {
     try {
       if (equalPasswords(password_1, password_2)) {
         navigate("/study");
-        await passwordChange(password_1);
         displayNotifications("Password Change Successful", "", "green");
         navigate("/study");
       }

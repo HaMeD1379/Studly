@@ -15,7 +15,6 @@ import { validateEmail, equalPasswords } from "~/utilities/validation";
 import { displayNotifications } from "~/utilities/notifications/displayNotifications";
 import { useState } from "react";
 import { Box } from "@mantine/core";
-import { signUp } from "~/utilities/authentication/auth";
 
 export function SignUpForm() {
   const navigate = useNavigate();
@@ -42,7 +41,6 @@ export function SignUpForm() {
 
     try {
       if (validateEmail(email) && equalPasswords(password_1, password_2)) {
-        await signUp(email, password_1, name);
         displayNotifications(
           "Account Created Successfully",
           "Begin Your Gamified Learning experience now",
