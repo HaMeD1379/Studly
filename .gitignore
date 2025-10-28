@@ -37,6 +37,8 @@ coverage/
 .env.*
 !.env.example     # keep example templates for sharing
 *.local
+apps/frontend/.env
+apps/backend/.env
 
 # --- Logs ---
 logs/

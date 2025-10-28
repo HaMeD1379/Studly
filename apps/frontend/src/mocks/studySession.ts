@@ -1,6 +1,6 @@
-import type { StudySessionType } from '~/types'
+import type { StudySession } from '~/types'
 
-export const mockRecentStudySessions: StudySessionType[] = [
+export const mockRecentStudySessions: StudySession[] = [
   {
     endStudyTimestamp: 1760234974000,
     sessionLength: 3710120,

@@ -1,5 +1,5 @@
-import { UpdatePassword } from "~/components";
+import { UpdatePassword as UpdatePasswordComponent} from "~/components";
 
-export const passwordChange = () => {
-  return <UpdatePassword />;
+export const UpdatePassword = () => {
+  return <UpdatePasswordComponent />;
 };
