@@ -36,12 +36,16 @@
  * ────────────────────────────────────────────────────────────────────────────────
  */
 
+import 'dotenv/config';
+
+
 import express from 'express';
 import cors from 'cors';
 import STRINGS from './config/strings.js';
 import authRoutes from './routes/v1/authentication.routes.js';
 import sessionsRoutes from './routes/v1/sessions.routes.js';
 import requireInternalApiKey from './middleware/internalApiKey.js';
+import badgesRoutes from './routes/v1/badges.routes.js';
 
 const app = express();
 
@@ -57,6 +61,7 @@ app.use('/api', requireInternalApiKey);
 
 app.use(STRINGS.API.AUTH_ROUTE, authRoutes);
 app.use('/api/v1/sessions', sessionsRoutes);
+app.use('/api/v1/badges', badgesRoutes);
 
 const port = process.env.PORT || 3000;
 
