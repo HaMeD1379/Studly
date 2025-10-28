@@ -17,7 +17,7 @@
     "lint": "ESLINT_USE_FLAT_CONFIG=false eslint .",
     "lint:fix": "npm run lint -- --fix",
     "format": "biome format --write src tests",
-    "biome:check": "biome check --linter-enabled=true --formatter-enabled=false --organize-imports-enabled=false src"
+    "biome:check": "biome check --linter-enabled=true --formatter-enabled=false --organize-imports-enabled=false src cypress/e2e/ cypress/constants cypress/support"
   },
   "repository": {
     "type": "git",
