@@ -41,14 +41,19 @@ import cors from 'cors';
 import STRINGS from './config/strings.js';
 import authRoutes from './routes/v1/authentication.routes.js';
 import sessionsRoutes from './routes/v1/sessions.routes.js';
+import requireInternalApiKey from './middleware/internalApiKey.js';
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
+// Public endpoints
 app.get('/health', (_req, res) => res.status(200).send('ok'));
 app.get('/', (_req, res) => res.send({ status: 'studly api running' }));
+
+// Protect all versioned API routes under /api with INTERNAL_API_TOKEN
+app.use('/api', requireInternalApiKey);
 
 app.use(STRINGS.API.AUTH_ROUTE, authRoutes);
 app.use('/api/v1/sessions', sessionsRoutes);
