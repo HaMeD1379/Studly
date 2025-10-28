@@ -36,6 +36,9 @@
  * ────────────────────────────────────────────────────────────────────────────────
  */
 
+import 'dotenv/config';
+
+
 import express from 'express';
 import cors from 'cors';
 import STRINGS from './config/strings.js';

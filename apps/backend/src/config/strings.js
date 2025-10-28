@@ -207,6 +207,34 @@ const STRINGS = {
     SUPABASE_SINGLETON: 'should be a singleton instance',
     SUPABASE_MISSING_ENV:
       'should handle missing environment variables gracefully',
+
+
+    // Badges unit tests
+    BADGES_REPOSITORY_FIND_ALL: 'BadgesRepository - findAllBadges should return all active badges',
+    BADGES_REPOSITORY_FIND_BY_ID: 'BadgesRepository - findBadgeById should return specific badge',
+    BADGES_REPOSITORY_USER_BADGES: 'BadgesRepository - findUserBadges should return user badges',
+    BADGES_REPOSITORY_CREATE: 'BadgesRepository - createUserBadge should create new user badge',
+    BADGES_REPOSITORY_UPDATE: 'BadgesRepository - updateUserBadge should update existing badge',
+    
+    BADGES_SERVICE_GET_ALL: 'BadgesService - getAllBadges should return all badges',
+    BADGES_SERVICE_USER_BADGES: 'BadgesService - getUserBadges should return user badges',
+    BADGES_SERVICE_AWARD: 'BadgesService - awardBadge should award badge to user',
+    BADGES_SERVICE_PROGRESS: 'BadgesService - updateBadgeProgress should update progress',
+    BADGES_SERVICE_CHECK: 'BadgesService - checkAndAwardBadges should check and award earned badges',
+    BADGES_SERVICE_CALC_PROGRESS: 'BadgesService - calculateBadgeProgress should calculate correct progress',
+    BADGES_SERVICE_CALC_STREAK: 'BadgesService - calculateStreak should calculate consecutive days',
+    
+    BADGES_CONTROLLER_GET_ALL: 'BadgesController - getAllBadges should return all badges',
+    BADGES_CONTROLLER_USER_BADGES: 'BadgesController - getUserBadges should return user badges',
+    BADGES_CONTROLLER_AWARD: 'BadgesController - awardBadge should award badge',
+    BADGES_CONTROLLER_CHECK: 'BadgesController - checkUserBadges should check and award badges',
+    
+    // Integration tests
+    BADGES_INTEGRATION_GET_ALL: 'Badges API - GET /badges should return all badges',
+    BADGES_INTEGRATION_USER_BADGES: 'Badges API - GET /users/:userId/badges should return user badges',
+    BADGES_INTEGRATION_AWARD: 'Badges API - POST /badges/award should award badge',
+    BADGES_INTEGRATION_CHECK: 'Badges API - POST /users/:userId/badges/check should check badges',
+
   },
 };
 
