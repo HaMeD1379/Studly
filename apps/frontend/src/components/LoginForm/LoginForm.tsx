@@ -21,7 +21,6 @@ import { validateEmail } from "~/utilities/validation";
 export function LoginForm() {
   const navigate = useNavigate();
 
-  const [error, setError] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -33,7 +32,6 @@ export function LoginForm() {
       }
       navigate("/study");
     }
-    console.log(error);
   };
 
   return (

@@ -40,7 +40,11 @@ export function SignUpForm() {
     e.preventDefault();
 
     try {
-      if (validateEmail(email) && equalPasswords(password_1, password_2)) {
+      if (
+        validateEmail(email) &&
+        equalPasswords(password_1, password_2) &&
+        name
+      ) {
         displayNotifications(
           "Account Created Successfully",
           "Begin Your Gamified Learning experience now",
