@@ -5,8 +5,8 @@ import type { RequestResolve, RequestMethods } from '~/types';
 export const request = async (method: RequestMethods, path: string, headers?: Record<string, string>, body?: string): Promise<RequestResolve> => {
   const requestHeaders = new Headers();
 
-  if (headers) {
-    Object.entries(headers).forEach(([key, value]) => requestHeaders.append(key, value));
+  for (const [key, value] of Object.entries(headers ?? {})) {
+    requestHeaders.append(key, value);
   }
 
   requestHeaders.append(API_KEY_HEADER, import.meta.env.VITE_RAILWAY_API_TOKEN);
