@@ -15,7 +15,6 @@ import { useNavigate } from "react-router";
 import { validateEmail } from "~/utilities/validation";
 import { useState } from "react";
 import { displayNotifications } from "~/utilities/notifications/displayNotifications";
-import { ForgotPassword as passwordReset } from "~/utilities/authentication/auth";
 
 export function ForgotPassword() {
   const navigate = useNavigate();
@@ -33,7 +32,6 @@ export function ForgotPassword() {
         "A reset link has been sent to your email",
         "green"
       );
-      passwordReset(email);
     }
   };
   return (
