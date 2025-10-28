@@ -16,6 +16,7 @@
     "test:e2e:ui": "start-server-and-test 'npm run start' http://localhost:5173 'npx cypress open --e2e'",
     "lint": "ESLINT_USE_FLAT_CONFIG=false eslint .",
     "lint:fix": "npm run lint -- --fix",
+    "lint:win": "eslint .",
     "format": "biome format --write src tests",
     "biome:check": "biome check --linter-enabled=true --formatter-enabled=false --organize-imports-enabled=false src cypress/e2e/ cypress/constants cypress/support"
   },
