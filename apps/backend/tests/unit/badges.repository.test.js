@@ -80,7 +80,7 @@ const createMockSupabaseClient = () => {
         },
         
         not: function(column, op, value) {
-          this._filters.push({ column, op: 'not_' + op, value });
+          this._filters.push({ column, op: `not_${op}`, value });
           return this;
         },
         
@@ -120,12 +120,13 @@ const createMockSupabaseClient = () => {
       };
       
       // Make it a proper thenable/promise
+      // biome-ignore lint/suspicious/noThenProperty: Mock requires then for promise-like behavior
       queryBuilder.then = async function(resolve, reject) {
         try {
           // Simulate async behavior
           await new Promise(r => setImmediate(r));
           
-          let result = { data: null, error: null };
+          const result = { data: null, error: null };
           
           if (this._operation === 'insert') {
             result.data = { ...this._insertData };
