@@ -1,9 +1,9 @@
-import type { StudySessionType } from '~/types'
+import type { StudySession } from '~/types'
 import { Flex, Text, Table } from '@mantine/core'
 import { IconBook } from '@tabler/icons-react'
 
 type RecentStudySessionsProps = {
-  recentStudySessions: StudySessionType[]
+  recentStudySessions: StudySession[]
 }
 
 export const RecentStudySessions = ({ recentStudySessions }: RecentStudySessionsProps) => {

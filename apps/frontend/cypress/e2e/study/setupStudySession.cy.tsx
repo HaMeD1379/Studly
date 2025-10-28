@@ -6,6 +6,9 @@ describe('setupStudySession', () => {
     cy.visit(`${URL}/study`);
 
     cy.get('.mantine-Select-root').click();
-    SETUP_STUDY_SESSION_OPTIONS.forEach(option => cy.contains('.mantine-Select-option', option));
+
+    for (const option of SETUP_STUDY_SESSION_OPTIONS) {
+      cy.contains('.mantine-Select-option', option);
+    }
   });
 });
