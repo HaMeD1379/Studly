@@ -1,12 +1,6 @@
 /**
  * ────────────────────────────────────────────────────────────────────────────────
  *  File: src/controllers/sessions.controller.js
- *  Group: Group 3 — COMP 4350: Software Engineering 2
- *  Project: Studly
- *  Author: Hamed Esmaeilzadeh (team member)
- *  Assisted-by: ChatGPT (GPT-5 Thinking) for comments, documentation, debugging,
- *               and partial code contributions
- *  Last-Updated: 2025-10-16
  * ────────────────────────────────────────────────────────────────────────────────
  *  Summary
  *  -------
@@ -25,6 +19,7 @@
  *  • Separation of concerns: keeps DB logic in the service layer.
  *  • Dependency injection: accepts a service for easy Jest mocking.
  *  • Defensive programming: explicit 4xx responses for client issues.
+ *  • Badge integration: Auto-checks for newly earned badges after completing session.
  *
  *  TODOs
  *  -----
@@ -36,6 +31,7 @@
  */
 
 import sessionsService from '../services/sessions.service.js';
+import badgesService from '../services/badges.service.js';
 
 const MILLIS_IN_MINUTE = 60_000;
 
@@ -56,9 +52,13 @@ const parseLimit = (value) => {
 /**
  * Factory for sessions controller — allows injecting a mock service in tests.
  * @param {object} service - Sessions service with createSession, completeSession, listSessions
+ * @param {object} badgeService - Badges service for checking earned badges
  * @returns {{startSession: Function, completeSession: Function, listSessions: Function}}
  */
-export const createSessionsController = (service = sessionsService) => {
+export const createSessionsController = (
+  service = sessionsService,
+  badgeService = badgesService
+) => {
   /**
    * POST /
    * Start a new session.
@@ -102,7 +102,9 @@ export const createSessionsController = (service = sessionsService) => {
    *   notes?: string,
    *   status?: string
    * }
-   * Response: 200 OK { session } | 404 if not found
+   * Response: 200 OK { session, newBadgesEarned: [] } | 404 if not found
+   * 
+   * Automatically checks for newly earned badges after completing session
    */
   const completeSession = async (req, res, next) => {
     try {
@@ -125,6 +127,40 @@ export const createSessionsController = (service = sessionsService) => {
       const session = await service.completeSession(sessionId, updates);
       if (!session) return res.status(404).json({ error: 'Session not found' });
 
+      // ============================================================================
+      // BADGE INTEGRATION: Check for newly earned badges, uses new logic from badge api that was made
+      // ============================================================================
+      // Only check badges if session was successfully completed (not cancelled/paused)
+      if (session.status === 'completed' && session.userId) {
+        try {
+          const newBadges = await badgeService.checkAndAwardBadges(session.userId);
+          
+          // Return session data + newly earned badges
+          return res.status(200).json({ 
+            session,
+            newBadgesEarned: newBadges,
+            badgeCount: newBadges.length
+          });
+        } catch (badgeError) {
+          // Don't fail the entire request if badge check fails
+          // Log the error for debugging but still return the session
+          console.error('[Badge Check Error]', {
+            userId: session.userId,
+            sessionId: session.id,
+            error: badgeError.message
+          });
+          
+          // Return session without badge info
+          return res.status(200).json({ 
+            session,
+            newBadgesEarned: [],
+            badgeCount: 0,
+            badgeCheckFailed: true
+          });
+        }
+      }
+
+      // If session wasn't completed (e.g., cancelled), just return the session
       return res.status(200).json({ session });
     } catch (error) {
       return next(error);
