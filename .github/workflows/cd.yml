@@ -67,6 +67,9 @@ jobs:
           context: ./apps/frontend
           push: true
           platforms: linux/amd64
+          build-args: |
+            VITE_API_BASE_URL=${{ vars.VITE_API_BASE_URL }}
+            VITE_RAILWAY_API_TOKEN=${{ vars.VITE_RAILWAY_API_TOKEN }}
           tags: |
             ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/studly-frontend:latest
             ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/studly-frontend:${{ steps.vars.outputs.tag }}

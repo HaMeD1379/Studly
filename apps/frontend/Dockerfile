@@ -3,6 +3,12 @@
 FROM node:20-alpine AS build
 WORKDIR /app
 
+# Accept Vite build-time variables (provided by CI build-args)
+ARG VITE_API_BASE_URL
+ARG VITE_RAILWAY_API_TOKEN
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL \
+    VITE_RAILWAY_API_TOKEN=$VITE_RAILWAY_API_TOKEN
+
 # Install deps
 COPY package*.json ./
 RUN npm ci
@@ -19,4 +25,3 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/build /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
-
