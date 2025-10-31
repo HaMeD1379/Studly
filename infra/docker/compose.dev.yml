@@ -2,24 +2,47 @@ version: "3.9"
 services:
   db:
     image: postgres:16
+    container_name: studly_db
     environment:
       POSTGRES_USER: studly
       POSTGRES_PASSWORD: studly
       POSTGRES_DB: studly
     ports:
       - "5432:5432"
+    volumes:
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U studly -d studly"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
   backend:
     build:
       context: ../../apps/backend
+    container_name: studly_backend
     env_file:
       - ../../apps/backend/.env.local
-    depends_on: [db]
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://studly:studly@db:5432/studly
+      PORT: 3000
+      # Optional: forward Supabase REST creds if needed by backend
+      SUPABASE_URL: ${SUPABASE_URL:-}
+      SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY:-}
     ports:
       - "3000:3000"
   frontend:
     build:
       context: ../../apps/frontend
+    container_name: studly_frontend
     env_file:
       - ../../apps/frontend/.env.local
     ports:
-      - "5173:5173"
+      - "5173:80"
+    depends_on:
+      - backend
+networks:
+  default:
+    name: studly_net
