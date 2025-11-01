@@ -1,1 +1,1 @@
-export * from './displayNotifications'
+export * from './displayNotifications';

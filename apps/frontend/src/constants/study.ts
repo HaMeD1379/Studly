@@ -15,5 +15,5 @@ export const SETUP_STUDY_SESSION_OPTIONS: string[] = [
   'Anthropology',
   'Language Studies',
   'Social Work',
-  'Communications'
-]
+  'Communications',
+];

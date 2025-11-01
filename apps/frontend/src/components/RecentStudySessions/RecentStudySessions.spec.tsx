@@ -1,8 +1,8 @@
-import { describe, it, expect } from 'vitest';
+import { screen } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
+import { mockRecentStudySessions } from '~/mocks';
 import { render } from '~/utilities/testing';
 import { RecentStudySessions } from './RecentStudySessions';
-import { screen } from '@testing-library/react';
-import { mockRecentStudySessions} from '~/mocks'
 
 describe('RecentStudySessions', () => {
   it('renders without data', () => {
@@ -14,14 +14,20 @@ describe('RecentStudySessions', () => {
   });
 
   it('renders with data', () => {
-    render(<RecentStudySessions recentStudySessions={mockRecentStudySessions} />);
+    render(
+      <RecentStudySessions recentStudySessions={mockRecentStudySessions} />,
+    );
 
     expect(screen.getByText('Session Ended')).not.toBeNull();
     expect(screen.getByText('Subject')).not.toBeNull();
     expect(screen.getByText('Length')).not.toBeNull();
 
     // Regex made by hand through regex101
-    expect(screen.getAllByText(/^[0-9]{4}\/[0-9]{2}\/[0-9]{2} - [0-9]+:[0-9]{2} (PM|AM)$/)?.length).toEqual(3);
+    expect(
+      screen.getAllByText(
+        /^[0-9]{4}\/[0-9]{2}\/[0-9]{2} - [0-9]+:[0-9]{2} (PM|AM)$/,
+      )?.length,
+    ).toEqual(3);
 
     expect(screen.getByText('Mathematics')).not.toBeNull();
     expect(screen.getByText('1 hour and 1 minute')).not.toBeNull();

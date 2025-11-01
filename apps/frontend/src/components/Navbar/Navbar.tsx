@@ -1,12 +1,12 @@
-import { AppShell, Button, Text, Flex, Divider } from "@mantine/core";
-import { useNavigate, useLocation } from "react-router";
+import { AppShell, Button, Divider, Flex, Text } from '@mantine/core';
 import {
-  IconMedal,
-  IconHome,
   IconClock,
-  IconMedal2,
+  IconHome,
   IconLogout,
-} from "@tabler/icons-react";
+  IconMedal,
+  IconMedal2,
+} from '@tabler/icons-react';
+import { useLocation, useNavigate } from 'react-router';
 
 type NavbarProps = {
   children: React.ReactNode;
@@ -21,41 +21,41 @@ type StyledButtonProps = {
 export const Navbar = ({ children }: NavbarProps) => {
   return (
     <AppShell
-      padding={24}
       navbar={{
+        breakpoint: 'sm',
         width: 200,
-        breakpoint: "sm",
       }}
+      padding={24}
     >
-      <AppShell.Navbar p="md">
+      <AppShell.Navbar p='md'>
         {/* Wrap the whole navbar content in a vertical Flex */}
-        <Flex direction="column" h="100%">
+        <Flex direction='column' h='100%'>
           {/* Header */}
-          <Flex align="center" py={8} pl={16} gap={4}>
-            <IconMedal color="#228be6" />
-            <Text fw={900} size="lg">
+          <Flex align='center' gap={4} pl={16} py={8}>
+            <IconMedal color='#228be6' />
+            <Text fw={900} size='lg'>
               Studly
             </Text>
           </Flex>
 
-          <Divider my="sm" />
+          <Divider my='sm' />
 
           {/* Main navigation buttons */}
-          <Flex direction="column" gap={4}>
-            <StyledButton path="/home">
-              <Flex align="center" gap={4}>
+          <Flex direction='column' gap={4}>
+            <StyledButton path='/home'>
+              <Flex align='center' gap={4}>
                 <IconHome size={20} />
                 Home
               </Flex>
             </StyledButton>
-            <StyledButton path="/study">
-              <Flex align="center" gap={4}>
+            <StyledButton path='/study'>
+              <Flex align='center' gap={4}>
                 <IconClock size={20} />
                 Study Session
               </Flex>
             </StyledButton>
-            <StyledButton path="/badges">
-              <Flex align="center" gap={4}>
+            <StyledButton path='/badges'>
+              <Flex align='center' gap={4}>
                 <IconMedal2 size={20} />
                 Badges
               </Flex>
@@ -63,10 +63,10 @@ export const Navbar = ({ children }: NavbarProps) => {
           </Flex>
 
           {/* Spacer pushes logout to bottom */}
-          <Flex direction="column" mt="auto">
-            <Divider my="sm" />
-            <StyledButton path="/">
-              <Flex align="center" gap={4}>
+          <Flex direction='column' mt='auto'>
+            <Divider my='sm' />
+            <StyledButton path='/'>
+              <Flex align='center' gap={4}>
                 <IconLogout size={20} />
                 Logout
               </Flex>
@@ -90,12 +90,12 @@ const StyledButton = ({ children, path, onClick }: StyledButtonProps) => {
 
   return (
     <Button
-      onClick={handleClick}
-      variant={currentPath === path ? "filled" : "transparent"}
-      color={currentPath === path ? "blue" : "dark-gray"}
-      justify="left"
-      radius="md"
+      color={currentPath === path ? 'blue' : 'dark-gray'}
       fullWidth
+      justify='left'
+      onClick={handleClick}
+      radius='md'
+      variant={currentPath === path ? 'filled' : 'transparent'}
     >
       {children}
     </Button>

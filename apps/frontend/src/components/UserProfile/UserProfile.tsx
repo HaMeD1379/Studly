@@ -1,160 +1,160 @@
-import Avatar from "~/components/";
 import {
-  SimpleGrid,
+  Button,
   Card,
-  Text,
+  Center,
+  Container,
   Flex,
   Progress,
-  Button,
-  Container,
-  Tabs,
   rem,
-  Center,
-} from "@mantine/core";
+  SimpleGrid,
+  Tabs,
+  Text,
+} from '@mantine/core';
 import {
-  IconEdit,
-  IconShare,
+  IconAward,
   IconChartBar,
+  IconClock,
+  IconEdit,
   IconListDetails,
+  IconShare,
+  IconTrendingUp,
   IconTrophy,
   IconUsers,
-  IconClock,
-  IconTrendingUp,
-  IconAward,
-} from "@tabler/icons-react";
+} from '@tabler/icons-react';
+import { Avatar } from '~/components/';
 
-export function UserProfile() {
-  const userName = "John Doe"; // Replace with actual user data
+export const UserProfile = () => {
+  const userName = 'John Doe'; // Replace with actual user data
 
   return (
-    <Container fluid p="xl">
-      <SimpleGrid cols={1} spacing="xl" mt="lg">
-        <Card shadow="sm" p="lg" radius="md">
-          <Flex direction="row" gap="md">
+    <Container fluid p='xl'>
+      <SimpleGrid cols={1} mt='lg' spacing='xl'>
+        <Card p='lg' radius='md' shadow='sm'>
+          <Flex direction='row' gap='md'>
             <Avatar
+              backgroundColor='#959595ff'
               name={userName}
               size={60}
-              backgroundColor="#959595ff"
-              textColor="#333"
+              textColor='#333'
             />
-            <Flex direction="column">
+            <Flex direction='column'>
               <Text>{userName}</Text>
               <Text>johndoe@gmail.com</Text>
             </Flex>
 
             <Button
-              variant="outline"
-              c="dark"
-              style={{ borderColor: "black" }}
+              c='dark'
               leftSection={<IconEdit size={14} />}
+              style={{ borderColor: 'black' }}
+              variant='outline'
             >
               Edit
             </Button>
             <Button
-              variant="outline"
-              c="dark"
-              style={{ borderColor: "black" }}
+              c='dark'
               leftSection={<IconShare size={14} />}
+              style={{ borderColor: 'black' }}
+              variant='outline'
             >
               Share
             </Button>
           </Flex>
 
-          <Text fw={500} mb="xs">
+          <Text fw={500} mb='xs'>
             Experience Points
           </Text>
 
-          <Progress value={70} size="lg" transitionDuration={200} />
+          <Progress size='lg' transitionDuration={200} value={70} />
         </Card>
       </SimpleGrid>
 
-      <SimpleGrid cols={4} spacing="xl" mt="lg">
+      <SimpleGrid cols={4} mt='lg' spacing='xl'>
         <Card
-          fw="bold"
-          shadow="sm"
-          p="lg"
-          radius="md"
+          fw='bold'
+          p='lg'
+          radius='md'
+          shadow='sm'
           style={{
-            border: "1px solid #e0e0e0",
-            borderRadius: "12px",
+            border: '1px solid #e0e0e0',
+            borderRadius: '12px',
           }}
         >
-          <Center style={{ flexDirection: "column", gap: "8px" }}>
-            <IconTrendingUp size={32} color="green" />
+          <Center style={{ flexDirection: 'column', gap: '8px' }}>
+            <IconTrendingUp color='green' size={32} />
             <Text fw={600}>Day Streak</Text>
           </Center>
         </Card>
 
-        <Card fw="bold" shadow="sm" p="lg" radius="md">
-          <Center style={{ flexDirection: "column", gap: "8px" }}>
-            <IconClock size={32} color="blue" />
+        <Card fw='bold' p='lg' radius='md' shadow='sm'>
+          <Center style={{ flexDirection: 'column', gap: '8px' }}>
+            <IconClock color='blue' size={32} />
             <Text fw={600}>Total Study</Text>
           </Center>
         </Card>
 
-        <Card fw="bold" shadow="sm" p="lg" radius="md">
-          <Center style={{ flexDirection: "column", gap: "8px" }}>
-            <IconAward size={32} color="orange" />
+        <Card fw='bold' p='lg' radius='md' shadow='sm'>
+          <Center style={{ flexDirection: 'column', gap: '8px' }}>
+            <IconAward color='orange' size={32} />
             <Text fw={600}>Badges</Text>
           </Center>
         </Card>
 
-        <Card fw="bold" shadow="sm" p="lg" radius="md">
-          <Center style={{ flexDirection: "column", gap: "8px" }}>
-            <IconUsers size={32} color="purple" />
+        <Card fw='bold' p='lg' radius='md' shadow='sm'>
+          <Center style={{ flexDirection: 'column', gap: '8px' }}>
+            <IconUsers color='purple' size={32} />
             <Text fw={600}>Friends</Text>
           </Center>
         </Card>
       </SimpleGrid>
       <Tabs
-        defaultValue="overview"
-        radius="xl"
-        variant="outline"
+        defaultValue='overview'
+        radius='xl'
         styles={(theme) => ({
           root: {
             backgroundColor: theme.colors.gray[0],
-            padding: rem(4),
             borderRadius: rem(50),
-            display: "inline-flex",
+            display: 'inline-flex',
+            padding: rem(4),
           },
           tab: {
-            fontWeight: 500,
-            color: theme.black,
-            padding: `${rem(8)} ${rem(16)}`,
-            "&[data-active]": {
+            '&[data-active]': {
               backgroundColor: theme.white,
               boxShadow: theme.shadows.sm,
             },
+            color: theme.black,
+            fontWeight: 500,
+            padding: `${rem(8)} ${rem(16)}`,
           },
         })}
+        variant='outline'
       >
         <Tabs.List>
-          <Tabs.Tab value="overview" leftSection={<IconChartBar size={16} />}>
+          <Tabs.Tab leftSection={<IconChartBar size={16} />} value='overview'>
             Overview
           </Tabs.Tab>
-          <Tabs.Tab value="stats" leftSection={<IconListDetails size={16} />}>
+          <Tabs.Tab leftSection={<IconListDetails size={16} />} value='stats'>
             Detailed Stats
           </Tabs.Tab>
-          <Tabs.Tab value="achievements" leftSection={<IconTrophy size={16} />}>
+          <Tabs.Tab leftSection={<IconTrophy size={16} />} value='achievements'>
             Achievements
           </Tabs.Tab>
         </Tabs.List>
       </Tabs>
-      <SimpleGrid cols={2} spacing="lg" mt="lg">
-        <Card fw="bold" shadow="sm" p="lg" radius="md">
+      <SimpleGrid cols={2} mt='lg' spacing='lg'>
+        <Card fw='bold' p='lg' radius='md' shadow='sm'>
           This Week
-          <Text c={"gray"}>Your study activity this week</Text>
+          <Text c={'gray'}>Your study activity this week</Text>
         </Card>
-        <Card fw="bold" shadow="sm" p="lg" radius="md">
+        <Card fw='bold' p='lg' radius='md' shadow='sm'>
           Recent Badges
         </Card>
       </SimpleGrid>
-      <SimpleGrid cols={1} spacing="lg" mt="lg">
-        <Card fw="bold" shadow="sm" p="lg" radius="md">
+      <SimpleGrid cols={1} mt='lg' spacing='lg'>
+        <Card fw='bold' p='lg' radius='md' shadow='sm'>
           Subject Distribution
           <Text>Time spent on different subjects</Text>
         </Card>
       </SimpleGrid>
     </Container>
   );
-}
+};

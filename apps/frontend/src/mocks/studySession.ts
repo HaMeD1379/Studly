@@ -1,21 +1,21 @@
-import type { StudySession } from '~/types'
+import type { StudySession } from '~/types';
 
 export const mockRecentStudySessions: StudySession[] = [
   {
     endStudyTimestamp: 1760234974000,
     sessionLength: 3710120,
-    subject: 'Mathematics'
+    subject: 'Mathematics',
   },
   {
     endStudyTimestamp: 1760117302000,
     sessionLength: 257409,
-    subject: 'Computer Science'
+    subject: 'Computer Science',
   },
   {
     endStudyTimestamp: 1759234974000,
     sessionLength: 45342000,
-    subject: 'Chemistry'
-  }
-]
+    subject: 'Chemistry',
+  },
+];
 export const mockTotalTimeStudied = 10000000;
 export const mockTimesStudied = 3;

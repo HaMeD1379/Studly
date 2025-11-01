@@ -1,20 +1,21 @@
 const mockOnStart = vi.fn();
 const mockOnStop = vi.fn();
 
-import { render } from '~/utilities/testing'
-import { StudySession } from './StudySession'
 import { screen } from '@testing-library/react';
 import { expect, vi } from 'vitest';
+import { render } from '~/utilities/testing';
+import { StudySession } from './StudySession';
 
 describe('StudySession', () => {
-
   beforeEach(() => {
     vi.resetAllMocks();
     vi.useFakeTimers();
-  })
+  });
 
   it('renders', () => {
-    render(<StudySession onStartStudy={mockOnStart} onStopStudy={mockOnStop}/>);
+    render(
+      <StudySession onStartStudy={mockOnStart} onStopStudy={mockOnStop} />,
+    );
 
     expect(screen.getByText('Current Session')).not.toBeNull();
     expect(screen.getByText('Configure your study session')).not.toBeNull();
@@ -32,11 +33,11 @@ describe('StudySession', () => {
 
     const { rerender } = render(
       <StudySession
-        startStudyTimestamp={mockStartTimestamp}
         endStudyTimestamp={mockEndTimestamp}
         onStartStudy={mockOnStart}
         onStopStudy={mockOnStop}
-      />
+        startStudyTimestamp={mockStartTimestamp}
+      />,
     );
 
     const startButton = screen.getByRole('button', { name: 'Start' });
@@ -54,15 +55,16 @@ describe('StudySession', () => {
 
     rerender(
       <StudySession
-        startStudyTimestamp={mockStartTimestamp}
         endStudyTimestamp={mockEndTimestamp}
         onStartStudy={mockOnStart}
         onStopStudy={mockOnStop}
-      />
+        startStudyTimestamp={mockStartTimestamp}
+      />,
     );
 
-    expect(screen.getByRole('button', { name: 'Start' }).getAttribute('disabled')).not.toBeNull();
-  
+    expect(
+      screen.getByRole('button', { name: 'Start' }).getAttribute('disabled'),
+    ).not.toBeNull();
   });
 
   it('clicking stop study session calls functions and disables self', async () => {
@@ -73,11 +75,11 @@ describe('StudySession', () => {
 
     const { rerender } = render(
       <StudySession
-        startStudyTimestamp={mockStartTimestamp}
         endStudyTimestamp={mockEndTimestamp}
         onStartStudy={mockOnStart}
         onStopStudy={mockOnStop}
-      />
+        startStudyTimestamp={mockStartTimestamp}
+      />,
     );
     const stopButton = screen.getByRole('button', { name: 'Stop' });
 
@@ -89,13 +91,15 @@ describe('StudySession', () => {
 
     rerender(
       <StudySession
-        startStudyTimestamp={0}
         endStudyTimestamp={0}
         onStartStudy={mockOnStart}
         onStopStudy={mockOnStop}
-      />
-    )
-    expect(screen.getByRole('button', { name: 'Stop' }).getAttribute('disabled')).not.toBeNull();
+        startStudyTimestamp={0}
+      />,
+    );
+    expect(
+      screen.getByRole('button', { name: 'Stop' }).getAttribute('disabled'),
+    ).not.toBeNull();
   });
 
   it('giving a start and end timestamp starts the countdown', () => {
@@ -104,12 +108,14 @@ describe('StudySession', () => {
     const mockStartTimestamp = Date.now();
     const mockEndTimestamp = mockStartTimestamp + 3600000;
 
-    render(<StudySession
-      startStudyTimestamp={mockStartTimestamp}
-      endStudyTimestamp={mockEndTimestamp}
-      onStartStudy={mockOnStart}
-      onStopStudy={mockOnStop}
-    />)
+    render(
+      <StudySession
+        endStudyTimestamp={mockEndTimestamp}
+        onStartStudy={mockOnStart}
+        onStopStudy={mockOnStop}
+        startStudyTimestamp={mockStartTimestamp}
+      />,
+    );
 
     expect(screen.getByText('1:00'));
     expect(screen.getByText('1 hours and 0 minutes remaining'));
@@ -121,12 +127,13 @@ describe('StudySession', () => {
     const mockStartTimestamp = Date.now();
     const mockEndTimestamp = mockStartTimestamp - 1000;
 
-    render(<StudySession
-        startStudyTimestamp={mockStartTimestamp}
+    render(
+      <StudySession
         endStudyTimestamp={mockEndTimestamp}
         onStartStudy={mockOnStart}
         onStopStudy={mockOnStop}
-      />
+        startStudyTimestamp={mockStartTimestamp}
+      />,
     );
 
     expect(mockOnStop).toHaveBeenCalled();
@@ -134,5 +141,5 @@ describe('StudySession', () => {
 
   afterEach(() => {
     vi.useRealTimers();
-  })
-})
+  });
+});

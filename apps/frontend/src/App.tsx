@@ -1,20 +1,20 @@
-import { MantineProvider } from "@mantine/core";
-import { Notifications } from "@mantine/notifications";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { MantineProvider } from '@mantine/core';
+import { Notifications } from '@mantine/notifications';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import {
-  Study,
-  Home,
-  SignUp,
-  Forgot,
-  Login,
   Badges,
+  Forgot,
+  Home,
+  Login,
+  SignUp,
+  Study,
+  UpdatePassword,
   UserProfile,
-  UpdatePassword
-} from "~/routes";
+} from '~/routes';
 
-import "@mantine/core/styles.css";
-import "@mantine/notifications/styles.css";
-import "@mantine/dates/styles.css";
+import '@mantine/core/styles.css';
+import '@mantine/notifications/styles.css';
+import '@mantine/dates/styles.css';
 
 export const App = () => {
   return (
@@ -22,14 +22,14 @@ export const App = () => {
       <BrowserRouter>
         <Notifications />
         <Routes>
-          <Route path="/home" element={<Home />} />
-          <Route path="/study" element={<Study />} />
-          <Route path="/" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/forgot-password" element={<Forgot />} />
-          <Route path="/badges" element={<Badges />} />
-          <Route path="/user" element={<UserProfile />} />
-          <Route path="/change-password" element={<UpdatePassword />} />
+          <Route element={<Home />} path='/home' />
+          <Route element={<Study />} path='/study' />
+          <Route element={<Login />} path='/' />
+          <Route element={<SignUp />} path='/signup' />
+          <Route element={<Forgot />} path='/forgot-password' />
+          <Route element={<Badges />} path='/badges' />
+          <Route element={<UserProfile />} path='/user' />
+          <Route element={<UpdatePassword />} path='/change-password' />
         </Routes>
       </BrowserRouter>
     </MantineProvider>

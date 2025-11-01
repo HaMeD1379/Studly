@@ -1,11 +1,11 @@
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest';
+import { render } from '~/utilities/testing';
 import { App } from './App';
-import { render } from '~/utilities/testing'
 
 describe('App.tsx', () => {
   it('renders', () => {
-    render(<App/>)
+    render(<App />);
 
     expect(true).toBe(true);
-  })
+  });
 });

@@ -5,4 +5,4 @@ export type Badge = {
 
 export type UnlockedBadge = Badge & {
   timeUnlocked: number;
-}
+};
