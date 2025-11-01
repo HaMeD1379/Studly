@@ -35,9 +35,9 @@
  * ────────────────────────────────────────────────────────────────────────────────
  */
 
-import supabase from '../config/supabase.js';
-import { handleError, handleSuccess } from '../utils/serverUtils.js';
-import STRINGS from '../config/strings.js';
+import supabase from "../config/supabase.js";
+import { handleError, handleSuccess } from "../utils/serverUtils.js";
+import STRINGS from "../config/strings.js";
 
 export const signup = async (req, res) => {
   const { email, password, full_name: fullName } = req.body;
@@ -69,6 +69,7 @@ export const signup = async (req, res) => {
         email: data.user.email,
         full_name: data.user.user_metadata.full_name,
       },
+      session: data.session,
     });
   } catch (error) {
     console.error(STRINGS.AUTH.UNEXPEXTED_SIGNUP_ERROR, error.message);
@@ -136,7 +137,9 @@ export const forgotPassword = async (req, res) => {
       return;
     }
 
-    handleSuccess(res, 200, STRINGS.AUTH.PASSWORD_RESET_EMAIL_SUCCESS, { data });
+    handleSuccess(res, 200, STRINGS.AUTH.PASSWORD_RESET_EMAIL_SUCCESS, {
+      data,
+    });
   } catch (error) {
     console.error(STRINGS.AUTH.UNEXPECTED_FORGOT_PASSWORD_ERROR, error.message);
     handleError(res, 500, STRINGS.SERVER.INTERNAL_ERROR);
