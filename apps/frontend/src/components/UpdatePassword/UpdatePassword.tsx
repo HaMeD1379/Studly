@@ -61,8 +61,8 @@ export function UpdatePassword() {
         padding: '20px',
       }}
     >
-      <Container className="classes.container" my={40} size={420}>
-        <Paper mt={30} p={22} radius="lg" shadow="xl" withBorder>
+      <Container className='classes.container' my={40} size={420}>
+        <Paper mt={30} p={22} radius='lg' shadow='xl' withBorder>
           <Text c={rules.matchesLen ? 'green' : 'red'}>
             • Password must be at least one 8 characters long
           </Text>
@@ -80,12 +80,12 @@ export function UpdatePassword() {
             ^, &, *, (, ), -, _, +, =)
           </Text>
         </Paper>
-        <Paper mt={30} p={22} radius="md" shadow="sm" withBorder>
-          <Title ff="Inter, sans-serif" ta="center">
+        <Paper mt={30} p={22} radius='md' shadow='sm' withBorder>
+          <Title ff='Inter, sans-serif' ta='center'>
             Join Studly
           </Title>
           <Text
-            c="gray"
+            c='gray'
             style={{
               fontSize: 'var(--mantine-font-size-xs)',
               marginTop: '5px',
@@ -96,25 +96,25 @@ export function UpdatePassword() {
           </Text>
           <form onSubmit={handleClick}>
             <PasswordInput
-              label="Enter new Password"
-              mt="md"
+              label='Enter new Password'
+              mt='md'
               onChange={(e) => setPassword_1(e.target.value)}
-              placeholder="Create a password"
-              radius="md"
+              placeholder='Create a password'
+              radius='md'
               required
             />
             <PasswordInput
-              label="Confirm New Password"
-              mt="md"
+              label='Confirm New Password'
+              mt='md'
               onChange={(e) => setPassword_2(e.target.value)}
-              placeholder="Confirm your password"
-              radius="md"
+              placeholder='Confirm your password'
+              radius='md'
               required
             />
             <Button
               fullWidth
-              mt="xl"
-              radius="md"
+              mt='xl'
+              radius='md'
               styles={{
                 root: {
                   '&:hover': { backgroundColor: '#222' },
@@ -123,7 +123,7 @@ export function UpdatePassword() {
                   fontWeight: 500,
                 },
               }}
-              type="submit"
+              type='submit'
             >
               Update Password
             </Button>

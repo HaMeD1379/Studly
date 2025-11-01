@@ -22,14 +22,14 @@ export const App = () => {
       <BrowserRouter>
         <Notifications />
         <Routes>
-          <Route element={<Home />} path="/home" />
-          <Route element={<Study />} path="/study" />
-          <Route element={<Login />} path="/" />
-          <Route element={<SignUp />} path="/signup" />
-          <Route element={<Forgot />} path="/forgot-password" />
-          <Route element={<Badges />} path="/badges" />
-          <Route element={<UserProfile />} path="/user" />
-          <Route element={<UpdatePassword />} path="/change-password" />
+          <Route element={<Home />} path='/home' />
+          <Route element={<Study />} path='/study' />
+          <Route element={<Login />} path='/' />
+          <Route element={<SignUp />} path='/signup' />
+          <Route element={<Forgot />} path='/forgot-password' />
+          <Route element={<Badges />} path='/badges' />
+          <Route element={<UserProfile />} path='/user' />
+          <Route element={<UpdatePassword />} path='/change-password' />
         </Routes>
       </BrowserRouter>
     </MantineProvider>

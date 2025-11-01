@@ -47,26 +47,26 @@ export const SetupStudySession = ({
   };
 
   return (
-    <Flex bd="1px solid lightgray" bdrs={8} direction="column" gap="lg" p={24}>
+    <Flex bd='1px solid lightgray' bdrs={8} direction='column' gap='lg' p={24}>
       <Text>Session Setup</Text>
       <Select
         clearable
         data={SETUP_STUDY_SESSION_OPTIONS}
-        label="Subject"
+        label='Subject'
         onChange={setSubject}
-        placeholder="Select a subject"
+        placeholder='Select a subject'
         searchable
         value={subject}
       />
       <Box>
-        <Text fw={500} size="sm">
+        <Text fw={500} size='sm'>
           Quick Session Length
         </Text>
-        <Flex direction="column" gap="sm">
+        <Flex direction='column' gap='sm'>
           <Group grow>
             <Button
               onClick={() => updateQuickSession(15)}
-              radius="md"
+              radius='md'
               variant={
                 !customTime && sessionLengthMins === 15 ? 'filled' : 'outline'
               }
@@ -75,7 +75,7 @@ export const SetupStudySession = ({
             </Button>
             <Button
               onClick={() => updateQuickSession(30)}
-              radius="md"
+              radius='md'
               variant={
                 !customTime && sessionLengthMins === 30 ? 'filled' : 'outline'
               }
@@ -86,7 +86,7 @@ export const SetupStudySession = ({
           <Group grow>
             <Button
               onClick={() => updateQuickSession(45)}
-              radius="md"
+              radius='md'
               variant={
                 !customTime && sessionLengthMins === 45 ? 'filled' : 'outline'
               }
@@ -95,7 +95,7 @@ export const SetupStudySession = ({
             </Button>
             <Button
               onClick={() => updateQuickSession(60)}
-              radius="md"
+              radius='md'
               variant={
                 !customTime && sessionLengthMins === 60 ? 'filled' : 'outline'
               }
@@ -105,22 +105,22 @@ export const SetupStudySession = ({
           </Group>
           <TimePicker
             clearable
-            description="Custom time is in format hh:mm"
+            description='Custom time is in format hh:mm'
             inputContainer={(children) => (
               <Flex
-                bd="1px solid blue"
+                bd='1px solid blue'
                 bdrs={8}
                 bg={customTime ? 'blue' : 'white'}
-                justify="center"
+                justify='center'
                 pb={4}
               >
                 {children}
               </Flex>
             )}
-            label="Custom Session Length"
+            label='Custom Session Length'
             minutesStep={5}
             onChange={updateCustomTime}
-            radius="md"
+            radius='md'
             styles={{
               field: {
                 color: customTime ? 'white' : 'black',
@@ -130,7 +130,7 @@ export const SetupStudySession = ({
               },
             }}
             value={customTime}
-            variant="unstyled"
+            variant='unstyled'
             withDropdown
           />
         </Flex>

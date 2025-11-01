@@ -6,10 +6,10 @@ export const Badges = () => {
   return (
     <Navbar>
       <Box mx={48} w={1150}>
-        <Text fw={700} size="xl">
+        <Text fw={700} size='xl'>
           Badge Collection
         </Text>
-        <Text fw={300} mb={32} size="md">
+        <Text fw={300} mb={32} size='md'>
           Earn badges by completing and hitting milestones
         </Text>
         <BadgeStatistics badgesUnlocked={2} totalBadges={3} />

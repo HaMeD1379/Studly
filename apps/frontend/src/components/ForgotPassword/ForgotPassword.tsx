@@ -46,27 +46,27 @@ export function ForgotPassword() {
       >
         Forgot your password?
       </Title>
-      <Text c="dimmed" fz="sm" ta="center">
+      <Text c='dimmed' fz='sm' ta='center'>
         Enter your email to get a reset link
       </Text>
 
-      <Paper mt="xl" p={30} radius="md" shadow="md" withBorder>
+      <Paper mt='xl' p={30} radius='md' shadow='md' withBorder>
         <form onSubmit={handleClick}>
           <TextInput
-            label="Your email"
+            label='Your email'
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Your email"
+            placeholder='Your email'
           />
           <Group
-            justify="space-between"
-            mt="lg"
+            justify='space-between'
+            mt='lg'
             style={{
               flexDirection: 'column',
             }}
           >
             <Anchor
-              c="dimmed"
-              size="sm"
+              c='dimmed'
+              size='sm'
               style={{
                 textAlign: 'center',
                 width: '100%',
@@ -74,7 +74,7 @@ export function ForgotPassword() {
             >
               <Center inline>
                 <IconArrowLeft
-                  data-testid="back-arrow"
+                  data-testid='back-arrow'
                   onClick={() => navigate('/')}
                   size={12}
                   stroke={1.5}
@@ -93,7 +93,7 @@ export function ForgotPassword() {
                   width: '100%', // move inside root
                 },
               }}
-              type="submit"
+              type='submit'
             >
               Reset password
             </Button>

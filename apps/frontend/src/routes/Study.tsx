@@ -35,15 +35,15 @@ export const Study = () => {
   return (
     <Navbar>
       <Box mx={48} w={1150}>
-        <Text fw={700} size="xl">
+        <Text fw={700} size='xl'>
           Study Session
         </Text>
-        <Text fw={300} mb={32} size="md">
+        <Text fw={300} mb={32} size='md'>
           Focus and track your study time
         </Text>
-        <Grid grow gutter="lg">
-          <Grid.Col span="auto">
-            <Flex direction="column" gap="lg">
+        <Grid grow gutter='lg'>
+          <Grid.Col span='auto'>
+            <Flex direction='column' gap='lg'>
               <StudySession
                 endStudyTimestamp={endStudyTimestamp}
                 onStartStudy={startStudySession}
@@ -56,8 +56,8 @@ export const Study = () => {
               />
             </Flex>
           </Grid.Col>
-          <Grid.Col span="auto">
-            <Flex direction="column" gap="lg">
+          <Grid.Col span='auto'>
+            <Flex direction='column' gap='lg'>
               <TodaysStudyStatistics
                 timesStudied={mockTimesStudied}
                 totalTimeStudied={mockTotalTimeStudied}

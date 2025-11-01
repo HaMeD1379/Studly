@@ -80,21 +80,21 @@ export const StudySession = ({
   }, [calculateNextInterval, interval, startStudyTimestamp]);
 
   return (
-    <Flex bd="1px solid lightgray" bdrs={8} direction="column" p={24}>
-      <Text fw={600} size="sm">
+    <Flex bd='1px solid lightgray' bdrs={8} direction='column' p={24}>
+      <Text fw={600} size='sm'>
         Current Session
       </Text>
-      <Text size="sm">Configure your study session</Text>
-      <Flex align="center" direction="column" py={8}>
+      <Text size='sm'>Configure your study session</Text>
+      <Flex align='center' direction='column' py={8}>
         <Text fw={700} style={{ fontSize: 54 }}>
           {formattedTimeLeft}
         </Text>
       </Flex>
-      <Progress size="lg" transitionDuration={200} value={progressBarPercent} />
-      <Flex align="center" direction="column">
-        <Text size="sm">{fullFormattedTimeLeft} remaining</Text>
+      <Progress size='lg' transitionDuration={200} value={progressBarPercent} />
+      <Flex align='center' direction='column'>
+        <Text size='sm'>{fullFormattedTimeLeft} remaining</Text>
       </Flex>
-      <Flex gap="sm" justify="center" pt={24}>
+      <Flex gap='sm' justify='center' pt={24}>
         <Button disabled={startStudyTimestamp > 0} onClick={onStartStudy}>
           Start
         </Button>

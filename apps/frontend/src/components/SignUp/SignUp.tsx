@@ -87,8 +87,8 @@ export function SignUpForm() {
         padding: '20px',
       }}
     >
-      <Container className="classes.container" my={40} size={420}>
-        <Paper mt={30} p={22} radius="lg" shadow="xl" withBorder>
+      <Container className='classes.container' my={40} size={420}>
+        <Paper mt={30} p={22} radius='lg' shadow='xl' withBorder>
           <Text c={rules.matchesLen ? 'green' : 'red'}>
             • Password must be at least one 8 characters long
           </Text>
@@ -106,12 +106,12 @@ export function SignUpForm() {
             ^, &, *, (, ), -, _, +, =)
           </Text>
         </Paper>
-        <Paper mt={30} p={22} radius="md" shadow="sm" withBorder>
-          <Title ff="Inter, sans-serif" ta="center">
+        <Paper mt={30} p={22} radius='md' shadow='sm' withBorder>
+          <Title ff='Inter, sans-serif' ta='center'>
             Join Studly
           </Title>
           <Text
-            c="gray"
+            c='gray'
             style={{
               fontSize: 'var(--mantine-font-size-xs)',
               marginTop: '5px',
@@ -122,46 +122,46 @@ export function SignUpForm() {
           </Text>
           <form onSubmit={handleClick}>
             <TextInput
-              label="Full Name"
+              label='Full Name'
               onChange={(e) => setName(e.target.value)}
-              placeholder="Enter your full name"
-              radius="md"
+              placeholder='Enter your full name'
+              radius='md'
               required
             />
             <TextInput
-              label="Email"
+              label='Email'
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="yourname@gmail.com"
-              radius="md"
+              placeholder='yourname@gmail.com'
+              radius='md'
               required
             />
             <PasswordInput
-              label="Create Password"
-              mt="md"
+              label='Create Password'
+              mt='md'
               onChange={(e) => setPassword_1(e.target.value)}
-              placeholder="Create a password"
-              radius="md"
+              placeholder='Create a password'
+              radius='md'
               required
             />
             <PasswordInput
-              label="Confirm Password"
-              mt="md"
+              label='Confirm Password'
+              mt='md'
               onChange={(e) => setPassword_2(e.target.value)}
-              placeholder="Confirm your password"
-              radius="md"
+              placeholder='Confirm your password'
+              radius='md'
               required
             />
-            <Group justify="space-between" mt="lg">
+            <Group justify='space-between' mt='lg'>
               <Checkbox
                 fw={700}
-                label="I agree to the Terms and Conditions"
+                label='I agree to the Terms and Conditions'
                 required
               />
             </Group>
             <Button
               fullWidth
-              mt="xl"
-              radius="md"
+              mt='xl'
+              radius='md'
               styles={{
                 root: {
                   '&:hover': { backgroundColor: '#222' },
@@ -170,7 +170,7 @@ export function SignUpForm() {
                   fontWeight: 500,
                 },
               }}
-              type="submit"
+              type='submit'
             >
               Sign Up
             </Button>

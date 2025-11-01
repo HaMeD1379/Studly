@@ -47,20 +47,20 @@ export function LoginForm() {
       }}
     >
       <Container my={40} size={420}>
-        <Paper mt={30} p={22} radius="md" shadow="sm" withBorder>
+        <Paper mt={30} p={22} radius='md' shadow='sm' withBorder>
           <Center>
             <Image
-              alt="Description of your image"
+              alt='Description of your image'
               h={200}
               src={placeholder}
-              w="auto"
+              w='auto'
             />
           </Center>
-          <Title ff="Inter, sans-serif" ta="center">
+          <Title ff='Inter, sans-serif' ta='center'>
             Welcome to Studly
           </Title>
           <Text
-            c="gray"
+            c='gray'
             style={{
               fontSize: 'var(--mantine-font-size-xs)',
               marginTop: '5px',
@@ -71,36 +71,36 @@ export function LoginForm() {
           </Text>
           <form onSubmit={handleLogin}>
             <TextInput
-              label="Email"
+              label='Email'
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@mantine.dev"
-              radius="md"
+              placeholder='you@mantine.dev'
+              radius='md'
               required
             />
             <PasswordInput
-              label="Password"
-              mt="md"
+              label='Password'
+              mt='md'
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Your password"
-              radius="md"
+              placeholder='Your password'
+              radius='md'
               required
             />
-            <Group justify="space-between" mt="lg">
-              <Checkbox label="Remember me" />
+            <Group justify='space-between' mt='lg'>
+              <Checkbox label='Remember me' />
               <br />
               <Anchor
-                c="black"
-                component="button"
+                c='black'
+                component='button'
                 onClick={() => navigate('/forgot-password')}
-                size="sm"
+                size='sm'
               >
                 Forgot password?
               </Anchor>
             </Group>
             <Button
               fullWidth
-              mt="xl"
-              radius="md"
+              mt='xl'
+              radius='md'
               styles={{
                 root: {
                   '&:hover': { backgroundColor: '#222' },
@@ -109,7 +109,7 @@ export function LoginForm() {
                   fontWeight: 500,
                 },
               }}
-              type="submit"
+              type='submit'
             >
               Sign in
             </Button>

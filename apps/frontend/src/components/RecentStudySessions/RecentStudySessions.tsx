@@ -34,7 +34,7 @@ export const RecentStudySessions = ({
   };
 
   return (
-    <Flex bd="1px solid lightgray" bdrs={8} direction="column" p={24}>
+    <Flex bd='1px solid lightgray' bdrs={8} direction='column' p={24}>
       <Text pb={8}>Recent Sessions</Text>
       {recentStudySessions && recentStudySessions.length > 0 ? (
         <Table>
@@ -62,12 +62,12 @@ export const RecentStudySessions = ({
           </Table.Tbody>
         </Table>
       ) : (
-        <Flex align="center" direction="column" h={200} justify="center">
-          <IconBook color="lightGray" size={72} />
-          <Text c="gray" pt={16} size="lg">
+        <Flex align='center' direction='column' h={200} justify='center'>
+          <IconBook color='lightGray' size={72} />
+          <Text c='gray' pt={16} size='lg'>
             No sessions completed yet.
           </Text>
-          <Text c="gray" size="lg">
+          <Text c='gray' size='lg'>
             Start your first session!
           </Text>
         </Flex>
