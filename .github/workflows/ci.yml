@@ -81,12 +81,12 @@ jobs:
         run: npm ci
         working-directory: apps/frontend
 
-      - name: Run frontend lint (ESLint)
+      - name: Run frontend lint
         run: npm run lint
         working-directory: apps/frontend
 
-      - name: Run frontend Biome check
-        run: npm run biome:check
+      - name: Run frontend format
+        run: npm run format
         working-directory: apps/frontend
 
       - name: Run frontend tests
