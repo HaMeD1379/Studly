@@ -100,7 +100,7 @@ describe('sessions.controller', () => {
       assert.equal(next.mock.calls.length, 0);
     });
 
-    it('maps milliseconds to minutes before delegating to the service', async () => {
+    it('forwards canonical payload to the service', async () => {
       const createdSession = { id: 'session-1', subject: 'Biology' };
       const { sessionsService, badgesService } = createMockServices();
       sessionsService.createSession = mock.fn(async (payload) => ({ ...createdSession, ...payload }));
@@ -122,10 +122,13 @@ describe('sessions.controller', () => {
       assert.equal(res.statusCode, 201);
       assert.equal(sessionsService.createSession.mock.calls.length, 1);
       const payload = sessionsService.createSession.mock.calls[0].arguments[0];
-      assert.equal(payload.target_duration_minutes, 30);
-      assert.equal(payload.started_at, '2024-01-01T00:00:00.000Z');
-      assert.equal(payload.status, 'in_progress');
-      assert.equal(payload.user_id, 'user-1');
+      assert.deepEqual(payload, {
+        userId: 'user-1',
+        subject: 'Biology',
+        startTimestamp: '2024-01-01T00:00:00.000Z',
+        targetDurationMillis: 1_800_000,
+        status: 'in_progress',
+      });
     });
 
     it('forwards service errors to next', async () => {
@@ -198,12 +201,12 @@ describe('sessions.controller', () => {
       assert.equal(next.mock.calls.length, 0);
     });
 
-    it('maps milliseconds to minutes before completing the session', async () => {
+    it('maps request payload into canonical service update', async () => {
       const { sessionsService, badgesService } = createMockServices();
-      sessionsService.completeSession = mock.fn(async () => ({ 
-        id: 'session-1', 
+      sessionsService.completeSession = mock.fn(async () => ({
+        id: 'session-1',
         userId: 'user-1',
-        status: 'completed' 
+        status: 'completed'
       }));
       badgesService.checkAndAwardBadges = mock.fn(async () => []);
       
@@ -225,8 +228,8 @@ describe('sessions.controller', () => {
       const callArgs = sessionsService.completeSession.mock.calls[0].arguments;
       assert.equal(callArgs[0], 'session-1');
       assert.deepEqual(callArgs[1], {
-        ended_at: '2024-01-01T00:10:00.000Z',
-        duration_minutes: 10,
+        endStudyTimestamp: '2024-01-01T00:10:00.000Z',
+        sessionLengthMillis: 600_000,
         notes: 'Felt productive',
         status: 'completed',
       });
