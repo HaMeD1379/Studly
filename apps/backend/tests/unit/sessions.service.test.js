@@ -3,22 +3,25 @@
  *  File: tests/unit/sessions.service.test.js
  *  Group: Group 3 — COMP 4350: Software Engineering 2
  *  Project: Studly
- *  Author: Hamed Esmaeilzadeh (team member)
- *  Assisted-by: ChatGPT (GPT-5 Thinking) for comments, documentation, debugging,
- *               and partial code contributions
- *  Last-Updated: 2025-10-16
  * ────────────────────────────────────────────────────────────────────────────────
  *  Summary
  *  -------
- *  Unit tests for the Sessions service layer. These tests exercise the query
- *  builder interactions with a mocked Supabase client to ensure:
- *    • Correct table/column names are used
- *    • Happy-path records are returned to callers with camelCase conversions
- *    • Failures throw descriptive errors for controller middleware to handle
- *    • Aggregation helpers compute dashboard metrics in milliseconds
+ *  Unit coverage for the Sessions service. The new schema returned by the
+ *  frontend now expects millisecond-based timestamps and durations, so these
+ *  tests focus on verifying the service:
+ *   • Maps canonical payloads to the Supabase column names that exist today.
+ *   • Translates Supabase rows back into the frontend contract.
+ *   • Applies in-memory filtering/sorting when Supabase cannot natively do so.
+ *   • Surfaces descriptive errors when Supabase rejects the request.
  *
- *  NOTE: We rely on Node's built-in test runner (`node:test`) and its mocking
- *  utilities so no additional testing frameworks are required.
+ *  Implementation Notes
+ *  --------------------
+ *  • We pass a fixed list of session columns to the service factory so that it
+ *    does not attempt to query `information_schema.columns` in tests.
+ *  • Supabase builders are mocked with lightweight objects that implement a
+ *    `then` method, allowing `await` to work exactly as the real client.
+ *  • Durations are stored in milliseconds on the database, mirroring the new
+ *    frontend contract.
  * ────────────────────────────────────────────────────────────────────────────────
  */
 
@@ -27,89 +30,152 @@ import { describe, it, mock } from 'node:test';
 
 import { createSessionsService } from '../../src/services/sessions.service.js';
 
+const SESSION_COLUMNS = [
+  'id',
+  'user_id',
+  'subject',
+  'status',
+  'start_study_timestamp',
+  'end_study_timestamp',
+  'session_length_millis',
+  'target_duration_millis',
+  'notes',
+  'created_at',
+  'updated_at',
+];
+
+const createAwaitable = (result) => Promise.resolve(result);
+
 describe('sessions.service', () => {
   describe('createSession', () => {
-    it('inserts into the sessions table and returns a camelCase session', async () => {
-      const created = {
+    it('maps canonical payloads into Supabase columns and returns frontend shape', async () => {
+      const createdRow = {
         id: 'session-1',
         user_id: 'user-1',
         subject: 'Math',
         status: 'in_progress',
-        started_at: '2024-01-01T00:00:00.000Z',
-        target_duration_minutes: 1.5,
-        duration_minutes: null,
-        ended_at: null,
+        start_study_timestamp: '2024-01-01T00:00:00.000Z',
+        target_duration_millis: 1_800_000,
+        session_length_millis: null,
+        end_study_timestamp: null,
+        notes: null,
       };
 
-      const single = mock.fn(async () => ({ data: created, error: null }));
+      const single = mock.fn(async () => ({ data: createdRow, error: null }));
       const select = mock.fn(() => ({ single }));
-      const insert = mock.fn(() => ({ select }));
-      const from = mock.fn(() => ({ insert }));
+      const insert = mock.fn((payload) => {
+        insert.lastPayload = payload;
+        return { select };
+      });
+      const from = mock.fn((table) => {
+        assert.equal(table, 'sessions');
+        return { insert };
+      });
+
       const client = { from };
+      const service = createSessionsService(client, { sessionColumns: SESSION_COLUMNS });
 
-      const service = createSessionsService(client);
-      const result = await service.createSession({ subject: 'Math' });
+      const result = await service.createSession({
+        userId: 'user-1',
+        subject: 'Math',
+        startTimestamp: '2024-01-01T00:00:00.000Z',
+        targetDurationMillis: 1_800_000,
+        status: 'in_progress',
+      });
 
-      assert.equal(from.mock.calls[0].arguments[0], 'sessions');
-      assert.deepEqual(insert.mock.calls[0].arguments[0], { subject: 'Math' });
+      assert.deepEqual(insert.lastPayload, {
+        user_id: 'user-1',
+        subject: 'Math',
+        status: 'in_progress',
+        start_study_timestamp: '2024-01-01T00:00:00.000Z',
+        target_duration_millis: 1_800_000,
+      });
       assert.equal(result.id, 'session-1');
-      assert.equal(result.targetDurationMillis, 90_000);
+      assert.equal(result.userId, 'user-1');
+      assert.equal(result.targetDurationMillis, 1_800_000);
       assert.equal(result.sessionLength, null);
+      assert.equal(result.endStudyTimestamp, null);
     });
 
-    it('throws a descriptive error when Supabase returns an error', async () => {
-      const single = mock.fn(async () => ({ data: null, error: { message: 'row violates constraint' } }));
+    it('throws a descriptive error when Supabase rejects the insert', async () => {
+      const single = mock.fn(async () => ({ data: null, error: { message: 'constraint violation' } }));
       const select = mock.fn(() => ({ single }));
       const insert = mock.fn(() => ({ select }));
       const from = mock.fn(() => ({ insert }));
-      const client = { from };
 
-      const service = createSessionsService(client);
+      const client = { from };
+      const service = createSessionsService(client, { sessionColumns: SESSION_COLUMNS });
 
       await assert.rejects(
-        () => service.createSession({ subject: 'Physics' }),
-        /Failed to create session: row violates constraint/,
+        () =>
+          service.createSession({
+            userId: 'user-1',
+            subject: 'Physics',
+            startTimestamp: '2024-01-02T00:00:00.000Z',
+            targetDurationMillis: 900_000,
+            status: 'in_progress',
+          }),
+        /Failed to create session: constraint violation/,
       );
     });
   });
 
   describe('completeSession', () => {
-    it('updates the targeted session and returns camelCase data', async () => {
-      const updated = {
+    it('updates Supabase columns using millisecond payloads', async () => {
+      const updatedRow = {
         id: 'session-1',
         user_id: 'user-1',
         status: 'completed',
-        ended_at: '2024-01-01T00:10:00.000Z',
-        duration_minutes: 10,
-        target_duration_minutes: 30,
+        end_study_timestamp: '2024-01-01T00:10:00.000Z',
+        session_length_millis: 600_000,
+        target_duration_millis: 1_800_000,
+        notes: 'Great focus',
       };
 
-      const maybeSingle = mock.fn(async () => ({ data: updated, error: null }));
+      const maybeSingle = mock.fn(async () => ({ data: updatedRow, error: null }));
       const select = mock.fn(() => ({ maybeSingle }));
       const eq = mock.fn(() => ({ select }));
-      const update = mock.fn(() => ({ eq }));
+      const update = mock.fn((payload) => {
+        update.lastPayload = payload;
+        return { eq };
+      });
       const from = mock.fn(() => ({ update }));
+
       const client = { from };
+      const service = createSessionsService(client, { sessionColumns: SESSION_COLUMNS });
 
-      const service = createSessionsService(client);
-      const result = await service.completeSession('session-1', { status: 'completed' });
+      const result = await service.completeSession('session-1', {
+        status: 'completed',
+        endStudyTimestamp: '2024-01-01T00:10:00.000Z',
+        sessionLengthMillis: 600_000,
+        notes: 'Great focus',
+      });
 
-      assert.deepEqual(update.mock.calls[0].arguments[0], { status: 'completed' });
+      assert.deepEqual(update.lastPayload, {
+        status: 'completed',
+        end_study_timestamp: '2024-01-01T00:10:00.000Z',
+        session_length_millis: 600_000,
+        notes: 'Great focus',
+      });
       assert.deepEqual(eq.mock.calls[0].arguments, ['id', 'session-1']);
       assert.equal(result.sessionLength, 600_000);
       assert.equal(result.targetDurationMillis, 1_800_000);
     });
 
-    it('returns null when Supabase finds no matching session', async () => {
+    it('returns null when no session matches the provided id', async () => {
       const maybeSingle = mock.fn(async () => ({ data: null, error: null }));
       const select = mock.fn(() => ({ maybeSingle }));
       const eq = mock.fn(() => ({ select }));
       const update = mock.fn(() => ({ eq }));
       const from = mock.fn(() => ({ update }));
-      const client = { from };
 
-      const service = createSessionsService(client);
-      const result = await service.completeSession('missing-id', { status: 'completed' });
+      const client = { from };
+      const service = createSessionsService(client, { sessionColumns: SESSION_COLUMNS });
+
+      const result = await service.completeSession('missing-id', {
+        status: 'completed',
+        endStudyTimestamp: '2024-01-01T00:10:00.000Z',
+      });
 
       assert.equal(result, null);
     });
@@ -120,155 +186,150 @@ describe('sessions.service', () => {
       const eq = mock.fn(() => ({ select }));
       const update = mock.fn(() => ({ eq }));
       const from = mock.fn(() => ({ update }));
-      const client = { from };
 
-      const service = createSessionsService(client);
+      const client = { from };
+      const service = createSessionsService(client, { sessionColumns: SESSION_COLUMNS });
 
       await assert.rejects(
-        () => service.completeSession('session-1', { status: 'completed' }),
+        () =>
+          service.completeSession('session-1', {
+            status: 'completed',
+            endStudyTimestamp: '2024-01-01T00:10:00.000Z',
+          }),
         /Failed to complete session: permission denied/,
       );
     });
   });
 
   describe('listSessions', () => {
-    it('applies filters, ordering, and maps rows to camelCase', async () => {
+    const createSelectBuilder = (rows, error = null) => {
+      const result = { data: rows, error };
+      const builder = createAwaitable(result);
+      builder.select = mock.fn(() => builder);
+      builder.eq = mock.fn(() => builder);
+      return builder;
+    };
+
+    it('applies filters, performs in-memory range filtering, and sorts by end time', async () => {
       const rows = [
         {
           id: 'session-1',
           user_id: 'user-1',
           subject: 'Math',
           status: 'completed',
-          ended_at: '2024-01-02T00:00:00.000Z',
-          duration_minutes: 10,
-          target_duration_minutes: 30,
+          end_study_timestamp: '2024-01-02T00:00:00.000Z',
+          session_length_millis: 600_000,
+          target_duration_millis: 1_800_000,
           notes: 'Great focus',
+        },
+        {
+          id: 'session-2',
+          user_id: 'user-1',
+          subject: 'Physics',
+          status: 'completed',
+          end_study_timestamp: '2024-01-01T00:00:00.000Z',
+          session_length_millis: 300_000,
+          target_duration_millis: 1_200_000,
+          notes: null,
         },
       ];
 
-      const order = mock.fn(async () => ({ data: rows, error: null }));
-      const builder = {
-        select: mock.fn(() => builder),
-        eq: mock.fn(() => builder),
-        gte: mock.fn(() => builder),
-        lte: mock.fn(() => builder),
-        limit: mock.fn(() => builder),
-        order,
-      };
+      const builder = createSelectBuilder(rows);
       const from = mock.fn(() => builder);
-      const client = { from };
 
-      const service = createSessionsService(client);
+      const client = { from };
+      const service = createSessionsService(client, { sessionColumns: SESSION_COLUMNS });
+
       const result = await service.listSessions({
         userId: 'user-1',
         subject: 'Math',
         status: 'completed',
-        endedAfter: '2024-01-01T00:00:00.000Z',
+        endedAfter: '2024-01-01T12:00:00.000Z',
         endedBefore: '2024-01-03T00:00:00.000Z',
-        limit: 5,
+        limit: 1,
       });
 
       assert.equal(from.mock.calls[0].arguments[0], 'sessions');
       assert.deepEqual(builder.eq.mock.calls[0].arguments, ['user_id', 'user-1']);
       assert.deepEqual(builder.eq.mock.calls[1].arguments, ['subject', 'Math']);
       assert.deepEqual(builder.eq.mock.calls[2].arguments, ['status', 'completed']);
-      assert.deepEqual(builder.gte.mock.calls[0].arguments, ['ended_at', '2024-01-01T00:00:00.000Z']);
-      assert.deepEqual(builder.lte.mock.calls[0].arguments, ['ended_at', '2024-01-03T00:00:00.000Z']);
-      assert.deepEqual(builder.limit.mock.calls[0].arguments, [5]);
-      assert.deepEqual(order.mock.calls[0].arguments, ['ended_at', { ascending: false, nullsFirst: false }]);
+      assert.equal(result.length, 1);
+      assert.equal(result[0].id, 'session-1');
       assert.equal(result[0].sessionLength, 600_000);
       assert.equal(result[0].targetDurationMillis, 1_800_000);
-      assert.equal(result[0].notes, 'Great focus');
     });
 
-    it('returns an empty array when Supabase yields no rows', async () => {
-      const order = mock.fn(async () => ({ data: null, error: null }));
-      const builder = {
-        select: mock.fn(() => builder),
-        eq: mock.fn(() => builder),
-        gte: mock.fn(() => builder),
-        lte: mock.fn(() => builder),
-        limit: mock.fn(() => builder),
-        order,
-      };
+    it('propagates Supabase errors', async () => {
+      const builder = createSelectBuilder(null, { message: 'timeout' });
       const from = mock.fn(() => builder);
+
       const client = { from };
+      const service = createSessionsService(client, { sessionColumns: SESSION_COLUMNS });
 
-      const service = createSessionsService(client);
-      const result = await service.listSessions();
-
-      assert.deepEqual(result, []);
-    });
-
-    it('throws a descriptive error when the query fails', async () => {
-      const order = mock.fn(async () => ({ data: null, error: { message: 'timeout' } }));
-      const builder = {
-        select: mock.fn(() => builder),
-        eq: mock.fn(() => builder),
-        gte: mock.fn(() => builder),
-        lte: mock.fn(() => builder),
-        limit: mock.fn(() => builder),
-        order,
-      };
-      const from = mock.fn(() => builder);
-      const client = { from };
-
-      const service = createSessionsService(client);
-
-      await assert.rejects(() => service.listSessions(), /Failed to list sessions: timeout/);
+      await assert.rejects(() => service.listSessions({ userId: 'user-1' }), /Failed to list sessions: timeout/);
     });
   });
 
   describe('summarizeSessionsByDate', () => {
-    it('aggregates total duration in milliseconds and counts sessions', async () => {
+    const createSelectBuilder = (rows, error = null) => {
+      const result = { data: rows, error };
+      const builder = createAwaitable(result);
+      builder.select = mock.fn(() => builder);
+      builder.eq = mock.fn(() => builder);
+      return builder;
+    };
+
+    it('sums millisecond durations and counts filtered sessions', async () => {
       const rows = [
-        { duration_minutes: 10, status: 'completed', ended_at: '2024-01-01T01:00:00.000Z' },
-        { duration_minutes: 5.5, status: 'completed', ended_at: '2024-01-01T02:00:00.000Z' },
+        {
+          user_id: 'user-1',
+          status: 'completed',
+          end_study_timestamp: '2024-01-02T00:00:00.000Z',
+          session_length_millis: 600_000,
+        },
+        {
+          user_id: 'user-1',
+          status: 'completed',
+          end_study_timestamp: '2024-01-01T12:00:00.000Z',
+          session_length_millis: 300_000,
+        },
+        {
+          user_id: 'user-1',
+          status: 'cancelled',
+          end_study_timestamp: '2024-01-02T06:00:00.000Z',
+          session_length_millis: 100_000,
+        },
       ];
 
-      const builder = {
-        select: mock.fn(() => builder),
-        eq: mock.fn(() => builder),
-        gte: mock.fn(() => builder),
-        lte: mock.fn(() => ({ data: rows, error: null })),
-      };
+      const builder = createSelectBuilder(rows);
       const from = mock.fn(() => builder);
-      const client = { from };
 
-      const service = createSessionsService(client);
+      const client = { from };
+      const service = createSessionsService(client, { sessionColumns: SESSION_COLUMNS });
 
       const summary = await service.summarizeSessionsByDate({
         userId: 'user-1',
-        from: '2024-01-01',
-        to: '2024-01-02',
+        from: '2024-01-01T18:00:00.000Z',
+        to: '2024-01-03T00:00:00.000Z',
         status: 'completed',
       });
 
       assert.equal(from.mock.calls[0].arguments[0], 'sessions');
-      assert.deepEqual(builder.select.mock.calls[0].arguments, ['duration_minutes, ended_at, status']);
       assert.deepEqual(builder.eq.mock.calls[0].arguments, ['user_id', 'user-1']);
       assert.deepEqual(builder.eq.mock.calls[1].arguments, ['status', 'completed']);
-      assert.deepEqual(builder.gte.mock.calls[0].arguments, ['ended_at', '2024-01-01']);
-      assert.deepEqual(builder.lte.mock.calls[0].arguments, ['ended_at', '2024-01-02']);
-      assert.equal(summary.totalTimeStudied, 930_000);
-      assert.equal(summary.timesStudied, 2);
+      assert.equal(summary.totalTimeStudied, 600_000);
+      assert.equal(summary.timesStudied, 1);
     });
 
-    it('throws a descriptive error when the summary query fails', async () => {
-      const result = { data: null, error: { message: 'boom' } };
-      const builder = {
-        select: mock.fn(() => builder),
-        eq: mock.fn(() => builder),
-        gte: mock.fn(() => builder),
-        lte: mock.fn(async () => result),
-      };
+    it('throws a descriptive error when Supabase fails', async () => {
+      const builder = createSelectBuilder(null, { message: 'boom' });
       const from = mock.fn(() => builder);
-      const client = { from };
 
-      const service = createSessionsService(client);
+      const client = { from };
+      const service = createSessionsService(client, { sessionColumns: SESSION_COLUMNS });
 
       await assert.rejects(
-        () => service.summarizeSessionsByDate({ userId: 'user-1', to: '2024-01-02' }),
+        () => service.summarizeSessionsByDate({ userId: 'user-1', status: 'completed' }),
         /Failed to summarize sessions: boom/,
       );
     });

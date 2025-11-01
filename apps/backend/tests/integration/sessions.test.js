@@ -148,6 +148,12 @@ const createSelectBuilder = (columns) => {
     if (columns === '*' && behaviors.listError) {
       return { data: null, error: { message: behaviors.listError } };
     }
+
+    const hasSubjectFilter = filters.eq.some(({ column }) => column === 'subject');
+    if (columns === '*' && behaviors.summaryError && !hasSubjectFilter) {
+      return { data: null, error: { message: behaviors.summaryError } };
+    }
+
     if (columns !== '*' && behaviors.summaryError) {
       return { data: null, error: { message: behaviors.summaryError } };
     }
@@ -342,7 +348,10 @@ test('PATCH /api/v1/sessions/:id completes a session and returns updated payload
 
   assert.equal(complete.status, 200);
   assert.equal(complete.body.session.status, 'completed');
-  assert.equal(complete.body.session.endStudyTimestamp, '2024-01-01T00:30:00.000Z');
+  assert.equal(
+    complete.body.session.endStudyTimestamp,
+    Date.parse('2024-01-01T00:30:00.000Z'),
+  );
   assert.equal(complete.body.session.sessionLength, 1_800_000);
   assert.equal(complete.body.session.notes, 'Great focus');
 });
@@ -400,8 +409,14 @@ test('GET /api/v1/sessions lists sessions ordered by completion time', async () 
 
   assert.equal(response.status, 200);
   assert.equal(response.body.sessions.length, 2);
-  assert.equal(response.body.sessions[0].endStudyTimestamp, '2024-01-01T00:40:00.000Z');
-  assert.equal(response.body.sessions[1].endStudyTimestamp, '2024-01-01T00:20:00.000Z');
+  assert.equal(
+    response.body.sessions[0].endStudyTimestamp,
+    Date.parse('2024-01-01T00:40:00.000Z'),
+  );
+  assert.equal(
+    response.body.sessions[1].endStudyTimestamp,
+    Date.parse('2024-01-01T00:20:00.000Z'),
+  );
 });
 
 test('GET /api/v1/sessions enforces numeric limit', async () => {
