@@ -44,15 +44,7 @@ const SESSION_COLUMNS = [
   'updated_at',
 ];
 
-const createAwaitable = (result) => {
-  const promise = Promise.resolve(result);
-  const awaitable = {
-    then: promise.then.bind(promise),
-    catch: promise.catch.bind(promise),
-    finally: promise.finally?.bind(promise),
-  };
-  return awaitable;
-};
+const createAwaitable = (result) => Promise.resolve(result);
 
 describe('sessions.service', () => {
   describe('createSession', () => {

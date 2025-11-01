@@ -412,8 +412,8 @@ const filterSessionsByDateRange = (sessions, { endedAfter, endedBefore }) => {
 
 const sortSessionsByEndTimeDesc = (sessions) => {
   return [...sessions].sort((a, b) => {
-    const left = a.endStudyTimestamp ?? -Infinity;
-    const right = b.endStudyTimestamp ?? -Infinity;
+    const left = a.endStudyTimestamp ?? Number.NEGATIVE_INFINITY;
+    const right = b.endStudyTimestamp ?? Number.NEGATIVE_INFINITY;
     if (left === right) return 0;
     return right - left;
   });
