@@ -34,14 +34,14 @@
  * ────────────────────────────────────────────────────────────────────────────────
  */
 
-import test, { beforeEach, afterEach } from 'node:test';
-import assert from 'node:assert/strict';
+import test, { beforeEach, afterEach } from "node:test";
+import assert from "node:assert/strict";
 
-import STRINGS from '../../src/config/strings.js';
-import supabase from '../../src/config/supabase.js';
+import STRINGS from "../../src/config/strings.js";
+import supabase from "../../src/config/supabase.js";
 
-process.env.NODE_ENV = 'test';
-const { default: app } = await import('../../src/index.js');
+process.env.NODE_ENV = "test";
+const { default: app } = await import("../../src/index.js");
 
 const originalAuth = { ...supabase.auth };
 
@@ -56,6 +56,10 @@ const baseMocks = () => ({
 
     return {
       data: {
+        session: {
+          access_token: STRINGS.MOCK.MOCK_TOKEN,
+          refresh_token: STRINGS.MOCK.MOCK_REFRESH,
+        },
         user: {
           id: STRINGS.MOCK.MOCK_ID,
           email,
@@ -140,7 +144,7 @@ const request = async (method, path, body) => {
   try {
     const response = await fetch(`${url}${path}`, {
       method,
-      headers: body ? { 'Content-Type': 'application/json' } : undefined,
+      headers: body ? { "Content-Type": "application/json" } : undefined,
       body: body ? JSON.stringify(body) : undefined,
     });
 
@@ -163,7 +167,7 @@ const override = (method, impl) => {
 };
 
 test(STRINGS.TEST.SIGNUP_SUCCESS, async () => {
-  const response = await request('POST', STRINGS.API.SIGNUP_AUTH, {
+  const response = await request("POST", STRINGS.API.SIGNUP_AUTH, {
     email: STRINGS.MOCK.MOCK_NEW_EMAIL,
     password: STRINGS.MOCK.MOCK_NEW_PASSWORD,
     full_name: STRINGS.MOCK.MOCK_NEW_USER_FULL_NAME,
@@ -171,28 +175,30 @@ test(STRINGS.TEST.SIGNUP_SUCCESS, async () => {
 
   assert.equal(response.status, 201);
   assert.equal(response.body.data.user.email, STRINGS.MOCK.MOCK_NEW_EMAIL);
+  assert.ok(response.body.data.session, "session should be present");
+  assert.ok(
+    response.body.data.session.access_token,
+    "access_token should be present"
+  );
 });
 
 test(STRINGS.TEST.MISSING_INPUT, async () => {
-  const response = await request('POST', STRINGS.API.SIGNUP_AUTH, {
+  const response = await request("POST", STRINGS.API.SIGNUP_AUTH, {
     email: STRINGS.MOCK.MOCK_EMPTY_STRING,
     password: STRINGS.MOCK.MOCK_EMPTY_STRING,
   });
 
   assert.equal(response.status, 400);
-  assert.equal(
-    response.body.error,
-    STRINGS.VALIDATION.MISSING_REQUIRED_FIELDS,
-  );
+  assert.equal(response.body.error, STRINGS.VALIDATION.MISSING_REQUIRED_FIELDS);
 });
 
 test(STRINGS.TEST.USER_EXISTS, async () => {
-  override('signUp', async () => ({
+  override("signUp", async () => ({
     data: null,
     error: { message: STRINGS.AUTH.USER_ALREADY_REGISTERED },
   }));
 
-  const response = await request('POST', STRINGS.API.SIGNUP_AUTH, {
+  const response = await request("POST", STRINGS.API.SIGNUP_AUTH, {
     email: STRINGS.MOCK.MOCK_EXISTING_USER_EMAIL,
     password: STRINGS.MOCK.MOCK_EXISTING_PASSWORD,
     full_name: STRINGS.MOCK.MOCK_EXISTING_FULL_NAME,
@@ -203,12 +209,12 @@ test(STRINGS.TEST.USER_EXISTS, async () => {
 });
 
 test(STRINGS.TEST.OTHER_SUPABASE_SIGNUP_ERRORS, async () => {
-  override('signUp', async () => ({
+  override("signUp", async () => ({
     data: null,
     error: { message: STRINGS.VALIDATION.INVALID_EMAIL_FORMAT },
   }));
 
-  const response = await request('POST', STRINGS.API.SIGNUP_AUTH, {
+  const response = await request("POST", STRINGS.API.SIGNUP_AUTH, {
     email: STRINGS.MOCK.MOCK_TEST_INVALID_EMAIL,
     password: STRINGS.MOCK.MOCK_NEW_STRONG_PASSWORD,
     full_name: STRINGS.MOCK.MOCK_NEW_USER_FULL_NAME,
@@ -219,11 +225,11 @@ test(STRINGS.TEST.OTHER_SUPABASE_SIGNUP_ERRORS, async () => {
 });
 
 test(STRINGS.TEST.UNEXPECT_SIGNUP_ERROR, async () => {
-  override('signUp', async () => {
+  override("signUp", async () => {
     throw new Error(STRINGS.GENERAL.NETWORK_CRASH);
   });
 
-  const response = await request('POST', STRINGS.API.SIGNUP_AUTH, {
+  const response = await request("POST", STRINGS.API.SIGNUP_AUTH, {
     email: STRINGS.MOCK.MOCK_FAIL_EMAIL,
     password: STRINGS.MOCK.MOCK_USER_PASSWORD,
     full_name: STRINGS.MOCK.MOCK_FIAL_FULL_NAME,
@@ -234,7 +240,7 @@ test(STRINGS.TEST.UNEXPECT_SIGNUP_ERROR, async () => {
 });
 
 test(STRINGS.TEST.LOGIN_VALID_CREDENTIALS, async () => {
-  const response = await request('POST', STRINGS.API.LOGIN_AUTH, {
+  const response = await request("POST", STRINGS.API.LOGIN_AUTH, {
     email: STRINGS.MOCK.MOCK_USER_EMAIL,
     password: STRINGS.MOCK.MOCK_NEW_PASSWORD,
   });
@@ -244,12 +250,12 @@ test(STRINGS.TEST.LOGIN_VALID_CREDENTIALS, async () => {
 });
 
 test(STRINGS.TEST.LOGIN_INVALID_CREDENTIALS, async () => {
-  override('signInWithPassword', async () => ({
+  override("signInWithPassword", async () => ({
     data: null,
     error: { message: STRINGS.VALIDATION.INVALID_LOGIN_CREDENTIALS },
   }));
 
-  const response = await request('POST', STRINGS.API.LOGIN_AUTH, {
+  const response = await request("POST", STRINGS.API.LOGIN_AUTH, {
     email: STRINGS.MOCK.MOCK_WRONG_USER_EMAIL,
     password: STRINGS.MOCK.MOCK_BAD_PASSWORD,
   });
@@ -257,16 +263,16 @@ test(STRINGS.TEST.LOGIN_INVALID_CREDENTIALS, async () => {
   assert.equal(response.status, 401);
   assert.equal(
     response.body.error,
-    STRINGS.VALIDATION.INVALID_LOGIN_CREDENTIALS,
+    STRINGS.VALIDATION.INVALID_LOGIN_CREDENTIALS
   );
 });
 
 test(STRINGS.TEST.UNEXPECTED_LOGIN_ERROR, async () => {
-  override('signInWithPassword', async () => {
+  override("signInWithPassword", async () => {
     throw new Error(STRINGS.GENERAL.AUTH_SERVICE_CRASH);
   });
 
-  const response = await request('POST', STRINGS.API.LOGIN_AUTH, {
+  const response = await request("POST", STRINGS.API.LOGIN_AUTH, {
     email: STRINGS.MOCK.MOCK_X_EMAIL,
     password: STRINGS.MOCK.MOCK_X_PASS,
   });
@@ -276,56 +282,59 @@ test(STRINGS.TEST.UNEXPECTED_LOGIN_ERROR, async () => {
 });
 
 test(STRINGS.TEST.LOGOUT_SUCCESS, async () => {
-  const response = await request('POST', STRINGS.API.LOGOUT_AUTH);
+  const response = await request("POST", STRINGS.API.LOGOUT_AUTH);
 
   assert.equal(response.status, 200);
   assert.equal(response.body.message, STRINGS.AUTH.LOGOUT_SUCCESS);
 });
 
 test(STRINGS.TEST.LOGOUT_SUPABASE_ERROR, async () => {
-  override('signOut', async () => ({
+  override("signOut", async () => ({
     error: { message: STRINGS.AUTH.FAILED_TO_LOGOUT },
   }));
 
-  const response = await request('POST', STRINGS.API.LOGOUT_AUTH);
+  const response = await request("POST", STRINGS.API.LOGOUT_AUTH);
 
   assert.equal(response.status, 400);
   assert.equal(response.body.error, STRINGS.AUTH.FAILED_TO_LOGOUT);
 });
 
 test(STRINGS.TEST.UNEXPECTED_LOGOUT_ERROR, async () => {
-  override('signOut', async () => {
+  override("signOut", async () => {
     throw new Error(STRINGS.GENERAL.SERVER_EXPLOSION);
   });
 
-  const response = await request('POST', STRINGS.API.LOGOUT_AUTH);
+  const response = await request("POST", STRINGS.API.LOGOUT_AUTH);
 
   assert.equal(response.status, 500);
   assert.equal(response.body.error, STRINGS.SERVER.INTERNAL_ERROR);
 });
 
 test(STRINGS.TEST.FORGOT_PASSWORD_SUCCESS, async () => {
-  const response = await request('POST', STRINGS.API.FORGOT_PASSWORD_AUTH, {
+  const response = await request("POST", STRINGS.API.FORGOT_PASSWORD_AUTH, {
     email: STRINGS.MOCK.MOCK_USER_FORGET_EMAIL,
   });
 
   assert.equal(response.status, 200);
-  assert.equal(response.body.message, STRINGS.AUTH.PASSWORD_RESET_EMAIL_SUCCESS);
+  assert.equal(
+    response.body.message,
+    STRINGS.AUTH.PASSWORD_RESET_EMAIL_SUCCESS
+  );
 });
 
 test(STRINGS.TEST.FORGOT_PASSWORD_MISSING_EMAIL, async () => {
-  const response = await request('POST', STRINGS.API.FORGOT_PASSWORD_AUTH, {});
+  const response = await request("POST", STRINGS.API.FORGOT_PASSWORD_AUTH, {});
 
   assert.equal(response.status, 400);
   assert.equal(response.body.error, STRINGS.VALIDATION.MISSING_EMAIL);
 });
 
 test(STRINGS.TEST.UNEXPECTED_FORGOT_PASSWORD_ERROR, async () => {
-  override('resetPasswordForEmail', async () => {
+  override("resetPasswordForEmail", async () => {
     throw new Error(STRINGS.GENERAL.API_CRASH);
   });
 
-  const response = await request('POST', STRINGS.API.FORGOT_PASSWORD_AUTH, {
+  const response = await request("POST", STRINGS.API.FORGOT_PASSWORD_AUTH, {
     email: STRINGS.MOCK.MOCK_USER_FORGET_EMAIL,
   });
 
@@ -335,9 +344,9 @@ test(STRINGS.TEST.UNEXPECTED_FORGOT_PASSWORD_ERROR, async () => {
 
 test(STRINGS.TEST.RESET_PASSWORD_SUCCESS, async () => {
   const response = await request(
-    'POST',
+    "POST",
     `${STRINGS.API.RESET_PASSWORD_AUTH}?token=${STRINGS.MOCK.MOCK_TOKEN}`,
-    { newPassword: STRINGS.MOCK.MOCK_NEW_STRONG_PASSWORD },
+    { newPassword: STRINGS.MOCK.MOCK_NEW_STRONG_PASSWORD }
   );
 
   assert.equal(response.status, 200);
@@ -346,22 +355,22 @@ test(STRINGS.TEST.RESET_PASSWORD_SUCCESS, async () => {
 });
 
 test(STRINGS.TEST.RESET_PASSWORD_TOCKEN_MISSING, async () => {
-  const response = await request('POST', STRINGS.API.RESET_PASSWORD_AUTH, {
+  const response = await request("POST", STRINGS.API.RESET_PASSWORD_AUTH, {
     newPassword: STRINGS.MOCK.MOCK_NEW_STRONG_PASSWORD,
   });
 
   assert.equal(response.status, 400);
   assert.equal(
     response.body.error,
-    STRINGS.VALIDATION.MISSING_RESET_PASSWORD_TOKEN,
+    STRINGS.VALIDATION.MISSING_RESET_PASSWORD_TOKEN
   );
 });
 
 test(STRINGS.TEST.RESET_PASSWORD_MISSING_PASSWORD, async () => {
   const response = await request(
-    'POST',
+    "POST",
     `${STRINGS.API.RESET_PASSWORD_AUTH}?token=${STRINGS.MOCK.MOCK_TOKEN}`,
-    {},
+    {}
   );
 
   assert.equal(response.status, 400);
@@ -369,15 +378,15 @@ test(STRINGS.TEST.RESET_PASSWORD_MISSING_PASSWORD, async () => {
 });
 
 test(STRINGS.TEST.RESET_PASSWORD_SUPABASE_ERROR, async () => {
-  override('updateUser', async () => ({
+  override("updateUser", async () => ({
     data: null,
     error: { message: STRINGS.GENERAL.INVALID_TOKEN_ERROR },
   }));
 
   const response = await request(
-    'POST',
+    "POST",
     `${STRINGS.API.RESET_PASSWORD_AUTH}?token=${STRINGS.MOCK.MOCK_TOKEN}`,
-    { newPassword: STRINGS.MOCK.MOCK_NEW_STRONG_PASSWORD },
+    { newPassword: STRINGS.MOCK.MOCK_NEW_STRONG_PASSWORD }
   );
 
   assert.equal(response.status, 400);
@@ -385,14 +394,14 @@ test(STRINGS.TEST.RESET_PASSWORD_SUPABASE_ERROR, async () => {
 });
 
 test(STRINGS.TEST.UNEXPECTED_RESET_PASSWORD_ERROR, async () => {
-  override('updateUser', async () => {
+  override("updateUser", async () => {
     throw new Error(STRINGS.GENERAL.INTERNAL_FAIL);
   });
 
   const response = await request(
-    'POST',
+    "POST",
     `${STRINGS.API.RESET_PASSWORD_AUTH}?token=${STRINGS.MOCK.MOCK_TOKEN}`,
-    { newPassword: STRINGS.MOCK.MOCK_NEW_STRONG_PASSWORD },
+    { newPassword: STRINGS.MOCK.MOCK_NEW_STRONG_PASSWORD }
   );
 
   assert.equal(response.status, 500);

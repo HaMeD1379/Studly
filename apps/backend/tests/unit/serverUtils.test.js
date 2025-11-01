@@ -33,11 +33,11 @@
  * ────────────────────────────────────────────────────────────────────────────────
  */
 
-import test from 'node:test';
-import assert from 'node:assert/strict';
+import test from "node:test";
+import assert from "node:assert/strict";
 
-import { handleError, handleSuccess } from '../../src/utils/serverUtils.js';
-import STRINGS from '../../src/config/strings.js';
+import { handleError, handleSuccess } from "../../src/utils/serverUtils.js";
+import STRINGS from "../../src/config/strings.js";
 
 const createMockResponse = () => {
   const calls = { status: [], json: [] };
@@ -56,23 +56,15 @@ const createMockResponse = () => {
 
 test(STRINGS.TEST.SERVER_UTILS_SUCCESS, () => {
   const mockRes = createMockResponse();
-  const originalLog = console.log;
-  const logs = [];
-  console.log = (message) => logs.push(message);
 
-  try {
-    handleSuccess(mockRes, 200, STRINGS.GENERAL.OK, {
-      foo: STRINGS.GENERAL.BAR,
-    });
+  handleSuccess(mockRes, 200, STRINGS.GENERAL.OK, {
+    foo: STRINGS.GENERAL.BAR,
+  });
 
-    assert.deepStrictEqual(mockRes.calls.status, [200]);
-    assert.deepStrictEqual(mockRes.calls.json, [
-      { message: STRINGS.GENERAL.OK, data: { foo: STRINGS.GENERAL.BAR } },
-    ]);
-    assert.deepStrictEqual(logs, [STRINGS.GENERAL.OK]);
-  } finally {
-    console.log = originalLog;
-  }
+  assert.deepStrictEqual(mockRes.calls.status, [200]);
+  assert.deepStrictEqual(mockRes.calls.json, [
+    { message: STRINGS.GENERAL.OK, data: { foo: STRINGS.GENERAL.BAR } },
+  ]);
 });
 
 test(STRINGS.TEST.SERVER_UTILS_SUCCESS_NULL_DATA, () => {
@@ -87,21 +79,13 @@ test(STRINGS.TEST.SERVER_UTILS_SUCCESS_NULL_DATA, () => {
 
 test(STRINGS.TEST.SERVER_UTILS_SUCCESS_UNDEFINED_DATA, () => {
   const mockRes = createMockResponse();
-  const originalLog = console.log;
-  const logs = [];
-  console.log = (message) => logs.push(message);
 
-  try {
-    handleSuccess(mockRes, 200, STRINGS.GENERAL.OK);
+  handleSuccess(mockRes, 200, STRINGS.GENERAL.OK);
 
-    assert.deepStrictEqual(mockRes.calls.status, [200]);
-    assert.deepStrictEqual(mockRes.calls.json, [
-      { message: STRINGS.GENERAL.OK, data: null },
-    ]);
-    assert.deepStrictEqual(logs, [STRINGS.GENERAL.OK]);
-  } finally {
-    console.log = originalLog;
-  }
+  assert.deepStrictEqual(mockRes.calls.status, [200]);
+  assert.deepStrictEqual(mockRes.calls.json, [
+    { message: STRINGS.GENERAL.OK, data: null },
+  ]);
 });
 
 test(STRINGS.TEST.SERVER_UTILS_ERROR_EXPLICIT, () => {

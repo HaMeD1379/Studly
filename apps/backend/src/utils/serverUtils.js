@@ -34,7 +34,7 @@
  * ────────────────────────────────────────────────────────────────────────────────
  */
 
-import STRINGS from '../config/strings.js';
+import STRINGS from "../config/strings.js";
 
 export const handleError = (
   res,
@@ -45,7 +45,6 @@ export const handleError = (
 };
 
 export const handleSuccess = (res, status, message, data = null) => {
-  console.log(message);
   return res.status(status).json({ message, data });
 };
 
