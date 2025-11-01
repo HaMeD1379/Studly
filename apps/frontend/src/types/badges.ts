@@ -1,8 +1,8 @@
 export type Badge = {
-	name: string;
-	description: string;
+  name: string;
+  description: string;
 };
 
 export type UnlockedBadge = Badge & {
-	timeUnlocked: number;
+  timeUnlocked: number;
 };

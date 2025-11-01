@@ -1,5 +1,5 @@
 export const formatToYYYYMMDD = (timestamp: number) => {
-	const date = new Date(timestamp);
+  const date = new Date(timestamp);
 
-	return `${date.getFullYear()}-${date.getMonth()}-${date.getDay()}`;
+  return `${date.getFullYear()}-${date.getMonth()}-${date.getDay()}`;
 };

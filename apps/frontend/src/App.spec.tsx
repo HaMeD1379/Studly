@@ -3,9 +3,9 @@ import { App } from './App';
 import { render } from '~/utilities/testing';
 
 describe('App.tsx', () => {
-	it('renders', () => {
-		render(<App />);
+  it('renders', () => {
+    render(<App />);
 
-		expect(true).toBe(true);
-	});
+    expect(true).toBe(true);
+  });
 });
