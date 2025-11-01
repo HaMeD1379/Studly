@@ -1,7 +1,5 @@
-import { ForgotPassword } from "~/components";
+import { ForgotPassword } from '~/components';
 
 export const Forgot = () => {
-  return (
-    <ForgotPassword />
-  );
+	return <ForgotPassword />;
 };

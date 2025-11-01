@@ -1,4 +1,4 @@
-import { SignUpForm } from "~/components";
+import { SignUpForm } from '~/components';
 
 // TODO: Change once ready to implement
 /*export const signUpLoader = async () => {
@@ -15,7 +15,5 @@ import { SignUpForm } from "~/components";
 }*/
 
 export const SignUp = () => {
-  return (
-    <SignUpForm />
-  );
+	return <SignUpForm />;
 };
