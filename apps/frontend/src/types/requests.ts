@@ -10,7 +10,7 @@ type RequestError = {
   message?: string;
 };
 
-export type RequestResolve = {
-  data?: Promise<Response>;
+export type RequestResolve<Type> = {
+  data?: Promise<Type>;
   error?: RequestError;
 };

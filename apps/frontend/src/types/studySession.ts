@@ -3,3 +3,8 @@ export type StudySession = {
   sessionLength: number;
   endStudyTimestamp: number;
 };
+
+export type TodaysStudyStatistics = {
+  totalTimeStudied: number;
+  timesStudied: number;
+};

@@ -1,10 +1,6 @@
 import { Flex, Text } from '@mantine/core';
 import { IconClock, IconTarget } from '@tabler/icons-react';
-
-type TodaysStudyStatisticsProps = {
-  totalTimeStudied: number;
-  timesStudied: number;
-};
+import type { TodaysStudyStatistics as TodaysStudyStatisticsProps } from '~/types';
 
 export const TodaysStudyStatistics = ({
   totalTimeStudied,

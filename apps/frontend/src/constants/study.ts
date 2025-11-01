@@ -17,3 +17,5 @@ export const SETUP_STUDY_SESSION_OPTIONS: string[] = [
   'Social Work',
   'Communications',
 ];
+
+export const RECENT_STUDY_SESSIONS_LIST_SIZE = 3;
