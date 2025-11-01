@@ -1,18 +1,18 @@
 import type React from "react";
 
-interface AvatarProps {
+type AvatarProps = {
   name: string;
   size?: number;
   backgroundColor?: string;
   textColor?: string;
 }
 
-const Avatar: React.FC<AvatarProps> = ({
+export const Avatar = ({
   name,
   size = 40,
   backgroundColor = "#007bff",
   textColor = "#ffffff",
-}) => {
+}: AvatarProps) => {
   const getInitials = (fullName: string): string => {
     const names = fullName.split(" ");
     if (names.length === 1) {
@@ -40,5 +40,3 @@ const Avatar: React.FC<AvatarProps> = ({
 
   return <div style={avatarStyle}>{initials}</div>;
 };
-
-export default Avatar;

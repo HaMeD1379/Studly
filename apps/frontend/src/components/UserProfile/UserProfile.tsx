@@ -1,4 +1,4 @@
-import Avatar from "~/components/";
+import { Avatar } from "~/components/";
 import {
   SimpleGrid,
   Card,
@@ -23,7 +23,7 @@ import {
   IconAward,
 } from "@tabler/icons-react";
 
-export function UserProfile() {
+export const UserProfile = () => {
   const userName = "John Doe"; // Replace with actual user data
 
   return (
@@ -157,4 +157,4 @@ export function UserProfile() {
       </SimpleGrid>
     </Container>
   );
-}
+};
