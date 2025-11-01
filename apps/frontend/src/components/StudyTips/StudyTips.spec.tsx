@@ -1,7 +1,7 @@
+import { screen } from '@testing-library/react';
 import { expect } from 'vitest';
 import { render } from '~/utilities/testing';
 import { StudyTips } from './StudyTips';
-import { screen } from '@testing-library/react';
 
 describe('StudyTips', () => {
   it('renders', () => {

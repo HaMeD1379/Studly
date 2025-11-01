@@ -1,10 +1,10 @@
 const mockOnStart = vi.fn();
 const mockOnStop = vi.fn();
 
-import { render } from '~/utilities/testing';
-import { StudySession } from './StudySession';
 import { screen } from '@testing-library/react';
 import { expect, vi } from 'vitest';
+import { render } from '~/utilities/testing';
+import { StudySession } from './StudySession';
 
 describe('StudySession', () => {
   beforeEach(() => {
@@ -33,10 +33,10 @@ describe('StudySession', () => {
 
     const { rerender } = render(
       <StudySession
-        startStudyTimestamp={mockStartTimestamp}
         endStudyTimestamp={mockEndTimestamp}
         onStartStudy={mockOnStart}
         onStopStudy={mockOnStop}
+        startStudyTimestamp={mockStartTimestamp}
       />,
     );
 
@@ -55,10 +55,10 @@ describe('StudySession', () => {
 
     rerender(
       <StudySession
-        startStudyTimestamp={mockStartTimestamp}
         endStudyTimestamp={mockEndTimestamp}
         onStartStudy={mockOnStart}
         onStopStudy={mockOnStop}
+        startStudyTimestamp={mockStartTimestamp}
       />,
     );
 
@@ -75,10 +75,10 @@ describe('StudySession', () => {
 
     const { rerender } = render(
       <StudySession
-        startStudyTimestamp={mockStartTimestamp}
         endStudyTimestamp={mockEndTimestamp}
         onStartStudy={mockOnStart}
         onStopStudy={mockOnStop}
+        startStudyTimestamp={mockStartTimestamp}
       />,
     );
     const stopButton = screen.getByRole('button', { name: 'Stop' });
@@ -91,10 +91,10 @@ describe('StudySession', () => {
 
     rerender(
       <StudySession
-        startStudyTimestamp={0}
         endStudyTimestamp={0}
         onStartStudy={mockOnStart}
         onStopStudy={mockOnStop}
+        startStudyTimestamp={0}
       />,
     );
     expect(
@@ -110,10 +110,10 @@ describe('StudySession', () => {
 
     render(
       <StudySession
-        startStudyTimestamp={mockStartTimestamp}
         endStudyTimestamp={mockEndTimestamp}
         onStartStudy={mockOnStart}
         onStopStudy={mockOnStop}
+        startStudyTimestamp={mockStartTimestamp}
       />,
     );
 
@@ -129,10 +129,10 @@ describe('StudySession', () => {
 
     render(
       <StudySession
-        startStudyTimestamp={mockStartTimestamp}
         endStudyTimestamp={mockEndTimestamp}
         onStartStudy={mockOnStart}
         onStopStudy={mockOnStop}
+        startStudyTimestamp={mockStartTimestamp}
       />,
     );
 

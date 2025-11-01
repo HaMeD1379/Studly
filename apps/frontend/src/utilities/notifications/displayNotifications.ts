@@ -6,8 +6,8 @@ export function displayNotifications(
   color: string,
 ) {
   notifications.show({
-    title: title,
-    message: message,
     color: color,
+    message: message,
+    title: title,
   });
 }

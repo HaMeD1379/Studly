@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { App } from './App';
+import { describe, expect, it } from 'vitest';
 import { render } from '~/utilities/testing';
+import { App } from './App';
 
 describe('App.tsx', () => {
   it('renders', () => {

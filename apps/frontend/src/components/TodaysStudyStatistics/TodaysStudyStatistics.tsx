@@ -15,11 +15,11 @@ export const TodaysStudyStatistics = ({
   const hours = Math.floor((totalMinutes / 60) % 60);
 
   return (
-    <Flex p={24} direction="column" bdrs={8} bd="1px solid lightgray" h={193}>
+    <Flex bd="1px solid lightgray" bdrs={8} direction="column" h={193} p={24}>
       <Text>Today&apos;s Progress</Text>
-      <Flex h="100%" align="center" justify="space-evenly">
+      <Flex align="center" h="100%" justify="space-evenly">
         <Flex align="center" direction="column">
-          <IconClock size={48} color="#5598FF" />
+          <IconClock color="#5598FF" size={48} />
           <Text fw={900} size="lg">
             {hours > 0 ? `${hours}h` : ''} {minutes}m
           </Text>
@@ -28,7 +28,7 @@ export const TodaysStudyStatistics = ({
           </Text>
         </Flex>
         <Flex align="center" direction="column">
-          <IconTarget size={48} color="#00C951" />
+          <IconTarget color="#00C951" size={48} />
           <Text fw={900} size="lg">
             {timesStudied}
           </Text>

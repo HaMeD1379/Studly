@@ -1,4 +1,4 @@
-import { Flex, Text, Progress } from '@mantine/core';
+import { Flex, Progress, Text } from '@mantine/core';
 import { IconMedal2, IconTarget, IconTimeline } from '@tabler/icons-react';
 
 type BadgeStatisticsProps = {
@@ -17,11 +17,11 @@ export const BadgeStatistics = ({
       <Flex gap="lg">
         <Flex
           align="center"
-          w="33.3%"
-          p={24}
-          direction="column"
           bd="1px solid lightgray"
           bdrs={8}
+          direction="column"
+          p={24}
+          w="33.3%"
         >
           <IconMedal2 color="#F0B100" size={50} />
           <Text fw={800} size="xl">
@@ -33,11 +33,11 @@ export const BadgeStatistics = ({
         </Flex>
         <Flex
           align="center"
-          w="33.3%"
-          p={24}
-          direction="column"
           bd="1px solid lightgray"
           bdrs={8}
+          direction="column"
+          p={24}
+          w="33.3%"
         >
           <IconTarget color="#2B7FFF" size={50} />
           <Text fw={800} size="xl">
@@ -49,11 +49,11 @@ export const BadgeStatistics = ({
         </Flex>
         <Flex
           align="center"
-          w="33.3%"
-          p={24}
-          direction="column"
           bd="1px solid lightgray"
           bdrs={8}
+          direction="column"
+          p={24}
+          w="33.3%"
         >
           <IconTimeline color="#00C951" size={50} />
           <Text fw={800} size="xl">
@@ -64,7 +64,7 @@ export const BadgeStatistics = ({
           </Text>
         </Flex>
       </Flex>
-      <Flex p={24} direction="column" bd="1px solid lightgray" bdrs={8}>
+      <Flex bd="1px solid lightgray" bdrs={8} direction="column" p={24}>
         <Text fw={700} size="xs">
           Collection Progress
         </Text>

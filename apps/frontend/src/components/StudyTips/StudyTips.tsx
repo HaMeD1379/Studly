@@ -1,14 +1,14 @@
 import { Flex, Text } from '@mantine/core';
 import {
   IconBulbFilled,
-  IconTargetArrow,
   IconDeviceMobileOff,
+  IconTargetArrow,
   IconTrophyFilled,
 } from '@tabler/icons-react';
 
 export const StudyTips = () => {
   return (
-    <Flex p={24} direction="column" bdrs={8} bd="1px solid lightgray">
+    <Flex bd="1px solid lightgray" bdrs={8} direction="column" p={24}>
       <Text pb={24}>Study Tips</Text>
       <Flex direction="column" rowGap={8}>
         <Flex align="center" gap={6}>

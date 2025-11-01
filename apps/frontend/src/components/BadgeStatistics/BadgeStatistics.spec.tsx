@@ -1,7 +1,7 @@
+import { screen } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
 import { render } from '~/utilities/testing';
 import { BadgeStatistics } from './BadgeStatistics';
-import { expect, describe, it } from 'vitest';
-import { screen } from '@testing-library/react';
 
 describe('BadgeStatistics', () => {
   it('renders', () => {

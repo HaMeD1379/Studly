@@ -1,7 +1,6 @@
-import { displayNotifications } from './displayNotifications';
-import { describe, it, expect } from 'vitest';
 import { notifications } from '@mantine/notifications';
-import { vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+import { displayNotifications } from './displayNotifications';
 
 vi.mock('@mantine/notifications', () => ({
   notifications: {
@@ -17,9 +16,9 @@ describe('Display Notifications Tests', () => {
       'red',
     );
     expect(notifications.show).toHaveBeenCalledWith({
-      title: 'Weak Password',
-      message: 'Password must be longer than 8 characters',
       color: 'red',
+      message: 'Password must be longer than 8 characters',
+      title: 'Weak Password',
     });
   });
 });

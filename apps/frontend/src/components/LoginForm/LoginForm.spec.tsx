@@ -11,8 +11,8 @@ vi.mock('@mantine/notifications', () => ({
   notifications: { show: vi.fn() },
 }));
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { LoginForm } from './LoginForm';
 import '@testing-library/jest-dom';
 import { notifications } from '@mantine/notifications';
@@ -40,9 +40,9 @@ describe('Login Tests', () => {
     fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
 
     expect(notifications.show).toHaveBeenCalledWith({
-      title: 'Mismatch',
-      message: 'Provide a valid Email',
       color: 'red',
+      message: 'Provide a valid Email',
+      title: 'Mismatch',
     });
   });
 

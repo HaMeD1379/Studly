@@ -1,12 +1,13 @@
+import { Box, Flex, Grid, Text } from '@mantine/core';
+import { useState } from 'react';
 import {
-  StudySession,
-  SetupStudySession,
+  Navbar,
   RecentStudySessions,
+  SetupStudySession,
+  StudySession,
+  StudyTips,
   TodaysStudyStatistics,
 } from '~/components';
-import { useState } from 'react';
-import { Box, Grid, Text, Flex } from '@mantine/core';
-import { StudyTips, Navbar } from '~/components';
 import {
   mockRecentStudySessions,
   mockTimesStudied,
@@ -34,32 +35,32 @@ export const Study = () => {
   return (
     <Navbar>
       <Box mx={48} w={1150}>
-        <Text size="xl" fw={700}>
+        <Text fw={700} size="xl">
           Study Session
         </Text>
-        <Text size="md" fw={300} mb={32}>
+        <Text fw={300} mb={32} size="md">
           Focus and track your study time
         </Text>
         <Grid grow gutter="lg">
           <Grid.Col span="auto">
             <Flex direction="column" gap="lg">
               <StudySession
-                startStudyTimestamp={startStudyTimestamp}
                 endStudyTimestamp={endStudyTimestamp}
                 onStartStudy={startStudySession}
                 onStopStudy={stopStudySession}
+                startStudyTimestamp={startStudyTimestamp}
               />
               <SetupStudySession
-                onUpdateSubject={() => {}}
                 onUpdateLength={() => {}}
+                onUpdateSubject={() => {}}
               />
             </Flex>
           </Grid.Col>
           <Grid.Col span="auto">
             <Flex direction="column" gap="lg">
               <TodaysStudyStatistics
-                totalTimeStudied={mockTotalTimeStudied}
                 timesStudied={mockTimesStudied}
+                totalTimeStudied={mockTotalTimeStudied}
               />
               <RecentStudySessions
                 recentStudySessions={mockRecentStudySessions}

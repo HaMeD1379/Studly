@@ -1,6 +1,6 @@
 // Usages of the fetch API were used here to create our utility: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
 import { API_KEY_HEADER, API_VERSION, CONTENT_TYPE } from '~/config/api';
-import type { RequestResolve, RequestMethods } from '~/types';
+import type { RequestMethods, RequestResolve } from '~/types';
 
 export const request = async (
   method: RequestMethods,
@@ -20,9 +20,9 @@ export const request = async (
   const response = await fetch(
     `${import.meta.env.VITE_API_BASE_URL}/${API_VERSION}/${path}`,
     {
-      method,
-      headers: requestHeaders,
       body,
+      headers: requestHeaders,
+      method,
     },
   );
 
@@ -34,8 +34,8 @@ export const request = async (
 
   return {
     error: {
-      status: response.status,
       message: `The HTTP request ${method} ${path} failed with status ${response.status}`,
+      status: response.status,
     },
   };
 };

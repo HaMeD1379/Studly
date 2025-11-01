@@ -1,6 +1,6 @@
-import { formatToYYYYMMDD } from './format';
-import { expect, describe, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { MOCK_UNLOCKED_BADGE_TIMESTAMP } from '~/mocks';
+import { formatToYYYYMMDD } from './format';
 
 describe('format', () => {
   it('formats timestamp date properly', () => {

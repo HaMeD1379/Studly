@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
-import { Flex, Text, Select, Button, Group, Box } from '@mantine/core';
-import { SETUP_STUDY_SESSION_OPTIONS } from '~/constants';
+import { Box, Button, Flex, Group, Select, Text } from '@mantine/core';
 import { TimePicker } from '@mantine/dates';
+import { useEffect, useState } from 'react';
+import { SETUP_STUDY_SESSION_OPTIONS } from '~/constants';
 
 type SetupStudySessionProps = {
   onUpdateSubject: (subject: string | null) => void;
@@ -47,72 +47,80 @@ export const SetupStudySession = ({
   };
 
   return (
-    <Flex p={24} direction="column" bd="1px solid lightgray" bdrs={8} gap="lg">
+    <Flex bd="1px solid lightgray" bdrs={8} direction="column" gap="lg" p={24}>
       <Text>Session Setup</Text>
       <Select
-        label="Subject"
-        placeholder="Select a subject"
-        data={SETUP_STUDY_SESSION_OPTIONS}
-        value={subject}
-        onChange={setSubject}
-        searchable
         clearable
+        data={SETUP_STUDY_SESSION_OPTIONS}
+        label="Subject"
+        onChange={setSubject}
+        placeholder="Select a subject"
+        searchable
+        value={subject}
       />
       <Box>
-        <Text size="sm" fw={500}>
+        <Text fw={500} size="sm">
           Quick Session Length
         </Text>
         <Flex direction="column" gap="sm">
           <Group grow>
             <Button
+              onClick={() => updateQuickSession(15)}
               radius="md"
               variant={
                 !customTime && sessionLengthMins === 15 ? 'filled' : 'outline'
               }
-              onClick={() => updateQuickSession(15)}
             >
               15 minutes
             </Button>
             <Button
+              onClick={() => updateQuickSession(30)}
               radius="md"
               variant={
                 !customTime && sessionLengthMins === 30 ? 'filled' : 'outline'
               }
-              onClick={() => updateQuickSession(30)}
             >
               30 minutes
             </Button>
           </Group>
           <Group grow>
             <Button
+              onClick={() => updateQuickSession(45)}
               radius="md"
               variant={
                 !customTime && sessionLengthMins === 45 ? 'filled' : 'outline'
               }
-              onClick={() => updateQuickSession(45)}
             >
               45 minutes
             </Button>
             <Button
+              onClick={() => updateQuickSession(60)}
               radius="md"
               variant={
                 !customTime && sessionLengthMins === 60 ? 'filled' : 'outline'
               }
-              onClick={() => updateQuickSession(60)}
             >
               1 hour
             </Button>
           </Group>
           <TimePicker
-            label="Custom Session Length"
-            description="Custom time is in format hh:mm"
             clearable
-            variant="unstyled"
-            radius="md"
-            withDropdown
+            description="Custom time is in format hh:mm"
+            inputContainer={(children) => (
+              <Flex
+                bd="1px solid blue"
+                bdrs={8}
+                bg={customTime ? 'blue' : 'white'}
+                justify="center"
+                pb={4}
+              >
+                {children}
+              </Flex>
+            )}
+            label="Custom Session Length"
             minutesStep={5}
-            value={customTime}
             onChange={updateCustomTime}
+            radius="md"
             styles={{
               field: {
                 color: customTime ? 'white' : 'black',
@@ -121,17 +129,9 @@ export const SetupStudySession = ({
                 color: customTime ? 'white' : 'black',
               },
             }}
-            inputContainer={(children) => (
-              <Flex
-                pb={4}
-                bg={customTime ? 'blue' : 'white'}
-                justify="center"
-                bd="1px solid blue"
-                bdrs={8}
-              >
-                {children}
-              </Flex>
-            )}
+            value={customTime}
+            variant="unstyled"
+            withDropdown
           />
         </Flex>
       </Box>

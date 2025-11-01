@@ -1,10 +1,10 @@
-import { describe, it, expect } from 'vitest';
-import { render } from '~/utilities/testing';
-import { BadgeCollection } from './BadgeCollection';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { describe, expect, it } from 'vitest';
 import { allBadgesMock, allUnlockedBadgesMock } from '~/mocks';
 import { formatToYYYYMMDD } from '~/utilities/date';
+import { render } from '~/utilities/testing';
+import { BadgeCollection } from './BadgeCollection';
 
 describe('BadgeCollection', () => {
   it('renders without any badges', async () => {

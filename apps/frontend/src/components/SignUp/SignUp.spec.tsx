@@ -14,9 +14,8 @@ vi.mock('@mantine/notifications', () => ({
   },
 }));
 
-import { describe, it, expect } from 'vitest';
-import { screen, fireEvent, waitFor } from '@testing-library/react';
-import { vi } from 'vitest';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 import { SignUpForm } from './SignUp';
 import '@testing-library/jest-dom';
 import { notifications } from '@mantine/notifications';
@@ -45,9 +44,9 @@ describe('Sign up activity', () => {
     fireEvent.click(checkbox);
     fireEvent.click(signUpButton);
     expect(notifications.show).toHaveBeenCalledWith({
-      title: 'Mismatch',
-      message: 'Provide a valid Email',
       color: 'red',
+      message: 'Provide a valid Email',
+      title: 'Mismatch',
     });
   });
 

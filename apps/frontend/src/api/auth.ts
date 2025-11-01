@@ -1,6 +1,6 @@
+import { AUTH_SIGNUP } from '~/config';
 import { RequestMethods } from '~/types';
 import { request } from '~/utilities/requests';
-import { AUTH_SIGNUP } from '~/config';
 
 export const signUp = async () =>
   await request(

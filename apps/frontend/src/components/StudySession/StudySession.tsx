@@ -1,6 +1,6 @@
-import { Text, Flex, Progress, Button } from '@mantine/core';
-import { useCallback, useEffect, useState } from 'react';
+import { Button, Flex, Progress, Text } from '@mantine/core';
 import { useInterval } from '@mantine/hooks';
+import { useCallback, useEffect, useState } from 'react';
 
 type StudySessionProps = {
   startStudyTimestamp?: number;
@@ -80,25 +80,25 @@ export const StudySession = ({
   }, [calculateNextInterval, interval, startStudyTimestamp]);
 
   return (
-    <Flex p={24} direction="column" bd="1px solid lightgray" bdrs={8}>
-      <Text size="sm" fw={600}>
+    <Flex bd="1px solid lightgray" bdrs={8} direction="column" p={24}>
+      <Text fw={600} size="sm">
         Current Session
       </Text>
       <Text size="sm">Configure your study session</Text>
-      <Flex direction="column" align="center" py={8}>
-        <Text style={{ fontSize: 54 }} fw={700}>
+      <Flex align="center" direction="column" py={8}>
+        <Text fw={700} style={{ fontSize: 54 }}>
           {formattedTimeLeft}
         </Text>
       </Flex>
-      <Progress value={progressBarPercent} size="lg" transitionDuration={200} />
-      <Flex direction="column" align="center">
+      <Progress size="lg" transitionDuration={200} value={progressBarPercent} />
+      <Flex align="center" direction="column">
         <Text size="sm">{fullFormattedTimeLeft} remaining</Text>
       </Flex>
-      <Flex justify="center" gap="sm" pt={24}>
-        <Button onClick={onStartStudy} disabled={startStudyTimestamp > 0}>
+      <Flex gap="sm" justify="center" pt={24}>
+        <Button disabled={startStudyTimestamp > 0} onClick={onStartStudy}>
           Start
         </Button>
-        <Button onClick={onStopStudy} disabled={startStudyTimestamp === 0}>
+        <Button disabled={startStudyTimestamp === 0} onClick={onStopStudy}>
           Stop
         </Button>
       </Flex>

@@ -1,18 +1,18 @@
 const mockOnUpdateSubject = vi.fn();
 const mockonUpdateLength = vi.fn();
 
-import { SetupStudySession } from './SetupStudySession';
-import { vi, expect } from 'vitest';
-import { render } from '~/utilities/testing';
-import { screen, act } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { expect, vi } from 'vitest';
+import { render } from '~/utilities/testing';
+import { SetupStudySession } from './SetupStudySession';
 
 describe('SetupStudySession', () => {
   it('renders', () => {
     render(
       <SetupStudySession
-        onUpdateSubject={mockOnUpdateSubject}
         onUpdateLength={mockonUpdateLength}
+        onUpdateSubject={mockOnUpdateSubject}
       />,
     );
 
@@ -33,8 +33,8 @@ describe('SetupStudySession', () => {
   it('can view and change the subject', async () => {
     render(
       <SetupStudySession
-        onUpdateSubject={mockOnUpdateSubject}
         onUpdateLength={mockonUpdateLength}
+        onUpdateSubject={mockOnUpdateSubject}
       />,
     );
 
@@ -53,8 +53,8 @@ describe('SetupStudySession', () => {
   it('can click all quick buttons', async () => {
     render(
       <SetupStudySession
-        onUpdateSubject={mockOnUpdateSubject}
         onUpdateLength={mockonUpdateLength}
+        onUpdateSubject={mockOnUpdateSubject}
       />,
     );
 
@@ -67,8 +67,8 @@ describe('SetupStudySession', () => {
   it('can set time and custom time', async () => {
     render(
       <SetupStudySession
-        onUpdateSubject={mockOnUpdateSubject}
         onUpdateLength={mockonUpdateLength}
+        onUpdateSubject={mockOnUpdateSubject}
       />,
     );
 

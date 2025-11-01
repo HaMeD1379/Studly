@@ -1,15 +1,15 @@
-import { expect, describe, it } from 'vitest';
+import { screen } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
+import { mockTimesStudied, mockTotalTimeStudied } from '~/mocks';
 import { render } from '~/utilities/testing';
 import { TodaysStudyStatistics } from './TodaysStudyStatistics';
-import { mockTimesStudied, mockTotalTimeStudied } from '~/mocks';
-import { screen } from '@testing-library/react';
 
 describe('TodaysStudyStatistics', () => {
   it('renders', () => {
     render(
       <TodaysStudyStatistics
-        totalTimeStudied={mockTotalTimeStudied}
         timesStudied={mockTimesStudied}
+        totalTimeStudied={mockTotalTimeStudied}
       />,
     );
 
@@ -27,8 +27,8 @@ describe('TodaysStudyStatistics', () => {
 
     render(
       <TodaysStudyStatistics
-        totalTimeStudied={mockTotalTimeMinutes}
         timesStudied={mockTimesStudied}
+        totalTimeStudied={mockTotalTimeMinutes}
       />,
     );
 
@@ -38,8 +38,8 @@ describe('TodaysStudyStatistics', () => {
   it('renders with 0 gives 0m', () => {
     render(
       <TodaysStudyStatistics
-        totalTimeStudied={0}
         timesStudied={mockTimesStudied}
+        totalTimeStudied={0}
       />,
     );
 

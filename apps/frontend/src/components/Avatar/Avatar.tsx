@@ -26,16 +26,16 @@ export const Avatar = ({
   const initials = getInitials(name);
 
   const avatarStyle: React.CSSProperties = {
-    width: size,
-    height: size,
-    borderRadius: '50%',
+    alignItems: 'center',
     backgroundColor,
+    borderRadius: '50%',
     color: textColor,
     display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
     fontSize: size / 2, // Adjust font size relative to avatar size
     fontWeight: 'bold',
+    height: size,
+    justifyContent: 'center',
+    width: size,
   };
 
   return <div style={avatarStyle}>{initials}</div>;

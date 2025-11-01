@@ -9,13 +9,13 @@ vi.mock('react-router', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-import { describe, it, expect } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
 import { ForgotPassword } from './ForgotPassword';
 import '@testing-library/jest-dom';
 import { MantineProvider } from '@mantine/core';
-import { MemoryRouter } from 'react-router-dom';
 import { notifications } from '@mantine/notifications';
+import { MemoryRouter } from 'react-router-dom';
 import { vi } from 'vitest';
 
 describe('Sign up activity', () => {
@@ -45,9 +45,9 @@ describe('Sign up activity', () => {
     fireEvent.click(forgotButton);
 
     expect(notifications.show).toHaveBeenCalledWith({
-      title: 'Mismatch',
-      message: 'Provide a valid Email',
       color: 'red',
+      message: 'Provide a valid Email',
+      title: 'Mismatch',
     });
   });
   it('shows success notification and navigates on valid email', () => {
@@ -67,9 +67,9 @@ describe('Sign up activity', () => {
     fireEvent.click(forgotButton);
 
     expect(notifications.show).toHaveBeenCalledWith({
-      title: 'Accepted',
-      message: 'A reset link has been sent to your email',
       color: 'green',
+      message: 'A reset link has been sent to your email',
+      title: 'Accepted',
     });
   });
   it('navigates to home when clicking the back arrow', () => {
@@ -102,9 +102,9 @@ describe('Sign up activity', () => {
     fireEvent.click(forgotButton);
 
     expect(notifications.show).toHaveBeenCalledWith({
-      title: 'Missing Field',
-      message: 'Provide a valid Email',
       color: 'red',
+      message: 'Provide a valid Email',
+      title: 'Missing Field',
     });
   });
 });

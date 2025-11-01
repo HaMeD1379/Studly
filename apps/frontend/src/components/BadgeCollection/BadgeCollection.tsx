@@ -1,19 +1,19 @@
 import {
-  Flex,
-  SegmentedControl,
-  Pagination,
-  Text,
-  SimpleGrid,
   Box,
+  Flex,
+  Pagination,
+  SegmentedControl,
+  SimpleGrid,
+  Text,
 } from '@mantine/core';
+import { IconMedal2 } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import {
-  BadgeCollectionFilterStatus,
   BADGES_PER_COLLECTION_PAGE,
+  BadgeCollectionFilterStatus,
 } from '~/constants';
 import type { Badge, UnlockedBadge } from '~/types';
 import { formatToYYYYMMDD } from '~/utilities/date';
-import { IconMedal2 } from '@tabler/icons-react';
 
 type BadgeCollectionProps = {
   unlockedBadges: UnlockedBadge[];
@@ -62,24 +62,24 @@ export const BadgeCollection = ({
   }, [page, filterStatus, allBadges, unlockedBadges]);
 
   return (
-    <Flex my="lg" gap="lg" direction="column">
+    <Flex direction="column" gap="lg" my="lg">
       <Box>
         <SegmentedControl
-          value={filterStatus}
-          onChange={setFilterStatus}
-          size="sm"
-          radius="lg"
           data={Object.values(BadgeCollectionFilterStatus)}
+          onChange={setFilterStatus}
+          radius="lg"
+          size="sm"
+          value={filterStatus}
         />
       </Box>
       {filterStatus === BadgeCollectionFilterStatus.Unlocked &&
       unlockedBadges.length === 0 ? (
         <Flex
-          p={142}
-          bdrs={8}
-          bd="1px solid lightgray"
-          direction="column"
           align="center"
+          bd="1px solid lightgray"
+          bdrs={8}
+          direction="column"
+          p={142}
         >
           <Text c="gray">No badges unlocked yet!</Text>
           <Text c="gray">Start studying to earn badges!</Text>
@@ -87,11 +87,11 @@ export const BadgeCollection = ({
       ) : filterStatus === BadgeCollectionFilterStatus.AllBadges &&
         allBadges.length === 0 ? (
         <Flex
-          p={142}
-          bdrs={8}
-          bd="1px solid lightgray"
-          direction="column"
           align="center"
+          bd="1px solid lightgray"
+          bdrs={8}
+          direction="column"
+          p={142}
         >
           <Text c="gray">There are no badges to display here</Text>
           <Text c="gray">Please try again later</Text>
@@ -104,18 +104,18 @@ export const BadgeCollection = ({
 
             return (
               <Flex
-                key={`badge-${badge.name}`}
-                p={24}
-                gap={4}
                 bd="1px solid lightgray"
                 bdrs={8}
                 direction="column"
+                gap={4}
+                key={`badge-${badge.name}`}
+                p={24}
               >
                 <Text fw={700}>{badge.name}</Text>
                 <Text fw={300}>{badge.description}</Text>
                 {timeUnlocked ? (
                   <Flex align="center" gap={4}>
-                    <IconMedal2 size={16} color="#04A740" />
+                    <IconMedal2 color="#04A740" size={16} />
                     <Text c="#04A740">
                       Unlocked {formatToYYYYMMDD(timeUnlocked)}
                     </Text>
@@ -129,7 +129,7 @@ export const BadgeCollection = ({
         </SimpleGrid>
       )}
       <Flex justify="center" mt={visibleValues.length > 3 ? 0 : 150}>
-        <Pagination total={totalPages} value={page} onChange={setPage} />
+        <Pagination onChange={setPage} total={totalPages} value={page} />
       </Flex>
     </Flex>
   );

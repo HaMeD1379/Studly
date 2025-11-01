@@ -14,8 +14,8 @@
     "test:unit:ui": "vitest --ui --coverage",
     "test:e2e": "start-server-and-test 'npm run start' http://localhost:5173 'npx cypress run'",
     "test:e2e:ui": "start-server-and-test 'npm run start' http://localhost:5173 'npx cypress open --e2e'",
-    "lint": "biome check --linter-enabled=true --formatter-enabled=false --organize-imports-enabled=false src cypress/e2e/ cypress/constants cypress/support",
-    "lint:fix": "biome check --linter-enabled=true --formatter-enabled=true --organize-imports-enabled=true --write src cypress/e2e/ cypress/constants cypress/support",
+    "lint": "biome check --linter-enabled=true --formatter-enabled=false src cypress/e2e/ cypress/constants cypress/support",
+    "lint:fix": "biome check --linter-enabled=true --formatter-enabled=true --write src cypress/e2e/ cypress/constants cypress/support",
     "format": "biome format src cypress/e2e/ cypress/constants cypress/support",
     "format:fix": "biome format --write src cypress/e2e/ cypress/constants cypress/support"
   },
@@ -45,7 +45,7 @@
     "react-router-dom": "^7.9.3"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.9.4",
+    "@biomejs/biome": "2.3.2",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/user-event": "^14.6.1",
     "@types/node": "^24.6.2",

@@ -1,4 +1,3 @@
-import { IconArrowLeft } from '@tabler/icons-react';
 import {
   Anchor,
   Box,
@@ -11,10 +10,11 @@ import {
   TextInput,
   Title,
 } from '@mantine/core';
-import { useNavigate } from 'react-router';
-import { validateEmail } from '~/utilities/validation';
+import { IconArrowLeft } from '@tabler/icons-react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 import { displayNotifications } from '~/utilities/notifications/displayNotifications';
+import { validateEmail } from '~/utilities/validation';
 
 export function ForgotPassword() {
   const navigate = useNavigate();
@@ -35,12 +35,12 @@ export function ForgotPassword() {
     }
   };
   return (
-    <Container size={460} my={30}>
+    <Container my={30} size={460}>
       <Title
         style={{
+          fontfamily: 'Outfit, var(--mantine-font-family)',
           fontSize: '26px',
           fontweight: '500',
-          fontfamily: 'Outfit, var(--mantine-font-family)',
           textAlign: 'center',
         }}
       >
@@ -50,19 +50,19 @@ export function ForgotPassword() {
         Enter your email to get a reset link
       </Text>
 
-      <Paper withBorder shadow="md" p={30} radius="md" mt="xl">
+      <Paper mt="xl" p={30} radius="md" shadow="md" withBorder>
         <form onSubmit={handleClick}>
           <TextInput
             label="Your email"
-            placeholder="Your email"
             onChange={(e) => setEmail(e.target.value)}
+            placeholder="Your email"
           />
           <Group
+            justify="space-between"
+            mt="lg"
             style={{
               flexDirection: 'column',
             }}
-            justify="space-between"
-            mt="lg"
           >
             <Anchor
               c="dimmed"
@@ -75,9 +75,9 @@ export function ForgotPassword() {
               <Center inline>
                 <IconArrowLeft
                   data-testid="back-arrow"
+                  onClick={() => navigate('/')}
                   size={12}
                   stroke={1.5}
-                  onClick={() => navigate('/')}
                 />
                 <Box ml={5}>Back to the login page</Box>
               </Center>
@@ -85,12 +85,12 @@ export function ForgotPassword() {
             <Button
               styles={{
                 root: {
+                  '&:hover': { backgroundColor: '#222' },
                   backgroundColor: 'black',
                   color: 'white',
                   fontWeight: 500,
                   textAlign: 'center', // move inside root
                   width: '100%', // move inside root
-                  '&:hover': { backgroundColor: '#222' },
                 },
               }}
               type="submit"

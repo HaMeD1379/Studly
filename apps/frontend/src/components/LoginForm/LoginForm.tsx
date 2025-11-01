@@ -1,21 +1,21 @@
 import {
   Anchor,
+  Box,
   Button,
+  Center,
   Checkbox,
   Container,
   Group,
+  Image,
   Paper,
   PasswordInput,
   Text,
   TextInput,
   Title,
-  Image,
-  Center,
-  Box,
 } from '@mantine/core';
-import placeholder from '~/assets/landscape-placeholder.svg';
-import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import placeholder from '~/assets/landscape-placeholder.svg';
 import { displayNotifications } from '~/utilities/notifications/displayNotifications';
 import { validateEmail } from '~/utilities/validation';
 export function LoginForm() {
@@ -37,34 +37,34 @@ export function LoginForm() {
   return (
     <Box
       style={{
+        alignItems: 'center',
         backgroundColor: '#f0f0f0',
-        padding: '20px',
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '100vh',
         margin: '0',
+        minHeight: '100vh',
+        padding: '20px',
       }}
     >
-      <Container size={420} my={40}>
-        <Paper withBorder shadow="sm" p={22} mt={30} radius="md">
+      <Container my={40} size={420}>
+        <Paper mt={30} p={22} radius="md" shadow="sm" withBorder>
           <Center>
             <Image
-              h={200}
-              w="auto"
-              src={placeholder}
               alt="Description of your image"
+              h={200}
+              src={placeholder}
+              w="auto"
             />
           </Center>
-          <Title ta="center" ff="Inter, sans-serif">
+          <Title ff="Inter, sans-serif" ta="center">
             Welcome to Studly
           </Title>
           <Text
             c="gray"
             style={{
               fontSize: 'var(--mantine-font-size-xs)',
-              textAlign: 'center',
               marginTop: '5px',
+              textAlign: 'center',
             }}
           >
             Sign in to your account to continue your learning journey
@@ -72,18 +72,18 @@ export function LoginForm() {
           <form onSubmit={handleLogin}>
             <TextInput
               label="Email"
-              placeholder="you@mantine.dev"
-              required
-              radius="md"
               onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@mantine.dev"
+              radius="md"
+              required
             />
             <PasswordInput
               label="Password"
-              placeholder="Your password"
-              required
               mt="md"
-              radius="md"
               onChange={(e) => setPassword(e.target.value)}
+              placeholder="Your password"
+              radius="md"
+              required
             />
             <Group justify="space-between" mt="lg">
               <Checkbox label="Remember me" />
@@ -91,25 +91,25 @@ export function LoginForm() {
               <Anchor
                 c="black"
                 component="button"
-                size="sm"
                 onClick={() => navigate('/forgot-password')}
+                size="sm"
               >
                 Forgot password?
               </Anchor>
             </Group>
             <Button
-              type="submit"
               fullWidth
               mt="xl"
               radius="md"
               styles={{
                 root: {
+                  '&:hover': { backgroundColor: '#222' },
                   backgroundColor: 'black',
                   color: 'white',
                   fontWeight: 500,
-                  '&:hover': { backgroundColor: '#222' },
                 },
               }}
+              type="submit"
             >
               Sign in
             </Button>
@@ -119,19 +119,19 @@ export function LoginForm() {
             style={{
               color: 'var(--mantine-color-dimmed)',
               fontSize: 'var(--mantine-font-size-xs)',
-              textAlign: 'center',
               marginTop: '5px',
+              textAlign: 'center',
             }}
           >
             Do not have an account?{' '}
             <Anchor
+              onClick={() => navigate('/signup')}
               styles={{
                 root: {
                   color: 'black',
                   fontWeight: 400,
                 },
               }}
-              onClick={() => navigate('/signup')}
             >
               Sign Up
             </Anchor>

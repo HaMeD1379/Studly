@@ -1,6 +1,6 @@
-import type { StudySession } from '~/types';
-import { Flex, Text, Table } from '@mantine/core';
+import { Flex, Table, Text } from '@mantine/core';
 import { IconBook } from '@tabler/icons-react';
+import type { StudySession } from '~/types';
 
 type RecentStudySessionsProps = {
   recentStudySessions: StudySession[];
@@ -34,7 +34,7 @@ export const RecentStudySessions = ({
   };
 
   return (
-    <Flex p={24} direction="column" bd="1px solid lightgray" bdrs={8}>
+    <Flex bd="1px solid lightgray" bdrs={8} direction="column" p={24}>
       <Text pb={8}>Recent Sessions</Text>
       {recentStudySessions && recentStudySessions.length > 0 ? (
         <Table>
@@ -62,12 +62,12 @@ export const RecentStudySessions = ({
           </Table.Tbody>
         </Table>
       ) : (
-        <Flex h={200} justify="center" align="center" direction="column">
+        <Flex align="center" direction="column" h={200} justify="center">
           <IconBook color="lightGray" size={72} />
-          <Text size="lg" c="gray" pt={16}>
+          <Text c="gray" pt={16} size="lg">
             No sessions completed yet.
           </Text>
-          <Text size="lg" c="gray">
+          <Text c="gray" size="lg">
             Start your first session!
           </Text>
         </Flex>

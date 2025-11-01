@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Container,
   Paper,
@@ -6,20 +7,19 @@ import {
   Text,
   Title,
 } from '@mantine/core';
-import { useNavigate } from 'react-router-dom';
-import { equalPasswords } from '~/utilities/testing/passwordValidation';
-import { displayNotifications } from '~/utilities/notifications/displayNotifications';
 import { useState } from 'react';
-import { Box } from '@mantine/core';
+import { useNavigate } from 'react-router-dom';
+import { displayNotifications } from '~/utilities/notifications/displayNotifications';
+import { equalPasswords } from '~/utilities/testing/passwordValidation';
 
 export function UpdatePassword() {
   const passwordLen = 8;
   const checkRules = (value: string) => ({
-    matchesLen: value.length > passwordLen,
-    hasLowercase: /[a-z]/.test(value),
-    hasUppercase: /[A-Z]/.test(value),
     hasDigit: /\d/.test(value),
+    hasLowercase: /[a-z]/.test(value),
     hasSpecial: /[@#$%^&*()\-_+=]/.test(value),
+    hasUppercase: /[A-Z]/.test(value),
+    matchesLen: value.length > passwordLen,
   });
 
   const navigate = useNavigate();
@@ -52,17 +52,17 @@ export function UpdatePassword() {
   return (
     <Box
       style={{
+        alignItems: 'center',
         backgroundColor: '#f0f0f0',
-        padding: '20px',
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: 'center',
         margin: '0',
+        minHeight: 'center',
+        padding: '20px',
       }}
     >
-      <Container size={420} my={40} className="classes.container">
-        <Paper withBorder shadow="xl" p={22} mt={30} radius="lg">
+      <Container className="classes.container" my={40} size={420}>
+        <Paper mt={30} p={22} radius="lg" shadow="xl" withBorder>
           <Text c={rules.matchesLen ? 'green' : 'red'}>
             • Password must be at least one 8 characters long
           </Text>
@@ -80,36 +80,36 @@ export function UpdatePassword() {
             ^, &, *, (, ), -, _, +, =)
           </Text>
         </Paper>
-        <Paper withBorder shadow="sm" p={22} mt={30} radius="md">
-          <Title ta="center" ff="Inter, sans-serif">
+        <Paper mt={30} p={22} radius="md" shadow="sm" withBorder>
+          <Title ff="Inter, sans-serif" ta="center">
             Join Studly
           </Title>
           <Text
             c="gray"
             style={{
               fontSize: 'var(--mantine-font-size-xs)',
-              textAlign: 'center',
               marginTop: '5px',
+              textAlign: 'center',
             }}
           >
             Create your account and start your gamified learning journey
           </Text>
           <form onSubmit={handleClick}>
             <PasswordInput
-              onChange={(e) => setPassword_1(e.target.value)}
               label="Enter new Password"
-              placeholder="Create a password"
-              required
               mt="md"
+              onChange={(e) => setPassword_1(e.target.value)}
+              placeholder="Create a password"
               radius="md"
+              required
             />
             <PasswordInput
-              onChange={(e) => setPassword_2(e.target.value)}
               label="Confirm New Password"
-              placeholder="Confirm your password"
-              required
               mt="md"
+              onChange={(e) => setPassword_2(e.target.value)}
+              placeholder="Confirm your password"
               radius="md"
+              required
             />
             <Button
               fullWidth
@@ -117,10 +117,10 @@ export function UpdatePassword() {
               radius="md"
               styles={{
                 root: {
+                  '&:hover': { backgroundColor: '#222' },
                   backgroundColor: 'black',
                   color: 'white',
                   fontWeight: 500,
-                  '&:hover': { backgroundColor: '#222' },
                 },
               }}
               type="submit"

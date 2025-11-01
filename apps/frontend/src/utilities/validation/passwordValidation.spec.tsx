@@ -1,11 +1,10 @@
-import { describe, it, expect } from 'vitest';
-import { equalPasswords } from './passwordValidation';
-import { render, screen, fireEvent } from '@testing-library/react';
 import { MantineProvider } from '@mantine/core';
-import { MemoryRouter } from 'react-router-dom';
-import { vi } from 'vitest';
 import { notifications } from '@mantine/notifications';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
+import { describe, expect, it, vi } from 'vitest';
 import { SignUpForm } from '~/components';
+import { equalPasswords } from './passwordValidation';
 
 vi.mock('@mantine/notifications', () => ({
   notifications: {
@@ -21,9 +20,9 @@ describe('Password Validation Tests', () => {
   it('returns false for different passwords', () => {
     expect(equalPasswords('Pass123*', 'Pass1234*')).toBe(false);
     expect(notifications.show).toHaveBeenCalledWith({
-      title: 'Mismatch',
-      message: 'Passwords do not match',
       color: 'red',
+      message: 'Passwords do not match',
+      title: 'Mismatch',
     });
   });
   it('returns weak password for no lowercase letters', () => {
@@ -50,9 +49,9 @@ describe('Password Validation Tests', () => {
     fireEvent.click(submitButton);
 
     expect(notifications.show).toHaveBeenCalledWith({
-      title: 'Weak Password',
-      message: 'Password must contain a lowercase letter',
       color: 'red',
+      message: 'Password must contain a lowercase letter',
+      title: 'Weak Password',
     });
   });
 
@@ -80,9 +79,9 @@ describe('Password Validation Tests', () => {
     fireEvent.click(submitButton);
 
     expect(notifications.show).toHaveBeenCalledWith({
-      title: 'Weak Password',
-      message: 'Password must contain an uppercase letter',
       color: 'red',
+      message: 'Password must contain an uppercase letter',
+      title: 'Weak Password',
     });
   });
   it('returns weak password for no special characters', () => {
@@ -109,9 +108,9 @@ describe('Password Validation Tests', () => {
     fireEvent.click(submitButton);
 
     expect(notifications.show).toHaveBeenCalledWith({
-      title: 'Weak Password',
-      message: 'Password must contain a special character',
       color: 'red',
+      message: 'Password must contain a special character',
+      title: 'Weak Password',
     });
   });
   it('returns weak password for no digits', () => {
@@ -138,9 +137,9 @@ describe('Password Validation Tests', () => {
     fireEvent.click(submitButton);
 
     expect(notifications.show).toHaveBeenCalledWith({
-      title: 'Weak Password',
-      message: 'Password must contain a number',
       color: 'red',
+      message: 'Password must contain a number',
+      title: 'Weak Password',
     });
   });
   it('returns weak password for length less than 8 (boundary testing 7)', () => {
@@ -167,9 +166,9 @@ describe('Password Validation Tests', () => {
     fireEvent.click(submitButton);
 
     expect(notifications.show).toHaveBeenCalledWith({
-      title: 'Weak Password',
-      message: 'Password must be longer than 8 characters',
       color: 'red',
+      message: 'Password must be longer than 8 characters',
+      title: 'Weak Password',
     });
   });
 });

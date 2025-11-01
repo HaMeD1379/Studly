@@ -1,12 +1,12 @@
 const mockUseNavigation = vi.fn();
 
 vi.mock('react-router', () => ({
-  useNavigate: () => mockUseNavigation.mockImplementation(() => {}),
   useLocation: () => vi.fn().mockImplementation(() => {}),
+  useNavigate: () => mockUseNavigation.mockImplementation(() => {}),
 }));
 
-import { expect, describe, it, vi } from 'vitest';
 import { screen } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 import { render } from '~/utilities/testing';
 import { Navbar } from './Navbar';
 

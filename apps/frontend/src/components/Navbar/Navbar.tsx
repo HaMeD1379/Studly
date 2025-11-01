@@ -1,12 +1,12 @@
-import { AppShell, Button, Text, Flex, Divider } from '@mantine/core';
-import { useNavigate, useLocation } from 'react-router';
+import { AppShell, Button, Divider, Flex, Text } from '@mantine/core';
 import {
-  IconMedal,
-  IconHome,
   IconClock,
-  IconMedal2,
+  IconHome,
   IconLogout,
+  IconMedal,
+  IconMedal2,
 } from '@tabler/icons-react';
+import { useLocation, useNavigate } from 'react-router';
 
 type NavbarProps = {
   children: React.ReactNode;
@@ -21,17 +21,17 @@ type StyledButtonProps = {
 export const Navbar = ({ children }: NavbarProps) => {
   return (
     <AppShell
-      padding={24}
       navbar={{
-        width: 200,
         breakpoint: 'sm',
+        width: 200,
       }}
+      padding={24}
     >
       <AppShell.Navbar p="md">
         {/* Wrap the whole navbar content in a vertical Flex */}
         <Flex direction="column" h="100%">
           {/* Header */}
-          <Flex align="center" py={8} pl={16} gap={4}>
+          <Flex align="center" gap={4} pl={16} py={8}>
             <IconMedal color="#228be6" />
             <Text fw={900} size="lg">
               Studly
@@ -90,12 +90,12 @@ const StyledButton = ({ children, path, onClick }: StyledButtonProps) => {
 
   return (
     <Button
-      onClick={handleClick}
-      variant={currentPath === path ? 'filled' : 'transparent'}
       color={currentPath === path ? 'blue' : 'dark-gray'}
-      justify="left"
-      radius="md"
       fullWidth
+      justify="left"
+      onClick={handleClick}
+      radius="md"
+      variant={currentPath === path ? 'filled' : 'transparent'}
     >
       {children}
     </Button>

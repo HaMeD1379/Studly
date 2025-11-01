@@ -1,6 +1,4 @@
-import { vi, expect, afterAll } from 'vitest';
-import { request } from './requests';
-import { RequestMethods } from '~/types';
+import { afterAll, expect, vi } from 'vitest';
 import {
   failureMessageMock,
   failureRequestMock,
@@ -8,6 +6,8 @@ import {
   successDataMock,
   successRequestMock,
 } from '~/mocks';
+import { RequestMethods } from '~/types';
+import { request } from './requests';
 
 describe('requests', () => {
   it('returns with data', async () => {
@@ -34,8 +34,8 @@ describe('requests', () => {
     expect(fetchRequest.data).toBeUndefined();
     expect(fetchRequest.error).not.toBeUndefined();
     expect(fetchRequest.error).toEqual({
-      status: failureStatusMock,
       message: failureMessageMock,
+      status: failureStatusMock,
     });
   });
 

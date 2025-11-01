@@ -1,8 +1,8 @@
-import { describe, it, expect } from 'vitest';
+import { screen } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
+import { mockRecentStudySessions } from '~/mocks';
 import { render } from '~/utilities/testing';
 import { RecentStudySessions } from './RecentStudySessions';
-import { screen } from '@testing-library/react';
-import { mockRecentStudySessions } from '~/mocks';
 
 describe('RecentStudySessions', () => {
   it('renders without data', () => {

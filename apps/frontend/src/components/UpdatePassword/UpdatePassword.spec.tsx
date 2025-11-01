@@ -12,11 +12,10 @@ vi.mock('@mantine/notifications', () => ({
   },
 }));
 
-import { describe, it, expect } from 'vitest';
-import { screen, fireEvent } from '@testing-library/react';
-import { render } from '~/utilities/testing';
-import { vi } from 'vitest';
 import { notifications } from '@mantine/notifications';
+import { fireEvent, screen } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
+import { render } from '~/utilities/testing';
 import { UpdatePassword } from './UpdatePassword';
 
 describe('Update Password tests', () => {
@@ -50,9 +49,9 @@ describe('Update Password tests', () => {
     fireEvent.change(password_2, { target: { value: '0106Abcd' } });
     fireEvent.click(updatePassButton);
     expect(notifications.show).toHaveBeenCalledWith({
-      title: 'Weak Password',
-      message: 'Password must contain a special character',
       color: 'red',
+      message: 'Password must contain a special character',
+      title: 'Weak Password',
     });
   });
   it('Shows an error if new passwords do not match (edge case testing one of the passwords is valid)', async () => {
@@ -67,9 +66,9 @@ describe('Update Password tests', () => {
     fireEvent.change(password_2, { target: { value: '0106Abcd*' } });
     fireEvent.click(updatePassButton);
     expect(notifications.show).toHaveBeenCalledWith({
-      title: 'Mismatch',
-      message: 'Passwords do not match',
       color: 'red',
+      message: 'Passwords do not match',
+      title: 'Mismatch',
     });
   });
 });

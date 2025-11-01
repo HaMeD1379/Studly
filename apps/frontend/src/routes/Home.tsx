@@ -5,8 +5,8 @@ export const Home = () => {
     <Navbar>
       <div
         style={{
-          display: 'flex',
           alignContent: 'center',
+          display: 'flex',
           justifyContent: 'center',
         }}
       >
