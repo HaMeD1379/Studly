@@ -14,7 +14,7 @@ vi.mock("@mantine/notifications", () => ({
 }));
 
 const router = createMemoryRouter([
-  { action: SignUpAction, element: <SignUpForm />, path: "/signup" },
+  { action: SignUpAction, element: <SignUpForm />, path: "/" },
 ]);
 
 describe("Password Validation Tests", () => {

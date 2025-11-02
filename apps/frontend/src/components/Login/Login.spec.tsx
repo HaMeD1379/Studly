@@ -1,5 +1,5 @@
 import { fireEvent, screen } from "@testing-library/react";
-import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
+import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
 
 import { LoginForm } from "./Login";
 import "@testing-library/jest-dom";

@@ -49,7 +49,6 @@ export function SignUpForm() {
           "Begin Your Gamified Learning experience now",
           "green"
         );
-        console.log(name + " " + email + " " + password_1);
       } else {
         e.preventDefault();
       }

@@ -14,7 +14,7 @@ import {
   Title,
 } from "@mantine/core";
 import { useState } from "react";
-import { useNavigate, Form } from "react-router-dom";
+import { Form, useNavigate } from "react-router-dom";
 import placeholder from "~/assets/landscape-placeholder.svg";
 import { displayNotifications } from "~/utilities/notifications/displayNotifications";
 import { validateEmail } from "~/utilities/validation";

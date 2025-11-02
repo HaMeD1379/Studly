@@ -6,29 +6,28 @@ vi.mock("react-router-dom", async () => {
   );
   return {
     ...actual,
-    useNavigate: () => mockNavigate,
     useLocation: () => ({ pathname: "/" }),
+    useNavigate: () => mockNavigate,
   };
 });
-import { expect, describe, it, vi } from "vitest";
-import { screen, fireEvent } from "@testing-library/react";
+import { fireEvent, screen } from "@testing-library/react";
+import fetchPolyfill, { Request as RequestPolyfill } from "node-fetch";
+import { createMemoryRouter, RouterProvider, redirect } from "react-router-dom";
+import { describe, expect, it, Mock, vi } from "vitest";
+import { logoutAction } from "~/actions/logout";
+import * as logoutApi from "~/api/auth";
 import { render } from "~/utilities/testing";
 import { Navbar } from "./Navbar";
-import { createMemoryRouter, RouterProvider, redirect } from "react-router-dom";
-import { logoutAction } from "~/actions/logout";
-import { LoginForm } from "~/components";
-import * as logoutApi from "~/api/auth";
-import fetchPolyfill, { Request as RequestPolyfill } from "node-fetch";
 
 Object.defineProperty(global, "fetch", {
+  value: fetchPolyfill,
   // MSW will overwrite this to intercept requests
   writable: true,
-  value: fetchPolyfill,
 });
 
 Object.defineProperty(global, "Request", {
-  writable: false,
   value: RequestPolyfill,
+  writable: false,
 });
 vi.mock("~/api/auth", () => ({
   logout: vi.fn(),
@@ -37,30 +36,6 @@ describe("Navbar", () => {
   beforeEach(() => {
     vi.resetAllMocks();
   });
-  const router_2 = createMemoryRouter(
-    [
-      {
-        path: "/",
-        element: <Navbar>MOCK_CHILDREN</Navbar>,
-        children: [
-          { path: "home", element: <div>Home Page</div> },
-          { path: "study", element: <div>Study Session</div> },
-          { path: "badges", element: <div>Badges Page</div> },
-        ],
-      },
-      {
-        path: "/logout",
-        action: logoutAction,
-      },
-      {
-        path: "/login",
-        element: <LoginForm />,
-      },
-    ],
-    {
-      initialEntries: ["/"], // start on the Navbar route
-    }
-  );
   const router = createMemoryRouter([
     { path: "/", element: <Navbar>MOCK_CHILDREN</Navbar> },
   ]);
@@ -104,9 +79,9 @@ describe("Navbar", () => {
   });
   it("navigates to the login page when logout button is clicked", async () => {
     // Arrange: mock API and localStorage
-    (logoutApi.logout as any).mockResolvedValue({
-      message: "Logout successful",
+    (logoutApi.logout as Mock).mockResolvedValue({
       data: {},
+      message: "Logout successful",
     });
     localStorage.setItem("accessToken", "abc123");
 

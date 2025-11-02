@@ -7,7 +7,6 @@ export async function loginAction({ request }: ActionFunctionArgs) {
   const password = formData.get("password")?.toString();
 
   if (!email || !password) return { error: "Missing credentials" }; // early exit if missing
-  console.log("email:", email, "password:", password);
   const res = await login(email, password);
   console.log("mock response:", res);
 

@@ -1,7 +1,7 @@
 import { MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { loginAction, SignUpAction, logoutAction } from "~/actions";
+import { loginAction, logoutAction, SignUpAction } from "~/actions";
 import {
   Badges,
   Forgot,
@@ -9,8 +9,8 @@ import {
   Login,
   SignUp,
   Study,
-  UserProfile,
   UpdatePassword,
+  UserProfile,
 } from "~/routes";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";

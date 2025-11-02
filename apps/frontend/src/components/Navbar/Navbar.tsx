@@ -1,4 +1,4 @@
-import { AppShell, Button, Text, Flex, Divider } from "@mantine/core";
+import { AppShell, Button, Divider, Flex, Text } from "@mantine/core";
 import {
   IconClock,
   IconHome,
@@ -6,7 +6,7 @@ import {
   IconMedal,
   IconMedal2,
 } from "@tabler/icons-react";
-import { useNavigate, useLocation, Form } from "react-router-dom";
+import { Form, useLocation, useNavigate } from "react-router-dom";
 
 type NavbarProps = {
   children: React.ReactNode;
@@ -66,7 +66,7 @@ export const Navbar = ({ children }: NavbarProps) => {
           {/* Spacer pushes logout to bottom */}
           <Flex direction="column" mt="auto">
             <Divider my="sm" />
-            <Form method="post" action="/logout">
+            <Form action="/logout" method="post">
               <StyledButton path="/" type="submit">
                 <Flex align="center" gap={4}>
                   <IconLogout size={20} />
@@ -94,12 +94,12 @@ const StyledButton = ({ children, path, type, onClick }: StyledButtonProps) => {
   return (
     <Button
       {...(type ? { type } : {})}
-      onClick={handleClick}
-      variant={currentPath === path ? "filled" : "transparent"}
       color={currentPath === path ? "blue" : "dark-gray"}
-      justify="left"
-      radius="md"
       fullWidth
+      justify="left"
+      onClick={handleClick}
+      radius="md"
+      variant={currentPath === path ? "filled" : "transparent"}
     >
       {children}
     </Button>
