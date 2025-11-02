@@ -2,7 +2,7 @@ import { type ActionFunctionArgs, redirect } from "react-router";
 import { signUp } from "~/api";
 
 export async function SignUpAction({ request }: ActionFunctionArgs) {
-  let formdata = await request.formData();
+  const formdata = await request.formData();
   const fullname = formdata.get("name")?.toString();
   const email = formdata.get("email")?.toString();
   const password = formdata.get("password")?.toString();

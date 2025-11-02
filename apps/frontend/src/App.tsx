@@ -1,4 +1,3 @@
-import { MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import {
@@ -13,21 +12,21 @@ import {
 } from "~/routes";
 
 import { loginAction, SignUpAction, logoutAction } from "~/actions";
-
+import { MantineProvider } from "@mantine/core";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import "@mantine/dates/styles.css";
 
 const router = createBrowserRouter([
-  { path: "/", element: <Login />, action: loginAction },
-  { path: "/badges", element: <Badges /> },
-  { path: "/change-password", element: <UpdatePassword /> },
-  { path: "/forgot-password", element: <Forgot /> },
-  { path: "/home", element: <Home /> },
-  { path: "/logout", element: <Login />, action: logoutAction },
-  { path: "/signup", element: <SignUp />, action: SignUpAction },
-  { path: "/study", element: <Study /> },
-  { path: "/user", element: <UserProfile /> },
+  { action: loginAction, element: <Login />, path: "/" },
+  { element: <Badges />, path: "/badges" },
+  { element: <UpdatePassword />, path: "/change-password" },
+  { element: <Forgot />, path: "/forgot-password" },
+  { element: <Home />, path: "/home" },
+  { action: logoutAction, element: <Login />, path: "/logout" },
+  { action: SignUpAction, element: <SignUp />, path: "/signup" },
+  { element: <Study />, path: "/study" },
+  { element: <UserProfile />, path: "/user" },
 ]);
 
 export const App = () => {

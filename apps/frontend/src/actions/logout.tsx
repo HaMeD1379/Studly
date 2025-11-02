@@ -1,5 +1,5 @@
+import { redirect } from "react-router";
 import { logout } from "~/api";
-import { type ActionFunctionArgs, redirect } from "react-router";
 
 export async function logoutAction() {
   const token = localStorage.getItem("accessToken");

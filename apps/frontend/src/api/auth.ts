@@ -1,11 +1,12 @@
-import  { RequestResolve, RequestMethods, BackendLoginResponse } from '~/types';
-import { request } from "~/utilities/requests";
 import { AUTH_SIGNUP, AUTH_LOGIN,AUTH_FORGOTPASSWORD, AUTH_LOGOUT } from "~/config";
+import  { type RequestResolve, RequestMethods, type BackendLoginResponse } from '~/types';
+import { request } from "~/utilities/requests";
+
 
 export const signUp = async (email:string,password:string,full_name:string) => await request(RequestMethods.POST, AUTH_SIGNUP, undefined,JSON.stringify({
     email: email,
-    password: password,
     full_name: full_name,
+    password: password,
   })
  
 );

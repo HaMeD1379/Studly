@@ -1,12 +1,11 @@
-import { describe, it, expect } from "vitest";
-import { equalPasswords } from "./passwordValidation";
-import { screen, fireEvent } from "@testing-library/react";
-import { render } from "../testing";
-import { vi } from "vitest";
 import { notifications } from "@mantine/notifications";
-import { SignUpForm } from "~/components";
-import { SignUpAction } from "~/actions";
+import { fireEvent, screen } from "@testing-library/react";
 import { createMemoryRouter, RouterProvider } from "react-router-dom";
+import { describe, expect, it, vi } from "vitest";
+import { SignUpAction } from "~/actions";
+import { SignUpForm } from "~/components";
+import { render } from "../testing";
+import { equalPasswords } from "./passwordValidation";
 
 vi.mock("@mantine/notifications", () => ({
   notifications: {

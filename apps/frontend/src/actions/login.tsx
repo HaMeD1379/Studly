@@ -1,10 +1,10 @@
-import { login } from "~/api";
 import { type ActionFunctionArgs, redirect } from "react-router";
+import { login } from "~/api";
 
 export async function loginAction({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
-  const email = formData.get("email")!.toString();
-  const password = formData.get("password")!.toString();
+  const email = formData.get("email")?.toString();
+  const password = formData.get("password")?.toString();
 
   if (!email || !password) return { error: "Missing credentials" }; // early exit if missing
   console.log("email:", email, "password:", password);

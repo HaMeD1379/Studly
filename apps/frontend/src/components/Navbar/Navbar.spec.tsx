@@ -116,11 +116,7 @@ describe("Navbar", () => {
     });
 
     // Act: call the action
-    const result = await logoutAction({
-      request: req,
-      params: {},
-      context: {},
-    });
+    const result = await logoutAction();
 
     // Assert: redirect and localStorage cleared inside the action
     expect(result).toEqual(redirect("/"));
