@@ -1,6 +1,6 @@
 /**
  * ────────────────────────────────────────────────────────────────────────────────
- *  File: src/middleware/internalApiKey.js
+ *  File: src/middleware/internal.api.key.middleware.js
  *  Project: Studly — Backend
  *  Purpose: Protect internal API routes behind an INTERNAL_API_TOKEN header.
  *  Behavior: Skips enforcement when NODE_ENV === 'test' to keep tests passing.

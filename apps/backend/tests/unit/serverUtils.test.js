@@ -36,7 +36,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { handleError, handleSuccess } from "../../src/utils/serverUtils.js";
+import { handleError, handleSuccess } from "../../src/utils/server.util.js";
 import STRINGS from "../../src/config/strings.js";
 
 const createMockResponse = () => {

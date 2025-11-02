@@ -1,204 +1,239 @@
-# Session API Contract
+# Study Sessions API Contract
 
 ## Overview
-The Session API manages user authentication sessions, including login, logout, session validation, and session refresh operations.
+- This API manages study session lifecycle for users: start, complete/update, list, and summarize sessions.
+- Only the endpoints documented here are implemented. Anything not listed is not available.
 
-## Base URL
+## Base Path
 ```
-/api/sessions
+/api/v1/sessions
 ```
+
+## Required Headers
+- `x-api-key`: `INTERNAL_API_TOKEN`
+- `Content-Type`: `application/json` (for POST/PATCH)
+
+## Notes for Frontend
+- **Timestamps**
+  - `startTimestamp` and `endStudyTimestamp` are returned as a number (milliseconds since Unix epoch).
+  - `from`/`to`/`endedAfter`/`endedBefore` in queries accept either ISO strings or epoch milliseconds.
+  - `createdAt`/`updatedAt` are ISO 8601 strings (from the database).
+- **Status values:** `in_progress`, `completed` (other values may be ignored by the backend).
+- **Error shape:** `{ "error": string }`
+
+## Data Model: Session (response shape)
+- `id`: string
+- `userId`: string
+- `subject`: string
+- `status`: string (e.g., "in_progress" or "completed")
+- `startTimestamp`: number (epoch ms)
+- `endStudyTimestamp`: number | null (epoch ms)
+- `targetDurationMillis`: number | null
+- `sessionLength`: number | null (actual duration in ms)
+- `notes`: string | null
+- `createdAt`: string (ISO 8601)
+- `updatedAt`: string (ISO 8601)
 
 ## Endpoints
 
-### 1. Create Session (Login)
-**POST** `/api/sessions`
-
-**Request Body:**
-```json
-{
-  "email": "string",
-  "password": "string",
-  "rememberMe": "boolean (optional, default: false)"
-}
-```
-
-**Success Response (200):**
-```json
-{
-  "session": {
-    "id": "string",
-    "userId": "string",
-    "token": "string",
-    "expiresAt": "ISO 8601 timestamp",
-    "createdAt": "ISO 8601 timestamp"
-  },
-  "user": {
-    "id": "string",
-    "email": "string",
-    "name": "string",
-    "role": "string"
-  }
-}
-```
-
-**Error Responses:**
-- **401 Unauthorized:** Invalid credentials
-- **400 Bad Request:** Missing or invalid fields
-- **429 Too Many Requests:** Too many login attempts
-
----
-
-### 2. Get Current Session
-**GET** `/api/sessions/current`
-
-**Headers:**
-```
-Authorization: Bearer {token}
-```
-
-**Success Response (200):**
-```json
-{
-  "session": {
-    "id": "string",
-    "userId": "string",
-    "token": "string",
-    "expiresAt": "ISO 8601 timestamp",
-    "createdAt": "ISO 8601 timestamp",
-    "lastActivityAt": "ISO 8601 timestamp"
-  },
-  "user": {
-    "id": "string",
-    "email": "string",
-    "name": "string",
-    "role": "string"
-  }
-}
-```
-
-**Error Responses:**
-- **401 Unauthorized:** Invalid or expired token
-- **403 Forbidden:** Token revoked
-
----
-
-### 3. Refresh Session Token
-**POST** `/api/sessions/refresh`
-
-**Headers:**
-```
-Authorization: Bearer {token}
-```
-
-**Success Response (200):**
-```json
-{
-  "session": {
-    "id": "string",
-    "token": "string (new token)",
-    "expiresAt": "ISO 8601 timestamp"
-  }
-}
-```
-
-**Error Responses:**
-- **401 Unauthorized:** Invalid or expired token
-- **400 Bad Request:** Token cannot be refreshed
-
----
-
-### 4. Destroy Session (Logout)
-**DELETE** `/api/sessions/current`
-
-**Headers:**
-```
-Authorization: Bearer {token}
-```
-
-**Success Response (204):**
-No content
-
-**Error Responses:**
-- **401 Unauthorized:** Invalid token
-- **500 Internal Server Error:** Logout failed
-
----
-
-### 5. List Active Sessions
-**GET** `/api/sessions`
-
-**Headers:**
-```
-Authorization: Bearer {token}
-```
-
-**Query Parameters:**
-- `limit`: number (optional, default: 10, max: 100)
-- `offset`: number (optional, default: 0)
-
-**Success Response (200):**
-```json
-{
-  "sessions": [
+### 1) Start a session
+- **POST** `/`
+- **Purpose:** Create a new in-progress study session.
+- **Request body**
+  - `userId`: string (required)
+  - `subject`: string (required)
+  - `startTimestamp`: string | number (optional; defaults to now)
+  - `targetDurationMillis`: number (optional)
+  - `notes`: string (optional)
+- **Success 201**
+  - `{ "session": Session }`
+- **Errors**
+  - `400 { error: "userId is required" }`
+  - `400 { error: "subject is required" }`
+  - `500 { error: string }` for server/database errors
+- **Example**
+  - **Request**
+    ```
+    POST /api/v1/sessions
+    Headers: { "x-api-key": "<token>", "Content-Type": "application/json" }
+    Body:
     {
-      "id": "string",
-      "deviceName": "string",
-      "ipAddress": "string",
-      "userAgent": "string",
-      "createdAt": "ISO 8601 timestamp",
-      "lastActivityAt": "ISO 8601 timestamp",
-      "expiresAt": "ISO 8601 timestamp",
-      "isCurrent": "boolean"
+      "userId": "user-123",
+      "subject": "Calculus",
+      "startTimestamp": "2025-10-20T14:00:00.000Z",
+      "targetDurationMillis": 3600000
     }
-  ],
-  "total": "number"
-}
-```
+    ```
+  - **Response 201**
+    ```json
+    {
+      "session": {
+        "id": "session-abc",
+        "userId": "user-123",
+        "subject": "Calculus",
+        "status": "in_progress",
+        "startTimestamp": 1766277600000,
+        "endStudyTimestamp": null,
+        "targetDurationMillis": 3600000,
+        "sessionLength": null,
+        "notes": null,
+        "createdAt": "2025-10-20T14:00:00.000Z",
+        "updatedAt": "2025-10-20T14:00:00.000Z"
+      }
+    }
+    ```
 
----
+### 2) Complete or update a session
+- **PATCH** `/:sessionId`
+- **Purpose:** Mark a session as completed and/or update details.
+- **Request body**
+  - `endStudyTimestamp`: string | number (required to complete)
+  - `sessionLengthMillis`: number (optional; actual duration in ms)
+  - `notes`: string (optional)
+  - `status`: string (optional; defaults to "completed" when endStudyTimestamp provided)
+- **Success 200**
+  - If session ends with status "completed":
+    `{ "session": Session, "newBadgesEarned": Badge[], "badgeCount": number }`
+    - If badge evaluation fails: add "badgeCheckFailed": true and return empty badges
+  - If not completed (e.g., cancelled/paused): `{ "session": Session }`
+- **Errors**
+  - `400 { error: "sessionId is required" }`
+  - `400 { error: "endStudyTimestamp is required" }`
+  - `404 { error: "Session not found" }`
+  - `500 { error: string }` for server/database errors
+- **Example**
+  - **Request**
+    ```
+    PATCH /api/v1/sessions/session-abc
+    Headers: { "x-api-key": "<token>", "Content-Type": "application/json" }
+    Body:
+    {
+      "endStudyTimestamp": "2025-10-20T15:30:00.000Z",
+      "sessionLengthMillis": 5400000,
+      "notes": "Great focus"
+    }
+    ```
+  - **Response 200**
+    ```json
+    {
+      "session": {
+        "id": "session-abc",
+        "userId": "user-123",
+        "subject": "Calculus",
+        "status": "completed",
+        "startTimestamp": 1766277600000,
+        "endStudyTimestamp": 1766283000000,
+        "targetDurationMillis": 3600000,
+        "sessionLength": 5400000,
+        "notes": "Great focus",
+        "createdAt": "2025-10-20T14:00:00.000Z",
+        "updatedAt": "2025-10-20T15:30:00.000Z"
+      },
+      "newBadgesEarned": [
+        { "id": "badge-1", "name": "First Study", "description": "Completed your first session" }
+      ],
+      "badgeCount": 1
+    }
+    ```
 
-### 6. Destroy Specific Session
-**DELETE** `/api/sessions/{sessionId}`
+### 3) List sessions
+- **GET** `/`
+- **Purpose:** List sessions for a user with optional filters; results are sorted by endStudyTimestamp desc.
+- **Query params**
+  - `userId`: string (required)
+  - `subject`: string (optional)
+  - `status`: string (optional)
+  - `limit`: number (optional; positive integer)
+  - `endedAfter`: string | number (optional; return sessions with endStudyTimestamp >= value)
+  - `endedBefore`: string | number (optional; return sessions with endStudyTimestamp <= value)
+- **Success 200**
+  - `{ "sessions": Session[] }`
+- **Errors**
+  - `400 { error: "userId query parameter is required" }`
+  - `400 { error: "limit must be a positive integer" }`
+  - `500 { error: string }` for server/database errors
+- **Example**
+  ```
+  GET /api/v1/sessions?userId=user-123&subject=Calculus&status=completed&limit=10
+  Headers: { "x-api-key": "<token>" }
+  ```
+  - **Response 200**
+    ```json
+    {
+      "sessions": [
+        {
+          "id": "session-2",
+          "userId": "user-123",
+          "subject": "Calculus",
+          "status": "completed",
+          "startTimestamp": 1766277600000,
+          "endStudyTimestamp": 1766284800000,
+          "targetDurationMillis": null,
+          "sessionLength": 7200000,
+          "notes": null,
+          "createdAt": "2025-10-20T13:00:00.000Z",
+          "updatedAt": "2025-10-20T15:40:00.000Z"
+        }
+      ]
+    }
+    ```
 
-**Headers:**
-```
-Authorization: Bearer {token}
-```
+### 4) Sessions summary
+- **GET** `/summary`
+- **Purpose:** Aggregate metrics for dashboards.
+- **Query params**
+  - `userId`: string (required)
+  - `from`: string | number (optional; inclusive lower bound on endStudyTimestamp)
+  - `to`: string | number (optional; inclusive upper bound on endStudyTimestamp)
+  - `status`: string (optional; defaults to "completed")
+- **Success 200**
+  - `{ "totalTimeStudied": number, "timesStudied": number }`
+  - `totalTimeStudied` is the sum of sessionLength in milliseconds over the filtered set
+- **Errors**
+  - `400 { error: "userId query parameter is required" }`
+  - `500 { error: string }` for server/database errors
+- **Example**
+  ```
+  GET /api/v1/sessions/summary?userId=user-123&from=2025-10-01&to=2025-10-31
+  Headers: { "x-api-key": "<token>" }
+  ```
+  - **Response 200**
+    ```json
+    { "totalTimeStudied": 5400000, "timesStudied": 1 }
+    ```
 
-**Success Response (204):**
-No content
+## Frontend usage snippets
+- **Start**
+  ```javascript
+  await fetch('/api/v1/sessions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-api-key': INTERNAL_API_TOKEN },
+    body: JSON.stringify({ userId, subject, targetDurationMillis }),
+  }).then(r => r.json());
+  ```
 
-**Error Responses:**
-- **401 Unauthorized:** Invalid token
-- **403 Forbidden:** Cannot delete other user's sessions
-- **404 Not Found:** Session not found
+- **Complete**
+  ```javascript
+  await fetch(`/api/v1/sessions/${sessionId}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', 'x-api-key': INTERNAL_API_TOKEN },
+    body: JSON.stringify({ endStudyTimestamp: new Date().toISOString(), sessionLengthMillis }),
+  }).then(r => r.json());
+  ```
 
----
+- **List recent**
+  ```javascript
+  await fetch(`/api/v1/sessions?userId=${userId}&limit=5`, {
+    headers: { 'x-api-key': INTERNAL_API_TOKEN },
+  }).then(r => r.json());
+  ```
 
-## Frontend Usage Guide
+- **Summary**
+  ```javascript
+  await fetch(`/api/v1/sessions/summary?userId=${userId}&from=${from}&to=${to}`, {
+    headers: { 'x-api-key': INTERNAL_API_TOKEN },
+  }).then(r => r.json());
+  ```
 
-### Authentication Setup
-Store the token in `localStorage` or a secure cookie:
-```javascript
-localStorage.setItem('sessionToken', response.session.token);
-```
-
-### Include Token in Requests
-Add token to all authenticated requests:
-```javascript
-headers: {
-  'Authorization': `Bearer ${token}`
-}
-```
-
-### Handle Token Expiration
-- Check `expiresAt` before making requests
-- Implement auto-refresh 5 minutes before expiration
-- Redirect to login on 401 responses
-
-### Session Management Best Practices
-- Call `GET /api/sessions/current` on app initialization to validate session
-- Implement periodic token refresh (every 50 minutes for 1-hour expiration)
-- Clear local storage and redirect on logout (DELETE request)
-- Handle session expiration gracefully with user notification
-
+## Changelog
+- 2025-11-01: Replaced outdated auth-session endpoints with actual study sessions API and added FE-focused examples.

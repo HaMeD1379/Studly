@@ -51,7 +51,7 @@ const STRINGS = {
     RESET_PASSWORD_FOR_EMAIL: 'resetPasswordForEmail',
     UPDATE_USER: 'updateUser',
     INTERNAL_FAIL: 'Internal fail',
-    SERVER_UTILS_JS: 'serverUtils.js',
+    SERVER_UTILS_JS: 'server.util.js',
     ERROR: 'error',
     LOG: 'log',
     OK: 'OK',
@@ -215,7 +215,7 @@ const STRINGS = {
     BADGES_REPOSITORY_USER_BADGES: 'BadgesRepository - findUserBadges should return user badges',
     BADGES_REPOSITORY_CREATE: 'BadgesRepository - createUserBadge should create new user badge',
     BADGES_REPOSITORY_UPDATE: 'BadgesRepository - updateUserBadge should update existing badge',
-    
+
     BADGES_SERVICE_GET_ALL: 'BadgesService - getAllBadges should return all badges',
     BADGES_SERVICE_USER_BADGES: 'BadgesService - getUserBadges should return user badges',
     BADGES_SERVICE_AWARD: 'BadgesService - awardBadge should award badge to user',
@@ -223,12 +223,12 @@ const STRINGS = {
     BADGES_SERVICE_CHECK: 'BadgesService - checkAndAwardBadges should check and award earned badges',
     BADGES_SERVICE_CALC_PROGRESS: 'BadgesService - calculateBadgeProgress should calculate correct progress',
     BADGES_SERVICE_CALC_STREAK: 'BadgesService - calculateStreak should calculate consecutive days',
-    
+
     BADGES_CONTROLLER_GET_ALL: 'BadgesController - getAllBadges should return all badges',
     BADGES_CONTROLLER_USER_BADGES: 'BadgesController - getUserBadges should return user badges',
     BADGES_CONTROLLER_AWARD: 'BadgesController - awardBadge should award badge',
     BADGES_CONTROLLER_CHECK: 'BadgesController - checkUserBadges should check and award badges',
-    
+
     // Integration tests
     BADGES_INTEGRATION_GET_ALL: 'Badges API - GET /badges should return all badges',
     BADGES_INTEGRATION_USER_BADGES: 'Badges API - GET /users/:userId/badges should return user badges',

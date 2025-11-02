@@ -1,6 +1,6 @@
 /**
  * ────────────────────────────────────────────────────────────────────────────────
- *  File: src/middleware/validateInput.js
+ *  File: src/middleware/validate.input.middleware.js
  *  Group: Group 3 — COMP 4350: Software Engineering 2
  *  Project: Studly
  *  Author: Shiv Bhagat
@@ -34,7 +34,7 @@
  * ────────────────────────────────────────────────────────────────────────────────
  */
 
-import { handleError } from '../utils/serverUtils.js';
+import { handleError } from '../utils/server.util.js';
 import STRINGS from '../config/strings.js';
 
 export const validateSignup = (req, res, next) => {

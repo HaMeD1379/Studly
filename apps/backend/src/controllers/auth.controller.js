@@ -36,7 +36,7 @@
  */
 
 import supabase from "../config/supabase.js";
-import { handleError, handleSuccess } from "../utils/serverUtils.js";
+import { handleError, handleSuccess } from "../utils/server.util.js";
 import STRINGS from "../config/strings.js";
 
 export const signup = async (req, res) => {

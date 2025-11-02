@@ -35,7 +35,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { validateSignup } from '../../src/middleware/validateInput.js';
+import { validateSignup } from '../../src/middleware/validate.input.middleware.js';
 import STRINGS from '../../src/config/strings.js';
 
 const createMockContext = () => {
