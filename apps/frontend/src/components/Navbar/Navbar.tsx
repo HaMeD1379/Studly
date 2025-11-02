@@ -1,5 +1,4 @@
 import { AppShell, Button, Text, Flex, Divider } from "@mantine/core";
-import { useNavigate, useLocation, Form } from "react-router-dom";
 import {
   IconClock,
   IconHome,
@@ -7,6 +6,7 @@ import {
   IconMedal,
   IconMedal2,
 } from "@tabler/icons-react";
+import { useNavigate, useLocation, Form } from "react-router-dom";
 
 type NavbarProps = {
   children: React.ReactNode;
@@ -23,8 +23,8 @@ export const Navbar = ({ children }: NavbarProps) => {
   return (
     <AppShell
       navbar={{
-        width: 200,
         breakpoint: "sm",
+        width: 200,
       }}
       padding={24}
     >
@@ -32,7 +32,7 @@ export const Navbar = ({ children }: NavbarProps) => {
         {/* Wrap the whole navbar content in a vertical Flex */}
         <Flex direction="column" h="100%">
           {/* Header */}
-          <Flex align="center" py={8} pl={16} gap={4}>
+          <Flex align="center" gap={4} pl={16} py={8}>
             <IconMedal color="#228be6" />
             <Text fw={900} size="lg">
               Studly

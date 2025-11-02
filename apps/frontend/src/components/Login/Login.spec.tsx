@@ -1,26 +1,26 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { screen, fireEvent } from "@testing-library/react";
+import { fireEvent, screen } from "@testing-library/react";
+import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
+
 import { LoginForm } from "./Login";
 import "@testing-library/jest-dom";
 import { notifications } from "@mantine/notifications";
-import { render } from "~/utilities/testing";
+import fetchPolyfill, { Request as RequestPolyfill } from "node-fetch";
 import { createMemoryRouter, RouterProvider, redirect } from "react-router-dom";
 import { loginAction } from "~/actions";
 import * as auth from "~/api/auth";
-import fetchPolyfill, { Request as RequestPolyfill } from "node-fetch";
+import { render } from "~/utilities/testing";
 
 //Lines 15 - 24 were provided through an online github repo as solution to the error:
 //RequestInit: Expected signal ("AbortSignal {}") to be an instance of AbortSignal.
-//Link: https://github.com/reduxjs/redux-toolkit/issues/4966
 Object.defineProperty(global, "fetch", {
+  value: fetchPolyfill,
   // MSW will overwrite this to intercept requests
   writable: true,
-  value: fetchPolyfill,
 });
 
 Object.defineProperty(global, "Request", {
-  writable: false,
   value: RequestPolyfill,
+  writable: false,
 });
 
 // Mock useNavigate
@@ -42,7 +42,7 @@ vi.mock("~/api/auth", () => ({
 }));
 
 const router = createMemoryRouter([
-  { path: "/", element: <LoginForm />, action: loginAction },
+  { action: loginAction, element: <LoginForm />, path: "/" },
 ]);
 
 describe("Login Tests", () => {
@@ -67,14 +67,14 @@ describe("Login Tests", () => {
     fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
 
     expect(notifications.show).toHaveBeenCalledWith({
-      title: "Mismatch",
-      message: "Provide a valid Email",
       color: "red",
+      message: "Provide a valid Email",
+      title: "Mismatch",
     });
   });
 
   it("Navigates to /study after successful login", async () => {
-    (auth.login as any).mockResolvedValue({
+    (auth.login as Mock).mockResolvedValue({
       data: {
         data: {
           session: { access_token: "abc123" },
@@ -87,14 +87,14 @@ describe("Login Tests", () => {
     formData.append("password", "password123");
 
     const req = new Request("http://localhost/", {
-      method: "POST",
       body: formData,
+      method: "POST",
     });
 
     const result = await loginAction({
-      request: req,
-      params: {},
       context: {},
+      params: {},
+      request: req,
     });
 
     expect(result).toEqual(redirect("/study"));

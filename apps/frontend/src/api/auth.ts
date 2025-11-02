@@ -1,4 +1,4 @@
-import { AUTH_SIGNUP, AUTH_LOGIN,AUTH_FORGOTPASSWORD, AUTH_LOGOUT } from "~/config";
+import { AUTH_FORGOTPASSWORD, AUTH_LOGIN,AUTH_LOGOUT,AUTH_SIGNUP} from "~/config";
 import  { type RequestResolve, RequestMethods, type BackendLoginResponse } from '~/types';
 import { request } from "~/utilities/requests";
 

@@ -18,9 +18,9 @@ export const request = async (
   requestHeaders.append('Content-Type', CONTENT_TYPE);
 
   const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/${API_VERSION}/${path}`, {
-    method,
+    body,
     headers: requestHeaders,
-    body
+    method
   });
  
   if (response.ok) {
