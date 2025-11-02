@@ -31,7 +31,6 @@
  */
 
 import sessionsService from '../services/sessions.service.js';
-import badgesService from '../services/badges.service.js';
 
 const parseLimit = (value) => {
   if (value === undefined) return undefined;
@@ -88,12 +87,10 @@ const validateDateString = (value, fieldName) => {
 /**
  * Factory for sessions controller — allows injecting a mock service in tests.
  * @param {object} service - Sessions service with createSession, completeSession, listSessions
- * @param {object} badgeService - Badges service for checking earned badges
  * @returns {{startSession: Function, completeSession: Function, listSessions: Function}}
  */
 export const createSessionsController = (
-  service = sessionsService,
-  badgeService = badgesService
+  service = sessionsService
 ) => {
   /**
    * POST /
