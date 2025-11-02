@@ -137,8 +137,8 @@ export function SignUpForm() {
             />
             <PasswordInput
               label="Create Password"
-              name="password"
               mt="md"
+              name="password"
               onChange={(e) => setPassword_1(e.target.value)}
               placeholder="Create a password"
               required
