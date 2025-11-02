@@ -27,7 +27,7 @@ export const request = async (
     /*return {
       data: response.json()
     }*/
-   const data = await response.json();  // ✅ this is now the parsed JSON object
+   const data = await response.json();  // the parsed JSON object
     return { data };    
   }
 
