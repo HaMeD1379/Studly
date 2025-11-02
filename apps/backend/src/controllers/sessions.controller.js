@@ -33,13 +33,6 @@
 import sessionsService from '../services/sessions.service.js';
 import badgesService from '../services/badges.service.js';
 
-const MILLIS_IN_MINUTE = 60_000;
-
-const millisToMinutes = (millis) => {
-  if (millis === null || millis === undefined) return null;
-  return Math.round((millis / MILLIS_IN_MINUTE) * 1000) / 1000;
-};
-
 const parseLimit = (value) => {
   if (value === undefined) return undefined;
   const parsed = Number.parseInt(value, 10);
@@ -78,10 +71,10 @@ export const createSessionsController = (
       if (!subject) return res.status(400).json({ error: 'subject is required' });
 
       const sessionToCreate = {
-        user_id: userId,
+        userId,
         subject,
-        started_at: startTimestamp ?? new Date().toISOString(),
-        target_duration_minutes: millisToMinutes(targetDurationMillis),
+        startTimestamp: startTimestamp ?? new Date().toISOString(),
+        targetDurationMillis,
         status: 'in_progress',
       };
 
@@ -118,8 +111,8 @@ export const createSessionsController = (
         return res.status(400).json({ error: 'endStudyTimestamp is required' });
 
       const updates = {
-        ended_at: endStudyTimestamp,
-        duration_minutes: millisToMinutes(sessionLengthMillis),
+        endStudyTimestamp,
+        sessionLengthMillis,
         notes: notes ?? null,
         status: status ?? 'completed',
       };
