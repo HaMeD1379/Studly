@@ -13,31 +13,31 @@ vi.mock("@mantine/notifications", () => ({
   },
 }));
 
-import { describe, it, expect } from "vitest";
-import { screen, fireEvent, waitFor } from "@testing-library/react";
-import { vi } from "vitest";
+import { fireEvent, screen } from "@testing-library/react";
+import { describe, expect, it, Mock } from "vitest";
 import { SignUpForm } from "./SignUp";
 import "@testing-library/jest-dom";
 import { notifications } from "@mantine/notifications";
-import { render } from "~/utilities/testing";
-import { createMemoryRouter, RouterProvider, redirect } from "react-router-dom";
-import * as signupAuth from "~/api/auth";
 import fetchPolyfill, { Request as RequestPolyfill } from "node-fetch";
+import { createMemoryRouter, RouterProvider, redirect } from "react-router-dom";
+import { vi } from "vitest";
 import { SignUpAction } from "~/actions";
+import * as signupAuth from "~/api/auth";
+import { render } from "~/utilities/testing";
 
 Object.defineProperty(global, "fetch", {
+  value: fetchPolyfill,
   // MSW will overwrite this to intercept requests
   writable: true,
-  value: fetchPolyfill,
 });
 
 Object.defineProperty(global, "Request", {
-  writable: false,
   value: RequestPolyfill,
+  writable: false,
 });
 
 const router = createMemoryRouter([
-  { path: "/", element: <SignUpForm />, action: SignUpAction },
+  { action: SignUpAction, element: <SignUpForm />, path: "/" },
 ]);
 
 vi.mock("~/api/auth", () => ({
@@ -67,26 +67,26 @@ describe("Sign up activity", () => {
     fireEvent.click(checkbox);
     fireEvent.click(signUpButton);
     expect(notifications.show).toHaveBeenCalledWith({
-      title: "Mismatch",
-      message: "Provide a valid Email",
       color: "red",
+      message: "Provide a valid Email",
+      title: "Mismatch",
     });
   });
 
   it("navigates to home page (/study) after successful signup", async () => {
-    (signupAuth.signUp as any).mockResolvedValue({ data: { user: {} } });
+    (signupAuth.signUp as Mock).mockResolvedValue({ data: { user: {} } });
     const form = new FormData();
     form.append("email", "test@example.com");
     form.append("password", "password123");
     form.append("name", "dummyUser");
     const req = new Request("http://localhost/signup", {
-      method: "POST",
       body: form,
+      method: "POST",
     });
     const result = await SignUpAction({
-      request: req,
-      params: {},
       context: {},
+      params: {},
+      request: req,
     });
     expect(result).toEqual(redirect("/study"));
   });

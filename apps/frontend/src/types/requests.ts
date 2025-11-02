@@ -10,7 +10,7 @@ type RequestError = {
   message?: string;
 };
 
-export type RequestResolve<T = any> = {
+export type RequestResolve<T = unknown> = {
   data?: T;
   error?: RequestError
 }

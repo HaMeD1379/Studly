@@ -10,10 +10,11 @@ vi.mock("react-router-dom", async () => {
     useNavigate: () => mockNavigate,
   };
 });
+
 import { fireEvent, screen } from "@testing-library/react";
 import fetchPolyfill, { Request as RequestPolyfill } from "node-fetch";
 import { createMemoryRouter, RouterProvider, redirect } from "react-router-dom";
-import { describe, expect, it, Mock, vi } from "vitest";
+import { describe, expect, it, type Mock, vi } from "vitest";
 import { logoutAction } from "~/actions/logout";
 import * as logoutApi from "~/api/auth";
 import { render } from "~/utilities/testing";
@@ -37,7 +38,7 @@ describe("Navbar", () => {
     vi.resetAllMocks();
   });
   const router = createMemoryRouter([
-    { path: "/", element: <Navbar>MOCK_CHILDREN</Navbar> },
+    { element: <Navbar>MOCK_CHILDREN</Navbar>, path: "/" },
   ]);
 
   it("renders all navigations", () => {
@@ -84,11 +85,6 @@ describe("Navbar", () => {
       message: "Logout successful",
     });
     localStorage.setItem("accessToken", "abc123");
-
-    const req = new Request("http://localhost:5173/logout", {
-      method: "POST",
-      headers: { Authorization: "Bearer abc123" },
-    });
 
     // Act: call the action
     const result = await logoutAction();

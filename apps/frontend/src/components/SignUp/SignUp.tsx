@@ -11,11 +11,10 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
-import { useNavigate } from "react-router-dom";
-import { validateEmail, equalPasswords } from "~/utilities/validation";
-import { displayNotifications } from "~/utilities/notifications/displayNotifications";
 import { useState } from "react";
-import { Form } from "react-router-dom";
+import { Form, useNavigate } from "react-router-dom";
+import { displayNotifications } from "~/utilities/notifications/displayNotifications";
+import { equalPasswords, validateEmail } from "~/utilities/validation";
 
 export function SignUpForm() {
   const navigate = useNavigate();
@@ -124,23 +123,23 @@ export function SignUpForm() {
             <TextInput
               label="Full Name"
               name="name"
-              placeholder="Enter your full name"
-              required
-              radius="md"
               onChange={(e) => setName(e.target.value)}
+              placeholder="Enter your full name"
+              radius="md"
+              required
             />
             <TextInput
               label="Email"
-              onChange={(e) => setEmail(e.target.value)}
               name="email"
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="yourname@gmail.com"
               required
             />
             <PasswordInput
               label="Create Password"
+              name="password"
               mt="md"
               onChange={(e) => setPassword_1(e.target.value)}
-              name="password"
               placeholder="Create a password"
               required
             />
