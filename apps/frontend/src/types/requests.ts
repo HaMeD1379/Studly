@@ -10,7 +10,21 @@ type RequestError = {
   message?: string;
 };
 
-export type RequestResolve = {
-  data?: Promise<Response>;
-  error?: RequestError;
-};
+export type RequestResolve<T = any> = {
+  data?: T;
+  error?: RequestError
+}
+
+type Session = {
+  access_token: string;
+}
+
+export interface LoginResponse {
+  session: Session;
+  refreshToken?: string;
+}
+
+export interface BackendLoginResponse {
+  message: string;
+  data: LoginResponse;
+}

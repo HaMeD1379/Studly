@@ -1,6 +1,7 @@
-import { MantineProvider } from '@mantine/core';
-import { Notifications } from '@mantine/notifications';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { MantineProvider } from "@mantine/core";
+import { Notifications } from "@mantine/notifications";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
 import {
   Badges,
   Forgot,
@@ -8,30 +9,33 @@ import {
   Login,
   SignUp,
   Study,
-  UpdatePassword,
   UserProfile,
-} from '~/routes';
+  UpdatePassword,
+} from "~/routes";
 
-import '@mantine/core/styles.css';
-import '@mantine/notifications/styles.css';
-import '@mantine/dates/styles.css';
+import { loginAction, SignUpAction, logoutAction } from "~/actions";
+
+import "@mantine/core/styles.css";
+import "@mantine/notifications/styles.css";
+import "@mantine/dates/styles.css";
+
+const router = createBrowserRouter([
+  { path: "/", element: <Login />, action: loginAction },
+  { path: "/home", element: <Home /> },
+  { path: "/study", element: <Study /> },
+  { path: "/signup", element: <SignUp />, action: SignUpAction },
+  { path: "/forgot-password", element: <Forgot /> },
+  { path: "/badges", element: <Badges /> },
+  { path: "/user", element: <UserProfile /> },
+  { path: "/change-password", element: <UpdatePassword /> },
+  { path: "/logout", element: <Login />, action: logoutAction },
+]);
 
 export const App = () => {
   return (
     <MantineProvider>
-      <BrowserRouter>
-        <Notifications />
-        <Routes>
-          <Route element={<Home />} path='/home' />
-          <Route element={<Study />} path='/study' />
-          <Route element={<Login />} path='/' />
-          <Route element={<SignUp />} path='/signup' />
-          <Route element={<Forgot />} path='/forgot-password' />
-          <Route element={<Badges />} path='/badges' />
-          <Route element={<UserProfile />} path='/user' />
-          <Route element={<UpdatePassword />} path='/change-password' />
-        </Routes>
-      </BrowserRouter>
+      <Notifications />
+      <RouterProvider router={router} />
     </MantineProvider>
   );
 };

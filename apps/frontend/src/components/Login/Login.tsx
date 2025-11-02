@@ -12,25 +12,25 @@ import {
   Text,
   TextInput,
   Title,
-} from '@mantine/core';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import placeholder from '~/assets/landscape-placeholder.svg';
-import { displayNotifications } from '~/utilities/notifications/displayNotifications';
-import { validateEmail } from '~/utilities/validation';
+} from "@mantine/core";
+import placeholder from "~/assets/landscape-placeholder.svg";
+import { useNavigate, Form, useActionData } from "react-router-dom";
+import { useState } from "react";
+import { displayNotifications } from "~/utilities/notifications/displayNotifications";
+import { validateEmail } from "~/utilities/validation";
+import { loginAction } from "~/actions";
+
 export function LoginForm() {
   const navigate = useNavigate();
+  //display notifications based on the response from the api so like error messages
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email && password) {
-      if (!validateEmail(email)) {
-        displayNotifications('Mismatch', 'Provide a valid Email', 'red');
-      }
-      navigate('/study');
+    if (!email || !password || !(email && validateEmail(email))) {
+      e.preventDefault();
+      displayNotifications("Mismatch", "Provide a valid Email", "red");
     }
   };
 
@@ -69,21 +69,23 @@ export function LoginForm() {
           >
             Sign in to your account to continue your learning journey
           </Text>
-          <form onSubmit={handleLogin}>
+          <Form method="post" onSubmit={handleLogin}>
             <TextInput
-              label='Email'
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder='you@mantine.dev'
-              radius='md'
+              label="Email"
+              name="email"
+              placeholder="you@mantine.dev"
               required
+              radius="md"
+              onChange={(e) => setEmail(e.target.value)}
             />
             <PasswordInput
-              label='Password'
-              mt='md'
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder='Your password'
-              radius='md'
+              label="Password"
+              name="password"
+              placeholder="Your password"
               required
+              mt="md"
+              radius="md"
+              onChange={(e) => setPassword(e.target.value)}
             />
             <Group justify='space-between' mt='lg'>
               <Checkbox label='Remember me' />
@@ -113,7 +115,7 @@ export function LoginForm() {
             >
               Sign in
             </Button>
-          </form>
+          </Form>
           <br />
           <Text
             style={{
