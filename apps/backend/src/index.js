@@ -36,16 +36,16 @@
  * ────────────────────────────────────────────────────────────────────────────────
  */
 
-import 'dotenv/config';
+import "dotenv/config";
 
-
-import express from 'express';
-import cors from 'cors';
-import STRINGS from './config/strings.config.js';
-import authRoutes from './routes/v1/authentication.routes.js';
-import sessionsRoutes from './routes/v1/sessions.routes.js';
-import requireInternalApiKey from './middleware/internal-api-key.middleware.js';
-import badgesRoutes from './routes/v1/badges.routes.js';
+import express from "express";
+import cors from "cors";
+import STRINGS from "./config/strings.config.js";
+import authRoutes from "./routes/v1/authentication.routes.js";
+import sessionsRoutes from "./routes/v1/sessions.routes.js";
+import profileRoutes from "./routes/v1/profile.routes.js";
+import requireInternalApiKey from "./middleware/internal-api-key.middleware.js";
+import badgesRoutes from "./routes/v1/badges.routes.js";
 
 const app = express();
 
@@ -53,21 +53,22 @@ app.use(cors());
 app.use(express.json());
 
 // Public endpoints
-app.get('/health', (_req, res) => res.status(200).send('ok'));
-app.get('/', (_req, res) => res.send({ status: 'studly api running' }));
+app.get("/health", (_req, res) => res.status(200).send("ok"));
+app.get("/", (_req, res) => res.send({ status: "studly api running" }));
 
 // Protect all versioned API routes under /api with INTERNAL_API_TOKEN
-app.use('/api', requireInternalApiKey);
+app.use("/api", requireInternalApiKey);
 
 app.use(STRINGS.API.AUTH_ROUTE, authRoutes);
-app.use('/api/v1/sessions', sessionsRoutes);
-app.use('/api/v1/badges', badgesRoutes);
+app.use("/api/v1/sessions", sessionsRoutes);
+app.use("/api/v1/profile", profileRoutes);
+app.use("/api/v1/badges", badgesRoutes);
 
 const port = process.env.PORT || 3000;
 
-if (process.env.NODE_ENV !== 'test') {
+if (process.env.NODE_ENV !== "test") {
   app.listen(port, () =>
-    console.log(`🚀 Studly API listening on port :${port}`),
+    console.log(`🚀 Studly API listening on port :${port}`)
   );
 }
 

@@ -5,7 +5,7 @@
  *  Project: Studly
  *  Author: Shiv Bhagat
  *  Comments: Curated by GPT (Large Language Model)
- *  Last-Updated: 2025-10-15
+ *  Last-Updated: 2025-11-02
  * ────────────────────────────────────────────────────────────────────────────────
  *  Summary
  *  -------
@@ -32,11 +32,11 @@
  * ────────────────────────────────────────────────────────────────────────────────
  */
 
-import test from 'node:test';
-import assert from 'node:assert/strict';
+import test from "node:test";
+import assert from "node:assert/strict";
 
-import { validateSignup } from '../../src/middleware/auth.validation.middleware.js';
-import STRINGS from '../../src/config/strings.config.js';
+import { validateSignup } from "../../src/middleware/auth.validation.middleware.js";
+import STRINGS from "../../src/config/strings.config.js";
 
 const createMockContext = () => {
   const resPayloads = [];
@@ -58,7 +58,7 @@ const createMockContext = () => {
       return { resPayloads, resStatuses, nextCalls: this.nextCalls };
     },
     next(arg) {
-      this.nextCalls.push(arg ?? 'called');
+      this.nextCalls.push(arg ?? "called");
     },
   };
 };
@@ -130,5 +130,5 @@ test(STRINGS.TEST.VALIDATE_SUCCESS, () => {
   const { resStatuses, resPayloads, nextCalls } = ctx.outputs;
   assert.equal(resStatuses.length, 0);
   assert.equal(resPayloads.length, 0);
-  assert.deepStrictEqual(nextCalls, ['called']);
+  assert.deepStrictEqual(nextCalls, ["called"]);
 });
