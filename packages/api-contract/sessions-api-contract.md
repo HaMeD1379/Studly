@@ -1,24 +1,81 @@
 # Session API Contract
 
 ## Overview
-The Session API manages user authentication sessions, including login, logout, session validation, and session refresh operations.
+The Session API manages study session records captured by the Studly platform.
+Each record represents a completed study block with a subject, time range, and
+optional goal. Clients can create new sessions, update existing entries, list
+them with filters, and retrieve aggregate metrics for dashboards.
 
 ## Base URL
 ```
-/api/sessions
+/api/v1/sessions
 ```
 
 ## Endpoints
 
-### 1. Create Session (Login)
-**POST** `/api/sessions`
+### 1. Create Session
+**POST** `/api/v1/sessions`
+
+Create a new study session record. Both `startTime` and `endTime` must be valid
+ISO 8601 timestamps. If `totalMinutes` is omitted, the API will compute it based
+on the difference between the timestamps.
 
 **Request Body:**
 ```json
 {
-  "email": "string",
-  "password": "string",
-  "rememberMe": "boolean (optional, default: false)"
+  "userId": "string",
+  "subject": "string",
+  "sessionType": 1,
+  "startTime": "ISO 8601 timestamp",
+  "endTime": "ISO 8601 timestamp",
+  "sessionGoal": "string (optional)",
+  "totalMinutes": 45,                 // optional, computed when omitted
+  "date": "YYYY-MM-DD (optional)"
+}
+```
+
+**Success Response (201):**
+```json
+{
+  "session": {
+    "id": "string",
+    "userId": "string",
+    "subject": "string",
+    "sessionType": 1,
+    "sessionGoal": "string or null",
+    "startTime": "ISO 8601 timestamp",
+    "endTime": "ISO 8601 timestamp",
+    "totalMinutes": 45,
+    "date": "YYYY-MM-DD",
+    "insertedAt": "ISO 8601 timestamp",
+    "updatedAt": "ISO 8601 timestamp"
+  }
+}
+```
+
+**Error Responses:**
+- **400 Bad Request:** Missing or invalid fields (e.g., `sessionType`, timestamps)
+- **500 Internal Server Error:** Supabase insert failure
+
+---
+
+### 2. Update Session
+**PATCH** `/api/v1/sessions/{sessionId}`
+
+Update one or more fields on an existing session. At least one mutable field
+must be provided. When both `startTime` and `endTime` are supplied and
+`totalMinutes` is omitted, the API recomputes the duration.
+
+**Request Body (any combination of the following):**
+```json
+{
+  "subject": "string",
+  "sessionType": 2,
+  "startTime": "ISO 8601 timestamp",
+  "endTime": "ISO 8601 timestamp",
+  "sessionGoal": "string",
+  "totalMinutes": 90,
+  "date": "YYYY-MM-DD"
 }
 ```
 
@@ -28,113 +85,38 @@ The Session API manages user authentication sessions, including login, logout, s
   "session": {
     "id": "string",
     "userId": "string",
-    "token": "string",
-    "expiresAt": "ISO 8601 timestamp",
-    "createdAt": "ISO 8601 timestamp"
-  },
-  "user": {
-    "id": "string",
-    "email": "string",
-    "name": "string",
-    "role": "string"
+    "subject": "string",
+    "sessionType": 2,
+    "sessionGoal": "string or null",
+    "startTime": "ISO 8601 timestamp",
+    "endTime": "ISO 8601 timestamp",
+    "totalMinutes": 90,
+    "date": "YYYY-MM-DD",
+    "insertedAt": "ISO 8601 timestamp",
+    "updatedAt": "ISO 8601 timestamp"
   }
 }
 ```
 
 **Error Responses:**
-- **401 Unauthorized:** Invalid credentials
-- **400 Bad Request:** Missing or invalid fields
-- **429 Too Many Requests:** Too many login attempts
+- **400 Bad Request:** `sessionId` missing or no fields provided, invalid values
+- **404 Not Found:** Session does not exist
+- **500 Internal Server Error:** Supabase update failure
 
 ---
 
-### 2. Get Current Session
-**GET** `/api/sessions/current`
+### 3. List Sessions
+**GET** `/api/v1/sessions`
 
-**Headers:**
-```
-Authorization: Bearer {token}
-```
-
-**Success Response (200):**
-```json
-{
-  "session": {
-    "id": "string",
-    "userId": "string",
-    "token": "string",
-    "expiresAt": "ISO 8601 timestamp",
-    "createdAt": "ISO 8601 timestamp",
-    "lastActivityAt": "ISO 8601 timestamp"
-  },
-  "user": {
-    "id": "string",
-    "email": "string",
-    "name": "string",
-    "role": "string"
-  }
-}
-```
-
-**Error Responses:**
-- **401 Unauthorized:** Invalid or expired token
-- **403 Forbidden:** Token revoked
-
----
-
-### 3. Refresh Session Token
-**POST** `/api/sessions/refresh`
-
-**Headers:**
-```
-Authorization: Bearer {token}
-```
-
-**Success Response (200):**
-```json
-{
-  "session": {
-    "id": "string",
-    "token": "string (new token)",
-    "expiresAt": "ISO 8601 timestamp"
-  }
-}
-```
-
-**Error Responses:**
-- **401 Unauthorized:** Invalid or expired token
-- **400 Bad Request:** Token cannot be refreshed
-
----
-
-### 4. Destroy Session (Logout)
-**DELETE** `/api/sessions/current`
-
-**Headers:**
-```
-Authorization: Bearer {token}
-```
-
-**Success Response (204):**
-No content
-
-**Error Responses:**
-- **401 Unauthorized:** Invalid token
-- **500 Internal Server Error:** Logout failed
-
----
-
-### 5. List Active Sessions
-**GET** `/api/sessions`
-
-**Headers:**
-```
-Authorization: Bearer {token}
-```
+Retrieve study sessions for a user. Results are sorted by `endTime` descending.
 
 **Query Parameters:**
-- `limit`: number (optional, default: 10, max: 100)
-- `offset`: number (optional, default: 0)
+- `userId` (required) — UUID of the user
+- `subject` (optional) — filter by subject
+- `sessionType` (optional) — numeric session type
+- `from` (optional) — ISO timestamp lower bound (applied to `endTime`)
+- `to` (optional) — ISO timestamp upper bound (applied to `endTime`)
+- `limit` (optional) — maximum number of sessions to return (positive integer)
 
 **Success Response (200):**
 ```json
@@ -142,63 +124,87 @@ Authorization: Bearer {token}
   "sessions": [
     {
       "id": "string",
-      "deviceName": "string",
-      "ipAddress": "string",
-      "userAgent": "string",
-      "createdAt": "ISO 8601 timestamp",
-      "lastActivityAt": "ISO 8601 timestamp",
-      "expiresAt": "ISO 8601 timestamp",
-      "isCurrent": "boolean"
+      "userId": "string",
+      "subject": "string",
+      "sessionType": 1,
+      "sessionGoal": "string or null",
+      "startTime": "ISO 8601 timestamp",
+      "endTime": "ISO 8601 timestamp",
+      "totalMinutes": 60,
+      "date": "YYYY-MM-DD",
+      "insertedAt": "ISO 8601 timestamp",
+      "updatedAt": "ISO 8601 timestamp"
     }
-  ],
-  "total": "number"
+  ]
 }
 ```
 
+**Error Responses:**
+- **400 Bad Request:** Missing `userId` or invalid `limit`
+- **500 Internal Server Error:** Supabase query failure
+
 ---
 
-### 6. Destroy Specific Session
-**DELETE** `/api/sessions/{sessionId}`
+### 4. Session Summary
+**GET** `/api/v1/sessions/summary`
 
-**Headers:**
-```
-Authorization: Bearer {token}
-```
+Return aggregate metrics for dashboard views.
 
-**Success Response (204):**
-No content
+**Query Parameters:**
+- `userId` (required)
+- `sessionType` (optional)
+- `from` (optional) — ISO timestamp lower bound
+- `to` (optional) — ISO timestamp upper bound
+
+**Success Response (200):**
+```json
+{
+  "totalMinutesStudied": 240,
+  "sessionsLogged": 4
+}
+```
 
 **Error Responses:**
-- **401 Unauthorized:** Invalid token
-- **403 Forbidden:** Cannot delete other user's sessions
-- **404 Not Found:** Session not found
+- **400 Bad Request:** Missing `userId` or invalid timestamps
+- **500 Internal Server Error:** Supabase aggregation failure
 
 ---
 
 ## Frontend Usage Guide
 
-### Authentication Setup
-Store the token in `localStorage` or a secure cookie:
+### Creating Sessions
 ```javascript
-localStorage.setItem('sessionToken', response.session.token);
+await fetch('/api/v1/sessions', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    userId,
+    subject: 'Math',
+    sessionType: 1,
+    startTime: new Date(start).toISOString(),
+    endTime: new Date(end).toISOString(),
+    sessionGoal: 'Practice problems'
+  })
+});
 ```
 
-### Include Token in Requests
-Add token to all authenticated requests:
+### Updating Sessions
 ```javascript
-headers: {
-  'Authorization': `Bearer ${token}`
-}
+await fetch(`/api/v1/sessions/${sessionId}`, {
+  method: 'PATCH',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ totalMinutes: 90, endTime: new Date().toISOString() })
+});
 ```
 
-### Handle Token Expiration
-- Check `expiresAt` before making requests
-- Implement auto-refresh 5 minutes before expiration
-- Redirect to login on 401 responses
+### Listing Sessions
+```javascript
+const response = await fetch(`/api/v1/sessions?userId=${userId}&from=${fromIso}&to=${toIso}&sessionType=1`);
+const { sessions } = await response.json();
+```
 
-### Session Management Best Practices
-- Call `GET /api/sessions/current` on app initialization to validate session
-- Implement periodic token refresh (every 50 minutes for 1-hour expiration)
-- Clear local storage and redirect on logout (DELETE request)
-- Handle session expiration gracefully with user notification
-
+### Fetching Summary Metrics
+```javascript
+const summary = await fetch(`/api/v1/sessions/summary?userId=${userId}&sessionType=1`).then((r) => r.json());
+console.log(summary.totalMinutesStudied, summary.sessionsLogged);
+```
