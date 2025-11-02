@@ -42,6 +42,49 @@ const parseLimit = (value) => {
   return parsed;
 };
 
+const normalizeTimestamp = (value, fieldName) => {
+  const millis = Date.parse(value);
+  if (Number.isNaN(millis)) {
+    throw new Error(`${fieldName} must be a valid ISO 8601 timestamp`);
+  }
+  return new Date(millis).toISOString();
+};
+
+const parsePositiveNumber = (value, fieldName) => {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric) || numeric <= 0) {
+    throw new Error(`${fieldName} must be a positive number`);
+  }
+  return numeric;
+};
+
+const parseNonNegativeNumber = (value, fieldName) => {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric) || numeric < 0) {
+    throw new Error(`${fieldName} must be a non-negative number`);
+  }
+  return numeric;
+};
+
+const computeTotalMinutes = (startIso, endIso) => {
+  const diff = Date.parse(endIso) - Date.parse(startIso);
+  if (!Number.isFinite(diff) || diff < 0) {
+    throw new Error('endTime must occur after startTime');
+  }
+  return Math.round((diff / 60_000) * 1000) / 1000;
+};
+
+const validateDateString = (value, fieldName) => {
+  if (value === undefined) return undefined;
+  if (value === null || value === '') {
+    throw new Error(`${fieldName} cannot be null or empty`);
+  }
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    throw new Error(`${fieldName} must be in YYYY-MM-DD format`);
+  }
+  return value;
+};
+
 /**
  * Factory for sessions controller — allows injecting a mock service in tests.
  * @param {object} service - Sessions service with createSession, completeSession, listSessions
@@ -65,17 +108,59 @@ export const createSessionsController = (
    */
   const startSession = async (req, res, next) => {
     try {
-      const { userId, subject, startTimestamp, targetDurationMillis } = req.body ?? {};
+      const {
+        userId,
+        subject,
+        sessionType,
+        startTime,
+        endTime,
+        sessionGoal,
+        totalMinutes,
+        date,
+      } = req.body ?? {};
 
       if (!userId) return res.status(400).json({ error: 'userId is required' });
       if (!subject) return res.status(400).json({ error: 'subject is required' });
+      if (sessionType === undefined)
+        return res.status(400).json({ error: 'sessionType is required' });
+      if (!startTime) return res.status(400).json({ error: 'startTime is required' });
+      if (!endTime) return res.status(400).json({ error: 'endTime is required' });
+
+      let parsedSessionType;
+      let normalizedStart;
+      let normalizedEnd;
+      let normalizedTotalMinutes = totalMinutes;
+
+      try {
+        parsedSessionType = parsePositiveNumber(sessionType, 'sessionType');
+        normalizedStart = normalizeTimestamp(startTime, 'startTime');
+        normalizedEnd = normalizeTimestamp(endTime, 'endTime');
+
+        if (normalizedTotalMinutes === undefined) {
+          normalizedTotalMinutes = computeTotalMinutes(normalizedStart, normalizedEnd);
+        } else if (normalizedTotalMinutes === null) {
+          normalizedTotalMinutes = null;
+        } else {
+          normalizedTotalMinutes = parseNonNegativeNumber(
+            normalizedTotalMinutes,
+            'totalMinutes',
+          );
+        }
+
+        validateDateString(date, 'date');
+      } catch (validationError) {
+        return res.status(400).json({ error: validationError.message });
+      }
 
       const sessionToCreate = {
         userId,
         subject,
-        startTimestamp: startTimestamp ?? new Date().toISOString(),
-        targetDurationMillis,
-        status: 'in_progress',
+        sessionType: parsedSessionType,
+        sessionGoal: sessionGoal ?? null,
+        startTime: normalizedStart,
+        endTime: normalizedEnd,
+        totalMinutes: normalizedTotalMinutes,
+        date,
       };
 
       const session = await service.createSession(sessionToCreate);
@@ -87,73 +172,106 @@ export const createSessionsController = (
 
   /**
    * PATCH /:sessionId
-   * Complete a session.
+   * Update a session.
    * Expected params: { sessionId }
    * Expected body: {
-   *   endStudyTimestamp: ISOString,
-   *   sessionLengthMillis?: number,
-   *   notes?: string,
-   *   status?: string
+   *   subject?: string,
+   *   sessionType?: number,
+   *   startTime?: ISOString,
+   *   endTime?: ISOString,
+   *   sessionGoal?: string,
+   *   totalMinutes?: number | null,
+   *   date?: YYYY-MM-DD
    * }
-   * Response: 200 OK { session, newBadgesEarned: [] } | 404 if not found
-   * 
-   * Automatically checks for newly earned badges after completing session
+   * Response: 200 OK { session } | 404 if not found
    */
   const completeSession = async (req, res, next) => {
     try {
       const { sessionId } = req.params ?? {};
-      const { endStudyTimestamp, sessionLengthMillis, notes, status } =
-        req.body ?? {};
+      const {
+        subject,
+        sessionType,
+        startTime,
+        endTime,
+        sessionGoal,
+        totalMinutes,
+        date,
+      } = req.body ?? {};
 
       if (!sessionId)
         return res.status(400).json({ error: 'sessionId is required' });
-      if (!endStudyTimestamp)
-        return res.status(400).json({ error: 'endStudyTimestamp is required' });
 
-      const updates = {
-        endStudyTimestamp,
-        sessionLengthMillis,
-        notes: notes ?? null,
-        status: status ?? 'completed',
-      };
+      if (
+        subject === undefined &&
+        sessionType === undefined &&
+        startTime === undefined &&
+        endTime === undefined &&
+        sessionGoal === undefined &&
+        totalMinutes === undefined &&
+        date === undefined
+      ) {
+        return res
+          .status(400)
+          .json({ error: 'At least one field must be provided to update a session' });
+      }
+
+      let parsedSessionType;
+      let normalizedStart = startTime;
+      let normalizedEnd = endTime;
+      let normalizedTotal = totalMinutes;
+
+      try {
+        if (sessionType !== undefined) {
+          parsedSessionType = parsePositiveNumber(sessionType, 'sessionType');
+        }
+
+        if (startTime !== undefined) {
+          normalizedStart = normalizeTimestamp(startTime, 'startTime');
+        }
+
+        if (endTime !== undefined) {
+          normalizedEnd = normalizeTimestamp(endTime, 'endTime');
+        }
+
+        if (normalizedTotal !== undefined) {
+          if (normalizedTotal === null) {
+            normalizedTotal = null;
+          } else {
+            normalizedTotal = parseNonNegativeNumber(normalizedTotal, 'totalMinutes');
+          }
+        }
+
+        if (date !== undefined) {
+          validateDateString(date, 'date');
+        }
+      } catch (validationError) {
+        return res.status(400).json({ error: validationError.message });
+      }
+
+      if (
+        normalizedTotal === undefined &&
+        normalizedStart !== undefined &&
+        normalizedEnd !== undefined
+      ) {
+        try {
+          normalizedTotal = computeTotalMinutes(normalizedStart, normalizedEnd);
+        } catch (durationError) {
+          return res.status(400).json({ error: durationError.message });
+        }
+      }
+
+      const updates = {};
+      if (subject !== undefined) updates.subject = subject;
+      if (parsedSessionType !== undefined) updates.sessionType = parsedSessionType;
+      if (sessionGoal !== undefined) updates.sessionGoal = sessionGoal ?? null;
+      if (normalizedStart !== undefined) updates.startTime = normalizedStart;
+      if (normalizedEnd !== undefined) updates.endTime = normalizedEnd;
+      if (normalizedTotal !== undefined) updates.totalMinutes = normalizedTotal;
+      if (date !== undefined) updates.date = date;
 
       const session = await service.completeSession(sessionId, updates);
       if (!session) return res.status(404).json({ error: 'Session not found' });
 
-      // ============================================================================
-      // BADGE INTEGRATION: Check for newly earned badges, uses new logic from badge api that was made
-      // ============================================================================
-      // Only check badges if session was successfully completed (not cancelled/paused)
-      if (session.status === 'completed' && session.userId) {
-        try {
-          const newBadges = await badgeService.checkAndAwardBadges(session.userId);
-          
-          // Return session data + newly earned badges
-          return res.status(200).json({ 
-            session,
-            newBadgesEarned: newBadges,
-            badgeCount: newBadges.length
-          });
-        } catch (badgeError) {
-          // Don't fail the entire request if badge check fails
-          // Log the error for debugging but still return the session
-          console.error('[Badge Check Error]', {
-            userId: session.userId,
-            sessionId: session.id,
-            error: badgeError.message
-          });
-          
-          // Return session without badge info
-          return res.status(200).json({ 
-            session,
-            newBadgesEarned: [],
-            badgeCount: 0,
-            badgeCheckFailed: true
-          });
-        }
-      }
-
-      // If session wasn't completed (e.g., cancelled), just return the session
       return res.status(200).json({ session });
     } catch (error) {
       return next(error);
@@ -162,14 +280,13 @@ export const createSessionsController = (
 
   /**
    * GET /
-   * List sessions for a user (optionally filtered by subject/status/time range).
-   * Expected query: ?userId=...&subject=...&status=...&limit=...
+   * List sessions for a user (optionally filtered by subject/type/date range).
+   * Expected query: ?userId=...&subject=...&sessionType=...&from=...&to=...&limit=...
    * Response: 200 OK { sessions: [] }
    */
   const listSessions = async (req, res, next) => {
     try {
-      const { userId, subject, status, limit, endedAfter, endedBefore } =
-        req.query ?? {};
+      const { userId, subject, sessionType, from, to, limit } = req.query ?? {};
       if (!userId) {
         return res
           .status(400)
@@ -183,12 +300,29 @@ export const createSessionsController = (
         return res.status(400).json({ error: parseError.message });
       }
 
+      let parsedSessionType;
+      let normalizedFrom = from;
+      let normalizedTo = to;
+      try {
+        if (sessionType !== undefined) {
+          parsedSessionType = parsePositiveNumber(sessionType, 'sessionType');
+        }
+        if (from !== undefined) {
+          normalizedFrom = normalizeTimestamp(from, 'from');
+        }
+        if (to !== undefined) {
+          normalizedTo = normalizeTimestamp(to, 'to');
+        }
+      } catch (validationError) {
+        return res.status(400).json({ error: validationError.message });
+      }
+
       const sessions = await service.listSessions({
         userId,
         subject,
-        status,
-        endedAfter,
-        endedBefore,
+        sessionType: parsedSessionType,
+        from: normalizedFrom,
+        to: normalizedTo,
         limit: parsedLimit,
       });
       return res.status(200).json({ sessions });
@@ -199,24 +333,41 @@ export const createSessionsController = (
 
   /**
    * GET /summary
-   * Aggregates study time and session counts for dashboards.
-   * Expected query: ?userId=...&from=...&to=...
-   * Response: 200 OK { totalTimeStudied, timesStudied }
+   * Aggregates total minutes and session counts for dashboards.
+   * Expected query: ?userId=...&from=...&to=...&sessionType=...
+   * Response: 200 OK { totalMinutesStudied, sessionsLogged }
    */
   const getSessionsSummary = async (req, res, next) => {
     try {
-      const { userId, from, to, status } = req.query ?? {};
+      const { userId, from, to, sessionType } = req.query ?? {};
       if (!userId) {
         return res
           .status(400)
           .json({ error: 'userId query parameter is required' });
       }
 
+      let parsedSessionType;
+      let normalizedFrom = from;
+      let normalizedTo = to;
+      try {
+        if (sessionType !== undefined) {
+          parsedSessionType = parsePositiveNumber(sessionType, 'sessionType');
+        }
+        if (from !== undefined) {
+          normalizedFrom = normalizeTimestamp(from, 'from');
+        }
+        if (to !== undefined) {
+          normalizedTo = normalizeTimestamp(to, 'to');
+        }
+      } catch (validationError) {
+        return res.status(400).json({ error: validationError.message });
+      }
+
       const summary = await service.summarizeSessionsByDate({
         userId,
-        from,
-        to,
-        status: status ?? 'completed',
+        from: normalizedFrom,
+        to: normalizedTo,
+        sessionType: parsedSessionType,
       });
 
       return res.status(200).json(summary);

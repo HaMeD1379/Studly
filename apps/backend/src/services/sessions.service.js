@@ -40,82 +40,56 @@
 
 import supabase from '../config/supabase.js'; // Initialized Supabase client instance
 
-const MILLIS_IN_MINUTE = 60_000;
-
-const toMinutes = (millis) => {
-  if (millis === null || millis === undefined) return null;
-  return Math.round((millis / MILLIS_IN_MINUTE) * 1000) / 1000;
-};
-
-const toMillis = (minutes) => {
-  if (minutes === null || minutes === undefined) return null;
-  return Math.round(minutes * MILLIS_IN_MINUTE);
-};
-
 const DEFAULT_SESSION_COLUMNS = [
   'id',
   'user_id',
   'subject',
-  'status',
-  'started_at',
-  'ended_at',
-  'duration_minutes',
-  'target_duration_minutes',
-  'notes',
-  'created_at',
+  'session_type',
+  'start_time',
+  'end_time',
+  'date',
+  'session_goal',
+  'total_time',
+  'inserted_at',
   'updated_at',
 ];
 
 const COLUMN_ALIASES = {
   userId: ['user_id', 'userId'],
   subject: ['subject'],
-  status: ['status', 'session_status'],
-  notes: ['notes', 'session_notes'],
-  startTimestamp: [
+  sessionType: ['session_type', 'sessionType'],
+  sessionGoal: ['session_goal', 'sessionGoal', 'notes'],
+  startTime: [
+    'start_time',
     'started_at',
     'start_study_timestamp',
     'start_timestamp',
-    'start_time',
     'startStudyTimestamp',
   ],
-  endTimestamp: [
+  endTime: [
+    'end_time',
     'ended_at',
     'end_study_timestamp',
     'end_timestamp',
-    'end_time',
     'endStudyTimestamp',
     'completed_at',
   ],
-  durationMinutes: [
+  totalMinutes: [
+    'total_time',
+    'total_minutes',
     'duration_minutes',
-    'session_duration_minutes',
     'session_length_minutes',
   ],
-  durationMillis: [
-    'duration_millis',
-    'session_length_millis',
-    'session_length',
-    'sessionLength',
-    'duration_ms',
-  ],
-  targetDurationMinutes: [
-    'target_duration_minutes',
-    'target_session_minutes',
-  ],
-  targetDurationMillis: [
-    'target_duration_millis',
-    'target_session_millis',
-    'target_duration_ms',
-    'target_session_length',
-  ],
-  createdAt: ['created_at', 'createdAt'],
+  date: ['date', 'session_date'],
+  createdAt: ['inserted_at', 'created_at', 'createdAt'],
   updatedAt: ['updated_at', 'updatedAt'],
 };
 
 const isNumber = (value) => typeof value === 'number' && Number.isFinite(value);
 
-const normalizeTimestampInput = (value) => {
+const toEpochMillis = (value) => {
   if (value === null || value === undefined) return null;
+  if (value instanceof Date) return value.getTime();
   if (isNumber(value)) return value;
 
   const parsed = Date.parse(value);
@@ -127,7 +101,7 @@ const formatTimestampForColumn = (column, value) => {
   if (value === undefined) return undefined;
   if (value === null) return null;
 
-  const millis = normalizeTimestampInput(value);
+  const millis = toEpochMillis(value);
   if (millis === null) return value;
 
   const lower = column.toLowerCase();
@@ -142,22 +116,6 @@ const formatTimestampForColumn = (column, value) => {
   return new Date(millis).toISOString();
 };
 
-const formatDurationForColumn = (column, valueMillis) => {
-  if (valueMillis === undefined) return undefined;
-  if (valueMillis === null) return null;
-
-  const lower = column.toLowerCase();
-  if (lower.includes('minute')) {
-    return toMinutes(valueMillis);
-  }
-
-  if (lower.includes('second') || lower.endsWith('_s')) {
-    return Math.round(valueMillis / 1000);
-  }
-
-  return valueMillis;
-};
-
 const pickFirst = (source, candidates) => {
   for (const key of candidates) {
     if (Object.hasOwn(source, key) && source[key] !== undefined && source[key] !== null) {
@@ -170,69 +128,40 @@ const pickFirst = (source, candidates) => {
 const parseTimestampField = (source, candidates) => {
   const value = pickFirst(source, candidates);
   if (value === null) return null;
-  return normalizeTimestampInput(value);
+
+  const millis = toEpochMillis(value);
+  if (millis === null) return null;
+
+  return new Date(millis).toISOString();
 };
 
-const parseDurationMinutes = (source) => {
-  const fromMinutes = pickFirst(source, COLUMN_ALIASES.durationMinutes);
-  if (fromMinutes !== null) {
-    const numeric = Number(fromMinutes);
-    return Number.isFinite(numeric) ? numeric : null;
-  }
+const parseNumericField = (source, candidates) => {
+  const value = pickFirst(source, candidates);
+  if (value === null) return null;
 
-  const fromMillis = pickFirst(source, COLUMN_ALIASES.durationMillis);
-  if (fromMillis !== null) {
-    const numeric = Number(fromMillis);
-    return Number.isFinite(numeric) ? numeric / MILLIS_IN_MINUTE : null;
-  }
-
-  const started = parseTimestampField(source, COLUMN_ALIASES.startTimestamp);
-  const ended = parseTimestampField(source, COLUMN_ALIASES.endTimestamp);
-  if (started !== null && ended !== null) {
-    return (ended - started) / MILLIS_IN_MINUTE;
-  }
-
-  return null;
-};
-
-const parseTargetDurationMinutes = (source) => {
-  const fromMinutes = pickFirst(source, COLUMN_ALIASES.targetDurationMinutes);
-  if (fromMinutes !== null) {
-    const numeric = Number(fromMinutes);
-    return Number.isFinite(numeric) ? numeric : null;
-  }
-
-  const fromMillis = pickFirst(source, COLUMN_ALIASES.targetDurationMillis);
-  if (fromMillis !== null) {
-    const numeric = Number(fromMillis);
-    return Number.isFinite(numeric) ? numeric / MILLIS_IN_MINUTE : null;
-  }
-
-  return null;
+  const numeric = Number(value);
+  return Number.isFinite(numeric) ? numeric : null;
 };
 
 const mapDbSessionToApi = (session) => {
   if (!session) return session;
 
-  const startTimestamp = parseTimestampField(session, COLUMN_ALIASES.startTimestamp);
-  const endTimestamp = parseTimestampField(session, COLUMN_ALIASES.endTimestamp);
-  const durationMinutes = parseDurationMinutes(session);
-  const targetDurationMinutes = parseTargetDurationMinutes(session);
-
-  const createdAt = pickFirst(session, COLUMN_ALIASES.createdAt);
-  const updatedAt = pickFirst(session, COLUMN_ALIASES.updatedAt);
+  const startTime = parseTimestampField(session, COLUMN_ALIASES.startTime);
+  const endTime = parseTimestampField(session, COLUMN_ALIASES.endTime);
+  const insertedAt = parseTimestampField(session, COLUMN_ALIASES.createdAt);
+  const updatedAt = parseTimestampField(session, COLUMN_ALIASES.updatedAt);
 
   return {
     id: session.id,
     userId: pickFirst(session, COLUMN_ALIASES.userId),
     subject: pickFirst(session, COLUMN_ALIASES.subject),
-    status: pickFirst(session, COLUMN_ALIASES.status),
-    startTimestamp,
-    endStudyTimestamp: endTimestamp,
-    targetDurationMillis: toMillis(targetDurationMinutes),
-    sessionLength: toMillis(durationMinutes),
-    notes: pickFirst(session, COLUMN_ALIASES.notes),
-    createdAt,
+    sessionType: parseNumericField(session, COLUMN_ALIASES.sessionType),
+    sessionGoal: pickFirst(session, COLUMN_ALIASES.sessionGoal),
+    startTime,
+    endTime,
+    date: pickFirst(session, COLUMN_ALIASES.date),
+    totalMinutes: parseNumericField(session, COLUMN_ALIASES.totalMinutes),
+    insertedAt,
     updatedAt,
   };
 };
@@ -307,35 +236,42 @@ const buildSessionInsertPayload = (session, columnSet) => {
     payload[subjectColumn] = session.subject;
   }
 
-  const statusColumn = findColumn(columnSet, COLUMN_ALIASES.status);
-  if (statusColumn && session.status !== undefined) {
-    payload[statusColumn] = session.status;
-  }
-
-  const startColumn = findColumn(columnSet, COLUMN_ALIASES.startTimestamp);
-  if (startColumn && session.startTimestamp !== undefined) {
-    payload[startColumn] = formatTimestampForColumn(startColumn, session.startTimestamp);
-  }
-
-  const targetMinutesColumn = findColumn(columnSet, COLUMN_ALIASES.targetDurationMinutes);
-  const targetMillisColumn = findColumn(columnSet, COLUMN_ALIASES.targetDurationMillis);
-  if (session.targetDurationMillis !== undefined) {
-    const formattedValue =
-      targetMinutesColumn
-        ? formatDurationForColumn(targetMinutesColumn, session.targetDurationMillis)
-        : targetMillisColumn
-          ? formatDurationForColumn(targetMillisColumn, session.targetDurationMillis)
-          : undefined;
-    if (formattedValue !== undefined && targetMinutesColumn) {
-      payload[targetMinutesColumn] = formattedValue;
-    } else if (formattedValue !== undefined && targetMillisColumn) {
-      payload[targetMillisColumn] = formattedValue;
+  const sessionTypeColumn = findColumn(columnSet, COLUMN_ALIASES.sessionType);
+  if (sessionTypeColumn && session.sessionType !== undefined) {
+    const numeric = Number(session.sessionType);
+    if (Number.isFinite(numeric)) {
+      payload[sessionTypeColumn] = numeric;
     }
   }
 
-  const notesColumn = findColumn(columnSet, COLUMN_ALIASES.notes);
-  if (notesColumn && session.notes !== undefined) {
-    payload[notesColumn] = session.notes;
+  const sessionGoalColumn = findColumn(columnSet, COLUMN_ALIASES.sessionGoal);
+  if (sessionGoalColumn && session.sessionGoal !== undefined) {
+    payload[sessionGoalColumn] = session.sessionGoal;
+  }
+
+  const startColumn = findColumn(columnSet, COLUMN_ALIASES.startTime);
+  if (startColumn && session.startTime !== undefined) {
+    payload[startColumn] = formatTimestampForColumn(startColumn, session.startTime);
+  }
+
+  const endColumn = findColumn(columnSet, COLUMN_ALIASES.endTime);
+  if (endColumn && session.endTime !== undefined) {
+    payload[endColumn] = formatTimestampForColumn(endColumn, session.endTime);
+  }
+
+  const totalColumn = findColumn(columnSet, COLUMN_ALIASES.totalMinutes);
+  if (totalColumn && session.totalMinutes !== undefined) {
+    const numeric = Number(session.totalMinutes);
+    if (Number.isFinite(numeric)) {
+      payload[totalColumn] = numeric;
+    } else if (session.totalMinutes === null) {
+      payload[totalColumn] = null;
+    }
+  }
+
+  const dateColumn = findColumn(columnSet, COLUMN_ALIASES.date);
+  if (dateColumn && session.date !== undefined) {
+    payload[dateColumn] = session.date;
   }
 
   return payload;
@@ -344,39 +280,57 @@ const buildSessionInsertPayload = (session, columnSet) => {
 const buildSessionUpdatePayload = (updates, columnSet) => {
   const payload = {};
 
-  if (updates.status !== undefined) {
-    const statusColumn = findColumn(columnSet, COLUMN_ALIASES.status);
-    if (statusColumn) payload[statusColumn] = updates.status;
+  if (updates.subject !== undefined) {
+    const subjectColumn = findColumn(columnSet, COLUMN_ALIASES.subject);
+    if (subjectColumn) payload[subjectColumn] = updates.subject;
   }
 
-  if (updates.notes !== undefined) {
-    const notesColumn = findColumn(columnSet, COLUMN_ALIASES.notes);
-    if (notesColumn) payload[notesColumn] = updates.notes;
+  if (updates.sessionType !== undefined) {
+    const sessionTypeColumn = findColumn(columnSet, COLUMN_ALIASES.sessionType);
+    if (sessionTypeColumn) {
+      const numeric = Number(updates.sessionType);
+      if (Number.isFinite(numeric)) {
+        payload[sessionTypeColumn] = numeric;
+      }
+    }
   }
 
-  if (updates.endStudyTimestamp !== undefined) {
-    const endColumn = findColumn(columnSet, COLUMN_ALIASES.endTimestamp);
+  if (updates.sessionGoal !== undefined) {
+    const goalColumn = findColumn(columnSet, COLUMN_ALIASES.sessionGoal);
+    if (goalColumn) payload[goalColumn] = updates.sessionGoal;
+  }
+
+  if (updates.startTime !== undefined) {
+    const startColumn = findColumn(columnSet, COLUMN_ALIASES.startTime);
+    if (startColumn) {
+      payload[startColumn] = formatTimestampForColumn(startColumn, updates.startTime);
+    }
+  }
+
+  if (updates.endTime !== undefined) {
+    const endColumn = findColumn(columnSet, COLUMN_ALIASES.endTime);
     if (endColumn) {
-      payload[endColumn] = formatTimestampForColumn(endColumn, updates.endStudyTimestamp);
+      payload[endColumn] = formatTimestampForColumn(endColumn, updates.endTime);
     }
   }
 
-  if (updates.sessionLengthMillis !== undefined) {
-    const durationMinutesColumn = findColumn(columnSet, COLUMN_ALIASES.durationMinutes);
-    const durationMillisColumn = findColumn(columnSet, COLUMN_ALIASES.durationMillis);
-
-    const formattedValue =
-      durationMinutesColumn
-        ? formatDurationForColumn(durationMinutesColumn, updates.sessionLengthMillis)
-        : durationMillisColumn
-          ? formatDurationForColumn(durationMillisColumn, updates.sessionLengthMillis)
-          : undefined;
-
-    if (formattedValue !== undefined && durationMinutesColumn) {
-      payload[durationMinutesColumn] = formattedValue;
-    } else if (formattedValue !== undefined && durationMillisColumn) {
-      payload[durationMillisColumn] = formattedValue;
+  if (updates.totalMinutes !== undefined) {
+    const totalColumn = findColumn(columnSet, COLUMN_ALIASES.totalMinutes);
+    if (totalColumn) {
+      if (updates.totalMinutes === null) {
+        payload[totalColumn] = null;
+      } else {
+        const numeric = Number(updates.totalMinutes);
+        if (Number.isFinite(numeric)) {
+          payload[totalColumn] = numeric;
+        }
+      }
     }
+  }
+
+  if (updates.date !== undefined) {
+    const dateColumn = findColumn(columnSet, COLUMN_ALIASES.date);
+    if (dateColumn) payload[dateColumn] = updates.date;
   }
 
   return payload;
@@ -389,20 +343,21 @@ const parseFilterTimestamp = (value) => {
   return Number.isNaN(parsed) ? null : parsed;
 };
 
-const filterSessionsByDateRange = (sessions, { endedAfter, endedBefore }) => {
-  if (!endedAfter && !endedBefore) return sessions;
+const filterSessionsByDateRange = (sessions, { from, to }) => {
+  if (!from && !to) return sessions;
 
-  const afterMillis = parseFilterTimestamp(endedAfter);
-  const beforeMillis = parseFilterTimestamp(endedBefore);
+  const fromMillis = parseFilterTimestamp(from);
+  const toMillis = parseFilterTimestamp(to);
 
   return sessions.filter((session) => {
-    const end = session.endStudyTimestamp ?? null;
+    const anchor = session.endTime ?? session.startTime ?? null;
+    const anchorMillis = parseFilterTimestamp(anchor);
 
-    if (afterMillis !== null && (end === null || end < afterMillis)) {
+    if (fromMillis !== null && (anchorMillis === null || anchorMillis < fromMillis)) {
       return false;
     }
 
-    if (beforeMillis !== null && (end === null || end > beforeMillis)) {
+    if (toMillis !== null && (anchorMillis === null || anchorMillis > toMillis)) {
       return false;
     }
 
@@ -412,10 +367,10 @@ const filterSessionsByDateRange = (sessions, { endedAfter, endedBefore }) => {
 
 const sortSessionsByEndTimeDesc = (sessions) => {
   return [...sessions].sort((a, b) => {
-    const left = a.endStudyTimestamp ?? Number.NEGATIVE_INFINITY;
-    const right = b.endStudyTimestamp ?? Number.NEGATIVE_INFINITY;
+    const left = parseFilterTimestamp(a.endTime ?? a.startTime ?? null);
+    const right = parseFilterTimestamp(b.endTime ?? b.startTime ?? null);
     if (left === right) return 0;
-    return right - left;
+    return (right ?? Number.NEGATIVE_INFINITY) - (left ?? Number.NEGATIVE_INFINITY);
   });
 };
 
@@ -490,13 +445,23 @@ export const createSessionsService = (client = supabase, options = {}) => {
     const columns = await columnResolver.getColumns();
     const userColumn = findColumn(columns, COLUMN_ALIASES.userId);
     const subjectColumn = findColumn(columns, COLUMN_ALIASES.subject);
-    const statusColumn = findColumn(columns, COLUMN_ALIASES.status);
+    const sessionTypeColumn = findColumn(columns, COLUMN_ALIASES.sessionType);
+    const endTimeColumn = findColumn(columns, COLUMN_ALIASES.endTime);
 
     let query = client.from('sessions').select('*');
 
     if (filters.userId && userColumn) query = query.eq(userColumn, filters.userId);
     if (filters.subject && subjectColumn) query = query.eq(subjectColumn, filters.subject);
-    if (filters.status && statusColumn) query = query.eq(statusColumn, filters.status);
+    if (filters.sessionType && sessionTypeColumn)
+      query = query.eq(sessionTypeColumn, filters.sessionType);
+
+    if (filters.from && endTimeColumn) {
+      query = query.gte(endTimeColumn, formatTimestampForColumn(endTimeColumn, filters.from));
+    }
+
+    if (filters.to && endTimeColumn) {
+      query = query.lte(endTimeColumn, formatTimestampForColumn(endTimeColumn, filters.to));
+    }
 
     const { data, error } = await query;
 
@@ -512,22 +477,24 @@ export const createSessionsService = (client = supabase, options = {}) => {
     return filters.limit ? sorted.slice(0, filters.limit) : sorted;
   };
 
-  const summarizeSessionsByDate = async ({
-    userId,
-    from,
-    to,
-    status = 'completed',
-  }) => {
+  const summarizeSessionsByDate = async ({ userId, from, to, sessionType }) => {
     const columns = await columnResolver.getColumns();
     const userColumn = findColumn(columns, COLUMN_ALIASES.userId);
-    const statusColumn = findColumn(columns, COLUMN_ALIASES.status);
+    const sessionTypeColumn = findColumn(columns, COLUMN_ALIASES.sessionType);
+    const endTimeColumn = findColumn(columns, COLUMN_ALIASES.endTime);
 
     let query = client.from('sessions').select('*');
     if (userColumn) {
       query = query.eq(userColumn, userId);
     }
-    if (status && statusColumn) {
-      query = query.eq(statusColumn, status);
+    if (sessionType && sessionTypeColumn) {
+      query = query.eq(sessionTypeColumn, sessionType);
+    }
+    if (from && endTimeColumn) {
+      query = query.gte(endTimeColumn, formatTimestampForColumn(endTimeColumn, from));
+    }
+    if (to && endTimeColumn) {
+      query = query.lte(endTimeColumn, formatTimestampForColumn(endTimeColumn, to));
     }
 
     const { data, error } = await query;
@@ -538,23 +505,16 @@ export const createSessionsService = (client = supabase, options = {}) => {
 
     const rows = data ?? [];
     const mapped = rows.map(mapDbSessionToApi);
-    const dateFiltered = filterSessionsByDateRange(mapped, {
-      endedAfter: from,
-      endedBefore: to,
-    });
+    const dateFiltered = filterSessionsByDateRange(mapped, { from, to });
 
-    const statusFiltered = status
-      ? dateFiltered.filter((session) => session.status === status)
-      : dateFiltered;
-
-    const totalTimeStudied = statusFiltered.reduce(
-      (acc, session) => acc + (session.sessionLength ?? 0),
+    const totalMinutes = dateFiltered.reduce(
+      (acc, session) => acc + (session.totalMinutes ?? 0),
       0,
     );
 
     return {
-      totalTimeStudied,
-      timesStudied: statusFiltered.length,
+      totalMinutesStudied: totalMinutes,
+      sessionsLogged: dateFiltered.length,
     };
   };
 
@@ -565,8 +525,6 @@ export const createSessionsService = (client = supabase, options = {}) => {
     listSessions,
     summarizeSessionsByDate,
     __private: {
-      toMinutes,
-      toMillis,
       mapDbSessionToApi,
       createColumnResolver,
       buildSessionInsertPayload,
