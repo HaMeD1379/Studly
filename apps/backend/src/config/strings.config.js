@@ -1,6 +1,6 @@
 /**
  * ────────────────────────────────────────────────────────────────────────────────
- *  File: src/config/strings.js
+ *  File: src/config/strings.config.js
  *  Group: Group 3 — COMP 4350: Software Engineering 2
  *  Project: Studly
  *  Author: Shiv Bhagat
@@ -30,7 +30,7 @@
  *  • [LOCALIZATION] Consider extracting to JSON per locale when i18n is needed.
  *  • [TYPE-SAFETY] Generate TypeScript typings for autocomplete support.
  *
- *  @module config/strings
+ *  @module config/strings.config
  * ────────────────────────────────────────────────────────────────────────────────
  */
 
@@ -51,7 +51,7 @@ const STRINGS = {
     RESET_PASSWORD_FOR_EMAIL: 'resetPasswordForEmail',
     UPDATE_USER: 'updateUser',
     INTERNAL_FAIL: 'Internal fail',
-    SERVER_UTILS_JS: 'serverUtils.js',
+    SERVER_UTILS_JS: 'server.utils.js',
     ERROR: 'error',
     LOG: 'log',
     OK: 'OK',

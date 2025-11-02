@@ -1,6 +1,6 @@
 /**
  * ────────────────────────────────────────────────────────────────────────────────
- *  File: tests/unit/validateInput.test.js
+ *  File: tests/unit/auth.validation.middleware.test.js
  *  Group: Group 3 — COMP 4350: Software Engineering 2
  *  Project: Studly
  *  Author: Shiv Bhagat
@@ -28,15 +28,15 @@
  *  -----
  *  • [VALIDATION] Extend middleware with configurable password strength rules.
  *
- *  @module tests/unit/validateInput
+ *  @module tests/unit/auth.validation.middleware
  * ────────────────────────────────────────────────────────────────────────────────
  */
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { validateSignup } from '../../src/middleware/validateInput.js';
-import STRINGS from '../../src/config/strings.js';
+import { validateSignup } from '../../src/middleware/auth.validation.middleware.js';
+import STRINGS from '../../src/config/strings.config.js';
 
 const createMockContext = () => {
   const resPayloads = [];

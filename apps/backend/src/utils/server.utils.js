@@ -1,6 +1,6 @@
 /**
  * ────────────────────────────────────────────────────────────────────────────────
- *  File: src/utils/serverUtils.js
+ *  File: src/utils/server.utils.js
  *  Group: Group 3 — COMP 4350: Software Engineering 2
  *  Project: Studly
  *  Author: Shiv Bhagat
@@ -30,11 +30,11 @@
  *  • [OBSERVABILITY] Integrate a logging abstraction instead of console usage.
  *  • [I18N] Pull copy from STRINGS to localize responses automatically.
  *
- *  @module utils/serverUtils
+ *  @module utils/server.utils
  * ────────────────────────────────────────────────────────────────────────────────
  */
 
-import STRINGS from "../config/strings.js";
+import STRINGS from "../config/strings.config.js";
 
 export const handleError = (
   res,

@@ -35,9 +35,9 @@
  * ────────────────────────────────────────────────────────────────────────────────
  */
 
-import supabase from "../config/supabase.js";
-import { handleError, handleSuccess } from "../utils/serverUtils.js";
-import STRINGS from "../config/strings.js";
+import supabase from "../config/supabase.client.js";
+import { handleError, handleSuccess } from "../utils/server.utils.js";
+import STRINGS from "../config/strings.config.js";
 
 export const signup = async (req, res) => {
   const { email, password, full_name: fullName } = req.body;

@@ -1,6 +1,6 @@
 /**
  * ────────────────────────────────────────────────────────────────────────────────
- *  File: src/middleware/validateInput.js
+ *  File: src/middleware/auth.validation.middleware.js
  *  Group: Group 3 — COMP 4350: Software Engineering 2
  *  Project: Studly
  *  Author: Shiv Bhagat
@@ -30,12 +30,12 @@
  *  • [EXTENSIBILITY] Add validators for additional auth routes as needed.
  *  • [SECURITY] Integrate rate limiting / CAPTCHA for signup abuse prevention.
  *
- *  @module middleware/validateInput
+ *  @module middleware/auth.validation.middleware
  * ────────────────────────────────────────────────────────────────────────────────
  */
 
-import { handleError } from '../utils/serverUtils.js';
-import STRINGS from '../config/strings.js';
+import { handleError } from '../utils/server.utils.js';
+import STRINGS from '../config/strings.config.js';
 
 export const validateSignup = (req, res, next) => {
   const { email, password, full_name: fullName } = req.body;
