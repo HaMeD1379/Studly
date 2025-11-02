@@ -1,5 +1,5 @@
 import { login } from "~/api";
-import { ActionFunctionArgs, redirect } from "react-router";
+import { type ActionFunctionArgs, redirect } from "react-router";
 
 export async function loginAction({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
