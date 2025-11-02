@@ -154,14 +154,6 @@ const request = async (method, path, body = null, customHeaders = {}) => {
   }
 };
 
-const override = (method, impl) => {
-  supabase.auth[method] = impl;
-};
-
-const overrideFrom = (impl) => {
-  supabase.from = impl;
-};
-
 test(STRINGS.TEST.PROFILE_UPDATE_SUCCESS, async () => {
   const response = await request(
     "PATCH",
