@@ -1,8 +1,8 @@
-import { redirect } from "react-router";
-import { logout } from "~/api";
+import { redirect } from 'react-router';
+import { logout } from '~/api';
 
 export async function logoutAction() {
-  const token = localStorage.getItem("accessToken");
+  const token = localStorage.getItem('accessToken');
   if (token) {
     const res = await logout(token);
 
@@ -10,11 +10,11 @@ export async function logoutAction() {
       return res.error;
     }
     if (!res.error && res.data) {
-      localStorage.removeItem("accessToken");
-      return redirect("/");
+      localStorage.removeItem('accessToken');
+      return redirect('/');
     } else {
       return { error: res.error };
     }
   }
-  return { error: "Login api call failed" };
+  return { error: 'Login api call failed' };
 }

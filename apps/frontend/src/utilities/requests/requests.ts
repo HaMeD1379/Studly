@@ -17,18 +17,21 @@ export const request = async (
   requestHeaders.append(API_KEY_HEADER, import.meta.env.VITE_RAILWAY_API_TOKEN);
   requestHeaders.append('Content-Type', CONTENT_TYPE);
 
-  const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/${API_VERSION}/${path}`, {
-    body,
-    headers: requestHeaders,
-    method
-  });
- 
+  const response = await fetch(
+    `${import.meta.env.VITE_API_BASE_URL}/${API_VERSION}/${path}`,
+    {
+      body,
+      headers: requestHeaders,
+      method,
+    },
+  );
+
   if (response.ok) {
     /*return {
       data: response.json()
     }*/
-   const data = await response.json();  // the parsed JSON object
-    return { data };    
+    const data = await response.json(); // the parsed JSON object
+    return { data };
   }
 
   return {

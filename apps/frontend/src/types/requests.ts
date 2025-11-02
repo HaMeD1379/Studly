@@ -12,12 +12,12 @@ type RequestError = {
 
 export type RequestResolve<T = unknown> = {
   data?: T;
-  error?: RequestError
-}
+  error?: RequestError;
+};
 
 type Session = {
   access_token: string;
-}
+};
 
 export interface LoginResponse {
   session: Session;
