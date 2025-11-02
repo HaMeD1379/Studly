@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createBadgesRepository } from '../../src/repositories/badges.repository.js';
-import STRINGS from '../../src/config/strings.js';
+import STRINGS from '../../src/config/strings.config.js';
 
 // Mock Supabase client
 const createMockSupabaseClient = () => {

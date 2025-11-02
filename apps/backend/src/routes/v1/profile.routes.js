@@ -1,23 +1,23 @@
 /**
  * ────────────────────────────────────────────────────────────────────────────────
- *  File: src/routes/v1/authentication.routes.js
+ *  File: src/routes/v1/profile.routes.js
  *  Group: Group 3 — COMP 4350: Software Engineering 2
  *  Project: Studly
  *  Author: Shiv Bhagat
  *  Comments: Curated by GPT (Large Language Model)
- *  Last-Updated: 2025-10-15
+ *  Last-Updated: 2025-11-01
  * ────────────────────────────────────────────────────────────────────────────────
  *  Summary
  *  -------
- *  Maps authentication-related HTTP endpoints to their controller handlers.
- *  This router lives under /api/v1/auth and coordinates middleware validation
+ *  Maps profile-related HTTP endpoints to their controller handlers.
+ *  This router lives under /api/v1/profile and coordinates middleware validation
  *  prior to invoking the Supabase-backed controller logic.
  *
  *  Features
  *  --------
- *  • Signup endpoint with preflight input validation middleware.
- *  • Login/logout endpoints leveraging Supabase session management.
- *  • Forgot/reset password endpoints to complete the auth lifecycle.
+ *  • PATCH endpoint for updating user profile (full_name and bio).
+ *  • Validation middleware for input sanitization.
+ *  • Versioned routing for future backwards compatibility.
  *
  *  Design Principles
  *  -----------------
@@ -27,30 +27,20 @@
  *
  *  TODOs
  *  -----
- *  • [SECURITY] Add authentication guards to protected routes when available.
+ *  • [SECURITY] Add authentication guards to verify user ownership.
  *  • [DOCS] Generate OpenAPI specs from these route definitions.
  *  • [RATE LIMITING] Apply per-endpoint rate limiting to curb abuse.
  *
- *  @module routes/v1/authentication
+ *  @module routes/v1/profile
  * ────────────────────────────────────────────────────────────────────────────────
  */
 
-import { Router } from 'express';
-import {
-  signup,
-  login,
-  logout,
-  forgotPassword,
-  resetPassword,
-} from '../../controllers/auth.controller.js';
-import { validateSignup } from '../../middleware/auth.validation.middleware.js';
+import { Router } from "express";
+import { updateProfile } from "../../controllers/profile.controller.js";
+import { validateProfileUpdate } from "../../middleware/profile.validation.middleware.js";
 
 const router = Router();
 
-router.post('/signup', validateSignup, signup);
-router.post('/login', login);
-router.post('/logout', logout);
-router.post('/forgot-password', forgotPassword);
-router.post('/reset-password', resetPassword);
+router.patch("/update", validateProfileUpdate, updateProfile);
 
 export default router;

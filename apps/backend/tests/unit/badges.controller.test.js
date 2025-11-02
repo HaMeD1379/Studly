@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createBadgesController } from '../../src/controllers/badges.controller.js';
-import STRINGS from '../../src/config/strings.js';
+import STRINGS from '../../src/config/strings.config.js';
 
 // Mock service
 const createMockService = () => {

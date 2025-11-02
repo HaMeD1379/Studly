@@ -16,9 +16,10 @@
  *
  *  Features
  *  --------
- *  • Covers start, complete, list, and summary flows.
+ *  • Covers create, update, list, and summary flows for study sessions.
  *  • Exercises validation failures alongside Supabase error propagation.
- *  • Ensures milliseconds ↔ minutes conversions survive the HTTP boundary.
+ *  • Ensures timestamps and numeric fields (sessionType/totalMinutes) survive the
+ *    HTTP boundary.
  *
  *  Design Principles
  *  -----------------
@@ -38,7 +39,7 @@
 import test, { beforeEach, afterEach } from 'node:test';
 import assert from 'node:assert/strict';
 
-import supabase from '../../src/config/supabase.js';
+import supabase from '../../src/config/supabase.client.js';
 
 process.env.NODE_ENV = 'test';
 const { default: app } = await import('../../src/index.js');
@@ -70,11 +71,16 @@ const makeRow = (payload) => {
   const now = new Date().toISOString();
   const row = {
     id: `session-${sessionCounter++}`,
-    created_at: now,
+    user_id: payload.user_id,
+    subject: payload.subject,
+    session_type: payload.session_type,
+    start_time: payload.start_time,
+    end_time: payload.end_time,
+    total_time: payload.total_time ?? null,
+    date: payload.date ?? now.slice(0, 10),
+    session_goal: payload.session_goal ?? null,
+    inserted_at: now,
     updated_at: now,
-    ended_at: null,
-    duration_minutes: null,
-    ...payload,
   };
   sessionStore.push(row);
   return row;
@@ -147,11 +153,6 @@ const createSelectBuilder = (columns) => {
   const resolve = () => {
     if (columns === '*' && behaviors.listError) {
       return { data: null, error: { message: behaviors.listError } };
-    }
-
-    const hasSubjectFilter = filters.eq.some(({ column }) => column === 'subject');
-    if (columns === '*' && behaviors.summaryError && !hasSubjectFilter) {
-      return { data: null, error: { message: behaviors.summaryError } };
     }
 
     if (columns !== '*' && behaviors.summaryError) {
@@ -296,28 +297,46 @@ afterEach(() => {
   resetBehaviors();
 });
 
-test('POST /api/v1/sessions starts a session and returns camelCase fields', async () => {
+test('POST /api/v1/sessions creates a session with computed totalMinutes', async () => {
   const response = await request('POST', '/api/v1/sessions', {
     userId: 'user-1',
     subject: 'Math',
-    startTimestamp: '2024-01-01T00:00:00.000Z',
-    targetDurationMillis: 1_200_000,
+    sessionType: 1,
+    startTime: '2024-01-01T00:00:00.000Z',
+    endTime: '2024-01-01T01:00:00.000Z',
+    sessionGoal: 'Practice problems',
   });
 
   assert.equal(response.status, 201);
   assert.equal(response.body.session.userId, 'user-1');
-  assert.equal(response.body.session.subject, 'Math');
-  assert.equal(response.body.session.targetDurationMillis, 1_200_000);
-  assert.equal(response.body.session.status, 'in_progress');
+  assert.equal(response.body.session.sessionType, 1);
+  assert.equal(response.body.session.totalMinutes, 60);
+  assert.equal(response.body.session.sessionGoal, 'Practice problems');
 });
 
-test('POST /api/v1/sessions returns 400 for missing subject', async () => {
+test('POST /api/v1/sessions requires mandatory fields', async () => {
   const response = await request('POST', '/api/v1/sessions', {
     userId: 'user-1',
+    subject: 'Math',
+    startTime: '2024-01-01T00:00:00.000Z',
+    endTime: '2024-01-01T01:00:00.000Z',
   });
 
   assert.equal(response.status, 400);
-  assert.equal(response.body.error, 'subject is required');
+  assert.equal(response.body.error, 'sessionType is required');
+});
+
+test('POST /api/v1/sessions validates timestamp inputs', async () => {
+  const response = await request('POST', '/api/v1/sessions', {
+    userId: 'user-1',
+    subject: 'Math',
+    sessionType: 1,
+    startTime: 'invalid',
+    endTime: '2024-01-01T01:00:00.000Z',
+  });
+
+  assert.equal(response.status, 400);
+  assert.match(response.body.error, /startTime must be a valid ISO 8601 timestamp/);
 });
 
 test('POST /api/v1/sessions surfaces Supabase errors', async () => {
@@ -326,39 +345,59 @@ test('POST /api/v1/sessions surfaces Supabase errors', async () => {
   const response = await request('POST', '/api/v1/sessions', {
     userId: 'user-1',
     subject: 'Biology',
+    sessionType: 2,
+    startTime: '2024-01-01T00:00:00.000Z',
+    endTime: '2024-01-01T01:00:00.000Z',
   });
 
   assert.equal(response.status, 500);
   assert.match(String(response.body), /Error: Failed to create session: insert blew up/);
 });
 
-test('PATCH /api/v1/sessions/:id completes a session and returns updated payload', async () => {
+test('PATCH /api/v1/sessions/:id updates a session and returns new payload', async () => {
   const start = await request('POST', '/api/v1/sessions', {
     userId: 'user-1',
     subject: 'Chemistry',
+    sessionType: 1,
+    startTime: '2024-01-01T00:00:00.000Z',
+    endTime: '2024-01-01T00:30:00.000Z',
   });
 
   const sessionId = start.body.session.id;
 
   const complete = await request('PATCH', `/api/v1/sessions/${sessionId}`, {
-    endStudyTimestamp: '2024-01-01T00:30:00.000Z',
-    sessionLengthMillis: 1_800_000,
-    notes: 'Great focus',
+    endTime: '2024-01-01T01:30:00.000Z',
+    totalMinutes: 90,
+    sessionType: 2,
   });
 
   assert.equal(complete.status, 200);
-  assert.equal(complete.body.session.status, 'completed');
-  assert.equal(
-    complete.body.session.endStudyTimestamp,
-    Date.parse('2024-01-01T00:30:00.000Z'),
-  );
-  assert.equal(complete.body.session.sessionLength, 1_800_000);
-  assert.equal(complete.body.session.notes, 'Great focus');
+  assert.equal(complete.body.session.totalMinutes, 90);
+  assert.equal(complete.body.session.sessionType, 2);
+  assert.equal(complete.body.session.endTime, '2024-01-01T01:30:00.000Z');
 });
 
-test('PATCH /api/v1/sessions/:id returns 404 when the session is missing', async () => {
+test('PATCH /api/v1/sessions/:id requires at least one field', async () => {
+  const start = await request('POST', '/api/v1/sessions', {
+    userId: 'user-1',
+    subject: 'Chemistry',
+    sessionType: 1,
+    startTime: '2024-01-01T00:00:00.000Z',
+    endTime: '2024-01-01T00:45:00.000Z',
+  });
+
+  const response = await request('PATCH', `/api/v1/sessions/${start.body.session.id}`, {});
+
+  assert.equal(response.status, 400);
+  assert.equal(
+    response.body.error,
+    'At least one field must be provided to update a session',
+  );
+});
+
+test('PATCH /api/v1/sessions/:id returns 404 when missing', async () => {
   const response = await request('PATCH', '/api/v1/sessions/session-missing', {
-    endStudyTimestamp: '2024-01-01T00:10:00.000Z',
+    endTime: '2024-01-01T01:00:00.000Z',
   });
 
   assert.equal(response.status, 404);
@@ -371,11 +410,13 @@ test('PATCH /api/v1/sessions/:id propagates Supabase failures', async () => {
   const start = await request('POST', '/api/v1/sessions', {
     userId: 'user-1',
     subject: 'Physics',
+    sessionType: 1,
+    startTime: '2024-01-01T00:00:00.000Z',
+    endTime: '2024-01-01T00:20:00.000Z',
   });
 
-  const sessionId = start.body.session.id;
-  const response = await request('PATCH', `/api/v1/sessions/${sessionId}`, {
-    endStudyTimestamp: '2024-01-01T00:10:00.000Z',
+  const response = await request('PATCH', `/api/v1/sessions/${start.body.session.id}`, {
+    endTime: '2024-01-01T00:45:00.000Z',
   });
 
   assert.equal(response.status, 500);
@@ -386,37 +427,35 @@ test('GET /api/v1/sessions lists sessions ordered by completion time', async () 
   const first = await request('POST', '/api/v1/sessions', {
     userId: 'user-1',
     subject: 'History',
-    targetDurationMillis: 600_000,
+    sessionType: 1,
+    startTime: '2024-01-01T00:00:00.000Z',
+    endTime: '2024-01-01T00:30:00.000Z',
   });
   const second = await request('POST', '/api/v1/sessions', {
     userId: 'user-1',
     subject: 'History',
+    sessionType: 1,
+    startTime: '2024-01-01T01:00:00.000Z',
+    endTime: '2024-01-01T01:45:00.000Z',
   });
 
   await request('PATCH', `/api/v1/sessions/${first.body.session.id}`, {
-    endStudyTimestamp: '2024-01-01T00:20:00.000Z',
-    sessionLengthMillis: 1_200_000,
+    endTime: '2024-01-01T02:00:00.000Z',
+    totalMinutes: 120,
   });
   await request('PATCH', `/api/v1/sessions/${second.body.session.id}`, {
-    endStudyTimestamp: '2024-01-01T00:40:00.000Z',
-    sessionLengthMillis: 1_800_000,
+    endTime: '2024-01-01T03:00:00.000Z',
+    totalMinutes: 120,
   });
 
   const response = await request(
     'GET',
-    '/api/v1/sessions?userId=user-1&subject=History&status=completed&limit=10',
+    '/api/v1/sessions?userId=user-1&subject=History&sessionType=1&from=2024-01-01T00:00:00.000Z&to=2024-01-02T00:00:00.000Z&limit=1',
   );
 
   assert.equal(response.status, 200);
-  assert.equal(response.body.sessions.length, 2);
-  assert.equal(
-    response.body.sessions[0].endStudyTimestamp,
-    Date.parse('2024-01-01T00:40:00.000Z'),
-  );
-  assert.equal(
-    response.body.sessions[1].endStudyTimestamp,
-    Date.parse('2024-01-01T00:20:00.000Z'),
-  );
+  assert.equal(response.body.sessions.length, 1);
+  assert.equal(response.body.sessions[0].id, second.body.session.id);
 });
 
 test('GET /api/v1/sessions enforces numeric limit', async () => {
@@ -434,28 +473,30 @@ test('GET /api/v1/sessions surfaces Supabase list errors', async () => {
   assert.match(String(response.body), /Error: Failed to list sessions: list exploded/);
 });
 
-test('GET /api/v1/sessions/summary returns aggregate metrics in milliseconds', async () => {
+test('GET /api/v1/sessions/summary returns aggregate metrics', async () => {
   const start = await request('POST', '/api/v1/sessions', {
     userId: 'user-1',
     subject: 'Art',
+    sessionType: 2,
+    startTime: '2024-01-01T00:00:00.000Z',
+    endTime: '2024-01-01T00:45:00.000Z',
   });
   await request('PATCH', `/api/v1/sessions/${start.body.session.id}`, {
-    endStudyTimestamp: '2024-01-01T01:00:00.000Z',
-    sessionLengthMillis: 3_600_000,
+    totalMinutes: 45,
   });
 
   const response = await request(
     'GET',
-    '/api/v1/sessions/summary?userId=user-1&from=2024-01-01&to=2024-01-02',
+    '/api/v1/sessions/summary?userId=user-1&sessionType=2&from=2024-01-01T00:00:00.000Z&to=2024-01-02T00:00:00.000Z',
   );
 
   assert.equal(response.status, 200);
-  assert.equal(response.body.totalTimeStudied, 3_600_000);
-  assert.equal(response.body.timesStudied, 1);
+  assert.equal(response.body.totalMinutesStudied, 45);
+  assert.equal(response.body.sessionsLogged, 1);
 });
 
 test('GET /api/v1/sessions/summary surfaces Supabase summary errors', async () => {
-  behaviors.summaryError = 'summary exploded';
+  behaviors.listError = 'summary exploded';
   const response = await request('GET', '/api/v1/sessions/summary?userId=user-1');
 
   assert.equal(response.status, 500);

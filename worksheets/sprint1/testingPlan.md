@@ -35,7 +35,7 @@ Tests for non component files like utilities or routes where we want simple unit
 
 ### Backend
 All the backend tests are located under the /apps/backend/tests directory. 
-Unit tests are stored in /apps/backend/test/unit/, for example /apps/backend/test/unit/validateInput.test.js.
+Unit tests are stored in /apps/backend/test/unit/, for example /apps/backend/test/unit/auth.validation.middleware.test.js.
 Integration tests are stored in /apps/backend/test/integration/, for example  /apps/backend/test/integration/authController.test.js.
 This folder structure and consistent <filename>.test.js naming make it easy to identify test purpose with a clean and organized backend code base.
 
