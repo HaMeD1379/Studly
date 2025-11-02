@@ -43,7 +43,7 @@ import {
   forgotPassword,
   resetPassword,
 } from '../../controllers/auth.controller.js';
-import { validateSignup } from '../../middleware/validateInput.js';
+import { validateSignup } from '../../middleware/auth.validation.middleware.js';
 
 const router = Router();
 

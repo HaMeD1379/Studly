@@ -38,7 +38,7 @@
  * ────────────────────────────────────────────────────────────────────────────────
  */
 
-import supabase from '../config/supabase.js'; // Initialized Supabase client instance
+import supabase from '../config/supabase.client.js'; // Initialized Supabase client instance
 
 const DEFAULT_SESSION_COLUMNS = [
   'id',

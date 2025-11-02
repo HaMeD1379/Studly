@@ -34,8 +34,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import supabase from '../../src/config/supabase.js';
-import STRINGS from '../../src/config/strings.js';
+import supabase from '../../src/config/supabase.client.js';
+import STRINGS from '../../src/config/strings.config.js';
 
 test(STRINGS.TEST.SUPABASE_EXPORT_CLIENT, () => {
   assert.ok(supabase);
@@ -63,7 +63,7 @@ test(STRINGS.TEST.SUPABASE_DATABASE_METHODS, () => {
 
 test(STRINGS.TEST.SUPABASE_SINGLETON, async () => {
   const { default: supabaseSecondImport } = await import(
-    '../../src/config/supabase.js'
+    '../../src/config/supabase.client.js'
   );
   assert.strictEqual(supabaseSecondImport, supabase);
 });

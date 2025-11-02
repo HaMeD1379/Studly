@@ -1,6 +1,6 @@
 /**
  * ────────────────────────────────────────────────────────────────────────────────
- *  File: src/config/supabase.js
+ *  File: src/config/supabase.client.js
  *  Group: Group 3 — COMP 4350: Software Engineering 2
  *  Project: Studly
  *  Author: Shiv Bhagat
@@ -31,12 +31,12 @@
  *  • [OBSERVABILITY] Replace console warnings with structured logging.
  *  • [SECURITY] Rotate keys using a secret manager in production deployments.
  *
- *  @module config/supabase
+ *  @module config/supabase.client
  * ────────────────────────────────────────────────────────────────────────────────
  */
 
 import { createClient } from '@supabase/supabase-js';
-import STRINGS from './strings.js';
+import STRINGS from './strings.config.js';
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;

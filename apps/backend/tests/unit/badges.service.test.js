@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createBadgesService } from '../../src/services/badges.service.js';
-import STRINGS from '../../src/config/strings.js';
+import STRINGS from '../../src/config/strings.config.js';
 
 // Helper to get date strings relative to today
 const getRecentDates = () => {

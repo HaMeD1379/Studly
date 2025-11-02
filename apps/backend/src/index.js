@@ -41,10 +41,10 @@ import 'dotenv/config';
 
 import express from 'express';
 import cors from 'cors';
-import STRINGS from './config/strings.js';
+import STRINGS from './config/strings.config.js';
 import authRoutes from './routes/v1/authentication.routes.js';
 import sessionsRoutes from './routes/v1/sessions.routes.js';
-import requireInternalApiKey from './middleware/internalApiKey.js';
+import requireInternalApiKey from './middleware/internal-api-key.middleware.js';
 import badgesRoutes from './routes/v1/badges.routes.js';
 
 const app = express();

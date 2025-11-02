@@ -1,6 +1,6 @@
 /**
  * ────────────────────────────────────────────────────────────────────────────────
- *  File: tests/unit/internalApiKey.test.js
+ *  File: tests/unit/internal-api-key.middleware.test.js
  *  Purpose: Unit tests for INTERNAL_API_TOKEN middleware behavior
  * ────────────────────────────────────────────────────────────────────────────────
  */
@@ -8,7 +8,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import requireInternalApiKey from '../../src/middleware/internalApiKey.js';
+import requireInternalApiKey from '../../src/middleware/internal-api-key.middleware.js';
 
 const makeCtx = (headers = {}) => {
   const req = { header: (name) => headers[name.toLowerCase()] };
