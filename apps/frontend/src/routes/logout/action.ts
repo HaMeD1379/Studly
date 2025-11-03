@@ -11,10 +11,13 @@ export async function logoutAction() {
     }
     if (!res.error && res.data) {
       localStorage.removeItem('accessToken');
+      localStorage.removeItem('email');
+      localStorage.removeItem('userId');
+      localStorage.removeItem('fullName');
       return redirect('/');
     } else {
       return { error: res.error };
     }
   }
-  return { error: 'Login api call failed' };
+  return { error: 'Logout api call failed' };
 }

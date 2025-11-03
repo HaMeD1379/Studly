@@ -22,7 +22,14 @@ type Session = {
 export interface LoginResponse {
   session: Session;
   refreshToken?: string;
+  user: UserMetadata;
 }
+
+type UserMetadata = {
+  id: string;
+  email: string;
+  full_name: string;
+};
 
 export interface BackendLoginResponse {
   message: string;

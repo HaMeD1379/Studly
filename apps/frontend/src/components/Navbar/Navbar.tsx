@@ -5,6 +5,7 @@ import {
   IconLogout,
   IconMedal,
   IconMedal2,
+  IconUser,
 } from '@tabler/icons-react';
 import { Form, useLocation, useNavigate } from 'react-router-dom';
 
@@ -59,6 +60,12 @@ export const Navbar = ({ children }: NavbarProps) => {
               <Flex align='center' gap={4}>
                 <IconMedal2 size={20} />
                 Badges
+              </Flex>
+            </StyledButton>
+            <StyledButton path='/user-profile'>
+              <Flex align='center' gap={4}>
+                <IconUser size={20} />
+                Profile
               </Flex>
             </StyledButton>
           </Flex>

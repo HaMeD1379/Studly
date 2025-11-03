@@ -11,4 +11,6 @@ export * from './StudySession/StudySession';
 export * from './StudyTips/StudyTips';
 export * from './TodaysStudyStatistics/TodaysStudyStatistics';
 export * from './UpdatePassword/UpdatePassword';
-export * from './UserProfile/UserProfile';
+export * from './ProfileCards/ProfileCard';
+export * from './ProfileStatistics/ProfileStatistics';
+export * from './UserCard/UserCard';

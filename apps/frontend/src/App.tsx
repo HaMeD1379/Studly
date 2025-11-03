@@ -1,7 +1,6 @@
 import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { loginAction, logoutAction, SignUpAction } from '~/actions';
 import {
   Badges,
   Forgot,
@@ -11,6 +10,9 @@ import {
   Study,
   UpdatePassword,
   UserProfile,
+  loginAction,
+  logoutAction,
+  SignUpAction,
 } from '~/routes';
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
@@ -25,7 +27,7 @@ const router = createBrowserRouter([
   { action: logoutAction, element: <Login />, path: '/logout' },
   { action: SignUpAction, element: <SignUp />, path: '/signup' },
   { element: <Study />, path: '/study' },
-  { element: <UserProfile />, path: '/user' },
+  { element: <UserProfile />, path: '/user-profile' },
 ]);
 
 export const App = () => {
