@@ -31,14 +31,12 @@ export const Study = () => {
     setStartStudyTimestamp(startTimestamp);
     setEndStudyTimestamp(endTimestamp);
 
-    fetcher.submit(
-      {
-        type: 'start',
-        subject,
-        startTime: startTimestamp,
-        endTime: endTimestamp,
-      }
-    );
+    fetcher.submit({
+      endTime: endTimestamp,
+      startTime: startTimestamp,
+      subject,
+      type: 'start',
+    });
   };
 
   const stopStudySession = () => {
@@ -50,7 +48,9 @@ export const Study = () => {
 
   return (
     <Navbar>
-      {(loaderData?.error || actionData?.error) ? <ErrorBoundary /> : (
+      {loaderData?.error || actionData?.error ? (
+        <ErrorBoundary />
+      ) : (
         <Box mx={48} w={1150}>
           <Text fw={700} size='xl'>
             Study Session
@@ -62,8 +62,8 @@ export const Study = () => {
             <Grid.Col span='auto'>
               <Flex direction='column' gap='lg'>
                 <StudySession
-                  isSessionSetup={!!subject && !!sessionLength}
                   endStudyTimestamp={endStudyTimestamp}
+                  isSessionSetup={!!subject && !!sessionLength}
                   onStartStudy={startStudySession}
                   onStopStudy={stopStudySession}
                   startStudyTimestamp={startStudyTimestamp}

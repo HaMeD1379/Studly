@@ -1,8 +1,10 @@
-const { startSessionMock, stopSessionMock, setSessionIdMock } = vi.hoisted(() => ({
-  startSessionMock: vi.fn(),
-  stopSessionMock: vi.fn(),
-  setSessionIdMock: vi.fn(),
-}))
+const { startSessionMock, stopSessionMock, setSessionIdMock } = vi.hoisted(
+  () => ({
+    setSessionIdMock: vi.fn(),
+    startSessionMock: vi.fn(),
+    stopSessionMock: vi.fn(),
+  }),
+);
 
 vi.mock('~/api/sessions', () => ({
   startSession: startSessionMock,
@@ -13,9 +15,9 @@ vi.mock('~/utilities/session/session', () => ({
   setSessionId: setSessionIdMock,
 }));
 
-import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { action } from './action';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockSessionId } from '~/mocks';
+import { action } from './action';
 
 describe('loader', () => {
   beforeEach(() => {
@@ -26,36 +28,36 @@ describe('loader', () => {
     startSessionMock.mockReturnValueOnce({
       data: Promise.resolve({
         session: {
-          id: mockSessionId
-        }
-      })
-    })
+          id: mockSessionId,
+        },
+      }),
+    });
 
     const formData = new FormData();
     formData.set('type', 'start');
 
     const request = new Request('https:localhost/', {
-      method: 'POST',
       body: formData,
+      method: 'POST',
     });
 
-    await action({request, params: {}, context: {}});
+    await action({ context: {}, params: {}, request });
     expect(startSessionMock).toHaveBeenCalled();
     expect(setSessionIdMock).toHaveBeenCalledWith(mockSessionId);
   });
 
   it('stop type succeeds', async () => {
-    stopSessionMock.mockReturnValueOnce({})
+    stopSessionMock.mockReturnValueOnce({});
 
     const formData = new FormData();
     formData.set('type', 'stop');
 
     const request = new Request('https:localhost/', {
-      method: 'POST',
       body: formData,
+      method: 'POST',
     });
 
-    await action({request, params: {}, context: {}});
+    await action({ context: {}, params: {}, request });
     expect(stopSessionMock).toHaveBeenCalled();
   });
 
@@ -67,11 +69,11 @@ describe('loader', () => {
     formData.set('type', 'none');
 
     const request = new Request('https:localhost/', {
-      method: 'POST',
       body: formData,
+      method: 'POST',
     });
 
-    const result = await action({request, params: {}, context: {}});
+    const result = await action({ context: {}, params: {}, request });
     expect(stopSessionMock).not.toHaveBeenCalled();
     expect(startSessionMock).not.toHaveBeenCalled();
     expect(result).toEqual({ data: false });

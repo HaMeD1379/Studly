@@ -1,6 +1,11 @@
-import { describe, it, expect } from 'vitest';
-import { getAccessToken, getSessionId, getUserId, setSessionId } from './session';
-import { mockAccessToken, mockSessionData, mockSessionId, mockUserId } from '~/mocks';
+import { describe, expect, it } from 'vitest';
+import { mockAccessToken, mockSessionId, mockUserId } from '~/mocks';
+import {
+  getAccessToken,
+  getSessionId,
+  getUserId,
+  setSessionId,
+} from './session';
 
 describe('session', () => {
   it('returns empty string on getAccessToken if no storage is set', () => {

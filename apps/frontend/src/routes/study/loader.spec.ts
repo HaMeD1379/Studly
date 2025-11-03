@@ -1,16 +1,18 @@
-const { mockFetchTodaysSessionSummary, mockFetchSessionsList } = vi.hoisted(() => ({
-  mockFetchTodaysSessionSummary: vi.fn(),
-  mockFetchSessionsList: vi.fn(),
-}));
+const { mockFetchTodaysSessionSummary, mockFetchSessionsList } = vi.hoisted(
+  () => ({
+    mockFetchSessionsList: vi.fn(),
+    mockFetchTodaysSessionSummary: vi.fn(),
+  }),
+);
 
 vi.mock('~/api/sessions', () => ({
   fetchSessionsList: mockFetchSessionsList,
   fetchTodaysSessionSummary: mockFetchTodaysSessionSummary,
 }));
 
-import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { loader } from './loader';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockErrorData, mockSessionData } from '~/mocks';
+import { loader } from './loader';
 
 describe('loader', () => {
   beforeEach(() => {
@@ -34,7 +36,7 @@ describe('loader', () => {
     mockFetchSessionsList.mockResolvedValueOnce({
       data: Promise.resolve(),
       error: true,
-    })
+    });
     mockFetchTodaysSessionSummary.mockResolvedValueOnce({});
 
     const result = await loader();

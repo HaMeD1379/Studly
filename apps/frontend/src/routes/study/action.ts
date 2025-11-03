@@ -20,7 +20,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
     return result;
   } else if (type === 'stop') {
-    const result = await stopSession()
+    const result = await stopSession();
     return result;
   }
 

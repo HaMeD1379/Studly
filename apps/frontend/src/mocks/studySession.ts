@@ -3,18 +3,18 @@ import type { StudySession } from '~/types';
 export const mockRecentStudySessions: StudySession[] = [
   {
     endTime: new Date(1760234974000).toISOString(),
-    totalMinutes: 61,
     subject: 'Mathematics',
+    totalMinutes: 61,
   },
   {
     endTime: new Date(1760117302000).toISOString(),
-    totalMinutes: 25,
     subject: 'Computer Science',
+    totalMinutes: 25,
   },
   {
     endTime: new Date(1759234974000).toISOString(),
-    totalMinutes: 453,
     subject: 'Chemistry',
+    totalMinutes: 453,
   },
 ];
 export const mockTotalTimeStudied = 166;
@@ -26,32 +26,32 @@ export const mockStartStudySessionFetcherRequest = {
   startTime: mockStartStudySessionFetcherRequestTime,
   subject: 'Mathematics',
   type: 'start',
-}
+};
 
 export const mockStopStudySessionFetcherSubmit = {
   type: 'stop',
-}
+};
 
 export const mockNoSessionData = {
   data: {},
   error: false,
-}
+};
 
 export const mockErrorData = {
   data: {
     sessionsList: undefined,
     summary: undefined,
   },
-  error: true
-}
+  error: true,
+};
 
 export const mockSessionData = {
   data: {
     sessionsList: mockRecentStudySessions,
     summary: {
-      totalTimeStudied: mockTotalTimeStudied,
       sessionsLogged: mockSessionsLogged,
-    }
+      totalTimeStudied: mockTotalTimeStudied,
+    },
   },
   error: false,
-}
+};

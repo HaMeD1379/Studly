@@ -33,31 +33,41 @@ export const fetchSessionsList = async () => {
   return result;
 };
 
-export const startSession = async (startTime: number, endTime: number, subject: string) => {
+export const startSession = async (
+  startTime: number,
+  endTime: number,
+  subject: string,
+) => {
   const startTimeISO = new Date(startTime).toISOString();
   const endTimeISO = new Date(endTime).toISOString();
   const userId = getUserId();
 
-  const result = await request<CreateStudySessionAction>(RequestMethods.POST, SESSIONS, undefined,
+  const result = await request<CreateStudySessionAction>(
+    RequestMethods.POST,
+    SESSIONS,
+    undefined,
     JSON.stringify({
-      userId,
-      subject,
-      startTime: startTimeISO,
       endTime: endTimeISO,
       sessionType: 1,
-    })
+      startTime: startTimeISO,
+      subject,
+      userId,
+    }),
   );
 
   return result;
-}
+};
 
 export const stopSession = async () => {
-  const path = `${SESSIONS}/${getSessionId()}`
-  const result = await request(RequestMethods.PATCH, path, undefined,
+  const path = `${SESSIONS}/${getSessionId()}`;
+  const result = await request(
+    RequestMethods.PATCH,
+    path,
+    undefined,
     JSON.stringify({
       endTime: new Date(Date.now()).toISOString(),
-    })
+    }),
   );
 
   return result;
-}
+};

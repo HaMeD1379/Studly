@@ -20,4 +20,5 @@ export const SETUP_STUDY_SESSION_OPTIONS: string[] = [
 
 export const RECENT_STUDY_SESSIONS_LIST_SIZE = 3;
 
-export const START_SESSION_BUTTON_TOOLTIP = 'Select a subject and time length before starting'
+export const START_SESSION_BUTTON_TOOLTIP =
+  'Select a subject and time length before starting';

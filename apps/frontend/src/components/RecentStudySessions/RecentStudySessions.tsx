@@ -25,7 +25,8 @@ export const RecentStudySessions = ({
     const hours = Math.floor((minutesTotal / 60) % 60);
 
     const hourString = hours > 0 ? `${hours} hour${hours > 1 ? 's' : ''}` : '';
-    const minuteString = minutes > 0 ? `${minutes} minute${minutes > 1 ? 's' : ''}` : '';
+    const minuteString =
+      minutes > 0 ? `${minutes} minute${minutes > 1 ? 's' : ''}` : '';
 
     return `${hourString}${hours > 0 && minutes > 0 ? ' and ' : ''}${minuteString}`;
   };
@@ -46,9 +47,7 @@ export const RecentStudySessions = ({
             {recentStudySessions.map((studySession) => (
               <Table.Tr key={studySession.endTime}>
                 <Table.Td>
-                  {formatTimestampToDate(
-                    new Date(studySession.endTime),
-                  )}
+                  {formatTimestampToDate(new Date(studySession.endTime))}
                 </Table.Td>
                 <Table.Td>{studySession.subject}</Table.Td>
                 <Table.Td>

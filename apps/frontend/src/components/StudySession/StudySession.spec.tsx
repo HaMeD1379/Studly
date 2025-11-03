@@ -14,7 +14,11 @@ describe('StudySession', () => {
 
   it('renders', () => {
     render(
-      <StudySession isSessionSetup onStartStudy={mockOnStart} onStopStudy={mockOnStop} />,
+      <StudySession
+        isSessionSetup
+        onStartStudy={mockOnStart}
+        onStopStudy={mockOnStop}
+      />,
     );
 
     expect(screen.getByText('Current Session')).not.toBeNull();
@@ -33,8 +37,8 @@ describe('StudySession', () => {
 
     const { rerender } = render(
       <StudySession
-        isSessionSetup
         endStudyTimestamp={mockEndTimestamp}
+        isSessionSetup
         onStartStudy={mockOnStart}
         onStopStudy={mockOnStop}
         startStudyTimestamp={mockStartTimestamp}
@@ -56,8 +60,8 @@ describe('StudySession', () => {
 
     rerender(
       <StudySession
-        isSessionSetup
         endStudyTimestamp={mockEndTimestamp}
+        isSessionSetup
         onStartStudy={mockOnStart}
         onStopStudy={mockOnStop}
         startStudyTimestamp={mockStartTimestamp}
@@ -77,8 +81,8 @@ describe('StudySession', () => {
 
     const { rerender } = render(
       <StudySession
-        isSessionSetup
         endStudyTimestamp={mockEndTimestamp}
+        isSessionSetup
         onStartStudy={mockOnStart}
         onStopStudy={mockOnStop}
         startStudyTimestamp={mockStartTimestamp}
@@ -94,8 +98,8 @@ describe('StudySession', () => {
 
     rerender(
       <StudySession
-        isSessionSetup
         endStudyTimestamp={0}
+        isSessionSetup
         onStartStudy={mockOnStart}
         onStopStudy={mockOnStop}
         startStudyTimestamp={0}
@@ -114,8 +118,8 @@ describe('StudySession', () => {
 
     render(
       <StudySession
-        isSessionSetup
         endStudyTimestamp={mockEndTimestamp}
+        isSessionSetup
         onStartStudy={mockOnStart}
         onStopStudy={mockOnStop}
         startStudyTimestamp={mockStartTimestamp}
@@ -134,8 +138,8 @@ describe('StudySession', () => {
 
     render(
       <StudySession
-        isSessionSetup
         endStudyTimestamp={mockEndTimestamp}
+        isSessionSetup
         onStartStudy={mockOnStart}
         onStopStudy={mockOnStop}
         startStudyTimestamp={mockStartTimestamp}

@@ -3,11 +3,11 @@ import type { StudySession, TodaysStudyStatistics } from '~/types';
 
 type StudyLoader = {
   data: {
-    sessionsList?: StudySession[],
-    summary?: TodaysStudyStatistics,
-  },
-  error: boolean,
-}
+    sessionsList?: StudySession[];
+    summary?: TodaysStudyStatistics;
+  };
+  error: boolean;
+};
 
 export const loader = async (): Promise<StudyLoader> => {
   const [summary, sessionsList] = await Promise.all([

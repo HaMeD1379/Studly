@@ -98,15 +98,18 @@ export const StudySession = ({
         <Text size='sm'>{fullFormattedTimeLeft} remaining</Text>
       </Flex>
       <Flex gap='sm' justify='center' pt={24}>
-        {!isSessionSetup &&
-          <Tooltip target='#start-button' label={START_SESSION_BUTTON_TOOLTIP} />
-        }
+        {!isSessionSetup && (
+          <Tooltip
+            label={START_SESSION_BUTTON_TOOLTIP}
+            target='#start-button'
+          />
+        )}
         <Button
-            disabled={!isSessionSetup || startStudyTimestamp > 0}
-            onClick={onStartStudy}
-            id='start-button'
-          >
-            Start
+          disabled={!isSessionSetup || startStudyTimestamp > 0}
+          id='start-button'
+          onClick={onStartStudy}
+        >
+          Start
         </Button>
         <Button disabled={startStudyTimestamp === 0} onClick={onStopStudy}>
           Stop
