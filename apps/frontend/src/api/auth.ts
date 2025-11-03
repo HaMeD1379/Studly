@@ -1,4 +1,4 @@
-import { AUTH_SIGNUP } from '~/config';
+import { AUTH_SIGNUP } from '~/constants';
 import { RequestMethods } from '~/types';
 import { request } from '~/utilities/requests';
 

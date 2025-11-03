@@ -1,6 +1,7 @@
 import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { ErrorBoundary, PageSpinner } from '~/components';
 import {
   Badges,
   Forgot,
@@ -8,6 +9,8 @@ import {
   Login,
   SignUp,
   Study,
+  studyAction,
+  studyLoader,
   UpdatePassword,
   UserProfile,
 } from '~/routes';
@@ -16,22 +19,50 @@ import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 import '@mantine/dates/styles.css';
 
+const router = createBrowserRouter([
+  {
+    element: <Home />,
+    path: '/home',
+  },
+  {
+    action: studyAction,
+    element: <Study />,
+    errorElement: <ErrorBoundary />,
+    hydrateFallbackElement: <PageSpinner />,
+    loader: studyLoader,
+    path: '/study',
+  },
+  {
+    element: <Login />,
+    path: '/',
+  },
+  {
+    element: <SignUp />,
+    path: '/signup',
+  },
+  {
+    element: <Forgot />,
+    path: '/forgot-password',
+  },
+  {
+    element: <Badges />,
+    path: '/badges',
+  },
+  {
+    element: <UserProfile />,
+    path: '/user',
+  },
+  {
+    element: <UpdatePassword />,
+    path: '/change-password',
+  },
+]);
+
 export const App = () => {
   return (
     <MantineProvider>
-      <BrowserRouter>
-        <Notifications />
-        <Routes>
-          <Route element={<Home />} path='/home' />
-          <Route element={<Study />} path='/study' />
-          <Route element={<Login />} path='/' />
-          <Route element={<SignUp />} path='/signup' />
-          <Route element={<Forgot />} path='/forgot-password' />
-          <Route element={<Badges />} path='/badges' />
-          <Route element={<UserProfile />} path='/user' />
-          <Route element={<UpdatePassword />} path='/change-password' />
-        </Routes>
-      </BrowserRouter>
+      <RouterProvider router={router} />
+      <Notifications />
     </MantineProvider>
   );
 };
