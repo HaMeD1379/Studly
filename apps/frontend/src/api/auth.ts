@@ -3,7 +3,7 @@ import {
   AUTH_LOGIN,
   AUTH_LOGOUT,
   AUTH_SIGNUP,
-} from '~/config';
+} from '~/constants';
 import {
   type BackendLoginResponse,
   RequestMethods,

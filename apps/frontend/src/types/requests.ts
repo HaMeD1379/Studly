@@ -3,6 +3,7 @@ export enum RequestMethods {
   POST = 'POST',
   PUT = 'PUT',
   DELETE = 'DELETE',
+  PATCH = 'PATCH',
 }
 
 type RequestError = {
@@ -10,8 +11,8 @@ type RequestError = {
   message?: string;
 };
 
-export type RequestResolve<T = unknown> = {
-  data?: T;
+export type RequestResolve<Type> = {
+  data?: Promise<Type>;
   error?: RequestError;
 };
 

@@ -1,4 +1,4 @@
-export const allUnlockedBadgesMock = [
+export const mockAllUnlockedBadges = [
   {
     description: 'TEST_1_DESCRIPTION',
     name: 'TEST_1_NAME',
@@ -41,8 +41,8 @@ export const allUnlockedBadgesMock = [
   },
 ];
 
-export const allBadgesMock = [
-  ...allUnlockedBadgesMock,
+export const mockAllBadges = [
+  ...mockAllUnlockedBadges,
   {
     description: 'TEST_9_DESCRIPTION',
     name: 'TEST_9_NAME',
@@ -65,4 +65,4 @@ export const allBadgesMock = [
   },
 ];
 
-export const MOCK_UNLOCKED_BADGE_TIMESTAMP = 3256523562342;
+export const mockUnlockedBadgeTimestamp = 3256523562342;

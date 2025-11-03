@@ -37,8 +37,8 @@
 import test, { beforeEach, afterEach } from "node:test";
 import assert from "node:assert/strict";
 
-import STRINGS from "../../src/config/strings.js";
-import supabase from "../../src/config/supabase.js";
+import STRINGS from "../../src/config/strings.config.js";
+import supabase from "../../src/config/supabase.client.js";
 
 process.env.NODE_ENV = "test";
 const { default: app } = await import("../../src/index.js");

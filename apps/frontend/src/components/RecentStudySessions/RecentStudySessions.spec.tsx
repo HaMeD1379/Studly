@@ -33,9 +33,9 @@ describe('RecentStudySessions', () => {
     expect(screen.getByText('1 hour and 1 minute')).not.toBeNull();
 
     expect(screen.getByText('Computer Science')).not.toBeNull();
-    expect(screen.getByText('4 minutes')).not.toBeNull();
+    expect(screen.getByText('25 minutes')).not.toBeNull();
 
     expect(screen.getByText('Chemistry')).not.toBeNull();
-    expect(screen.getByText('12 hours and 35 minutes')).not.toBeNull();
+    expect(screen.getByText('7 hours and 33 minutes')).not.toBeNull();
   });
 });

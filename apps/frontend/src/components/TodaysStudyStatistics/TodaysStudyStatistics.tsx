@@ -1,18 +1,13 @@
 import { Flex, Text } from '@mantine/core';
 import { IconClock, IconTarget } from '@tabler/icons-react';
-
-type TodaysStudyStatisticsProps = {
-  totalTimeStudied: number;
-  timesStudied: number;
-};
+import type { TodaysStudyStatistics as TodaysStudyStatisticsProps } from '~/types';
 
 export const TodaysStudyStatistics = ({
-  totalTimeStudied,
-  timesStudied,
+  totalMinutesStudied,
+  sessionsLogged,
 }: TodaysStudyStatisticsProps) => {
-  const totalMinutes = totalTimeStudied / 1000 / 60;
-  const minutes = Math.floor(totalMinutes % 60);
-  const hours = Math.floor((totalMinutes / 60) % 60);
+  const minutes = Math.floor(totalMinutesStudied % 60);
+  const hours = Math.floor((totalMinutesStudied / 60) % 60);
 
   return (
     <Flex bd='1px solid lightgray' bdrs={8} direction='column' h={193} p={24}>
@@ -30,7 +25,7 @@ export const TodaysStudyStatistics = ({
         <Flex align='center' direction='column'>
           <IconTarget color='#00C951' size={48} />
           <Text fw={900} size='lg'>
-            {timesStudied}
+            {sessionsLogged}
           </Text>
           <Text fw={300} size='xs'>
             Sessions

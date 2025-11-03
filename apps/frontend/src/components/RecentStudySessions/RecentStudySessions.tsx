@@ -11,26 +11,24 @@ export const RecentStudySessions = ({
 }: RecentStudySessionsProps) => {
   const formatTimestampToDate = (date: Date) => {
     // For padding - https://stackoverflow.com/questions/10073699/pad-a-number-with-leading-zeros-in-javascript
-
     const year = date.getFullYear();
-    const month = String(date.getMonth()).padStart(2, '0');
-    const days = String(date.getDay()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const days = String(date.getDate()).padStart(2, '0');
     const hours = date.getHours();
     const minutes = String(date.getMinutes()).padStart(2, '0');
 
     return `${year}/${month}/${days} - ${hours % 11}:${minutes} ${hours >= 12 ? 'PM' : 'AM'}`;
   };
 
-  const formatStudySessionLength = (millis: number) => {
-    const totalMinutes = millis / 1000 / 60;
+  const formatStudySessionLength = (minutesTotal: number) => {
+    const minutes = Math.floor(minutesTotal % 60);
+    const hours = Math.floor((minutesTotal / 60) % 60);
 
-    const minutes = Math.floor(totalMinutes % 60);
-    const hours = Math.floor((totalMinutes / 60) % 60);
+    const hourString = hours > 0 ? `${hours} hour${hours > 1 ? 's' : ''}` : '';
+    const minuteString =
+      minutes > 0 ? `${minutes} minute${minutes > 1 ? 's' : ''}` : '';
 
-    const hourString = `${hours} hour${hours > 1 ? 's' : ''}`;
-    const minuteString = `${minutes} minute${minutes > 1 ? 's' : ''}`;
-
-    return `${hours > 0 ? `${hourString} and` : ''} ${minuteString}`;
+    return `${hourString}${hours > 0 && minutes > 0 ? ' and ' : ''}${minuteString}`;
   };
 
   return (
@@ -47,23 +45,21 @@ export const RecentStudySessions = ({
           </Table.Thead>
           <Table.Tbody>
             {recentStudySessions.map((studySession) => (
-              <Table.Tr key={studySession.endStudyTimestamp}>
+              <Table.Tr key={studySession.endTime}>
                 <Table.Td>
-                  {formatTimestampToDate(
-                    new Date(studySession.endStudyTimestamp),
-                  )}
+                  {formatTimestampToDate(new Date(studySession.endTime))}
                 </Table.Td>
                 <Table.Td>{studySession.subject}</Table.Td>
                 <Table.Td>
-                  {formatStudySessionLength(studySession.sessionLength)}
+                  {formatStudySessionLength(studySession.totalMinutes)}
                 </Table.Td>
               </Table.Tr>
             ))}
           </Table.Tbody>
         </Table>
       ) : (
-        <Flex align='center' direction='column' h={200} justify='center'>
-          <IconBook color='lightGray' size={72} />
+        <Flex align='center' direction='column' h={144} justify='center'>
+          <IconBook color='lightGray' size={64} />
           <Text c='gray' pt={16} size='lg'>
             No sessions completed yet.
           </Text>

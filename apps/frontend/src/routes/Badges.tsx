@@ -1,6 +1,6 @@
 import { Box, Text } from '@mantine/core';
 import { BadgeCollection, BadgeStatistics, Navbar } from '~/components';
-import { allBadgesMock, allUnlockedBadgesMock } from '~/mocks';
+import { mockAllBadges, mockAllUnlockedBadges } from '~/mocks';
 
 export const Badges = () => {
   return (
@@ -14,8 +14,8 @@ export const Badges = () => {
         </Text>
         <BadgeStatistics badgesUnlocked={2} totalBadges={3} />
         <BadgeCollection
-          allBadges={allBadgesMock}
-          unlockedBadges={allUnlockedBadgesMock}
+          allBadges={mockAllBadges}
+          unlockedBadges={mockAllUnlockedBadges}
         />
       </Box>
     </Navbar>

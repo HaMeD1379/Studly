@@ -14,7 +14,11 @@ describe('StudySession', () => {
 
   it('renders', () => {
     render(
-      <StudySession onStartStudy={mockOnStart} onStopStudy={mockOnStop} />,
+      <StudySession
+        isSessionSetup
+        onStartStudy={mockOnStart}
+        onStopStudy={mockOnStop}
+      />,
     );
 
     expect(screen.getByText('Current Session')).not.toBeNull();
@@ -34,6 +38,7 @@ describe('StudySession', () => {
     const { rerender } = render(
       <StudySession
         endStudyTimestamp={mockEndTimestamp}
+        isSessionSetup
         onStartStudy={mockOnStart}
         onStopStudy={mockOnStop}
         startStudyTimestamp={mockStartTimestamp}
@@ -56,6 +61,7 @@ describe('StudySession', () => {
     rerender(
       <StudySession
         endStudyTimestamp={mockEndTimestamp}
+        isSessionSetup
         onStartStudy={mockOnStart}
         onStopStudy={mockOnStop}
         startStudyTimestamp={mockStartTimestamp}
@@ -76,6 +82,7 @@ describe('StudySession', () => {
     const { rerender } = render(
       <StudySession
         endStudyTimestamp={mockEndTimestamp}
+        isSessionSetup
         onStartStudy={mockOnStart}
         onStopStudy={mockOnStop}
         startStudyTimestamp={mockStartTimestamp}
@@ -92,6 +99,7 @@ describe('StudySession', () => {
     rerender(
       <StudySession
         endStudyTimestamp={0}
+        isSessionSetup
         onStartStudy={mockOnStart}
         onStopStudy={mockOnStop}
         startStudyTimestamp={0}
@@ -111,6 +119,7 @@ describe('StudySession', () => {
     render(
       <StudySession
         endStudyTimestamp={mockEndTimestamp}
+        isSessionSetup
         onStartStudy={mockOnStart}
         onStopStudy={mockOnStop}
         startStudyTimestamp={mockStartTimestamp}
@@ -130,6 +139,7 @@ describe('StudySession', () => {
     render(
       <StudySession
         endStudyTimestamp={mockEndTimestamp}
+        isSessionSetup
         onStartStudy={mockOnStart}
         onStopStudy={mockOnStop}
         startStudyTimestamp={mockStartTimestamp}
@@ -137,6 +147,20 @@ describe('StudySession', () => {
     );
 
     expect(mockOnStop).toHaveBeenCalled();
+  });
+
+  it('start button is disabled if isSessionSetup is false', () => {
+    render(
+      <StudySession
+        isSessionSetup={false}
+        onStartStudy={mockOnStart}
+        onStopStudy={mockOnStop}
+      />,
+    );
+
+    expect(
+      screen.getByRole('button', { name: 'Start' }).getAttribute('disabled'),
+    ).not.toBeNull();
   });
 
   afterEach(() => {

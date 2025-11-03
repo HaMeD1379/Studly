@@ -17,7 +17,8 @@
     "lint": "biome check --linter-enabled=true --formatter-enabled=false src cypress/e2e/ cypress/constants cypress/support",
     "lint:fix": "biome check --linter-enabled=true --formatter-enabled=true --write src cypress/e2e/ cypress/constants cypress/support",
     "format": "biome format src cypress/e2e/ cypress/constants cypress/support",
-    "format:fix": "biome format --write src cypress/e2e/ cypress/constants cypress/support"
+    "format:fix": "biome format --write src cypress/e2e/ cypress/constants cypress/support",
+    "biome:fix": "npm run lint:fix && npm run format:fix"
   },
   "repository": {
     "type": "git",

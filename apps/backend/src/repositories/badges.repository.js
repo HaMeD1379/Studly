@@ -29,7 +29,7 @@
  * ────────────────────────────────────────────────────────────────────────────────
  */
 
-import supabase from '../config/supabase.js';
+import supabase from '../config/supabase.client.js';
 
 /**
  * Factory function for creating a badges repository instance.

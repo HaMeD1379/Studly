@@ -1,6 +1,6 @@
 /**
  * ────────────────────────────────────────────────────────────────────────────────
- *  File: tests/unit/serverUtils.test.js
+ *  File: tests/unit/server.utils.test.js
  *  Group: Group 3 — COMP 4350: Software Engineering 2
  *  Project: Studly
  *  Author: Shiv Bhagat
@@ -29,15 +29,15 @@
  *  • [OBSERVABILITY] Replace console.log with structured logging in helpers.
  *  • [ROBUSTNESS] Extend helpers with error codes and tracing metadata.
  *
- *  @module tests/unit/serverUtils
+ *  @module tests/unit/server.utils
  * ────────────────────────────────────────────────────────────────────────────────
  */
 
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { handleError, handleSuccess } from "../../src/utils/serverUtils.js";
-import STRINGS from "../../src/config/strings.js";
+import { handleError, handleSuccess } from "../../src/utils/server.utils.js";
+import STRINGS from "../../src/config/strings.config.js";
 
 const createMockResponse = () => {
   const calls = { status: [], json: [] };
