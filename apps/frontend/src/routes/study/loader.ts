@@ -1,15 +1,23 @@
-import { fetchSessionsList, fetchTodaysSessionSummary } from '~/api/sessions';
-import type { StudyRoute } from '~/types';
+import { fetchSessionsList, fetchTodaysSessionSummary } from '~/api';
+import type { StudySession, TodaysStudyStatistics } from '~/types';
 
-export const loader = async (): Promise<StudyRoute> => {
+type StudyLoader = {
+  data: {
+    sessionsList?: StudySession[],
+    summary?: TodaysStudyStatistics,
+  },
+  error: boolean,
+}
+
+export const loader = async (): Promise<StudyLoader> => {
   const [summary, sessionsList] = await Promise.all([
-    await fetchTodaysSessionSummary('test'),
-    await fetchSessionsList('test'),
+    await fetchTodaysSessionSummary(),
+    await fetchSessionsList(),
   ]);
 
   return {
     data: {
-      sessionsList: (await sessionsList.data) ?? undefined,
+      sessionsList: (await sessionsList.data)?.sessions ?? undefined,
       summary: (await summary.data) ?? undefined,
     },
     error: !!(summary.error || sessionsList.error),

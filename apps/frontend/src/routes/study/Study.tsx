@@ -3,6 +3,7 @@ import { Box, Flex, Grid, Text } from '@mantine/core';
 import { useState } from 'react';
 import { useFetcher, useLoaderData } from 'react-router';
 import {
+  ErrorBoundary,
   Navbar,
   RecentStudySessions,
   SetupStudySession,
@@ -10,35 +11,33 @@ import {
   StudyTips,
   TodaysStudyStatistics,
 } from '~/components';
-import {
-  mockRecentStudySessions,
-  mockTimesStudied,
-  mockTotalTimeStudied,
-} from '~/mocks';
-import type { StudyRoute } from '~/types';
-
-const TEMP_STUDY_TIMEFRAME = 1 * 10 * 1000; // 10 mins for now until user input is allowed
 
 export const Study = () => {
-  const loaderData: StudyRoute = useLoaderData();
+  const loaderData = useLoaderData();
   const fetcher = useFetcher();
+  const actionData = fetcher.data;
 
   const [startStudyTimestamp, setStartStudyTimestamp] = useState<number>(0);
   const [endStudyTimestamp, setEndStudyTimestamp] = useState<number>(0);
+  const [subject, setSubject] = useState<string | null>('');
+  const [sessionLength, setSessionLength] = useState<number>(0);
+
+  const summaryData = loaderData.data?.summary;
+  const sessionListData = loaderData.data?.sessionsList;
 
   const startStudySession = () => {
-    const studyTimestamp = Date.now();
-    setStartStudyTimestamp(studyTimestamp);
-    setEndStudyTimestamp(studyTimestamp + TEMP_STUDY_TIMEFRAME);
+    const startTimestamp = Date.now();
+    const endTimestamp = startTimestamp + sessionLength;
+    setStartStudyTimestamp(startTimestamp);
+    setEndStudyTimestamp(endTimestamp);
 
     fetcher.submit(
       {
-        length: '1000',
         type: 'start',
-      },
-      {
-        method: 'post',
-      },
+        subject,
+        startTime: startTimestamp,
+        endTime: endTimestamp,
+      }
     );
   };
 
@@ -46,21 +45,12 @@ export const Study = () => {
     setStartStudyTimestamp(0);
     setEndStudyTimestamp(0);
 
-    fetcher.submit(
-      {
-        type: 'stop',
-      },
-      {
-        method: 'post',
-      },
-    );
+    fetcher.submit({ type: 'stop' });
   };
 
   return (
     <Navbar>
-      {!loaderData.error ? (
-        <Text>Error!</Text>
-      ) : (
+      {(loaderData?.error || actionData?.error) ? <ErrorBoundary /> : (
         <Box mx={48} w={1150}>
           <Text fw={700} size='xl'>
             Study Session
@@ -72,25 +62,26 @@ export const Study = () => {
             <Grid.Col span='auto'>
               <Flex direction='column' gap='lg'>
                 <StudySession
+                  isSessionSetup={!!subject && !!sessionLength}
                   endStudyTimestamp={endStudyTimestamp}
                   onStartStudy={startStudySession}
                   onStopStudy={stopStudySession}
                   startStudyTimestamp={startStudyTimestamp}
                 />
                 <SetupStudySession
-                  onUpdateLength={() => {}}
-                  onUpdateSubject={() => {}}
+                  onUpdateLength={setSessionLength}
+                  onUpdateSubject={setSubject}
                 />
               </Flex>
             </Grid.Col>
             <Grid.Col span='auto'>
               <Flex direction='column' gap='lg'>
                 <TodaysStudyStatistics
-                  timesStudied={mockTimesStudied}
-                  totalTimeStudied={mockTotalTimeStudied}
+                  sessionsLogged={summaryData?.sessionsLogged ?? 0}
+                  totalMinutesStudied={summaryData?.totalMinutesStudied ?? 0}
                 />
                 <RecentStudySessions
-                  recentStudySessions={mockRecentStudySessions}
+                  recentStudySessions={sessionListData ?? []}
                 />
                 <StudyTips />
               </Flex>

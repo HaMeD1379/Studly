@@ -14,7 +14,7 @@ describe('StudySession', () => {
 
   it('renders', () => {
     render(
-      <StudySession onStartStudy={mockOnStart} onStopStudy={mockOnStop} />,
+      <StudySession isSessionSetup onStartStudy={mockOnStart} onStopStudy={mockOnStop} />,
     );
 
     expect(screen.getByText('Current Session')).not.toBeNull();
@@ -33,6 +33,7 @@ describe('StudySession', () => {
 
     const { rerender } = render(
       <StudySession
+        isSessionSetup
         endStudyTimestamp={mockEndTimestamp}
         onStartStudy={mockOnStart}
         onStopStudy={mockOnStop}
@@ -55,6 +56,7 @@ describe('StudySession', () => {
 
     rerender(
       <StudySession
+        isSessionSetup
         endStudyTimestamp={mockEndTimestamp}
         onStartStudy={mockOnStart}
         onStopStudy={mockOnStop}
@@ -75,6 +77,7 @@ describe('StudySession', () => {
 
     const { rerender } = render(
       <StudySession
+        isSessionSetup
         endStudyTimestamp={mockEndTimestamp}
         onStartStudy={mockOnStart}
         onStopStudy={mockOnStop}
@@ -91,6 +94,7 @@ describe('StudySession', () => {
 
     rerender(
       <StudySession
+        isSessionSetup
         endStudyTimestamp={0}
         onStartStudy={mockOnStart}
         onStopStudy={mockOnStop}
@@ -110,6 +114,7 @@ describe('StudySession', () => {
 
     render(
       <StudySession
+        isSessionSetup
         endStudyTimestamp={mockEndTimestamp}
         onStartStudy={mockOnStart}
         onStopStudy={mockOnStop}
@@ -129,6 +134,7 @@ describe('StudySession', () => {
 
     render(
       <StudySession
+        isSessionSetup
         endStudyTimestamp={mockEndTimestamp}
         onStartStudy={mockOnStart}
         onStopStudy={mockOnStop}
@@ -137,6 +143,20 @@ describe('StudySession', () => {
     );
 
     expect(mockOnStop).toHaveBeenCalled();
+  });
+
+  it('start button is disabled if isSessionSetup is false', () => {
+    render(
+      <StudySession
+        isSessionSetup={false}
+        onStartStudy={mockOnStart}
+        onStopStudy={mockOnStop}
+      />,
+    );
+
+    expect(
+      screen.getByRole('button', { name: 'Start' }).getAttribute('disabled'),
+    ).not.toBeNull();
   });
 
   afterEach(() => {

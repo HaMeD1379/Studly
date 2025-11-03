@@ -1,8 +1,10 @@
-import { Button, Flex, Progress, Text } from '@mantine/core';
+import { Button, Flex, Progress, Text, Tooltip } from '@mantine/core';
 import { useInterval } from '@mantine/hooks';
 import { useCallback, useEffect, useState } from 'react';
+import { START_SESSION_BUTTON_TOOLTIP } from '~/constants';
 
 type StudySessionProps = {
+  isSessionSetup: boolean;
   startStudyTimestamp?: number;
   endStudyTimestamp?: number;
   onStartStudy: () => void;
@@ -10,6 +12,7 @@ type StudySessionProps = {
 };
 
 export const StudySession = ({
+  isSessionSetup,
   startStudyTimestamp = 0,
   endStudyTimestamp = 0,
   onStartStudy,
@@ -95,8 +98,15 @@ export const StudySession = ({
         <Text size='sm'>{fullFormattedTimeLeft} remaining</Text>
       </Flex>
       <Flex gap='sm' justify='center' pt={24}>
-        <Button disabled={startStudyTimestamp > 0} onClick={onStartStudy}>
-          Start
+        {!isSessionSetup &&
+          <Tooltip target='#start-button' label={START_SESSION_BUTTON_TOOLTIP} />
+        }
+        <Button
+            disabled={!isSessionSetup || startStudyTimestamp > 0}
+            onClick={onStartStudy}
+            id='start-button'
+          >
+            Start
         </Button>
         <Button disabled={startStudyTimestamp === 0} onClick={onStopStudy}>
           Stop

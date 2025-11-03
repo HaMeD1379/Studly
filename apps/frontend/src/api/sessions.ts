@@ -5,22 +5,59 @@ import {
   SESSIONS_SUMMARY,
 } from '~/constants';
 import {
+  type CreateStudySessionAction,
   RequestMethods,
-  type StudySession,
-  type TodaysStudyStatistics,
+  type SessionListLoader,
+  type SessionSummaryLoader,
 } from '~/types';
 import { request } from '~/utilities/requests';
+import { getSessionId, getUserId } from '~/utilities/session';
 
-export const fetchTodaysSessionSummary = async (userId: string) => {
-  const path = `${SESSIONS_SUMMARY}?userId=${userId}&from=${Date.now() - MS_IN_A_DAY}&to=${Date.now()}`;
-  const result = await request<TodaysStudyStatistics>(RequestMethods.GET, path);
+export const fetchTodaysSessionSummary = async () => {
+  const userId = getUserId();
+
+  const from = new Date(Date.now() - MS_IN_A_DAY).toISOString();
+  const to = new Date(Date.now()).toISOString();
+  const path = `${SESSIONS_SUMMARY}?userId=${userId}&from=${from}&to=${to}`;
+  const result = await request<SessionSummaryLoader>(RequestMethods.GET, path);
+
+  return result;
+};
+
+export const fetchSessionsList = async () => {
+  const userId = getUserId();
+  const endTime = new Date(Date.now()).toISOString();
+  const path = `${SESSIONS}?userId=${userId}&limit=${RECENT_STUDY_SESSIONS_LIST_SIZE}&to=${endTime}`;
+  const result = await request<SessionListLoader>(RequestMethods.GET, path);
 
   return result;
 };
 
-export const fetchSessionsList = async (userId: string) => {
-  const path = `${SESSIONS}?userId=${userId}&limit=${RECENT_STUDY_SESSIONS_LIST_SIZE}`;
-  const result = await request<StudySession[]>(RequestMethods.GET, path);
+export const startSession = async (startTime: number, endTime: number, subject: string) => {
+  const startTimeISO = new Date(startTime).toISOString();
+  const endTimeISO = new Date(endTime).toISOString();
+  const userId = getUserId();
+
+  const result = await request<CreateStudySessionAction>(RequestMethods.POST, SESSIONS, undefined,
+    JSON.stringify({
+      userId,
+      subject,
+      startTime: startTimeISO,
+      endTime: endTimeISO,
+      sessionType: 1,
+    })
+  );
 
   return result;
-};
+}
+
+export const stopSession = async () => {
+  const path = `${SESSIONS}/${getSessionId()}`
+  const result = await request(RequestMethods.PATCH, path, undefined,
+    JSON.stringify({
+      endTime: new Date(Date.now()).toISOString(),
+    })
+  );
+
+  return result;
+}

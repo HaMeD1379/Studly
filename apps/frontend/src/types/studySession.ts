@@ -1,10 +1,10 @@
 export type StudySession = {
   subject: string;
-  sessionLength: number;
-  endStudyTimestamp: number;
+  totalMinutes: number;
+  endTime: string;
 };
 
 export type TodaysStudyStatistics = {
-  totalTimeStudied: number;
-  timesStudied: number;
+  totalMinutesStudied: number;
+  sessionsLogged: number;
 };

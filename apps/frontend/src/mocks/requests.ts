@@ -1,19 +1,19 @@
-export const successDataMock = {
+export const mockSuccessData = {
   success: 'true',
 };
 
-export const successRequestMock = {
-  json: () => Promise.resolve(successDataMock),
+export const mockSuccessRequest = {
+  json: () => Promise.resolve(mockSuccessData),
   ok: true,
   status: 200,
 };
 
-export const failureStatusMock = 400;
+export const mockFailureStatus = 400;
 
-export const failureMessageMock =
+export const mockFailureMessage =
   'The HTTP request GET / failed with status 400';
 
-export const failureRequestMock = {
+export const mockFailureRequest = {
   ok: false,
   status: 400,
 };
