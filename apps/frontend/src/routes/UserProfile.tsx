@@ -1,9 +1,9 @@
-import { Navbar, ProfileCard, ProfileStatistics, UserCard } from "~/components";
-import { Container, Stack } from "@mantine/core";
+import { Container, Stack } from '@mantine/core';
+import { Navbar, ProfileCard, ProfileStatistics, UserCard } from '~/components';
 export const UserProfile = () => {
   return (
     <Navbar>
-      <Container size="md" p="xl">
+      <Container p='xl' size='md'>
         <Stack>
           <UserCard />
 

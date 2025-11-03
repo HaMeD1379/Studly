@@ -11,8 +11,8 @@ type RequestError = {
   message?: string;
 };
 
-export type RequestResolve<Type> = {
-  data?: Promise<Type>;
+export type RequestResolve<T = unknown> = {
+  data?: T;
   error?: RequestError;
 };
 

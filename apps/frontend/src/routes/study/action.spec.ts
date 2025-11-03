@@ -33,11 +33,14 @@ describe('loader', () => {
       }),
     });
 
-    const formData = new FormData();
+    const formData = new URLSearchParams();
     formData.set('type', 'start');
 
     const request = new Request('https:localhost/', {
       body: formData,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
       method: 'POST',
     });
 
@@ -49,11 +52,14 @@ describe('loader', () => {
   it('stop type succeeds', async () => {
     stopSessionMock.mockReturnValueOnce({});
 
-    const formData = new FormData();
+    const formData = new URLSearchParams();
     formData.set('type', 'stop');
 
     const request = new Request('https:localhost/', {
       body: formData,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
       method: 'POST',
     });
 
@@ -70,6 +76,9 @@ describe('loader', () => {
 
     const request = new Request('https:localhost/', {
       body: formData,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
       method: 'POST',
     });
 

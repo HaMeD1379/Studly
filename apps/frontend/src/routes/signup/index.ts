@@ -1,2 +1,2 @@
-export * from './SignUp';
 export { SignUpAction } from './action';
+export * from './SignUp';

@@ -1,6 +1,6 @@
 //import { URL } from '../constants';
 
-describe("navbar", () => {
+describe('navbar', () => {
   // TODO: Add back once e2e auth is finished
   /*it('loads and renders correctly on page to routes', () => {
     cy.visit(`${URL}/home`);

@@ -8,10 +8,8 @@ export async function loginAction({ request }: ActionFunctionArgs) {
 
   if (!email || !password) return { error: 'Missing credentials' }; // early exit if missing
   const res = await login(email, password);
-  console.log('mock response:', res);
 
   if (res.error) {
-    console.log('Login error:', res.error);
     return res.error;
   }
 
@@ -20,15 +18,12 @@ export async function loginAction({ request }: ActionFunctionArgs) {
     const fullName = res.data.data.user.full_name;
     const email = res.data.data.user.email;
     const userid = res.data.data.user.id;
-    console.log('Access token:', accessToken);
 
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('fullName', fullName);
     localStorage.setItem('email', email);
     localStorage.setItem('userId', userid);
-    console.log('Redirecting to /study');
     return redirect('/study');
   }
-  console.log('Returning undefined');
   return { error: 'Unexpected response from login' };
 }

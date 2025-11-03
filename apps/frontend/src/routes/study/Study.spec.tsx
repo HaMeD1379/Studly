@@ -13,6 +13,7 @@ vi.mock('react-router', () => ({
 
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
+import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ERROR_BOUNDARY_PAGE_TEXT } from '~/constants';
 import {
@@ -23,6 +24,7 @@ import {
 import { render } from '~/utilities/testing';
 import { Study } from './Study';
 
+const router = createMemoryRouter([{ element: <Study />, path: '/' }]);
 describe('Study', () => {
   beforeEach(() => {
     vi.resetAllMocks();
@@ -36,7 +38,7 @@ describe('Study', () => {
     vi.spyOn(Date, 'now').mockImplementation(
       () => mockStartStudySessionFetcherRequestTime,
     );
-    render(<Study />);
+    render(<RouterProvider router={router} />);
 
     await userEvent.click(screen.getByRole('textbox'));
     await userEvent.click(screen.getByText('Mathematics'));
@@ -60,7 +62,7 @@ describe('Study', () => {
       data: {},
       error: true,
     });
-    render(<Study />);
+    render(<RouterProvider router={router} />);
 
     expect(screen.getByText(ERROR_BOUNDARY_PAGE_TEXT)).toBeInTheDocument();
   });
