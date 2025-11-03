@@ -12,7 +12,7 @@ import {
   Title,
 } from '@mantine/core';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Form, useNavigate } from 'react-router-dom';
 import { displayNotifications } from '~/utilities/notifications/displayNotifications';
 import { equalPasswords, validateEmail } from '~/utilities/validation';
 
@@ -37,8 +37,6 @@ export function SignUpForm() {
   const rules = checkRules(password_1);
 
   const handleClick = async (e: React.FormEvent) => {
-    e.preventDefault();
-
     try {
       if (
         validateEmail(email) &&
@@ -50,7 +48,8 @@ export function SignUpForm() {
           'Begin Your Gamified Learning experience now',
           'green',
         );
-        navigate('/study');
+      } else {
+        e.preventDefault();
       }
     } catch (err: unknown) {
       let message = 'An unknown error occurred.';
@@ -120,9 +119,10 @@ export function SignUpForm() {
           >
             Create your account and start your gamified learning journey
           </Text>
-          <form onSubmit={handleClick}>
+          <Form method='post' onSubmit={handleClick}>
             <TextInput
               label='Full Name'
+              name='name'
               onChange={(e) => setName(e.target.value)}
               placeholder='Enter your full name'
               radius='md'
@@ -130,17 +130,17 @@ export function SignUpForm() {
             />
             <TextInput
               label='Email'
+              name='email'
               onChange={(e) => setEmail(e.target.value)}
               placeholder='yourname@gmail.com'
-              radius='md'
               required
             />
             <PasswordInput
               label='Create Password'
               mt='md'
+              name='password'
               onChange={(e) => setPassword_1(e.target.value)}
               placeholder='Create a password'
-              radius='md'
               required
             />
             <PasswordInput
@@ -174,7 +174,7 @@ export function SignUpForm() {
             >
               Sign Up
             </Button>
-          </form>
+          </Form>
           <br />
           <Text
             style={{

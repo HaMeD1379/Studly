@@ -5,8 +5,9 @@ import {
   IconLogout,
   IconMedal,
   IconMedal2,
+  IconUser,
 } from '@tabler/icons-react';
-import { useLocation, useNavigate } from 'react-router';
+import { Form, useLocation, useNavigate } from 'react-router-dom';
 
 type NavbarProps = {
   children: React.ReactNode;
@@ -15,6 +16,7 @@ type NavbarProps = {
 type StyledButtonProps = {
   children: React.ReactNode;
   path: string;
+  type?: 'button' | 'submit' | 'reset';
   onClick?: () => void;
 };
 
@@ -60,17 +62,25 @@ export const Navbar = ({ children }: NavbarProps) => {
                 Badges
               </Flex>
             </StyledButton>
+            <StyledButton path='/user-profile'>
+              <Flex align='center' gap={4}>
+                <IconUser size={20} />
+                Profile
+              </Flex>
+            </StyledButton>
           </Flex>
 
           {/* Spacer pushes logout to bottom */}
           <Flex direction='column' mt='auto'>
             <Divider my='sm' />
-            <StyledButton path='/'>
-              <Flex align='center' gap={4}>
-                <IconLogout size={20} />
-                Logout
-              </Flex>
-            </StyledButton>
+            <Form action='/' method='post'>
+              <StyledButton path='/' type='submit'>
+                <Flex align='center' gap={4}>
+                  <IconLogout size={20} />
+                  Logout
+                </Flex>
+              </StyledButton>
+            </Form>
           </Flex>
         </Flex>
       </AppShell.Navbar>
@@ -80,7 +90,7 @@ export const Navbar = ({ children }: NavbarProps) => {
   );
 };
 
-const StyledButton = ({ children, path, onClick }: StyledButtonProps) => {
+const StyledButton = ({ children, path, type, onClick }: StyledButtonProps) => {
   const navigate = useNavigate();
   const currentPath = useLocation()?.pathname;
   const handleClick = () => {
@@ -90,6 +100,7 @@ const StyledButton = ({ children, path, onClick }: StyledButtonProps) => {
 
   return (
     <Button
+      {...(type ? { type } : {})}
       color={currentPath === path ? 'blue' : 'dark-gray'}
       fullWidth
       justify='left'

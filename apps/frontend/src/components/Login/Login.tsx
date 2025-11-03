@@ -14,23 +14,22 @@ import {
   Title,
 } from '@mantine/core';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Form, useNavigate } from 'react-router-dom';
 import placeholder from '~/assets/landscape-placeholder.svg';
 import { displayNotifications } from '~/utilities/notifications/displayNotifications';
 import { validateEmail } from '~/utilities/validation';
+
 export function LoginForm() {
   const navigate = useNavigate();
+  //display notifications based on the response from the api so like error messages
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email && password) {
-      if (!validateEmail(email)) {
-        displayNotifications('Mismatch', 'Provide a valid Email', 'red');
-      }
-      navigate('/study');
+    if (!email || !password || !(email && validateEmail(email))) {
+      e.preventDefault();
+      displayNotifications('Mismatch', 'Provide a valid Email', 'red');
     }
   };
 
@@ -69,9 +68,10 @@ export function LoginForm() {
           >
             Sign in to your account to continue your learning journey
           </Text>
-          <form onSubmit={handleLogin}>
+          <Form method='post' onSubmit={handleLogin}>
             <TextInput
               label='Email'
+              name='email'
               onChange={(e) => setEmail(e.target.value)}
               placeholder='you@mantine.dev'
               radius='md'
@@ -80,6 +80,7 @@ export function LoginForm() {
             <PasswordInput
               label='Password'
               mt='md'
+              name='password'
               onChange={(e) => setPassword(e.target.value)}
               placeholder='Your password'
               radius='md'
@@ -113,7 +114,7 @@ export function LoginForm() {
             >
               Sign in
             </Button>
-          </form>
+          </Form>
           <br />
           <Text
             style={{

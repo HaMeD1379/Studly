@@ -1,9 +1,10 @@
-import { MantineProvider } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { fireEvent, render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { fireEvent, screen } from '@testing-library/react';
+import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
 import { SignUpForm } from '~/components';
+import { SignUpAction } from '~/routes';
+import { render } from '../testing';
 import { equalPasswords } from './passwordValidation';
 
 vi.mock('@mantine/notifications', () => ({
@@ -11,6 +12,10 @@ vi.mock('@mantine/notifications', () => ({
     show: vi.fn(),
   },
 }));
+
+const router = createMemoryRouter([
+  { action: SignUpAction, element: <SignUpForm />, path: '/' },
+]);
 
 describe('Password Validation Tests', () => {
   it('returns true for equal passwords (boundary testing length = 8)', () => {
@@ -26,13 +31,7 @@ describe('Password Validation Tests', () => {
     });
   });
   it('returns weak password for no lowercase letters', () => {
-    render(
-      <MemoryRouter>
-        <MantineProvider>
-          <SignUpForm />
-        </MantineProvider>
-      </MemoryRouter>,
-    );
+    render(<RouterProvider router={router} />);
     const nameInput = screen.getByLabelText(/full name/i);
     const emailInput = screen.getByLabelText(/email/i);
     const passwordInput = screen.getByLabelText(/create password/i);
@@ -56,13 +55,7 @@ describe('Password Validation Tests', () => {
   });
 
   it('returns weak password for no uppercase letters', () => {
-    render(
-      <MemoryRouter>
-        <MantineProvider>
-          <SignUpForm />
-        </MantineProvider>
-      </MemoryRouter>,
-    );
+    render(<RouterProvider router={router} />);
     const nameInput = screen.getByLabelText(/full name/i);
     const emailInput = screen.getByLabelText(/email/i);
     const passwordInput = screen.getByLabelText(/create password/i);
@@ -85,13 +78,7 @@ describe('Password Validation Tests', () => {
     });
   });
   it('returns weak password for no special characters', () => {
-    render(
-      <MemoryRouter>
-        <MantineProvider>
-          <SignUpForm />
-        </MantineProvider>
-      </MemoryRouter>,
-    );
+    render(<RouterProvider router={router} />);
     const nameInput = screen.getByLabelText(/full name/i);
     const emailInput = screen.getByLabelText(/email/i);
     const passwordInput = screen.getByLabelText(/create password/i);
@@ -114,13 +101,7 @@ describe('Password Validation Tests', () => {
     });
   });
   it('returns weak password for no digits', () => {
-    render(
-      <MemoryRouter>
-        <MantineProvider>
-          <SignUpForm />
-        </MantineProvider>
-      </MemoryRouter>,
-    );
+    render(<RouterProvider router={router} />);
     const nameInput = screen.getByLabelText(/full name/i);
     const emailInput = screen.getByLabelText(/email/i);
     const passwordInput = screen.getByLabelText(/create password/i);
@@ -143,13 +124,7 @@ describe('Password Validation Tests', () => {
     });
   });
   it('returns weak password for length less than 8 (boundary testing 7)', () => {
-    render(
-      <MemoryRouter>
-        <MantineProvider>
-          <SignUpForm />
-        </MantineProvider>
-      </MemoryRouter>,
-    );
+    render(<RouterProvider router={router} />);
     const nameInput = screen.getByLabelText(/full name/i);
     const emailInput = screen.getByLabelText(/email/i);
     const passwordInput = screen.getByLabelText(/create password/i);

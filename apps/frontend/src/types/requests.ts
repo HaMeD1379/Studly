@@ -11,7 +11,28 @@ type RequestError = {
   message?: string;
 };
 
-export type RequestResolve<Type> = {
-  data?: Promise<Type>;
+export type RequestResolve<T = unknown> = {
+  data?: T;
   error?: RequestError;
 };
+
+type Session = {
+  access_token: string;
+};
+
+export interface LoginResponse {
+  session: Session;
+  refreshToken?: string;
+  user: UserMetadata;
+}
+
+type UserMetadata = {
+  id: string;
+  email: string;
+  full_name: string;
+};
+
+export interface BackendLoginResponse {
+  message: string;
+  data: LoginResponse;
+}

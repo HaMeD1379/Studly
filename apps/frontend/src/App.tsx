@@ -7,23 +7,28 @@ import {
   Forgot,
   Home,
   Login,
+  loginAction,
+  logoutAction,
   SignUp,
+  SignUpAction,
   Study,
   studyAction,
   studyLoader,
   UpdatePassword,
   UserProfile,
 } from '~/routes';
-
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 import '@mantine/dates/styles.css';
 
 const router = createBrowserRouter([
-  {
-    element: <Home />,
-    path: '/home',
-  },
+  { action: loginAction, element: <Login />, path: '/' },
+  { element: <Badges />, path: '/badges' },
+  { element: <UpdatePassword />, path: '/change-password' },
+  { element: <Forgot />, path: '/forgot-password' },
+  { element: <Home />, path: '/home' },
+  { action: logoutAction, element: <Login />, path: '/logout' },
+  { action: SignUpAction, element: <SignUp />, path: '/signup' },
   {
     action: studyAction,
     element: <Study />,
@@ -32,30 +37,7 @@ const router = createBrowserRouter([
     loader: studyLoader,
     path: '/study',
   },
-  {
-    element: <Login />,
-    path: '/',
-  },
-  {
-    element: <SignUp />,
-    path: '/signup',
-  },
-  {
-    element: <Forgot />,
-    path: '/forgot-password',
-  },
-  {
-    element: <Badges />,
-    path: '/badges',
-  },
-  {
-    element: <UserProfile />,
-    path: '/user',
-  },
-  {
-    element: <UpdatePassword />,
-    path: '/change-password',
-  },
+  { element: <UserProfile />, path: '/user-profile' },
 ]);
 
 export const App = () => {

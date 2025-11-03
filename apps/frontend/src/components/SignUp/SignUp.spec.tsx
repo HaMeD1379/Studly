@@ -14,21 +14,45 @@ vi.mock('@mantine/notifications', () => ({
   },
 }));
 
-import { fireEvent, screen, waitFor } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { fireEvent, screen } from '@testing-library/react';
+import { describe, expect, it, type Mock } from 'vitest';
 import { SignUpForm } from './SignUp';
 import '@testing-library/jest-dom';
 import { notifications } from '@mantine/notifications';
+import fetchPolyfill, { Request as RequestPolyfill } from 'node-fetch';
+import { createMemoryRouter, RouterProvider, redirect } from 'react-router-dom';
+import { vi } from 'vitest';
+import * as signupAuth from '~/api/auth';
+import { SignUpAction } from '~/routes';
 import { render } from '~/utilities/testing';
+
+Object.defineProperty(global, 'fetch', {
+  value: fetchPolyfill,
+  // MSW will overwrite this to intercept requests
+  writable: true,
+});
+
+Object.defineProperty(global, 'Request', {
+  value: RequestPolyfill,
+  writable: false,
+});
+
+const router = createMemoryRouter([
+  { action: SignUpAction, element: <SignUpForm />, path: '/' },
+]);
+
+vi.mock('~/api/auth', () => ({
+  signUp: vi.fn(),
+}));
 
 describe('Sign up activity', () => {
   it('Shows email and password fields', () => {
-    render(<SignUpForm />);
+    render(<RouterProvider router={router} />);
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Create Password/i)).toBeInTheDocument();
   });
   it('Shows an error if invalid email is provided', async () => {
-    render(<SignUpForm />);
+    render(<RouterProvider router={router} />);
     const nameInput = screen.getByLabelText(/full name/i);
     const email = screen.getByLabelText(/email/i);
     const password = screen.getByLabelText(/Create Password/i);
@@ -51,37 +75,20 @@ describe('Sign up activity', () => {
   });
 
   it('navigates to home page (/study) after successful signup', async () => {
-    render(<SignUpForm />);
-
-    const nameInput = screen.getByLabelText(/Full Name/i);
-    const email = screen.getByLabelText(/email/i);
-    const password = screen.getByLabelText(/Create Password/i);
-    const password2 = screen.getByLabelText(/Confirm Password/i);
-    const checkbox = screen.getByLabelText(
-      /I agree to the Terms and Conditions/i,
-    );
-    const signUpButton = screen.getByRole('button', { name: /sign up/i });
-
-    fireEvent.change(nameInput, { target: { value: 'dummyUser' } });
-    fireEvent.change(email, { target: { value: 'test@gmail.com' } });
-    fireEvent.change(password, { target: { value: 'Pass123*' } });
-    fireEvent.change(password2, { target: { value: 'Pass123*' } });
-    fireEvent.click(checkbox);
-    fireEvent.click(signUpButton);
-
-    // Wait for async effects to complete (signup + notification + navigation)
-    await waitFor(() => {
-      expect(notifications.show).toHaveBeenCalledWith(
-        expect.objectContaining({
-          message: expect.stringMatching(
-            /Begin Your Gamified Learning experience now/i,
-          ),
-        }),
-      );
+    (signupAuth.signUp as Mock).mockResolvedValue({ data: { user: {} } });
+    const form = new FormData();
+    form.append('email', 'test@example.com');
+    form.append('password', 'password123');
+    form.append('name', 'dummyUser');
+    const req = new Request('http://localhost/signup', {
+      body: form,
+      method: 'POST',
     });
-
-    await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith('/study');
+    const result = await SignUpAction({
+      context: {},
+      params: {},
+      request: req,
     });
+    expect(result).toEqual(redirect('/study'));
   });
 });
