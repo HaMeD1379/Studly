@@ -26,18 +26,18 @@ describe('loader', () => {
 
   it('start type succeeds', async () => {
     startSessionMock.mockReturnValueOnce({
-      data: Promise.resolve({
+      data: {
         session: {
           id: mockSessionId,
         },
-      }),
+      },
     });
 
     const formData = new URLSearchParams();
     formData.set('type', 'start');
 
     const request = new Request('https:localhost/', {
-      body: formData,
+      body: formData.toString(),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
@@ -56,7 +56,7 @@ describe('loader', () => {
     formData.set('type', 'stop');
 
     const request = new Request('https:localhost/', {
-      body: formData,
+      body: formData.toString(),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },

@@ -11,8 +11,8 @@ type RequestError = {
   message?: string;
 };
 
-export type RequestResolve<T = unknown> = {
-  data?: T;
+export type RequestResolve<Type> = {
+  data?: Type;
   error?: RequestError;
 };
 
@@ -20,11 +20,11 @@ type Session = {
   access_token: string;
 };
 
-export interface LoginResponse {
+export type LoginResponse = {
   session: Session;
   refreshToken?: string;
   user: UserMetadata;
-}
+};
 
 type UserMetadata = {
   id: string;
@@ -32,7 +32,7 @@ type UserMetadata = {
   full_name: string;
 };
 
-export interface BackendLoginResponse {
+export type BackendLoginResponse = {
   message: string;
   data: LoginResponse;
-}
+};

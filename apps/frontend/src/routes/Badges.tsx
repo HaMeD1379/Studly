@@ -1,11 +1,11 @@
-import { Box, Text } from '@mantine/core';
+import { Container, Text } from '@mantine/core';
 import { BadgeCollection, BadgeStatistics, Navbar } from '~/components';
 import { mockAllBadges, mockAllUnlockedBadges } from '~/mocks';
 
 export const Badges = () => {
   return (
     <Navbar>
-      <Box mx={48} w={1150}>
+      <Container fluid p='xl'>
         <Text fw={700} size='xl'>
           Badge Collection
         </Text>
@@ -17,7 +17,7 @@ export const Badges = () => {
           allBadges={mockAllBadges}
           unlockedBadges={mockAllUnlockedBadges}
         />
-      </Box>
+      </Container>
     </Navbar>
   );
 };

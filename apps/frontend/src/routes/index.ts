@@ -3,6 +3,7 @@ export * from './ForgotPassword';
 export * from './Home';
 export * from './login';
 export * from './logout';
+export * from './logout';
 export * from './signup';
 export * from './study';
 export * from './UpdatePassword';

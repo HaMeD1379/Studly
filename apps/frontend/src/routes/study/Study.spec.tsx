@@ -25,6 +25,7 @@ import { render } from '~/utilities/testing';
 import { Study } from './Study';
 
 const router = createMemoryRouter([{ element: <Study />, path: '/' }]);
+
 describe('Study', () => {
   beforeEach(() => {
     vi.resetAllMocks();
@@ -48,12 +49,12 @@ describe('Study', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Start' }));
 
     expect(mockUseFetcherSubmit).toHaveBeenCalledWith(
-      mockStartStudySessionFetcherRequest,
+      ...mockStartStudySessionFetcherRequest,
     );
 
     await userEvent.click(screen.getByRole('button', { name: 'Stop' }));
     expect(mockUseFetcherSubmit).toHaveBeenCalledWith(
-      mockStopStudySessionFetcherSubmit,
+      ...mockStopStudySessionFetcherSubmit,
     );
   });
 
