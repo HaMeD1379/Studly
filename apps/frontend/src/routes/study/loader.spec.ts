@@ -21,10 +21,10 @@ describe('loader', () => {
 
   it('returns data with sessions and summary', async () => {
     mockFetchSessionsList.mockResolvedValueOnce({
-      data: Promise.resolve({ sessions: mockSessionData.data.sessionsList }),
+      data: { sessions: mockSessionData.data.sessionsList },
     });
     mockFetchTodaysSessionSummary.mockResolvedValueOnce({
-      data: Promise.resolve(mockSessionData.data.summary),
+      data: mockSessionData.data.summary,
     });
 
     const result = await loader();

@@ -3,12 +3,10 @@ import { Navbar, ProfileCard, ProfileStatistics, UserCard } from '~/components';
 export const UserProfile = () => {
   return (
     <Navbar>
-      <Container p='xl' size='md'>
+      <Container fluid p='xl'>
         <Stack>
           <UserCard />
-
           <ProfileCard />
-
           <ProfileStatistics />
         </Stack>
       </Container>

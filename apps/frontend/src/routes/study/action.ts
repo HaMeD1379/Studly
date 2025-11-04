@@ -12,7 +12,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const endTime = Number(formData.get('endTime'));
 
     const result = await startSession(startTime, endTime, subject);
-    const sessionId = result.data && (await result.data)?.session.id;
+    const sessionId = result.data?.session.id;
 
     if (sessionId) {
       setSessionId(sessionId);

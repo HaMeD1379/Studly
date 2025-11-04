@@ -21,16 +21,26 @@ export const mockTotalTimeStudied = 166;
 export const mockSessionsLogged = 3;
 export const mockStartStudySessionFetcherRequestTime = 1000;
 
-export const mockStartStudySessionFetcherRequest = {
-  endTime: 901000,
-  startTime: mockStartStudySessionFetcherRequestTime,
-  subject: 'Mathematics',
-  type: 'start',
-};
+export const mockStartStudySessionFetcherRequest = [
+  {
+    endTime: 901000,
+    startTime: mockStartStudySessionFetcherRequestTime,
+    subject: 'Mathematics',
+    type: 'start',
+  },
+  {
+    method: 'POST',
+  },
+];
 
-export const mockStopStudySessionFetcherSubmit = {
-  type: 'stop',
-};
+export const mockStopStudySessionFetcherSubmit = [
+  {
+    type: 'stop',
+  },
+  {
+    method: 'PATCH',
+  },
+];
 
 export const mockNoSessionData = {
   data: {},

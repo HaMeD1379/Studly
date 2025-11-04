@@ -17,8 +17,8 @@ export const loader = async (): Promise<StudyLoader> => {
 
   return {
     data: {
-      sessionsList: (await sessionsList.data)?.sessions ?? undefined,
-      summary: (await summary.data) ?? undefined,
+      sessionsList: sessionsList.data?.sessions ?? undefined,
+      summary: summary.data ?? undefined,
     },
     error: !!(summary.error || sessionsList.error),
   };
