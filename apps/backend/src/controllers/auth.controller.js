@@ -52,8 +52,6 @@ export const signup = async (req, res) => {
     });
 
     if (error) {
-      console.error(STRINGS.SUPABASE.SIGNUP_ERROR, error.message);
-
       if (error.message === STRINGS.AUTH.USER_ALREADY_REGISTERED) {
         handleError(res, 409, error.message);
         return;
@@ -72,7 +70,6 @@ export const signup = async (req, res) => {
       session: data.session,
     });
   } catch (error) {
-    console.error(STRINGS.AUTH.UNEXPEXTED_SIGNUP_ERROR, error.message);
     handleError(res, 500, STRINGS.SERVER.INTERNAL_ERROR);
   }
 };
@@ -87,7 +84,6 @@ export const login = async (req, res) => {
     });
 
     if (error) {
-      console.error(STRINGS.SUPABASE.LOGIN_ERROR, error.message);
       handleError(res, 401, error.message);
       return;
     }
@@ -101,7 +97,6 @@ export const login = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error(STRINGS.AUTH.UNEXPEXTED_LOGIN_ERROR, error.message);
     handleError(res, 500, STRINGS.SERVER.INTERNAL_ERROR);
   }
 };
@@ -111,14 +106,12 @@ export const logout = async (_req, res) => {
     const { error } = await supabase.auth.signOut();
 
     if (error) {
-      console.error(STRINGS.SUPABASE.LOGOUT_ERROR, error.message);
       handleError(res, 400, error.message);
       return;
     }
 
     handleSuccess(res, 200, STRINGS.AUTH.LOGOUT_SUCCESS, null);
   } catch (error) {
-    console.error(STRINGS.AUTH.UNEXPECTED_LOGOUT_ERROR, error.message);
     handleError(res, 500, STRINGS.SERVER.INTERNAL_ERROR);
   }
 };
@@ -132,7 +125,6 @@ export const forgotPassword = async (req, res) => {
     });
 
     if (error) {
-      console.error(STRINGS.SUPABASE.FORGOT_PASSWORD_ERROR, error.message);
       handleError(res, 400, error.message);
       return;
     }
@@ -141,7 +133,6 @@ export const forgotPassword = async (req, res) => {
       data,
     });
   } catch (error) {
-    console.error(STRINGS.AUTH.UNEXPECTED_FORGOT_PASSWORD_ERROR, error.message);
     handleError(res, 500, STRINGS.SERVER.INTERNAL_ERROR);
   }
 };
@@ -166,14 +157,12 @@ export const resetPassword = async (req, res) => {
     });
 
     if (error) {
-      console.error(STRINGS.SUPABASE.RESET_PASSWORD_ERROR, error.message);
       handleError(res, 400, error.message);
       return;
     }
 
     handleSuccess(res, 200, STRINGS.AUTH.PASSWORD_RESET_SUCCESS, data);
   } catch (error) {
-    console.error(STRINGS.AUTH.UNEXPECTED_RESET_PASSWORD_ERROR, error.message);
     handleError(res, 500, STRINGS.SERVER.INTERNAL_ERROR);
   }
 };

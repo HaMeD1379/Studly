@@ -112,17 +112,16 @@ test(STRINGS.TEST.BADGES_SERVICE_CALC_STREAK, async () => {
   const service = createBadgesService();
   const { calculateStreak } = service.__private;
   
-  // Use dates relative to today (today, yesterday, 2 days ago, 4 days ago - with gap)
+  // Use dates relative to today (today, yesterday, 5 days ago - with gap)
   const dates = getRecentDates();
   const sessions = [
     { date: dates[0] },  // today
     { date: dates[1] },  // yesterday
-    { date: dates[2] },  // 2 days ago
-    { date: dates[3].replace(/\d{2}$/, (d) => String(Number(d) - 1)) }  // 4 days ago (gap)
+    { date: dates[3] }   // 3 days ago (creates a gap, so streak should be 2)
   ];
   
   const streak = calculateStreak(sessions);
-  assert.equal(streak, 3); // Should be 3 consecutive days (today, yesterday, 2 days ago)
+  assert.equal(streak, 2); // Should be 2 consecutive days (today, yesterday) - gap breaks the streak
 });
 
 test(STRINGS.TEST.BADGES_SERVICE_CHECK, async () => {
