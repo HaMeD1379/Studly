@@ -3,21 +3,6 @@ COMP 4350 - Software Engineering 2 - Group Project
 
 Studly is an application platform for students to enhance their studying abilities through gamification and social aspects. Badges are awarded on Studly by completing challenges, for example, by studying 3 days in a row, you get a badge. These badges are stored in a collection and are allowed to be publicly shared to keep your friends up to date on their social feeds. Furthermore, students can work towards badges together through meetups and scheduling study sessions through Studly’s integrated friends list.
 
-## Members
-- Okolie Anthony
-- Ben Edgar-Prosen
-- Shashika Maldeniya
-- Shiv Bhagat
-- Hamed Esmaeilzadeh
-
-## Docs
-[ADR Docs](./docs/ADR/)
-
-[Running the Frontend](./docs/running-the-frontend.md)
-
-[Running Biome on the Frontend](./docs/running-biome-on-the-frontend.md)
-
-[Docker Quickstart](./infra/docker/QUICKSTART.md)
 
 ## Worksheet Links
 [Sprint 0](sprint0.md)
@@ -27,7 +12,18 @@ Studly is an application platform for students to enhance their studying abiliti
 - Read this document for more information on our testing plans.
 
 
-## Containrization Docker Hub
+## Extra Documents
+[ADR Docs](./docs/ADR/)
+
+[Running the Frontend](./docs/running-the-frontend.md)
+
+[Running Biome on the Frontend](./docs/running-biome-on-the-frontend.md)
+
+[Docker Quickstart](./infra/docker/QUICKSTART.md)
+
+
+
+## Containrization with Docker Hub
 For convenience, pre-built frontend and backend images have been pushed to Docker Hub. You can pull and run these images directly without building locally.
 
 - Backend image: https://hub.docker.com/r/hamed1379/studly-backend
@@ -43,3 +39,12 @@ Notes:
 
 - To see which host ports are mapped after containers are running, use `docker ps` or `docker port <container>`.
 - If you need help with Docker Desktop, try asking the built-in Gordon LLM assistant inside Docker Desktop (search for "Gordon" in the Docker Desktop UI).
+
+
+
+## Members
+- Okolie Anthony
+- Ben Edgar-Prosen
+- Shashika Maldeniya
+- Shiv Bhagat
+- Hamed Esmaeilzadeh
