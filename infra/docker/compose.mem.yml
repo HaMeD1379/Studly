@@ -3,11 +3,10 @@ services:
   backend:
     build:
       context: ../../
-      dockerfile: apps/backend/Dockerfile
+      dockerfile: infra/docker/backend.mem.Dockerfile
     container_name: studly_backend
     environment:
       PORT: 3000
-      STUDLY_USE_MOCK: "1"
       INTERNAL_API_TOKEN: studly-local-token
     ports:
       - "3000:3000"
