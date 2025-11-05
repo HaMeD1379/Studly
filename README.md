@@ -1,6 +1,8 @@
 # Studly
 COMP 4350 - Software Engineering 2 - Group Project
 
+Studly is an application platform for students to enhance their studying abilities through gamification and social aspects. Badges are awarded on Studly by completing challenges, for example, by studying 3 days in a row, you get a badge. These badges are stored in a collection and are allowed to be publicly shared to keep your friends up to date on their social feeds. Furthermore, students can work towards badges together through meetups and scheduling study sessions through Studly’s integrated friends list.
+
 ## Members
 - Okolie Anthony
 - Ben Edgar-Prosen
@@ -19,12 +21,13 @@ COMP 4350 - Software Engineering 2 - Group Project
 
 ## Worksheet Links
 [Sprint 0](sprint0.md)
+- Read this document for more information about our app, as well as the technical structure used for the development of this app. 
 
 [Sprint 1](./worksheets/sprint1/sprint1worksheet.md)
+- Read this document for more information on our testing plans.
 
 
-
-## Containrization Ducker Hub
+## Containrization Docker Hub
 For convenience, pre-built frontend and backend images have been pushed to Docker Hub. You can pull and run these images directly without building locally.
 
 - Backend image: https://hub.docker.com/r/hamed1379/studly-backend
