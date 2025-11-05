@@ -1,6 +1,7 @@
 import { Button, Card, Flex, Text, TextInput } from '@mantine/core';
 import { IconCamera } from '@tabler/icons-react';
 import { useState } from 'react';
+import { displayNotifications } from '~/utilities/notifications';
 import { Avatar } from '../Avatar/Avatar';
 export const profileInformationCard = () => {
   const userName = localStorage.getItem('fullName') || 'John Doe';
@@ -17,8 +18,10 @@ export const profileInformationCard = () => {
     localStorage.setItem('email', email_input);
   };
   const wordCounter = (text: string) => {
-    setTextCount(text.length);
+    const maxLength = 200;
+    setTextCount(Math.min(text.length, maxLength));
   };
+
   return (
     <Card p='lg' radius='lg' shadow='sm' w='100%' withBorder>
       <Text data-testid='profile-info-text' fw={700}>
@@ -41,6 +44,13 @@ export const profileInformationCard = () => {
             data-testid='avatar-change-btn'
             fw={700}
             leftSection={<IconCamera size={14} />}
+            onClick={() => {
+              displayNotifications(
+                'Not Supported',
+                'The action you have requested is not available at this time',
+                'red',
+              );
+            }}
             style={{ borderColor: 'black' }}
             variant='outline'
           >
@@ -87,6 +97,7 @@ export const profileInformationCard = () => {
       </Text>
       <TextInput
         data-testid='bio-text-update'
+        maxLength={200}
         onChange={(e) => wordCounter(e.target.value)}
         placeholder='Update your bio'
         radius='md'

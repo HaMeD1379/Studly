@@ -1,3 +1,10 @@
+vi.mock('@mantine/notifications', () => ({
+  notifications: {
+    show: vi.fn(),
+  },
+}));
+
+import { notifications } from '@mantine/notifications';
 import { fireEvent, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { render } from '~/utilities/testing';
@@ -11,6 +18,8 @@ beforeEach(() => {
   });
   vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {});
 });
+
+const MAX_BIO_LENGTH = 200;
 
 describe('profileInformationCard', () => {
   it('renders all profile information elements', () => {
@@ -89,5 +98,29 @@ describe('profileInformationCard', () => {
     expect(screen.getByTestId('word-counter')).toHaveTextContent(
       `${text.length}/200 characters`,
     );
+  });
+  it('displays a notification when change password button is clicked', () => {
+    render(<ProfileInformationCard />);
+    const change_btn = screen.getByTestId(/avatar-change-btn/i);
+    fireEvent.click(change_btn);
+    expect(notifications.show).toHaveBeenCalledWith({
+      color: 'red',
+      message: 'The action you have requested is not available at this time',
+      title: 'Not Supported',
+    });
+  });
+  it('enforces the word couont limit (length of 200 characters)', () => {
+    const overLimitText = 'a'.repeat(MAX_BIO_LENGTH + 10); // 210 characters
+
+    render(<ProfileInformationCard />);
+
+    const bioInput = screen.getByTestId('bio-text-update');
+
+    // simulate typing more than the allowed characters
+    fireEvent.change(bioInput, { target: { value: overLimitText } });
+
+    // Check that displayed count doesn't exceed 200
+    const counter = screen.getByTestId('word-counter');
+    expect(counter).toHaveTextContent(`${MAX_BIO_LENGTH}/200 characters`);
   });
 });

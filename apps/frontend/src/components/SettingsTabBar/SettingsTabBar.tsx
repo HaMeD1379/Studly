@@ -33,9 +33,7 @@ export const SettingsTabBar = () => {
 
   return (
     <Box py='md' w='100%'>
-      <Text fw={700} size='xl'>
-        Settings
-      </Text>
+      <h1>Settings</h1>
       <Text c='dimmed'>
         Manage your account settings and preferences. (Profile is the only tab
         accessible currently)

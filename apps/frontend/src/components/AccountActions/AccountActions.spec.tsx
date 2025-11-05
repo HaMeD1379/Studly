@@ -32,4 +32,14 @@ describe('Account Actions Test', () => {
       title: 'Failed Action',
     });
   });
+  it('displays a notification when change password button is clicked', () => {
+    render(<AccountActions />);
+    const changeButton = screen.getByTestId(/change-password-btn/i);
+    fireEvent.click(changeButton);
+    expect(notifications.show).toHaveBeenCalledWith({
+      color: 'red',
+      message: 'The action you have requested is not available at this time',
+      title: 'Not Supported',
+    });
+  });
 });
