@@ -1,0 +1,27 @@
+version: "3.9"
+services:
+  backend:
+    build:
+      context: ../../
+      dockerfile: apps/backend/Dockerfile
+    container_name: studly_backend
+    environment:
+      PORT: 3000
+      STUDLY_USE_MOCK: "1"
+      INTERNAL_API_TOKEN: studly-local-token
+    ports:
+      - "3000:3000"
+  frontend:
+    build:
+      context: ../../apps/frontend
+      args:
+        VITE_API_BASE_URL: http://localhost:3000/api
+        VITE_RAILWAY_API_TOKEN: studly-local-token
+    container_name: studly_frontend
+    depends_on:
+      - backend
+    ports:
+      - "5173:80"
+networks:
+  default:
+    name: studly_net

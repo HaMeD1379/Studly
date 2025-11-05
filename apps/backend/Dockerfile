@@ -1,22 +1,21 @@
-# apps/backend/Dockerfile
-# Use a small official node image (change tag if you need Node 22)
-FROM node:20-alpine
-
-# Create app dir
+# apps/backend/Dockerfile (repo-root context expected)
+FROM node:20-alpine AS base
 WORKDIR /app
+ENV NODE_ENV=production
+ENV PORT=3000
+# Enable in-memory mock by default for self-contained images
+ENV STUDLY_USE_MOCK=1
 
-# Install build deps first (cacheable)
-COPY package*.json ./
-
-# Use a temporary cache location to avoid CI cache-lock issues
+# Install production deps for backend only
+COPY apps/backend/package*.json ./
 RUN npm ci --omit=dev --cache /tmp/.npm-cache
 
-# Copy source
-COPY . .
+# Copy backend source
+COPY apps/backend/src ./src
 
-# Expose port (should match PORT env in Railway)
+# Bundle mock and schema into predictable absolute paths
+COPY infra/docker/mock /infra/docker/mock
+COPY infra/docker/db/init /infra/docker/db/init
+
 EXPOSE 3000
-
-# Run the app
-ENV NODE_ENV=production
 CMD ["node", "src/index.js"]

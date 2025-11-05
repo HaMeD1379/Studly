@@ -10,6 +10,7 @@ name: CD
 on:
   workflow_dispatch:
   push:
+    branches: [ main ]
     tags:
       - "v*.*.*"
 
@@ -54,7 +55,8 @@ jobs:
       - name: Build and push backend
         uses: docker/build-push-action@v6
         with:
-          context: ./apps/backend
+          context: .
+          file: ./apps/backend/Dockerfile
           push: true
           platforms: linux/amd64
           tags: |
@@ -68,8 +70,8 @@ jobs:
           push: true
           platforms: linux/amd64
           build-args: |
-            VITE_API_BASE_URL=${{ vars.VITE_API_BASE_URL }}
-            VITE_RAILWAY_API_TOKEN=${{ vars.VITE_RAILWAY_API_TOKEN }}
+            VITE_API_BASE_URL=${{ vars.VITE_API_BASE_URL || 'http://localhost:3000/api' }}
+            VITE_RAILWAY_API_TOKEN=${{ vars.VITE_RAILWAY_API_TOKEN || 'studly-local-token' }}
           tags: |
             ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/studly-frontend:latest
             ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/studly-frontend:${{ steps.vars.outputs.tag }}
