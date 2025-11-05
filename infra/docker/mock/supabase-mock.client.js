@@ -1,14 +1,43 @@
+/**
+ * ────────────────────────────────────────────────────────────────────────────────
+ *  File: infra/docker/mock/supabase-mock.client.js
+ *  Group: Group 3 — COMP 4350: Software Engineering 2
+ *  Project: Studly
+ *  Author: Hamed Esmaezadeh
+ *  Comments: Generated partially with GPT-5 and commented by GPT
+ *  Last-Updated: 2025-11-04
+ * ────────────────────────────────────────────────────────────────────────────────
+ *  Summary
+ *  -------
+ *  In-memory, minimal Supabase-compatible client used for "mock DB mode".
+ *  Provides auth methods and CRUD-like table access for sessions, badge,
+ *  user_badge, and user_profile tables to support local, self-contained runs.
+ *
+ *  Notes
+ *  -----
+ *  • Auth changes to enable mock DB mode (signup/login/reset/update) were also
+ *    generated as part of this module.
+ *  • Kept under infra/docker to avoid polluting apps/backend.
+ *
+ *  @module infra/docker/mock/supabase-mock.client
+ * ────────────────────────────────────────────────────────────────────────────────
+ */
+
 // Mock Supabase client for self-contained Docker images (in-memory)
 // Lives under infra/docker/mock to keep apps/backend clean.
 // Only implements the subset of features used by our backend.
 
 import crypto from 'node:crypto';
 
-// In-memory stores (simple JS arrays/objects)
+// In-memory stores (simple JS arrays/objects). No persistence between process runs.
+// This mirrors the tables used by the backend services and repositories.
 const tables = {
+  // sessions table used by sessions.service
   sessions: [],
+  // badge and user_badge used by badges repository/service
   badge: [],
   user_badge: [],
+  // user_profile used by profile.controller upsert
   user_profile: [],
 };
 
@@ -21,6 +50,8 @@ function clone(obj) {
 }
 
 function applySelection(row, selection) {
+  // Apply a simple projection similar to supabase-js select('*' | 'col1,col2')
+  // Nested selects like badge:badge_id(...) are handled separately.
   if (!selection || selection === '*' || selection.trim() === '') return clone(row);
   const cols = selection
     .split(',')
@@ -36,6 +67,8 @@ function applySelection(row, selection) {
 
 class QueryBuilder {
   constructor(tableName) {
+    // Simple query builder that mimics supabase-js chaining for the subset we use.
+    // It records intent and evaluates in _execute() when awaited.
     this.tableName = tableName;
     this._selection = '*';
     this._filters = [];
@@ -48,7 +81,8 @@ class QueryBuilder {
     this._onConflict = null;
   }
 
-  // Behavior: await query resolves to { data, error }
+  // Behavior: await query resolves to { data, error }.
+  // Implement thenable to let callers `await client.from('x').select('*')` directly.
   then(resolve, reject) {
     try {
       const result = this._execute();
@@ -59,6 +93,8 @@ class QueryBuilder {
   }
 
   select(selection = '*') {
+    // Support nested join selection for user_badge -> badge via PostgREST-like syntax.
+    // e.g., select(`user_id,badge:badge_id(...)`)
     this._selection = selection;
     if (this.tableName === 'user_badge' && typeof selection === 'string' && selection.includes('badge:')) {
       this._joinBadge = true;
@@ -67,12 +103,15 @@ class QueryBuilder {
   }
 
   insert(payload) {
+    // Insert one or many rows (array or object), returning inserted rows.
     this._mode = 'insert';
     this._payload = payload;
     return this;
   }
 
   upsert(payload, options = {}) {
+    // Upsert by a single conflict column (onConflict) to support user_profile upsert.
+    // If a matching row exists, merge payload into it; otherwise insert.
     this._mode = 'upsert';
     this._payload = payload;
     this._onConflict = options.onConflict || null;
@@ -80,6 +119,7 @@ class QueryBuilder {
   }
 
   update(payload) {
+    // Update rows matched by filters; sets updated_at if present on the table.
     this._mode = 'update';
     this._payload = payload;
     return this;
@@ -142,7 +182,8 @@ class QueryBuilder {
   }
 
   _execute() {
-    // Special-case information_schema.columns for compatibility
+    // Special-case information_schema.columns to satisfy column discovery in sessions.service.
+    // We return a fixed set of columns for the public.sessions table.
     if (this.tableName === 'information_schema.columns') {
       const defaultCols = [
         'id',
@@ -171,6 +212,7 @@ class QueryBuilder {
     if (!store) return { data: [], error: null };
 
     const doInsert = (row) => {
+      // Normalize defaults for known tables (ids and timestamps) to match expectations.
       const r = { ...row };
       if (this.tableName === 'sessions') {
         r.id = r.id || genId();
@@ -224,7 +266,7 @@ class QueryBuilder {
     // SELECT
     let rows = this._applyFilters(store);
 
-    // Handle join for user_badge -> badge
+    // Handle join for user_badge -> badge (attach nested badge object)
     if (this.tableName === 'user_badge' && this._joinBadge) {
       rows = rows.map((r) => {
         const badge = tables.badge.find((b) => b.badge_id === r.badge_id) || null;
@@ -251,6 +293,7 @@ class QueryBuilder {
 }
 
 function createMockClient() {
+  // Expose minimal supabase-js surface used by our code: { auth, from }
   return {
     // Minimal auth API used by backend controllers.
     auth: createAuthApi(),
@@ -261,7 +304,10 @@ function createMockClient() {
 }
 
 function createAuthApi() {
-  // Minimal in-memory users registry
+  // Minimal in-memory user registry for mock auth flows.
+  // Tokens are mock strings; do NOT use in production.
+  // No email verification; intended for local demos/tests only.
+
   const users = new Map(); // email -> { id, email, password, user_metadata }
 
   const buildSession = (user) => ({
