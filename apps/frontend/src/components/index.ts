@@ -1,3 +1,4 @@
+export * from './AccountActions/AccountActions';
 export * from './Avatar/Avatar';
 export * from './BadgeCollection/BadgeCollection';
 export * from './BadgeStatistics/BadgeStatistics';
@@ -7,8 +8,10 @@ export * from './Login/Login';
 export * from './Navbar/Navbar';
 export * from './PageSpinner/PageSpinner';
 export * from './ProfileCards/ProfileCard';
+export * from './ProfileInformationCard/ProfileInformationCard';
 export * from './ProfileStatistics/ProfileStatistics';
 export * from './RecentStudySessions/RecentStudySessions';
+export * from './SettingsTabBar/SettingsTabBar';
 export * from './SetupStudySession/SetupStudySession';
 export * from './SignUp/SignUp';
 export * from './StudySession/StudySession';

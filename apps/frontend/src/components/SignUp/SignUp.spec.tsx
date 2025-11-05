@@ -23,7 +23,7 @@ import fetchPolyfill, { Request as RequestPolyfill } from 'node-fetch';
 import { createMemoryRouter, RouterProvider, redirect } from 'react-router-dom';
 import { vi } from 'vitest';
 import * as signupAuth from '~/api/auth';
-import { SignUpAction } from '~/routes';
+import { signUpAction } from '~/routes';
 import { render } from '~/utilities/testing';
 
 Object.defineProperty(global, 'fetch', {
@@ -38,7 +38,7 @@ Object.defineProperty(global, 'Request', {
 });
 
 const router = createMemoryRouter([
-  { action: SignUpAction, element: <SignUpForm />, path: '/' },
+  { action: signUpAction, element: <SignUpForm />, path: '/' },
 ]);
 
 vi.mock('~/api/auth', () => ({
@@ -75,7 +75,19 @@ describe('Sign up activity', () => {
   });
 
   it('navigates to home page (/study) after successful signup', async () => {
-    (signupAuth.signUp as Mock).mockResolvedValue({ data: { user: {} } });
+    (signupAuth.signUp as Mock).mockResolvedValue({
+      data: {
+        data: {
+          session: { access_token: 'abc123' },
+          user: {
+            email: 'testuser@gmail.com',
+            full_name: 'test user',
+            id: '1',
+          },
+        },
+      },
+      error: null,
+    });
     const form = new FormData();
     form.append('email', 'test@example.com');
     form.append('password', 'password123');
@@ -84,7 +96,7 @@ describe('Sign up activity', () => {
       body: form,
       method: 'POST',
     });
-    const result = await SignUpAction({
+    const result = await signUpAction({
       context: {},
       params: {},
       request: req,

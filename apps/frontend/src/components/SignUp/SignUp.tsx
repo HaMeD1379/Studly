@@ -19,8 +19,8 @@ import { equalPasswords, validateEmail } from '~/utilities/validation';
 export function SignUpForm() {
   const navigate = useNavigate();
 
-  const [password_1, setPassword_1] = useState('');
-  const [password_2, setPassword_2] = useState('');
+  const [password1, setPassword1] = useState('');
+  const [password2, setPassword2] = useState('');
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [error, setError] = useState('');
@@ -34,13 +34,13 @@ export function SignUpForm() {
     hasUppercase: /[A-Z]/.test(value),
     matchesLen: value.length > passwordLen,
   });
-  const rules = checkRules(password_1);
+  const rules = checkRules(password1);
 
   const handleClick = async (e: React.FormEvent) => {
     try {
       if (
         validateEmail(email) &&
-        equalPasswords(password_1, password_2) &&
+        equalPasswords(password1, password2) &&
         name
       ) {
         displayNotifications(
@@ -139,14 +139,14 @@ export function SignUpForm() {
               label='Create Password'
               mt='md'
               name='password'
-              onChange={(e) => setPassword_1(e.target.value)}
+              onChange={(e) => setPassword1(e.target.value)}
               placeholder='Create a password'
               required
             />
             <PasswordInput
               label='Confirm Password'
               mt='md'
-              onChange={(e) => setPassword_2(e.target.value)}
+              onChange={(e) => setPassword2(e.target.value)}
               placeholder='Confirm your password'
               radius='md'
               required
