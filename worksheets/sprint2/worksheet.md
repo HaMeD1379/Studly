@@ -1,20 +1,20 @@
-# Regression Testing Strategy
+# 1\. Regression Testing Strategy
 
 ## Overview
 Our regression testing suite runs automatically on every pull request and push to the main branch via GitHub Actions CI/CD pipeline. This ensures that new changes do not break existing functionality.
 For our needs, we decided upon doing a complete regression testing implementation rather than other options such as selective regression testing or risk based regression testing. While we could have implemented these optimized regression testing options as we do have certain files such as supabase.js (has configs), and strings.js(just constant strings), that change very rarely, and we could have modified our CI scripts to handle these less changing/risk areas. But what we found is that since our project is small and we are still developing and adding more features, the extra time it takes to run all the test suits across all aspects of the project was negligible for us. And it was more important for us to get our application up and running.
 
-## Tests Breakdown (put each test we have in each of the sections, unit ,integration etc)
+## Tests Breakdown 
 Since we do a complete regression testing, here is what we are testing:
 ### Backend Tests (apps/backend)
 1. **Unit Tests** - Controllers and Services
    - Location: `tests/unit/`
    - Runner: Node.js built-in test runner
-   - Coverage: Sessions API, Badges API, Authentication, Internal Api key test, server utilities, tests for the Supabase client configuration, middleware validation, 
+   - Coverage: this tests code in isolation.
    
 2. **Integration Tests** - API endpoints
    - Location: `tests/integration/`
-   - auth controller testing, session testing , badges testing etc
+   - Coverage: this is testing components working together, such as our session testing. 
    
 3. **Code Quality Checks**
    - ESLint: Syntax and code style validation
@@ -29,7 +29,7 @@ Since we do a complete regression testing, here is what we are testing:
 2. **End-to-End Tests** - User workflows
    - Location: `cypress/e2e/`
    - Runner: Cypress
-   - Coverage: Login, session tracking, badge earning flows
+
    
 3. **Code Quality Checks**
    - ESLint: TypeScript and React best practices
@@ -50,7 +50,6 @@ Since we do a complete regression testing, here is what we are testing:
 4. PR is blocked if any tests fail
 5. Green checkmark indicates all tests passed
 6. Code can be merged to main branch
-
 
 This process allows us to make sure any code we are adding does not immediately break any existing logic. 
 
