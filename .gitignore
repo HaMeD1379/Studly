@@ -91,3 +91,4 @@ sandbox/
 # Ignore accidental root-level npm manifests (monorepo manages per-app)
 /package.json
 /package-lock.json
+/my_screenshots/

@@ -39,16 +39,21 @@ The CD workflow builds and pushes:
 - docker.io/<DOCKERHUB_USERNAME>/studly-backend
 - docker.io/<DOCKERHUB_USERNAME>/studly-frontend
 
-Run them together with the prod compose file:
+Run them together with the prod compose file (self-contained: mock mode, no DB required):
 ```bash
 # Windows cmd
 set REGISTRY=docker.io
 set NAMESPACE=<your-dockerhub-username>
 set IMAGE_TAG=latest
 
-docker compose -f infra/docker/docker-compose.prod.yml up -d
+docker compose -f infra\docker\docker-compose.prod.yml up -d
 ```
 
-## Notes
-- Adjust backend `DATABASE_URL` if you deploy a managed Postgres instead of the local container.
-- Commit the schema SQL; avoid committing secrets.
+Services will be available at:
+- Backend: http://localhost:3000 (health: /health)
+- Frontend: http://localhost:8080
+
+Notes:
+- The backend runs with `STUDLY_USE_MOCK=1` and accepts `INTERNAL_API_TOKEN=studly-local-token`.
+- The frontend image is baked to call `http://localhost:3000/api` and sends `x-api-key=studly-local-token`.
+- If you later add a real DB, modify the compose file to provide `DATABASE_URL` and remove `STUDLY_USE_MOCK`.

@@ -11,13 +11,13 @@ ENV STUDLY_USE_MOCK=1
 COPY apps/backend/package*.json ./
 RUN npm ci --omit=dev --cache /tmp/.npm-cache
 
-# Copy backend source
+# Copy backend source (flattened under /app/src)
 COPY apps/backend/src ./src
 
-# Bundle mock and schema into predictable absolute paths
+# Place mock and schema under absolute /infra/... so that
+# `../../../../infra/docker/...` from /app/src/config resolves correctly.
 COPY infra/docker/mock /infra/docker/mock
 COPY infra/docker/db/init /infra/docker/db/init
 
 EXPOSE 3000
 CMD ["node", "src/index.js"]
-
