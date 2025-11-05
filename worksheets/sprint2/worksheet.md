@@ -8,12 +8,12 @@ For our needs, we decided upon doing a complete regression testing implementatio
 Since we do a complete regression testing, here is what we are testing:
 ### Backend Tests (apps/backend)
 1. **Unit Tests** - Controllers and Services
-   - Location: `tests/unit/`
+   - Location: `Studly/apps/backend/tests/unit`
    - Runner: Node.js built-in test runner
    - Coverage: this tests code in isolation.
    
 2. **Integration Tests** - API endpoints
-   - Location: `tests/integration/`
+   - Location: `Studly/apps/backend/tests/integration`
    - Coverage: this is testing components working together, such as our session testing. 
    
 3. **Code Quality Checks**
@@ -22,17 +22,21 @@ Since we do a complete regression testing, here is what we are testing:
 
 ### Frontend Tests (apps/frontend)
 1. **Unit Tests** - Components and utilities
-   - Location: `src/**/*.test.tsx`
+   - Location: ``
    - Runner: Vitest
    - Coverage: React components, hooks, utilities
-   
-2. **End-to-End Tests** - User workflows
-   - Location: `cypress/e2e/`
+
+2. **Integrations Tests** - Routes
+   - Location: ``
+   - Runner: Vitest
+   - Coverage: This is to test the routes
+
+3. **End-to-End Tests** - User workflows
+   - Location: `Studly/apps/frontend/cypress/e2e/`
    - Runner: Cypress
 
    
 3. **Code Quality Checks**
-   - ESLint: TypeScript and React best practices
    - Biome: Code formatting and organization
 
 ## Tools Used
