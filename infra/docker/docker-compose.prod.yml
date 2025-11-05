@@ -1,35 +1,26 @@
 version: "3.9"
 services:
-  db:
-    image: postgres:16
-    environment:
-      POSTGRES_USER: studly
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-studly}
-      POSTGRES_DB: studly
-    volumes:
-      - ./db/init:/docker-entrypoint-initdb.d:ro
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U studly -d studly"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
+  # Self-contained backend (mock mode)
   backend:
     image: ${REGISTRY:-docker.io}/${NAMESPACE}/studly-backend:${IMAGE_TAG:-latest}
-    depends_on:
-      db:
-        condition: service_healthy
     environment:
-      DATABASE_URL: postgresql://studly:${POSTGRES_PASSWORD:-studly}@db:5432/studly
       NODE_ENV: production
       PORT: 3000
+      # Accept the token baked into the frontend image built by CD
+      INTERNAL_API_TOKEN: studly-local-token
+      # Ensure in-memory mock mode (no external DB required)
+      STUDLY_USE_MOCK: "1"
     ports:
       - "3000:3000"
+
+  # Nginx-served frontend
   frontend:
     image: ${REGISTRY:-docker.io}/${NAMESPACE}/studly-frontend:${IMAGE_TAG:-latest}
     depends_on:
       - backend
     ports:
-      - "80:80"
+      - "8080:80"
+
 networks:
   default:
     name: studly_net
