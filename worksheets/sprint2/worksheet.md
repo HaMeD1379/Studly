@@ -62,7 +62,6 @@ Our regression tests are automated via GitHub Actions CI/CD pipeline:
 
 
 # 2\. Testing Slowdown
---------------------
 
 ## 1\. Have you been able to keep all unit and integration tests from your test plan?
 
@@ -76,10 +75,10 @@ Our regression tests are automated via GitHub Actions CI/CD pipeline:
 
 -   We have been following the same idea as the sprint 1 as well, so no different test plan has been done. 
 
-* * * * *
+
 
 # 3\. Not Testing
----------------
+
 
 ## What parts of the system are not tested?
 
@@ -99,10 +98,8 @@ Our regression tests are automated via GitHub Actions CI/CD pipeline:
 
 -   Include coverage reports for tested tiers.
 
-* * * * *
 
 # 4\. Profiler (Hamed)
---------------------
 
 -   Run a profiler on your API while exercising every endpoint.
 
@@ -114,19 +111,16 @@ Our regression tests are automated via GitHub Actions CI/CD pipeline:
 
 -   Include profiler output (linked or attached).
 
-* * * * *
 
 # 5\. Last Dash
--------------
 
 ## What issues do you foresee in the final sprint?
 
 -   Some issues we can see for our final sprint is trying to make sure we have all the core functionality complete and fully functional. At the start when developing, we prioritized splitting up of the different aspects of our project to so we can make some progress on different featuers. However we did not necessarily making sure the app was connected from the start. So by the end of sprint 1 and begining of sprint 2, we had many different features ready, but connecting them together was challenging. So which meant meants sprint 2 was focused on connecting different aspects, thus leaving other features to be pushed to the next sprint. Which means that for the final sprint, we would need to end up working on the rest of the api's and features that we sidelined as fast as possible and get it all connected and up and running. 
 
-* * * * *
 
 # 6\. Show Off
-------------
+
 
 -   Each team member highlights their best work (code, UI, design, integration, mocks, etc.).
 
