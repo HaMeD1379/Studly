@@ -1,6 +1,7 @@
 version: "3.9"
 services:
   backend:
+    image: ${REGISTRY:-docker.io}/${NAMESPACE}/studly-backend:${IMAGE_TAG:-latest}
     build:
       context: ../../
       dockerfile: infra/docker/backend.mem.Dockerfile
@@ -10,7 +11,10 @@ services:
       INTERNAL_API_TOKEN: studly-local-token
     ports:
       - "3000:3000"
+    expose:
+      - "3000"
   frontend:
+    image: ${REGISTRY:-docker.io}/${NAMESPACE}/studly-frontend:${IMAGE_TAG:-latest}
     build:
       context: ../../apps/frontend
       args:
@@ -21,6 +25,8 @@ services:
       - backend
     ports:
       - "5173:80"
+    expose:
+      - "80"
 networks:
   default:
     name: studly_net
