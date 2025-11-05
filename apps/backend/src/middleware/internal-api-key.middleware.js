@@ -11,7 +11,11 @@ export default function requireInternalApiKey(req, res, next) {
   // Allow tests to exercise routes without providing a token
   if (process.env.NODE_ENV === 'test') return next();
 
-  const expected = process.env.INTERNAL_API_TOKEN;
+  let expected = process.env.INTERNAL_API_TOKEN;
+  // When running with the in-memory mock, default token to avoid misconfig
+  if (!expected && process.env.STUDLY_USE_MOCK === '1') {
+    expected = 'studly-local-token';
+  }
   if (!expected) {
     // Server is misconfigured in non-test environment
     return res.status(500).json({ error: 'Server misconfigured: INTERNAL_API_TOKEN missing' });
@@ -24,4 +28,3 @@ export default function requireInternalApiKey(req, res, next) {
 
   return next();
 }
-

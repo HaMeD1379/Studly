@@ -40,6 +40,7 @@ import STRINGS from './strings.config.js';
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
+const USE_MOCK = process.env.STUDLY_USE_MOCK === '1';
 
 const buildFailureMethod = (methodName) => async () => {
   throw new Error(
@@ -72,15 +73,29 @@ const createFallbackClient = () => ({
 
 let supabase;
 
-if (SUPABASE_URL && SUPABASE_ANON_KEY) {
+if (!USE_MOCK && SUPABASE_URL && SUPABASE_ANON_KEY) {
   supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     auth: {
       persistSession: false,
       autoRefreshToken: false,
     },
   });
+} else if (USE_MOCK) {
+  // Prefer mock when explicitly requested
+  try {
+    const mod = await import('../../../../infra/docker/mock/supabase-mock.client.js');
+    supabase = mod.default;
+    // eslint-disable-next-line no-console
+    console.log('🧪 Supabase mock client enabled (in-memory).');
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.warn('Failed to load Supabase mock, falling back to stub:', e?.message || e);
+    supabase = createFallbackClient();
+  }
 } else {
+  // Default to fallback stub when envs missing and mock not requested
   supabase = createFallbackClient();
+  // eslint-disable-next-line no-console
   console.warn(
     '⚠️ Supabase client initialized in fallback mode. Database and auth calls will reject until environment variables are configured.'
   );

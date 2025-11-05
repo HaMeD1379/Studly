@@ -54,8 +54,11 @@ export const updateProfile = async (req, res) => {
   const accessToken = req.headers.authorization?.replace("Bearer ", "");
 
   try {
+    const useMock = process.env.STUDLY_USE_MOCK === '1';
+    const hasSupabaseEnv = Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY);
+
     // Update full_name in auth.users metadata if provided and access token exists
-    if (fullName !== undefined && accessToken && refreshToken) {
+    if (fullName !== undefined && accessToken && refreshToken && !useMock && hasSupabaseEnv) {
       // Create a temporary client with the user's session
       const userSupabase = createSupabaseClient(
         process.env.SUPABASE_URL,
