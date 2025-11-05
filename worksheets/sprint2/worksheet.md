@@ -64,13 +64,13 @@ Our regression tests are automated via GitHub Actions CI/CD pipeline:
 # 2\. Testing Slowdown
 --------------------
 
--   Have you been able to keep all unit and integration tests from your test plan?
+## 1\. Have you been able to keep all unit and integration tests from your test plan?
 
 -   For front end have been capable of keeping pace with creating tests as we develop
 
 -   For backend, such as profile api, have been able to create tests immediately and tests, so still keeping track of that. 
 
--   Have you created different test plans for different release types? Explain.
+## 2\. Have you created different test plans for different release types? Explain.
 
 -   Front end still has the same testing plan from last sprint for the front end;
 
@@ -81,13 +81,13 @@ Our regression tests are automated via GitHub Actions CI/CD pipeline:
 # 3\. Not Testing
 ---------------
 
--   What parts of the system are not tested?
+## What parts of the system are not tested?
 
 -   The user authentication for each api once the user is inside the application, like who can access badges, is not tested via a middleware. This is because the superbase has Row Level security for this instance, so we decided not to for this sprint 2 as our priority was to get our application together. For sprint 2, we will be adding this.
 
 -   Provide an updated system diagram.
 
--   For each tier, indicate which layers are:
+## For each tier, indicate which layers are:
 
 -   Fully tested (80%+)
 
@@ -119,9 +119,9 @@ Our regression tests are automated via GitHub Actions CI/CD pipeline:
 # 5\. Last Dash
 -------------
 
--   What issues do you foresee in the final sprint?
+## What issues do you foresee in the final sprint?
 
--   Some issues we can see for our final sprint is trying to make sure we have all the core functionality. When developing, at the start we prioritized the splitting up of work, and not necessarily making sure the app was connected from the start. So we got a few of the main features we needed by this sprint 2. But at the end of sprint 2 we focused on making sure each api/functionality was fully up and running, and that was our focus for the rest of the week. Which means that for the final sprint, we would need to end up working on the rest of the api's and features that we sidelined as fast as possible and get it all connected and up and running. Which can be challenging to coordinate.
+-   Some issues we can see for our final sprint is trying to make sure we have all the core functionality complete and fully functional. At the start when developing, we prioritized splitting up of the different aspects of our project to so we can make some progress on different featuers. However we did not necessarily making sure the app was connected from the start. So by the end of sprint 1 and begining of sprint 2, we had many different features ready, but connecting them together was challenging. So which meant meants sprint 2 was focused on connecting different aspects, thus leaving other features to be pushed to the next sprint. Which means that for the final sprint, we would need to end up working on the rest of the api's and features that we sidelined as fast as possible and get it all connected and up and running. 
 
 * * * * *
 
