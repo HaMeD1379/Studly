@@ -1,40 +1,40 @@
-import { Box, SegmentedControl, Text } from "@mantine/core";
+import { Box, SegmentedControl, Text } from '@mantine/core';
 import {
   IconBell,
   IconClock,
   IconPalette,
   IconShield,
   IconUser,
-} from "@tabler/icons-react";
-import { useState } from "react";
+} from '@tabler/icons-react';
+import { useState } from 'react';
 
 export const SettingsTabBar = () => {
-  const tabs = ["Profile", "Notifications", "Privacy", "Study", "Appearance"];
-  const [value, setValue] = useState("profile");
+  const tabs = ['Profile', 'Notifications', 'Privacy', 'Study', 'Appearance'];
+  const [value, setValue] = useState('profile');
 
   const loadIcon = (tab: string) => {
     switch (tab.toLowerCase()) {
-      case "profile":
+      case 'profile':
         return <IconUser size={20} />;
-      case "notifications":
+      case 'notifications':
         return <IconBell size={20} />;
-      case "privacy":
+      case 'privacy':
         return <IconShield size={20} />;
-      case "study":
+      case 'study':
         return <IconClock size={20} />;
-      case "appearance":
+      case 'appearance':
         return <IconPalette size={20} />;
       default:
         return null;
     }
   };
 
-  const isDisabled = value !== "profile";
+  const isDisabled = value !== 'profile';
 
   return (
-    <Box py="md" w="100%">
+    <Box py='md' w='100%'>
       <h1>Settings</h1>
-      <Text c="dimmed">
+      <Text c='dimmed'>
         Manage your account settings and preferences. (Profile is the only tab
         accessible currently)
       </Text>
@@ -44,11 +44,11 @@ export const SettingsTabBar = () => {
           label: (
             <span
               style={{
-                alignItems: "center",
-                display: "flex",
-                fontWeight: "bold",
-                gap: "6px",
-                justifyContent: "center",
+                alignItems: 'center',
+                display: 'flex',
+                fontWeight: 'bold',
+                gap: '6px',
+                justifyContent: 'center',
               }}
             >
               {loadIcon(t)}
@@ -60,10 +60,10 @@ export const SettingsTabBar = () => {
         disabled={isDisabled}
         fullWidth
         onChange={(val) => {
-          if (val === "profile") setValue(val);
+          if (val === 'profile') setValue(val);
         }}
-        radius="lg"
-        size="lg"
+        radius='lg'
+        size='lg'
         transitionDuration={200}
         value={value}
       />
