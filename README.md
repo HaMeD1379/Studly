@@ -23,7 +23,7 @@ Studly is an application platform for students to enhance their studying abiliti
 
 
 
-## Containrization with Docker Hub
+## Containerization with Docker Hub
 For convenience, pre-built frontend and backend images have been pushed to Docker Hub. You can pull and run these images directly without building locally.
 
 - Backend image: https://hub.docker.com/r/hamed1379/studly-backend
