@@ -1,6 +1,7 @@
 import { Button, Card, Flex, Text, TextInput } from '@mantine/core';
 import { IconCamera } from '@tabler/icons-react';
 import { useState } from 'react';
+import { displayNotifications } from '~/utilities/notifications';
 import { Avatar } from '../Avatar/Avatar';
 export const profileInformationCard = () => {
   const userName = localStorage.getItem('fullName') || 'John Doe';
@@ -41,6 +42,13 @@ export const profileInformationCard = () => {
             data-testid='avatar-change-btn'
             fw={700}
             leftSection={<IconCamera size={14} />}
+            onClick={() => {
+              displayNotifications(
+                'Not Supported',
+                'The action you have requested is not available at this time',
+                'red',
+              );
+            }}
             style={{ borderColor: 'black' }}
             variant='outline'
           >

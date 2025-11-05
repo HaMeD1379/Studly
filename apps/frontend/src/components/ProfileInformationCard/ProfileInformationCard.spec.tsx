@@ -1,3 +1,10 @@
+vi.mock('@mantine/notifications', () => ({
+  notifications: {
+    show: vi.fn(),
+  },
+}));
+
+import { notifications } from '@mantine/notifications';
 import { fireEvent, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { render } from '~/utilities/testing';
@@ -89,5 +96,15 @@ describe('profileInformationCard', () => {
     expect(screen.getByTestId('word-counter')).toHaveTextContent(
       `${text.length}/200 characters`,
     );
+  });
+  it('displays a notification when change password button is clicked', () => {
+    render(<ProfileInformationCard />);
+    const change_btn = screen.getByTestId(/avatar-change-btn/i);
+    fireEvent.click(change_btn);
+    expect(notifications.show).toHaveBeenCalledWith({
+      color: 'red',
+      message: 'The action you have requested is not available at this time',
+      title: 'Not Supported',
+    });
   });
 });

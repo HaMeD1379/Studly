@@ -18,6 +18,13 @@ export const AccountActions = () => {
           <Button
             color='black'
             data-testid='change-password-btn'
+            onClick={() => {
+              displayNotifications(
+                'Not Supported',
+                'The action you have requested is not available at this time',
+                'red',
+              );
+            }}
             variant='default'
           >
             Change
