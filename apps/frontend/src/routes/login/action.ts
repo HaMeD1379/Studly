@@ -1,7 +1,7 @@
 import { type ActionFunctionArgs, redirect } from 'react-router';
 import { login } from '~/api';
 
-export async function loginAction({ request }: ActionFunctionArgs) {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const email = formData.get('email')?.toString();
   const password = formData.get('password')?.toString();
@@ -10,7 +10,10 @@ export async function loginAction({ request }: ActionFunctionArgs) {
   const res = await login(email, password);
 
   if (res.error) {
-    return res.error;
+    return {
+      message: `The HTTP request POST auth/login failed with status ${res.error.status}`,
+      success: false,
+    };
   }
 
   if (!res.error && res.data) {
@@ -26,4 +29,4 @@ export async function loginAction({ request }: ActionFunctionArgs) {
     return redirect('/study');
   }
   return { error: 'Unexpected response from login' };
-}
+};

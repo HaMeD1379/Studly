@@ -1,13 +1,12 @@
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
-
 import { LoginForm } from './Login';
 import '@testing-library/jest-dom';
 import { notifications } from '@mantine/notifications';
 import fetchPolyfill, { Request as RequestPolyfill } from 'node-fetch';
 import { createMemoryRouter, RouterProvider, redirect } from 'react-router-dom';
 import * as auth from '~/api/auth';
-import { loginAction } from '~/routes';
+import { loginAction } from '~/routes/login';
 import { render } from '~/utilities/testing';
 
 //Lines 15 - 24 were provided through an online github repo as solution to the error:
@@ -116,5 +115,38 @@ describe('Login Tests', () => {
     render(<RouterProvider router={router} />);
     fireEvent.click(screen.getByText(/Sign Up/i));
     expect(mockNavigate).toHaveBeenCalledWith('/signup');
+  });
+
+  it('shows error on invalid credentials', async () => {
+    (auth.login as Mock).mockResolvedValue({
+      error: { message: 'Invalid login credentials', status: 401 },
+    });
+
+    render(<RouterProvider router={router} />);
+
+    fireEvent.change(screen.getByLabelText(/email/i), {
+      target: { value: 'test@example.com' },
+    });
+    fireEvent.change(screen.getByLabelText(/password/i), {
+      target: { value: 'wrongpassword' },
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
+
+    // wait for router to process and component to re-render
+    await waitFor(() => {
+      expect(auth.login).toHaveBeenCalledWith(
+        'test@example.com',
+        'wrongpassword',
+      );
+    });
+
+    await waitFor(() => {
+      expect(notifications.show).toHaveBeenCalledWith({
+        color: 'red',
+        message: 'Invalid Credentials',
+        title: 'Login Error',
+      });
+    });
   });
 });

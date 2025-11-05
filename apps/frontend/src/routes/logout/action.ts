@@ -1,7 +1,7 @@
 import { redirect } from 'react-router';
 import { logout } from '~/api';
 
-export async function logoutAction() {
+export const action = async () => {
   const token = localStorage.getItem('accessToken');
   if (token) {
     const res = await logout(token);
@@ -15,9 +15,7 @@ export async function logoutAction() {
       localStorage.removeItem('userId');
       localStorage.removeItem('fullName');
       return redirect('/');
-    } else {
-      return { error: res.error };
     }
   }
   return { error: 'Logout api call failed' };
-}
+};
