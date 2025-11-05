@@ -52,26 +52,20 @@ jobs:
           fi
           echo "tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
 
-      - name: Build and push backend
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: ./apps/backend/Dockerfile
-          push: true
-          platforms: linux/amd64
-          tags: |
-            ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/studly-backend:latest
-            ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/studly-backend:${{ steps.vars.outputs.tag }}
+      - name: Compose build (mem stack)
+        shell: bash
+        env:
+          REGISTRY: docker.io
+          NAMESPACE: ${{ secrets.DOCKERHUB_USERNAME }}
+          IMAGE_TAG: ${{ steps.vars.outputs.tag }}
+        run: |
+          docker compose -f infra/docker/compose.mem.yml build
 
-      - name: Build and push frontend
-        uses: docker/build-push-action@v6
-        with:
-          context: ./apps/frontend
-          push: true
-          platforms: linux/amd64
-          build-args: |
-            VITE_API_BASE_URL=${{ vars.VITE_API_BASE_URL || 'http://localhost:3000/api' }}
-            VITE_RAILWAY_API_TOKEN=${{ vars.VITE_RAILWAY_API_TOKEN || 'studly-local-token' }}
-          tags: |
-            ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/studly-frontend:latest
-            ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/studly-frontend:${{ steps.vars.outputs.tag }}
+      - name: Compose push (mem stack)
+        shell: bash
+        env:
+          REGISTRY: docker.io
+          NAMESPACE: ${{ secrets.DOCKERHUB_USERNAME }}
+          IMAGE_TAG: ${{ steps.vars.outputs.tag }}
+        run: |
+          docker compose -f infra/docker/compose.mem.yml push
