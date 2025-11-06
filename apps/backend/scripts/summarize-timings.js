@@ -23,49 +23,59 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-const timingsPath = join(process.cwd(), 'profiles', 'route-timings.json');
-const outPath = join(process.cwd(), 'profiles', 'route-timings-summary.json');
+const routeTimingsPath = join(process.cwd(), 'profiles', 'route-timings.json');
+const summaryOutputPath = join(process.cwd(), 'profiles', 'route-timings-summary.json');
 
-function percentile(sorted, p) {
-  if (sorted.length === 0) return 0;
-  const idx = Math.min(sorted.length - 1, Math.floor((p / 100) * sorted.length));
-  return sorted[idx];
+function computePercentile(sortedDurations, percentileValue) {
+  if (sortedDurations.length === 0) return 0;
+  const index = Math.min(
+    sortedDurations.length - 1,
+    Math.floor((percentileValue / 100) * sortedDurations.length),
+  );
+  return sortedDurations[index];
 }
 
 function main() {
-  let rows = [];
+  let timingRecords = [];
   try {
-    rows = JSON.parse(readFileSync(timingsPath, 'utf8'));
-  } catch (e) {
-    console.error('Could not read timings:', e.message);
+    timingRecords = JSON.parse(readFileSync(routeTimingsPath, 'utf8'));
+  } catch (error) {
+    console.error('Could not read timings:', error.message);
     process.exit(1);
   }
 
-  const byKey = new Map();
-  for (const r of rows) {
-    const key = `${r.method} ${r.route}`;
-    const entry = byKey.get(key) || { method: r.method, route: r.route, durations: [] };
-    entry.durations.push(Number(r.duration_ms) || 0);
-    byKey.set(key, entry);
+  const durationsByEndpoint = new Map();
+  for (const record of timingRecords) {
+    const endpointKey = `${record.method} ${record.route}`;
+    const endpointBucket =
+      durationsByEndpoint.get(endpointKey) || { method: record.method, route: record.route, durations: [] };
+    endpointBucket.durations.push(Number(record.duration_ms) || 0);
+    durationsByEndpoint.set(endpointKey, endpointBucket);
   }
 
-  const summary = Array.from(byKey.values()).map((e) => {
-    const sorted = e.durations.slice().sort((a, b) => a - b);
-    const total = sorted.reduce((a, b) => a + b, 0);
-    const avg = sorted.length ? total / sorted.length : 0;
-    return {
-      method: e.method,
-      route: e.route,
-      count: sorted.length,
-      avg_ms: Math.round(avg * 1000) / 1000,
-      p95_ms: Math.round(percentile(sorted, 95) * 1000) / 1000,
-      max_ms: Math.round(sorted[sorted.length - 1] * 1000) / 1000,
-    };
-  }).sort((a, b) => b.max_ms - a.max_ms);
+  const endpointSummaries = Array.from(durationsByEndpoint.values())
+    .map((endpoint) => {
+      const sortedDurations = endpoint.durations.slice().sort((a, b) => a - b);
+      const totalDuration = sortedDurations.reduce((sum, current) => sum + current, 0);
+      const averageDuration = sortedDurations.length ? totalDuration / sortedDurations.length : 0;
+      return {
+        method: endpoint.method,
+        route: endpoint.route,
+        count: sortedDurations.length,
+        avg_ms: Math.round(averageDuration * 1000) / 1000,
+        p95_ms: Math.round(computePercentile(sortedDurations, 95) * 1000) / 1000,
+        max_ms:
+          Math.round((sortedDurations.length ? sortedDurations[sortedDurations.length - 1] : 0) * 1000) / 1000,
+      };
+    })
+    .sort((left, right) => right.max_ms - left.max_ms);
 
-  writeFileSync(outPath, JSON.stringify({ generatedAt: new Date().toISOString(), endpoints: summary }, null, 2));
-  console.log('Wrote', outPath);
-  console.table(summary.slice(0, 10));
+  writeFileSync(
+    summaryOutputPath,
+    JSON.stringify({ generatedAt: new Date().toISOString(), endpoints: endpointSummaries }, null, 2),
+  );
+  console.log('Wrote', summaryOutputPath);
+  console.table(endpointSummaries.slice(0, 10));
 }
 
 main();
