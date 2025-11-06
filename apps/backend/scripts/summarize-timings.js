@@ -39,12 +39,6 @@ function computePercentile(sortedDurations, percentileValue) {
 function normalizeDynamicSegments(route) {
   if (!route) return route;
   let r = route;
-  // Replace UUIDs
-  r = r.replace(/[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/gi, ':id');
-  // Replace long hex/object ids
-  r = r.replace(/\b[0-9a-f]{24}\b/gi, ':id');
-  // Replace numeric ids
-  r = r.replace(/\b\d{3,}\b/g, ':id');
   // Dedup slashes and trim trailing
   r = r.replace(/\/+/g, '/');
   if (r.length > 1 && r.endsWith('/')) r = r.slice(0, -1);

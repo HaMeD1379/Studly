@@ -30,8 +30,7 @@
 import 'dotenv/config';
 process.env.NODE_ENV = process.env.NODE_ENV || 'test';
 process.env.ENABLE_PROFILING = process.env.ENABLE_PROFILING || '1';
-// By default, profiling will use the real Supabase client if env vars are present.
-// To force the mock client, set STUDLY_USE_MOCK=1 in your environment.
+process.env.STUDLY_USE_MOCK = '0';
 
 // Delay importing the app until after env vars are set
 const { default: app } = await import('../src/index.js');
@@ -151,49 +150,24 @@ async function hammerProfileEndpoint(iterations = 100) {
 }
 
 async function hammerSessionsEndpoints(iterations = 100) {
-  // For each iteration, create a session, GET it by list/summary, then patch it
+  const sessionsBasePath = '/api/v1/sessions';
   for (let i = 0; i < iterations; i++) {
-    const baseStart = new Date('2024-01-01T00:00:00.000Z');
-    const start = new Date(baseStart.getTime() + i * 60_000);
-    const end = new Date(start.getTime() + randomInt(30, 120) * 60_000);
-    const userId = `user-${(i % 7) + 1}`;
-
-    // 1) CREATE — POST /api/v1/sessions
-    const createRes = await requestEndpoint('POST', '/api/v1/sessions', {
-      userId,
-      subject: ['Math', 'Physics', 'Chemistry', 'Biology'][i % 4],
-      sessionType: (i % 3) + 1,
-      startTime: start.toISOString(),
-      endTime: end.toISOString(),
-      sessionGoal: i % 2 === 0 ? 'Study chapters' : null,
+    const createResponse = await requestEndpoint('POST', sessionsBasePath, {
+      name: `Test Session ${i}`,
+      description: 'This is a test session',
+      start_time: '2025-01-01T12:00:00.000Z',
+      end_time: '2025-01-01T13:00:00.000Z',
+      location: 'Test Location',
+      participants: [],
     });
 
-    const createdId = createRes?.body?.session?.id;
-
-    // 2) GET LIST — /api/v1/sessions?userId=...
-    await requestEndpoint('GET', `/api/v1/sessions?userId=${encodeURIComponent(userId)}&limit=5`);
-
-    // 3) GET SUMMARY — /api/v1/sessions/summary?userId=...&from=...&to=...
-    await requestEndpoint(
-      'GET',
-      `/api/v1/sessions/summary?userId=${encodeURIComponent(userId)}&from=${encodeURIComponent('2024-01-01T00:00:00.000Z')}&to=${encodeURIComponent('2024-01-02T00:00:00.000Z')}`,
-    );
-
-    // 4) PATCH CREATED — /api/v1/sessions/:id (if created)
-    if (createdId) {
-      await requestEndpoint('PATCH', `/api/v1/sessions/${createdId}`, {
-        endTime: shiftMinutes(end.toISOString(), randomInt(5, 30)),
-        totalMinutes: null, // compute on server
-      });
-    } else {
-      // Fallback: still exercise patch path
-      await requestEndpoint('PATCH', `/api/v1/sessions/nonexistent-${i}`, {
-        totalMinutes: 90,
+    if (createResponse.body && createResponse.body.id) {
+      const sessionId = createResponse.body.id;
+      await requestEndpoint('PATCH', `${sessionsBasePath}/${sessionId}`, {
+        name: `Updated Test Session ${i}`,
       });
     }
-
-
-    if (i % 10 === 0) await delay(10);
+    await delay(10);
   }
 }
 
