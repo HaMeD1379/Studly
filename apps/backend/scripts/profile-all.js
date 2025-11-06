@@ -15,12 +15,13 @@
  *
  *  Implementation Notes
  *  --------------------
- *  • Sets NODE_ENV=test, ENABLE_PROFILING=1, STUDLY_USE_MOCK=1 to avoid external
- *    dependencies and auth barriers while profiling.
+ *  • Sets NODE_ENV=test and ENABLE_PROFILING=1 to enable profiling and bypass
+ *    internal API key middleware. Does NOT force STUDLY_USE_MOCK, so a real
+ *    Supabase environment will be used when env vars are present.
  *  • Defers importing the app until env vars are set, then starts an inspector
  *    session and captures CPU and heap sampling profiles.
- *  • Hits auth, profile, sessions, and badges endpoints using fetch to generate
- *    realistic request load and route timing entries.
+ *  • Hammers auth, profile, sessions, and badges endpoints with 100 requests
+ *    each to generate realistic request load and timing entries.
  *  • Writes backend.cpuprofile and backend.heapprofile before closing the server
  *    to avoid Windows handle issues; timing JSON is emitted by middleware.
  * ────────────────────────────────────────────────────────────────────────────────
@@ -29,7 +30,7 @@
 import 'dotenv/config';
 process.env.NODE_ENV = process.env.NODE_ENV || 'test';
 process.env.ENABLE_PROFILING = process.env.ENABLE_PROFILING || '1';
-process.env.STUDLY_USE_MOCK = process.env.STUDLY_USE_MOCK || '1';
+// IMPORTANT: do not force STUDLY_USE_MOCK here. Respect the caller's env.
 
 // Delay importing the app until after env vars are set
 const { default: app } = await import('../src/index.js');
@@ -69,11 +70,13 @@ const httpServer = await new Promise((resolveServer) => {
 const { port: ephemeralPort } = httpServer.address();
 const serverBaseUrl = `http://127.0.0.1:${ephemeralPort}`;
 
+const DEFAULT_API_KEY = process.env.INTERNAL_API_TOKEN || 'studly-local-token';
+
 async function requestEndpoint(method, endpointPath, requestBody, requestHeaders = {}) {
   const requestUrl = `${serverBaseUrl}${endpointPath}`;
   const response = await fetch(requestUrl, {
     method,
-    headers: { 'Content-Type': 'application/json', ...requestHeaders },
+    headers: { 'Content-Type': 'application/json', 'x-api-key': DEFAULT_API_KEY, ...requestHeaders },
     body: requestBody ? JSON.stringify(requestBody) : undefined,
   }).catch((error) => ({ status: 0, _error: error.message }));
 
@@ -88,51 +91,130 @@ async function requestEndpoint(method, endpointPath, requestBody, requestHeaders
   return { status: response.status ?? 0, body: undefined };
 }
 
-async function main() {
-  const authBasePath = '/api/v1/auth';
+const delay = (ms) => new Promise((r) => setTimeout(r, ms));
 
+async function hammerAuthEndpoints(iterations = 100) {
+  const authBasePath = '/api/v1/auth';
+  const baseEmail = 'loadtest-user';
+  const domain = (process.env.AUTH_TEST_DOMAIN || 'example.com').replace(/^@/, '');
+
+  for (let i = 0; i < iterations; i++) {
+    const uniqueEmail = `${baseEmail}+${Date.now()}_${i}@${domain}`;
+
+    await requestEndpoint('POST', `${authBasePath}/signup`, {
+      email: uniqueEmail,
+      password: 'ValidPass123!',
+      full_name: `Load User ${i}`,
+    });
+
+    // Attempt login with a known email (may succeed or fail depending on confirmation)
+    await requestEndpoint('POST', `${authBasePath}/login`, {
+      email: uniqueEmail,
+      password: 'ValidPass123!',
+    });
+
+    await requestEndpoint('POST', `${authBasePath}/logout`);
+
+    await requestEndpoint('POST', `${authBasePath}/forgot-password`, { email: uniqueEmail });
+
+    await requestEndpoint('POST', `${authBasePath}/reset-password?token=mock-token`, {
+      newPassword: 'Strong@1234',
+    });
+
+    // Gentle jitter to avoid thundering herd
+    if (i % 10 === 0) await delay(20);
+  }
+}
+
+function randomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function shiftMinutes(iso, minutes) {
+  return new Date(new Date(iso).getTime() + minutes * 60_000).toISOString();
+}
+
+async function hammerProfileEndpoint(iterations = 100) {
+  for (let i = 0; i < iterations; i++) {
+    // Only update bio to avoid requiring a valid Supabase Auth session
+    await requestEndpoint(
+      'PATCH',
+      '/api/v1/profile/update',
+      {
+        user_id: `user-${i % 5}`,
+        bio: `Load test bio ${i}`,
+      }
+    );
+
+    if (i % 10 === 0) await delay(10);
+  }
+}
+
+async function hammerSessionsEndpoints(iterations = 100) {
+  // For each iteration, create a session and then patch it using its returned id
+  for (let i = 0; i < iterations; i++) {
+    const baseStart = new Date('2024-01-01T00:00:00.000Z');
+    const start = new Date(baseStart.getTime() + i * 60_000);
+    const end = new Date(start.getTime() + randomInt(30, 120) * 60_000);
+
+    const createRes = await requestEndpoint('POST', '/api/v1/sessions', {
+      userId: `user-${(i % 7) + 1}`,
+      subject: ['Math', 'Physics', 'Chemistry', 'Biology'][i % 4],
+      sessionType: (i % 3) + 1,
+      startTime: start.toISOString(),
+      endTime: end.toISOString(),
+      sessionGoal: i % 2 === 0 ? 'Study chapters' : null,
+    });
+
+    const createdId = createRes?.body?.session?.id;
+
+    if (createdId) {
+      // Patch the created session
+      await requestEndpoint('PATCH', `/api/v1/sessions/${createdId}`, {
+        endTime: shiftMinutes(end.toISOString(), randomInt(5, 30)),
+        totalMinutes: null, // let server compute if both times present
+      });
+    } else {
+      // Fallback: attempt to patch a non-existing id (still exercises route)
+      await requestEndpoint('PATCH', `/api/v1/sessions/nonexistent-${i}`, {
+        totalMinutes: 90,
+      });
+    }
+
+    // List & summary
+    await requestEndpoint('GET', `/api/v1/sessions?userId=user-${(i % 7) + 1}&subject=Math&limit=5`);
+    await requestEndpoint(
+      'GET',
+      `/api/v1/sessions/summary?userId=user-${(i % 7) + 1}&from=2024-01-01T00:00:00.000Z&to=2024-01-02T00:00:00.000Z`,
+    );
+
+    if (i % 10 === 0) await delay(10);
+  }
+}
+
+async function hammerBadgesEndpoint(iterations = 100) {
+  for (let i = 0; i < iterations; i++) {
+    await requestEndpoint('GET', '/api/v1/badges');
+    if (i % 20 === 0) await delay(5);
+  }
+}
+
+async function main() {
+  // Warmup
   await requestEndpoint('GET', '/health');
   await requestEndpoint('GET', '/');
 
-  // Auth endpoints
-  await requestEndpoint('POST', `${authBasePath}/signup`, {
-    email: 'new@example.com',
-    password: 'ValidPass123!',
-    full_name: 'New User',
-  });
-  await requestEndpoint('POST', `${authBasePath}/login`, { email: 'user@example.com', password: 'Pass@1234' });
-  await requestEndpoint('POST', `${authBasePath}/logout`);
-  await requestEndpoint('POST', `${authBasePath}/forgot-password`, { email: 'user@example.com' });
-  await requestEndpoint('POST', `${authBasePath}/reset-password?token=mock-token`, { newPassword: 'Strong@1234' });
+  // Auth endpoints (100x)
+  await hammerAuthEndpoints(100);
 
   // Profile
-  await requestEndpoint(
-    'PATCH',
-    '/api/v1/profile/update',
-    { user_id: 'mock-id', full_name: 'Updated User', bio: 'Updated bio', refresh_token: 'r' },
-    { authorization: 'Bearer a' },
-  );
+  await hammerProfileEndpoint(100);
 
   // Sessions
-  await requestEndpoint('POST', '/api/v1/sessions', {
-    userId: 'user-1',
-    subject: 'Math',
-    sessionType: 1,
-    startTime: '2024-01-01T00:00:00.000Z',
-    endTime: '2024-01-01T01:00:00.000Z',
-  });
-  await requestEndpoint('PATCH', '/api/v1/sessions/session-1', {
-    endTime: '2024-01-01T01:30:00.000Z',
-    totalMinutes: 90,
-  });
-  await requestEndpoint('GET', '/api/v1/sessions?userId=user-1&subject=Math&limit=5');
-  await requestEndpoint(
-    'GET',
-    '/api/v1/sessions/summary?userId=user-1&from=2024-01-01T00:00:00.000Z&to=2024-01-02T00:00:00.000Z',
-  );
+  await hammerSessionsEndpoints(100);
 
-  // Badges (if wired)
-  await requestEndpoint('GET', '/api/v1/badges');
+  // Badges
+  await hammerBadgesEndpoint(100);
 
   // Stop profilers and write artifacts BEFORE closing the server to avoid Windows handle issues
   try {
@@ -161,6 +243,9 @@ async function main() {
   await new Promise((resolveClose, rejectClose) =>
     httpServer.close((error) => (error ? rejectClose(error) : resolveClose())),
   );
+
+  // Ensure process exit so profiling middleware flushes route timings to disk
+  process.exit(0);
 }
 
 await main();

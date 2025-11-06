@@ -61,6 +61,7 @@ function main() {
       return {
         method: endpoint.method,
         route: endpoint.route,
+        // Number of samples collected for this endpoint
         count: sortedDurations.length,
         avg_ms: Math.round(averageDuration * 1000) / 1000,
         p95_ms: Math.round(computePercentile(sortedDurations, 95) * 1000) / 1000,
