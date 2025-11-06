@@ -46,11 +46,13 @@ import sessionsRoutes from "./routes/v1/sessions.routes.js";
 import profileRoutes from "./routes/v1/profile.routes.js";
 import requireInternalApiKey from "./middleware/internal-api-key.middleware.js";
 import badgesRoutes from "./routes/v1/badges.routes.js";
+import profiling from "./middleware/profiling.middleware.js";
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(profiling);
 
 // Public endpoints
 app.get("/health", (_req, res) => res.status(200).send("ok"));
