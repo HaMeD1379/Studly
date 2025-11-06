@@ -151,20 +151,30 @@ async function hammerProfileEndpoint(iterations = 100) {
 
 async function hammerSessionsEndpoints(iterations = 100) {
   const sessionsBasePath = '/api/v1/sessions';
+  const userId = process.env.TEST_USER_ID;
+  if (!userId) {
+    console.error('TEST_USER_ID not found in environment variables. Skipping session endpoint hammering.');
+    return;
+  }
+
   for (let i = 0; i < iterations; i++) {
+    const startTime = new Date().toISOString();
+    const endTime = shiftMinutes(startTime, randomInt(15, 90));
+
     const createResponse = await requestEndpoint('POST', sessionsBasePath, {
-      name: `Test Session ${i}`,
-      description: 'This is a test session',
-      start_time: '2025-01-01T12:00:00.000Z',
-      end_time: '2025-01-01T13:00:00.000Z',
-      location: 'Test Location',
-      participants: [],
+      userId,
+      subject: `Subject ${i}`,
+      sessionType: randomInt(1, 3),
+      startTime,
+      endTime,
+      sessionGoal: `Goal for session ${i}`,
     });
 
-    if (createResponse.body && createResponse.body.id) {
-      const sessionId = createResponse.body.id;
+    if (createResponse.body?.session?.id) {
+      const sessionId = createResponse.body.session.id;
       await requestEndpoint('PATCH', `${sessionsBasePath}/${sessionId}`, {
-        name: `Updated Test Session ${i}`,
+        subject: `Updated Subject ${i}`,
+        sessionGoal: `Updated goal for session ${i}`,
       });
     }
     await delay(10);
