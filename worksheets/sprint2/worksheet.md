@@ -155,3 +155,37 @@ Each member must commit their own update --- commit logs will be checked.
 ## Shiv:
 ---
 ## Shashika:
+
+
+---
+# Commitment statements:
+
+Ben:
+I will contribute by: Building frontend UI and managing the infrastructure of it.
+I can commit 5 hours per week.
+I will give updates every 2-3 days.
+If blocked, I will communicate within 12 hours.
+
+Anthony:
+I will contribute by developing the frontend and hooking up the Api
+I can commit 8 hours per week
+I will give updates every 2 days
+If blocked, I will communicate within 12 hours
+
+Hamed:
+I will contribute by developing the backend sessions API endpoints and DevOps related setups
+I can commit 5 hours per week
+I will give updates every 1 days
+If blocked, I will communicate within 6 hours
+
+Shiv:
+I will contribute by: managing the database and helping out building api.
+I can commit 4 hours per week
+I will give updates every 2 days
+If blocked, I will communicate within 8 hours.
+
+Shashika :
+I will contribute by working on the badge api, as well as incorporating feedback from previous meetings
+I can commit 5 hours per week
+I will give updates every 1 days
+If blocked, I will communicate within 6 hours
