@@ -30,7 +30,8 @@
 import 'dotenv/config';
 process.env.NODE_ENV = process.env.NODE_ENV || 'test';
 process.env.ENABLE_PROFILING = process.env.ENABLE_PROFILING || '1';
-// IMPORTANT: do not force STUDLY_USE_MOCK here. Respect the caller's env.
+// By default, profiling will use the real Supabase client if env vars are present.
+// To force the mock client, set STUDLY_USE_MOCK=1 in your environment.
 
 // Delay importing the app until after env vars are set
 const { default: app } = await import('../src/index.js');
@@ -107,7 +108,7 @@ async function hammerAuthEndpoints(iterations = 100) {
       full_name: `Load User ${i}`,
     });
 
-    // Attempt login with a known email (may succeed or fail depending on confirmation)
+    // Attempt login with the same email
     await requestEndpoint('POST', `${authBasePath}/login`, {
       email: uniqueEmail,
       password: 'ValidPass123!',
@@ -121,7 +122,6 @@ async function hammerAuthEndpoints(iterations = 100) {
       newPassword: 'Strong@1234',
     });
 
-    // Gentle jitter to avoid thundering herd
     if (i % 10 === 0) await delay(20);
   }
 }
@@ -151,14 +151,16 @@ async function hammerProfileEndpoint(iterations = 100) {
 }
 
 async function hammerSessionsEndpoints(iterations = 100) {
-  // For each iteration, create a session and then patch it using its returned id
+  // For each iteration, create a session, GET it by list/summary, then patch it
   for (let i = 0; i < iterations; i++) {
     const baseStart = new Date('2024-01-01T00:00:00.000Z');
     const start = new Date(baseStart.getTime() + i * 60_000);
     const end = new Date(start.getTime() + randomInt(30, 120) * 60_000);
+    const userId = `user-${(i % 7) + 1}`;
 
+    // 1) CREATE — POST /api/v1/sessions
     const createRes = await requestEndpoint('POST', '/api/v1/sessions', {
-      userId: `user-${(i % 7) + 1}`,
+      userId,
       subject: ['Math', 'Physics', 'Chemistry', 'Biology'][i % 4],
       sessionType: (i % 3) + 1,
       startTime: start.toISOString(),
@@ -168,25 +170,28 @@ async function hammerSessionsEndpoints(iterations = 100) {
 
     const createdId = createRes?.body?.session?.id;
 
+    // 2) GET LIST — /api/v1/sessions?userId=...
+    await requestEndpoint('GET', `/api/v1/sessions?userId=${encodeURIComponent(userId)}&limit=5`);
+
+    // 3) GET SUMMARY — /api/v1/sessions/summary?userId=...&from=...&to=...
+    await requestEndpoint(
+      'GET',
+      `/api/v1/sessions/summary?userId=${encodeURIComponent(userId)}&from=${encodeURIComponent('2024-01-01T00:00:00.000Z')}&to=${encodeURIComponent('2024-01-02T00:00:00.000Z')}`,
+    );
+
+    // 4) PATCH CREATED — /api/v1/sessions/:id (if created)
     if (createdId) {
-      // Patch the created session
       await requestEndpoint('PATCH', `/api/v1/sessions/${createdId}`, {
         endTime: shiftMinutes(end.toISOString(), randomInt(5, 30)),
-        totalMinutes: null, // let server compute if both times present
+        totalMinutes: null, // compute on server
       });
     } else {
-      // Fallback: attempt to patch a non-existing id (still exercises route)
+      // Fallback: still exercise patch path
       await requestEndpoint('PATCH', `/api/v1/sessions/nonexistent-${i}`, {
         totalMinutes: 90,
       });
     }
 
-    // List & summary
-    await requestEndpoint('GET', `/api/v1/sessions?userId=user-${(i % 7) + 1}&subject=Math&limit=5`);
-    await requestEndpoint(
-      'GET',
-      `/api/v1/sessions/summary?userId=user-${(i % 7) + 1}&from=2024-01-01T00:00:00.000Z&to=2024-01-02T00:00:00.000Z`,
-    );
 
     if (i % 10 === 0) await delay(10);
   }
