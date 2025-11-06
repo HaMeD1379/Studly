@@ -103,17 +103,23 @@ Our regression tests are automated via GitHub Actions CI/CD pipeline:
 -   Include coverage reports for tested tiers.
 
 
-# 4\. Profiler (Hamed)
+# 4. Profiler Analysis
 
--   Run a profiler on your API while exercising every endpoint.
+After running the profiler on the API, the following observations were made from the output:
 
--   Identify:
+![Profiler Results](./profiler_results.png)
 
--   Which endpoint is the slowest.
+### Which endpoint is the slowest?
+The `POST /api/v1/auth/signup` endpoint is the slowest. It has the highest average response time (121.129 ms), the highest 95th percentile time (192.201 ms), and the highest maximum response time (869.162 ms).
 
--   Whether the slowdown is fixable --- and why/why not.
+### Is the slowdown fixable — and why/why not?
+The slowdown is likely inherent to the nature of the signup operation and may not be easily "fixed," but it is understandable. The signup process involves several steps:
+- Validating user input
+- Checking if the user already exists
+- Hashing the password (computationally intensive by design)
+- Creating a new user record in the Supabase database
 
--   Include profiler output (linked or attached).
+Password hashing and initial database writes are expected to take longer compared to simpler operations like login or profile updates. While the performance is acceptable for a signup endpoint, potential optimizations could include ensuring the database is indexed appropriately. However, given the endpoint's purpose, the current performance is reasonable.
 
 
 # 5\. Last Dash
