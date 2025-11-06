@@ -68,15 +68,15 @@ Our regression tests are automated via GitHub Actions CI/CD pipeline:
 
 ## 1\. Have you been able to keep all unit and integration tests from your test plan?
 
--   Fo front end developement, we have been capable of keeping pace with creating tests as we develop each part of the front end code. Nothing major has slowed us down.
+-   For frontend developement, we have been capable of keeping pace with creating tests as we develop each part of the front end code. Nothing major has slowed us down.
 
--   For backend development, we have been able to create tests immediately and tests, such as for new api such as profile. However we sometimes had to put to the side the tests till after we had our api's fully connected with front end, as that was our major focus for this sprint. 
+-   For backend development, we have been able to create tests immediately and tests such as for new a API like profile. However we sometimes had to put to the side the tests till after we had our API's fully connected with front end, as that was our major focus for this sprint.
 
 ## 2\. Have you created different test plans for different release types? Explain.
 
--   The front end still has the same testing plan we decided in our earlier sprint, and have been folowing that for this sprint.
+-   The front end still has the same testing plan we decided in our earlier sprint, and have been following that for this sprint.
 
--   For the backend, We have been mostly following the same testing plan as the previous sprint, but sometimes had to put it to the side to get everything working first.  
+-   For the backend, we have been mostly following the same testing plan as the previous sprint, but sometimes had to put it to the side to get everything working first.  
 
 
 
@@ -91,7 +91,7 @@ Our regression tests are automated via GitHub Actions CI/CD pipeline:
 - Two files in the frontend, auth.ts and main.ts are missing a test suite, but that is known and planned to be fixed right as sprint 3 starts.
 
 ## System diagram.
-- our system/architecture diagram is same as our initial sprint.
+- Our system/architecture diagram is same as our initial sprint.
 <img width="1748" height="853" alt="diagram" src="https://github.com/user-attachments/assets/e2a4a6f4-0e40-4d23-802b-515dcddb1207" />
 
 ## Each tier:
@@ -147,6 +147,17 @@ Each member must commit their own update --- commit logs will be checked.
 
 ---
 ## Ben:
+As part of the push to connect the frontend to the backend API, an abstracted API layer was created and I am quite proud of the design I created for it. There is a general purpose request utility that can take in the request method, body and header, and then dynamically add required headers such as the API key from .env. This handles the logic for errors or it parses json if the API fetch passes.
+
+The GitHub file is ![here](../../apps/frontend/src/utilities/requests/requests.ts).
+![Requests File](./showoff/ben_showoff_requests.png)
+
+This request function also is a general purpose function you can pass a general type which allows calls to this function to be given back in an enforced type.
+
+We can use this general purpose function in more direct API calls, such as ![here](../../apps/frontend/src/api/sessions.ts).
+![Sessions File](./showoff/ben_showoff_session.png)
+
+This allows us to put the fetch into one general utility and then create application specific calls and functions for each endpoint. This makes it easy in the frontend loaders and actions since all we have to do is provide the parameters taken from the frontend and then pass them these endpoint functions. Strict type enforcing through the general function type ensures we are returning the correct result and acting on it correctly. There is no usage of fetch or any concern of how the API is called from the perspective of the UI components, it is completely abstracted away through this design.
 ---
 ## Anthony:
 ---
