@@ -158,6 +158,7 @@ We can use this general purpose function in more direct API calls, such as here 
 ![Sessions File](./showoff/ben_showoff_session.png)
 
 This allows us to put the fetch into one general utility and then create application specific calls and functions for each endpoint. This makes it easy in the frontend loaders and actions since all we have to do is provide the parameters taken from the frontend and then pass them these endpoint functions. Strict type enforcing through the general function type ensures we are returning the correct result and acting on it correctly. There is no usage of fetch or any concern of how the API is called from the perspective of the UI components, it is completely abstracted away through this design.
+
 ---
 ## Anthony:
 ---
