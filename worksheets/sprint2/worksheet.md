@@ -8,31 +8,31 @@ For our needs, we decided upon doing a complete regression testing implementatio
 Since we do a complete regression testing, here is what we are testing:
 ### Backend Tests (apps/backend)
 1. **Unit Tests** 
-   - Location: `Studly/apps/backend/tests/unit`
+   - Location: `apps/backend/tests/unit/`
    - Runner: Node.js built-in test runner
-   - Coverage: this tests code in isolation.
+   - Coverage: This tests code in isolation
    
 2. **Integration Tests** 
-   - Location: `Studly/apps/backend/tests/integration`
-   - Coverage: this is testing components working together, such as our session testing. 
+   - Location: `apps/backend/tests/integration/`
+   - Coverage: This is testing components working together, such as our session testing.
    
 3. **Code Quality Checks**
    - ESLint: Syntax and code style validation
    - Biome: Code formatting and organization
 
 ### Frontend Tests (apps/frontend)
-1. **Unit Tests** - Such as Components and utilities
-   - Location: `apps/frontend/src`(each folder has tests alongside its code)
+1. **Unit Tests** - Such as components and utilities
+   - Location: `apps/frontend/src/`(each folder has tests alongside its code)
    - Runner: Vitest
    - Coverage: React components, hooks, utilities etc
 
-2. **Integrations Tests** - Such as Routes
-   - Location: `apps/frontend/src/routes` (there are other integration tests in other folders as well)
+2. **Integrations Tests** - Such as routes
+   - Location: `apps/frontend/src/routes/` (there are other integration tests in other folders as well)
    - Runner: Vitest
-   - Coverage: this is testing components working together.
+   - Coverage: This is testing components working together.
 
 3. **End-to-End Tests** - User workflows
-   - Location: `Studly/apps/frontend/cypress/e2e/`
+   - Location: `apps/frontend/cypress/e2e/`
    - Runner: Cypress
 
 4. **Code Quality Checks**
@@ -70,11 +70,11 @@ Our regression tests are automated via GitHub Actions CI/CD pipeline:
 
 -   For frontend developement, we have been capable of keeping pace with creating tests as we develop each part of the front end code. Nothing major has slowed us down.
 
--   For backend development, we have been able to create tests immediately and tests such as for new a API like profile. However we sometimes had to put to the side the tests till after we had our API's fully connected with front end, as that was our major focus for this sprint.
+-   For backend development, we have been able to create tests immediately and tests such as for new a API like profile. However, we sometimes had to put to the side the tests till after we had our API's fully connected with front end, as that was our major focus for this sprint.
 
 ## 2\. Have you created different test plans for different release types? Explain.
 
--   The front end still has the same testing plan we decided in our earlier sprint, and have been following that for this sprint.
+-   The frontend still has the same testing plan we decided in our earlier sprint, and have been following that for this sprint.
 
 -   For the backend, we have been mostly following the same testing plan as the previous sprint, but sometimes had to put it to the side to get everything working first.  
 
@@ -85,8 +85,8 @@ Our regression tests are automated via GitHub Actions CI/CD pipeline:
 
 ## What parts of the system are not tested?
 
-- The user authentication for each api once the user is inside the application, like who can access badges, is not tested via a middleware. This is because superbase has row level security for this instance, so we decided not to for this sprint 2 as our priority was to get our application together. For sprint 3, we will be adding this.
-- For the frontend, end-to-end (e2e) tests are not implemented yet, in order for us to fully implement e2e testing, we needed the API hooked up to the backend. Now that we have the setup done from this sprint, we will be doing full e2e testing for sprint 3.
+- The user authentication for each api once the user is inside the application, like who can access badges, is not tested by a middleware. This is because superbase has row level security for this instance, so we decided not to for this sprint 2 as our priority was to get our application together. For sprint 3, we will be adding this.
+- For the frontend, end-to-end (e2e) tests are not implemented yet. In order for us to fully implement e2e testing, we needed the API hooked up to the backend. Now that we have the setup done from this sprint, we will be doing full e2e testing for sprint 3.
 - Some routes on the frontend are missing an integration test suite, this is because they have not been connected yet. The UI is made but without the API hooked up with loaders and actions, there isn’t a need to spend time making tests on mock data that will be replaced later. Though, others such as the study, login, sign up routes are complete.
 - Two files in the frontend, auth.ts and main.ts are missing a test suite, but that is known and planned to be fixed right as sprint 3 starts.
 
@@ -99,7 +99,7 @@ Our regression tests are automated via GitHub Actions CI/CD pipeline:
 -   Backend fully tested:
 ![coverage result](https://github.com/user-attachments/assets/1b32d18a-b93f-4430-9cfc-435016b5c7d1)
 
--   Front end fully tested:
+-   Frontend fully tested:
 
 ![frontendcoverage1](https://github.com/user-attachments/assets/b96e6edc-ce5e-49d6-9cdd-9aafbe461410)
 
@@ -119,11 +119,11 @@ After running the profiler on the API, the following observations were made from
 The `POST /api/v1/auth/signup` endpoint is the slowest. It has the highest average response time (121.129 ms), the highest 95th percentile time (192.201 ms), and the highest maximum response time (869.162 ms).
 
 ### Is the slowdown fixable — and why/why not?
-The slowdown is likely inherent to the nature of the signup operation and may not be easily "fixed," but it is understandable. The signup process involves several steps:
+The slowdown is likely inherent to the nature of the signup operation and may not be easily "fixed", but this is understandable. The signup process involves several steps:
 - Validating user input
 - Checking if the user already exists
 - Hashing the password (computationally intensive by design)
-- Creating a new user record in the Supabase database
+- Creating a new user record in the supabase database
 
 Password hashing and initial database writes are expected to take longer compared to simpler operations like login or profile updates. While the performance is acceptable for a signup endpoint, potential optimizations could include ensuring the database is indexed appropriately. However, given the endpoint's purpose, the current performance is reasonable.
 
@@ -133,7 +133,7 @@ Password hashing and initial database writes are expected to take longer compare
 ## What issues do you foresee in the final sprint?
 
 -   Some issues we can see for our final sprint is trying to make sure we have all the core functionality complete and fully functional. At the start when developing, we prioritized splitting up the different aspects of our project to each member so we can make some progress on different featuers. However we did not necessarily making sure the app was connected from the start, as this resulted in having different features that were not used, and some essential features not connected as early as they should have been.
--   So by the end of sprint 1 and begining of sprint 2, we had many different features ready, but connecting them together was challenging. So which meant meants sprint 2 was focused on connecting different aspects, thus leaving other features to be pushed to the next sprint. Which means that for the final sprints, we would need to end up working on the rest of the api's and features that we sidelined as fast as possible and get it all connected and up and running. 
+-   So by the end of sprint 1 and begining of sprint 2, we had many different features ready, but connecting them together was challenging. This meant sprint 2 was focused on connecting different aspects, thus leaving other features to be pushed to the next sprint. Which means that for the final sprint, we will need to end up working on the rest of the API and features that we sidelined as fast as possible to get it all connected and up and running.
 
 
 # 6\. Show Off
