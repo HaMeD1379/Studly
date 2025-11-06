@@ -147,7 +147,7 @@ Each member must commit their own update --- commit logs will be checked.
 
 ---
 ## Ben:
-As part of the push to connect the frontend to the backend API, an abstracted API layer was created and I am quite proud of the design I created for it. There is a general purpose request utility that can take in the request method, body and header, and then dynamically add required headers such as the API key from .env. This handles the logic for errors or it parses json if the API fetch passes.
+As part of the push to connect the frontend to the backend API, an abstracted API layer was created and I am quite proud of the design I created for it. There is a general purpose request utility that can take in the request method, body and header, and then dynamically adds required headers such as the API key from .env. This handles the logic for errors or it parses json if the API fetch passes.
 
 The GitHub file is here in [request.ts](../../apps/frontend/src/utilities/requests/requests.ts).
 ![Requests File](./showoff/ben_showoff_requests.png)
