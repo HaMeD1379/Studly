@@ -35,6 +35,16 @@ function computePercentile(sortedDurations, percentileValue) {
   return sortedDurations[index];
 }
 
+// Collapse dynamic IDs in routes so they group nicely in the report
+function normalizeDynamicSegments(route) {
+  if (!route) return route;
+  let r = route;
+  // Dedup slashes and trim trailing
+  r = r.replace(/\/+/g, '/');
+  if (r.length > 1 && r.endsWith('/')) r = r.slice(0, -1);
+  return r;
+}
+
 function main() {
   let timingRecords = [];
   try {
@@ -46,9 +56,11 @@ function main() {
 
   const durationsByEndpoint = new Map();
   for (const record of timingRecords) {
-    const endpointKey = `${record.method} ${record.route}`;
+    const method = (record.method || 'GET').toUpperCase();
+    const route = normalizeDynamicSegments(record.route || '/');
+    const endpointKey = `${method} ${route}`;
     const endpointBucket =
-      durationsByEndpoint.get(endpointKey) || { method: record.method, route: record.route, durations: [] };
+      durationsByEndpoint.get(endpointKey) || { method, route, durations: [] };
     endpointBucket.durations.push(Number(record.duration_ms) || 0);
     durationsByEndpoint.set(endpointKey, endpointBucket);
   }
@@ -62,20 +74,30 @@ function main() {
         method: endpoint.method,
         route: endpoint.route,
         count: sortedDurations.length,
-        avg_ms: Math.round(averageDuration * 1000) / 1000,
-        p95_ms: Math.round(computePercentile(sortedDurations, 95) * 1000) / 1000,
-        max_ms:
+        avgMs: Math.round(averageDuration * 1000) / 1000,
+        p95Ms: Math.round(computePercentile(sortedDurations, 95) * 1000) / 1000,
+        maxMs:
           Math.round((sortedDurations.length ? sortedDurations[sortedDurations.length - 1] : 0) * 1000) / 1000,
       };
     })
-    .sort((left, right) => right.max_ms - left.max_ms);
+    .sort((left, right) => right.maxMs - left.maxMs);
 
+  // Write JSON summary with friendlier keys
   writeFileSync(
     summaryOutputPath,
     JSON.stringify({ generatedAt: new Date().toISOString(), endpoints: endpointSummaries }, null, 2),
   );
   console.log('Wrote', summaryOutputPath);
-  console.table(endpointSummaries.slice(0, 10));
+
+  // Pretty console table with clearer column headers
+  const tableRows = endpointSummaries.map((e) => ({
+    endpoint: `${e.method} ${e.route}`,
+    count: e.count,
+    'Avg (ms)': e.avgMs,
+    'P95 (ms)': e.p95Ms,
+    'Max (ms)': e.maxMs,
+  }));
+  console.table(tableRows.slice(0, 15));
 }
 
 main();

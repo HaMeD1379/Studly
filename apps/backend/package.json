@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
+    "cross-env": "^10.1.0",
     "eslint": "^8.57.0"
   },
   "eslintConfig": {
