@@ -2,17 +2,17 @@
 
 ## Overview
 Our regression testing suite runs automatically on every pull request and push to the main branch via GitHub Actions CI/CD pipeline. This ensures that new changes do not break existing functionality.
-For our needs, we decided upon doing a complete regression testing implementation rather than other options such as selective regression testing or risk based regression testing. While we could have implemented these optimized regression testing options as we do have certain files such as supabase.js (has configs), and strings.js(just constant strings), that change very rarely, and we could have modified our CI scripts to handle these less changing/risk areas. But what we found is that since our project is small and we are still developing and adding more features, the extra time it takes to run all the test suits across all aspects of the project was negligible for us. And it was more important for us to get our application up and running.
+For our needs, we decided upon doing a complete regression testing implementation rather than other options such as selective regression testing or risk based regression testing. While we could have implemented these optimized regression testing options as we do have certain files such as supabase.js (has configs), and strings.js(just constant strings), that change very rarely, and we could have modified our CI scripts to handle these less changing/risk areas in a more optimized manner. But what we found is that since our project is small and we are still developing and adding more features, the extra time it takes to run all the test suits across all aspects of the project was negligible for us. And it was more important for us to get our application up and running for this sprint.
 
 ## Tests Breakdown 
 Since we do a complete regression testing, here is what we are testing:
 ### Backend Tests (apps/backend)
-1. **Unit Tests** - Controllers and Services
+1. **Unit Tests** 
    - Location: `Studly/apps/backend/tests/unit`
    - Runner: Node.js built-in test runner
    - Coverage: this tests code in isolation.
    
-2. **Integration Tests** - API endpoints
+2. **Integration Tests** 
    - Location: `Studly/apps/backend/tests/integration`
    - Coverage: this is testing components working together, such as our session testing. 
    
@@ -21,22 +21,21 @@ Since we do a complete regression testing, here is what we are testing:
    - Biome: Code formatting and organization
 
 ### Frontend Tests (apps/frontend)
-1. **Unit Tests** - Components and utilities
-   - Location: ``
+1. **Unit Tests** - Such as Components and utilities
+   - Location: `apps/frontend/src`(each folder has tests alongside its code)
    - Runner: Vitest
-   - Coverage: React components, hooks, utilities
+   - Coverage: React components, hooks, utilities etc
 
-2. **Integrations Tests** - Routes
-   - Location: ``
+2. **Integrations Tests** - Such as Routes
+   - Location: `apps/frontend/src/routes` (there are other integration tests in other folders as well)
    - Runner: Vitest
-   - Coverage: This is to test the routes
+   - Coverage: this is testing components working together.
 
 3. **End-to-End Tests** - User workflows
    - Location: `Studly/apps/frontend/cypress/e2e/`
    - Runner: Cypress
 
-   
-3. **Code Quality Checks**
+4. **Code Quality Checks**
    - Biome: Code formatting and organization
 
 ## Tools Used
@@ -55,7 +54,7 @@ Since we do a complete regression testing, here is what we are testing:
 5. Green checkmark indicates all tests passed
 6. Code can be merged to main branch
 
-This process allows us to make sure any code we are adding does not immediately break any existing logic. 
+This process allows us to make sure any code we are pushing does not immediately break any existing logic. 
 
 ## Regression Testing Script
 
@@ -69,15 +68,15 @@ Our regression tests are automated via GitHub Actions CI/CD pipeline:
 
 ## 1\. Have you been able to keep all unit and integration tests from your test plan?
 
--   For front end have been capable of keeping pace with creating tests as we develop
+-   Fo front end developement, we have been capable of keeping pace with creating tests as we develop each part of the front end code. Nothing major has slowed us down.
 
--   For backend, such as profile api, have been able to create tests immediately and tests, so still keeping track of that. 
+-   For backend development, we have been able to create tests immediately and tests, such as for new api such as profile. However we sometimes had to put to the side the tests till after we had our api's fully connected with front end, as that was our major focus for this sprint. 
 
 ## 2\. Have you created different test plans for different release types? Explain.
 
--   Front end still has the same testing plan from last sprint for the front end;
+-   The front end still has the same testing plan we decided in our earlier sprint, and have been folowing that for this sprint.
 
--   We have been following the same idea as the sprint 1 as well, so no different test plan has been done. 
+-   For the backend, We have been mostly following the same testing plan as the previous sprint, but sometimes had to put it to the side to get everything working first.  
 
 
 
@@ -86,21 +85,28 @@ Our regression tests are automated via GitHub Actions CI/CD pipeline:
 
 ## What parts of the system are not tested?
 
--   The user authentication for each api once the user is inside the application, like who can access badges, is not tested via a middleware. This is because the superbase has Row Level security for this instance, so we decided not to for this sprint 2 as our priority was to get our application together. For sprint 2, we will be adding this.
+- The user authentication for each api once the user is inside the application, like who can access badges, is not tested via a middleware. This is because superbase has row level security for this instance, so we decided not to for this sprint 2 as our priority was to get our application together. For sprint 3, we will be adding this.
+- For the frontend, end-to-end (e2e) tests are not implemented yet, in order for us to fully implement e2e testing, we needed the API hooked up to the backend. Now that we have the setup done from this sprint, we will be doing full e2e testing for sprint 3.
+- Some routes on the frontend are missing an integration test suite, this is because they have not been connected yet. The UI is made but without the API hooked up with loaders and actions, there isn’t a need to spend time making tests on mock data that will be replaced later. Though, others such as the study, login, sign up routes are complete.
+- Two files in the frontend, auth.ts and main.ts are missing a test suite, but that is known and planned to be fixed right as sprint 3 starts.
 
--   Provide an updated system diagram.
+## System diagram.
+- our system/architecture diagram is same as our initial sprint.
+<img width="1748" height="853" alt="diagram" src="https://github.com/user-attachments/assets/e2a4a6f4-0e40-4d23-802b-515dcddb1207" />
 
-## For each tier, indicate which layers are:
+## Each tier:
 
--   Fully tested (80%+)
+-   Backend fully tested:
+![coverage result](https://github.com/user-attachments/assets/1b32d18a-b93f-4430-9cfc-435016b5c7d1)
 
--   Mostly tested (20--80%)
+-   Front end fully tested:
 
--   Somewhat tested (0--20%)
+![frontendcoverage1](https://github.com/user-attachments/assets/b96e6edc-ce5e-49d6-9cdd-9aafbe461410)
 
--   Not tested
+![frontendcoverage2](https://github.com/user-attachments/assets/25a5ab02-5975-43df-98fe-cbdcd3ea68e0)
 
--   Include coverage reports for tested tiers.
+![frontendcoverage3](https://github.com/user-attachments/assets/c208a55e-19ef-4a85-b5cc-46aad2e5a680)
+
 
 
 # 4. Profiler Analysis
@@ -126,7 +132,8 @@ Password hashing and initial database writes are expected to take longer compare
 
 ## What issues do you foresee in the final sprint?
 
--   Some issues we can see for our final sprint is trying to make sure we have all the core functionality complete and fully functional. At the start when developing, we prioritized splitting up of the different aspects of our project to so we can make some progress on different featuers. However we did not necessarily making sure the app was connected from the start. So by the end of sprint 1 and begining of sprint 2, we had many different features ready, but connecting them together was challenging. So which meant meants sprint 2 was focused on connecting different aspects, thus leaving other features to be pushed to the next sprint. Which means that for the final sprint, we would need to end up working on the rest of the api's and features that we sidelined as fast as possible and get it all connected and up and running. 
+-   Some issues we can see for our final sprint is trying to make sure we have all the core functionality complete and fully functional. At the start when developing, we prioritized splitting up the different aspects of our project to each member so we can make some progress on different featuers. However we did not necessarily making sure the app was connected from the start, as this resulted in having different features that were not used, and some essential features not connected as early as they should have been.
+-   So by the end of sprint 1 and begining of sprint 2, we had many different features ready, but connecting them together was challenging. So which meant meants sprint 2 was focused on connecting different aspects, thus leaving other features to be pushed to the next sprint. Which means that for the final sprints, we would need to end up working on the rest of the api's and features that we sidelined as fast as possible and get it all connected and up and running. 
 
 
 # 6\. Show Off
