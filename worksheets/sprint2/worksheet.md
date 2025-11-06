@@ -144,3 +144,14 @@ Password hashing and initial database writes are expected to take longer compare
 -   Remember: good refactored code should be simple and elegant.
 
 Each member must commit their own update --- commit logs will be checked.
+
+---
+## Ben:
+---
+## Anthony:
+---
+## Hamed:
+---
+## Shiv:
+---
+## Shashika:
