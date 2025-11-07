@@ -68,13 +68,13 @@ Our regression tests are automated via GitHub Actions CI/CD pipeline:
 
 ## 1\. Have you been able to keep all unit and integration tests from your test plan?
 
--   For frontend developement, we have been capable of keeping pace with creating tests as we develop each part of the front end code. Nothing major has slowed us down.
+-   For frontend developement, we have been capable of keeping pace with creating tests as we have been doing in previous sprints. So as we develop, we make the appropriate test for it. Nothing major has slowed us down.
 
--   For backend development, we have been able to create tests immediately and tests such as for new a API like profile. However, we sometimes had to put to the side the tests till after we had our API's fully connected with front end, as that was our major focus for this sprint.
+-   For backend development, we have been able to create tests right after we write our code, such as for our new a API endpoints such as profile api or badge. However, we sometimes had push the verification of the tests to the side until we had our existing API's fully connected with front end, as that was our major focus for this sprint.
 
 ## 2\. Have you created different test plans for different release types? Explain.
 
--   The frontend still has the same testing plan we decided in our earlier sprint, and have been following that for this sprint.
+-   The frontend still has the same testing plan we decided in our earlier sprint, and have been following that for this sprint as well.
 
 -   For the backend, we have been mostly following the same testing plan as the previous sprint, but sometimes had to put it to the side to get everything working first.  
 
@@ -85,7 +85,7 @@ Our regression tests are automated via GitHub Actions CI/CD pipeline:
 
 ## What parts of the system are not tested?
 
-- The user authentication for each api once the user is inside the application, like who can access badges, is not tested by a middleware. This is because superbase has row level security for this instance, so we decided not to for this sprint 2 as our priority was to get our application together. For sprint 3, we will be adding this.
+- The user authentication for each api once the user is inside the application, like who can access badges, is not tested by a middleware. This is because superbase has row level security for this instance, so we decided not to for this sprint 2 as our priority was to get our application up and running fully. For sprint 3, we will be adding this feature.
 - For the frontend, end-to-end (e2e) tests are not implemented yet. In order for us to fully implement e2e testing, we needed the API hooked up to the backend. Now that we have the setup done from this sprint, we will be doing full e2e testing for sprint 3.
 - Some routes on the frontend are missing an integration test suite, this is because they have not been connected yet. The UI is made but without the API hooked up with loaders and actions, there isn’t a need to spend time making tests on mock data that will be replaced later. Though, others such as the study, login, sign up routes are complete.
 - Two files in the frontend, auth.ts and main.ts are missing a test suite, but that is known and planned to be fixed right as sprint 3 starts.
@@ -132,8 +132,8 @@ Password hashing and initial database writes are expected to take longer compare
 
 ## What issues do you foresee in the final sprint?
 
--   Some issues we can see for our final sprint is trying to make sure we have all the core functionality complete and fully functional. At the start when developing, we prioritized splitting up the different aspects of our project to each member so we can make some progress on different featuers. However we did not necessarily making sure the app was connected from the start, as this resulted in having different features that were not used, and some essential features not connected as early as they should have been.
--   So by the end of sprint 1 and begining of sprint 2, we had many different features ready, but connecting them together was challenging. This meant sprint 2 was focused on connecting different aspects, thus leaving other features to be pushed to the next sprint. Which means that for the final sprint, we will need to end up working on the rest of the API and features that we sidelined as fast as possible to get it all connected and up and running.
+-   Some issues we can see for our final sprint is trying to make sure we have all the core functionality complete and fully functional. At the start when developing, we prioritized splitting up the different aspects of our project to each member so we can make some progress on different featuers such as making all the different api endpoints. However we did not necessarily making sure the app was connected from the start, which resulted in us having different features that were not used, and some essential features not connected as early as they should have been. 
+-   This meant sprint 2 was focused on connecting different aspects, thus leaving other features to be pushed to the next sprint. Which means that for the final sprint, we will need to end up working on the rest of the API and features that we sidelined as fast as possible to get it all connected and up and running.
 
 
 # 6. Show Off
@@ -184,12 +184,12 @@ I'm proud of shipping our containerization and continuous delivery pipeline to D
 I focused on developing the Profile API whicch included updates on Full Name and Bio for this sprint and managing overall database for the project. I implemented routes and controllers for profile API to handle user profile operations. I am working on organizing and maintaining database throughout the project which is hosted on Supabase. I also wrote tests for the Profile API with 100% code coverage.
 
 Files (API):
-1. apps/backend/src/controllers/profile.controller.js
-2. apps/backend/src/middleware/profile.middleware.js
-3. apps/backend/src/routes/profile.routes.js
+1. [profile.controller.js](apps/backend/src/controllers/profile.controller.js)
+2. [profile.middleware.js](apps/backend/src/middleware/profile.middleware.js)
+3. [profile.routes.js](apps/backend/src/routes/profile.routes.js)
 
 Files (Tests):
-1. apps/backend/tests/integration/profile.test.js
+1. [profile.test.js](apps/backend/tests/integration/profile.test.js)
 ---
 ## Shashika:
 For this sprint my main code contribution was on the badge api. This is for when a user has done sessions, we need to run some logic to calculate what badges they have acquired. This required code so that a new route is available for the front end, such as: getting all available badges, getting the badges the user has acquired, after a session complete has the user acquired a new badge.
