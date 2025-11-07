@@ -196,7 +196,7 @@ For this I created the appropriate files for this:
 After that was taking the feedback from our previous meeting on our code, specifically on our back-end structure. The main one I focused on was on adding a models folder for our back-end development. Previously we had the below structure I decided on from our previous sprints:
 
 
-Config\
+config\
 
 controllers\
 
@@ -206,7 +206,7 @@ routes\v1\
 
 services\
 
-units\
+utils\
 
 Now added into this structure: the models\ folder as well as repositories\ folder has been added for the sake of separating code into more layers.
 
