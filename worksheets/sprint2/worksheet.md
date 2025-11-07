@@ -161,6 +161,12 @@ This allows us to put the fetch into one general utility and then create applica
 
 ---
 ## Anthony:
+In this sprint we as a group began setting up the api to connect the frontend to the backend. I had designed the authentication pages in the first sprint so login and sign up pages, so i was responsible for hitting those endpoints. We used loaders and actions from the react router library to simplify the process, particularly actions in this case which help with form submissions. I am particularly proud of this because i had not worked with loaders or actions before so it involved a bit of research on my part, but i was ultimately able to get it done. Using the Api was also made easier using the template that my teammate Ben had made to send requests.
+
+[login action](apps/frontend/src/routes/login/action.ts)
+[signup action](apps/frontend/src/routes/signup/action.ts)
+[logout action](apps/frontend/src/routes/logout/action.ts)
+
 ---
 ## Hamed:
 I'm proud of shipping our containerization and continuous delivery pipeline to Docker Hub. It was new for me and a really exciting experience. The key wins:
