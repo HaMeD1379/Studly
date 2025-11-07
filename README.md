@@ -11,6 +11,9 @@ Studly is an application platform for students to enhance their studying abiliti
 [Sprint 1](./worksheets/sprint1/sprint1worksheet.md)
 - Read this document for more information on our testing plans.
 
+[Sprint 2](./worksheets/sprint2/worksheet.md)
+- Read this document for our sprint 2 information
+
 
 ## Extra Documents
 [ADR Docs](./docs/ADR/)
