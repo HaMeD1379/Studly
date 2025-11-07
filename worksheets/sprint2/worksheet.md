@@ -1,3 +1,4 @@
+// filepath: i:\Hamed\Studying\University of Manitoba\COURSES\Year 4\Last Term\COMP 4350 - Software Engineering 2\Studly Clone\worksheets\sprint2\worksheet.md
 # 1\. Regression Testing Strategy
 
 ## Overview
@@ -76,7 +77,7 @@ Our regression tests are automated via GitHub Actions CI/CD pipeline:
 
 -   The frontend still has the same testing plan we decided in our earlier sprint, and have been following that for this sprint.
 
--   For the backend, we have been mostly following the same testing plan as the previous sprint, but sometimes had to put it to the side to get everything working first.  
+-   For the backend, we have been mostly following the same testing plan as the previous sprint, but sometimes had to put it to the side to get everything working first.  
 
 
 
@@ -136,7 +137,7 @@ Password hashing and initial database writes are expected to take longer compare
 -   So by the end of sprint 1 and begining of sprint 2, we had many different features ready, but connecting them together was challenging. This meant sprint 2 was focused on connecting different aspects, thus leaving other features to be pushed to the next sprint. Which means that for the final sprint, we will need to end up working on the rest of the API and features that we sidelined as fast as possible to get it all connected and up and running.
 
 
-# 6\. Show Off
+# 6. Show Off
 
 
 -   Each team member highlights their best work (code, UI, design, integration, mocks, etc.).
@@ -163,6 +164,16 @@ This allows us to put the fetch into one general utility and then create applica
 ## Anthony:
 ---
 ## Hamed:
+I'm proud of shipping our containerization and continuous delivery pipeline to Docker Hub. It was new for me and a really exciting experience. The key wins:
+
+- Self-contained backend image with an in-memory mock database. Based on the instructor's hint, I bundled a lightweight mock and schema so the backend runs without a live Supabase connection. This makes the image safer to share and much easier for anyone to pull and run.
+- One compose-up workflow. Backend and frontend images are built and pushed together; they network correctly in Docker so you can run both locally with just a couple of simple commands.
+- Polished defaults (ports, API base URL, internal API token) so the stack “just works” for teammates and graders.
+
+<img src="./showoff/hamed_showoff_ducker.png" alt="Docker Hub automated push" width="520" />
+
+<img src="./showoff/hamed_showoff_ducker.mem.png" alt="Backend image with in-memory mock DB" width="520" />
+
 ---
 ## Shiv:
 I focused on developing the Profile API whicch included updates on Full Name and Bio for this sprint and managing overall database for the project. I implemented routes and controllers for profile API to handle user profile operations. I am working on organizing and maintaining database throughout the project which is hosted on Supabase. I also wrote tests for the Profile API with 100% code coverage.
