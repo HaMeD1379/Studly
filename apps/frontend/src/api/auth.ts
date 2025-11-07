@@ -15,7 +15,7 @@ export const signUp = async (
   email: string,
   password: string,
   full_name: string,
-) =>
+): Promise<RequestResolve<BackendLoginResponse>> =>
   await request(
     RequestMethods.POST,
     AUTH_SIGNUP,
@@ -48,7 +48,8 @@ export const forgotPassword = async (email: string) =>
     }),
   );
 
-export const logout = async (token: string) =>
-  await request(RequestMethods.POST, AUTH_LOGOUT, {
+export const logout = async (token: string) => {
+  return await request(RequestMethods.POST, AUTH_LOGOUT, {
     Authorization: `Bearer ${token}`,
   });
+};

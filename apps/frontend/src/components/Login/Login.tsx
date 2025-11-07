@@ -13,15 +13,15 @@ import {
   TextInput,
   Title,
 } from '@mantine/core';
-import { useState } from 'react';
-import { Form, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Form, useActionData, useNavigate } from 'react-router-dom';
 import placeholder from '~/assets/landscape-placeholder.svg';
 import { displayNotifications } from '~/utilities/notifications/displayNotifications';
 import { validateEmail } from '~/utilities/validation';
-
 export function LoginForm() {
   const navigate = useNavigate();
   //display notifications based on the response from the api so like error messages
+  const actionData = useActionData();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -32,6 +32,16 @@ export function LoginForm() {
       displayNotifications('Mismatch', 'Provide a valid Email', 'red');
     }
   };
+  useEffect(() => {
+    if (actionData && !actionData.success) {
+      const message = actionData.message;
+      if (
+        message === 'The HTTP request POST auth/login failed with status 401'
+      ) {
+        displayNotifications('Login Error', 'Invalid Credentials', 'red');
+      }
+    }
+  }, [actionData]);
 
   return (
     <Box

@@ -4,6 +4,7 @@ export * from './Home';
 export * from './login';
 export * from './logout';
 export * from './logout';
+export * from './settings';
 export * from './signup';
 export * from './study';
 export * from './UpdatePassword';

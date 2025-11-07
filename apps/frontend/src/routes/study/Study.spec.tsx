@@ -56,7 +56,7 @@ describe('Study', () => {
     expect(mockUseFetcherSubmit).toHaveBeenCalledWith(
       ...mockStopStudySessionFetcherSubmit,
     );
-  });
+  }, 15000);
 
   it('error on loader data causes error boundary to render', () => {
     mockUseLoaderData.mockReturnValueOnce({

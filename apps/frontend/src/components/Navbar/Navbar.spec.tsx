@@ -18,7 +18,7 @@ import fetchPolyfill, { Request as RequestPolyfill } from 'node-fetch';
 import { createMemoryRouter, RouterProvider, redirect } from 'react-router-dom';
 import { describe, expect, it, type Mock, vi } from 'vitest';
 import * as logoutApi from '~/api/auth';
-import { logoutAction } from '~/routes';
+import { logoutAction } from '~/routes/logout';
 import { render } from '~/utilities/testing';
 import { Navbar } from './Navbar';
 
@@ -40,7 +40,11 @@ describe('Navbar', () => {
     vi.resetAllMocks();
   });
   const router = createMemoryRouter([
-    { action: mockAction, element: <Navbar>MOCK_CHILDREN</Navbar>, path: '/' },
+    {
+      action: mockAction,
+      element: <Navbar>MOCK_CHILDREN</Navbar>,
+      path: '/',
+    },
   ]);
 
   it('renders all navigations', () => {
@@ -63,7 +67,6 @@ describe('Navbar', () => {
       name: 'Study Session',
     });
     const badgesButton = screen.getByRole('button', { name: 'Badges' });
-    const logoutButton = screen.getByRole('button', { name: 'Logout' });
 
     await act(async () => {
       fireEvent.click(homeButton);
@@ -82,24 +85,16 @@ describe('Navbar', () => {
     });
     expect(mockNavigate).toHaveBeenCalledWith('/badges');
     mockNavigate.mockClear();
-
-    await act(async () => {
-      fireEvent.click(logoutButton);
-    });
-    expect(mockNavigate).toHaveBeenCalledWith('/');
   });
   it('navigates to the login page when logout button is clicked', async () => {
-    // Arrange: mock API and localStorage
     (logoutApi.logout as Mock).mockResolvedValue({
       data: {},
       message: 'Logout successful',
     });
     localStorage.setItem('accessToken', 'abc123');
 
-    // Act: call the action
     const result = await logoutAction();
 
-    // Assert: redirect and localStorage cleared inside the action
     expect(result).toEqual(redirect('/'));
     expect(localStorage.getItem('accessToken')).toBeNull();
   });

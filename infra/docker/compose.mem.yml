@@ -1,26 +1,32 @@
 version: "3.9"
 services:
-  # Self-contained backend (mock mode)
   backend:
     image: ${REGISTRY:-docker.io}/${NAMESPACE}/studly-backend:${IMAGE_TAG:-latest}
+    build:
+      context: ../../
+      dockerfile: infra/docker/backend.mem.Dockerfile
+    container_name: studly_backend
     environment:
-      NODE_ENV: production
       PORT: 3000
-      # Accept the token baked into the frontend image built by CD
       INTERNAL_API_TOKEN: studly-local-token
-      # Ensure in-memory mock mode (no external DB required)
-      STUDLY_USE_MOCK: "1"
     ports:
       - "3000:3000"
-
-  # Nginx-served frontend
+    expose:
+      - "3000"
   frontend:
     image: ${REGISTRY:-docker.io}/${NAMESPACE}/studly-frontend:${IMAGE_TAG:-latest}
+    build:
+      context: ../../apps/frontend
+      args:
+        VITE_API_BASE_URL: http://localhost:3000/api
+        VITE_RAILWAY_API_TOKEN: studly-local-token
+    container_name: studly_frontend
     depends_on:
       - backend
     ports:
-      - "8080:80"
-
+      - "5173:80"
+    expose:
+      - "80"
 networks:
   default:
     name: studly_net

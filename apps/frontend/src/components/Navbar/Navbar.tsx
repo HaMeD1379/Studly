@@ -5,6 +5,7 @@ import {
   IconLogout,
   IconMedal,
   IconMedal2,
+  IconSettings,
   IconUser,
 } from '@tabler/icons-react';
 import { Form, useLocation, useNavigate } from 'react-router-dom';
@@ -68,13 +69,18 @@ export const Navbar = ({ children }: NavbarProps) => {
                 Profile
               </Flex>
             </StyledButton>
+            <StyledButton path='/settings'>
+              <Flex align='center' gap={4}>
+                <IconSettings size={20} />
+                Settings
+              </Flex>
+            </StyledButton>
           </Flex>
 
-          {/* Spacer pushes logout to bottom */}
           <Flex direction='column' mt='auto'>
             <Divider my='sm' />
-            <Form action='/' method='post'>
-              <StyledButton path='/' type='submit'>
+            <Form action='/logout' method='post'>
+              <StyledButton path='/logout' type='submit'>
                 <Flex align='center' gap={4}>
                   <IconLogout size={20} />
                   Logout
@@ -94,6 +100,10 @@ const StyledButton = ({ children, path, type, onClick }: StyledButtonProps) => {
   const navigate = useNavigate();
   const currentPath = useLocation()?.pathname;
   const handleClick = () => {
+    if (type === 'submit') {
+      return;
+    }
+
     if (onClick) onClick(); //execute onclick method if we get one
     navigate(path);
   };
