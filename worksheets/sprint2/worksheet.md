@@ -60,7 +60,7 @@ This process allows us to make sure any code we are pushing does not immediately
 
 Our regression tests are automated via GitHub Actions CI/CD pipeline:
 - **Location**: `.github/workflows/ci.yml`
-- **View on GitHub**: [CI Workflow](Studly/.github/workflows/ci.yml at main · HaMeD1379/Studly)
+- **View on GitHub**: [CI Workflow](/Studly/.github/workflows/ci.yml)
 
 
 
