@@ -165,6 +165,15 @@ This allows us to put the fetch into one general utility and then create applica
 ## Hamed:
 ---
 ## Shiv:
+I focused on developing the Profile API whicch included updates on Full Name and Bio for this sprint and managing overall database for the project. I implemented routes and controllers for profile API to handle user profile operations. I am working on organizing and maintaining database throughout the project which is hosted on Supabase. I also wrote tests for the Profile API with 100% code coverage.
+
+Files (API):
+1. apps/backend/src/controllers/profile.controller.js
+2. apps/backend/src/middleware/profile.middleware.js
+3. apps/backend/src/routes/profile.routes.js
+
+Files (Tests):
+1. apps/backend/tests/integration/profile.test.js
 ---
 ## Shashika:
 For this sprint my main code contribution was on the badge api. This is for when a user has done sessions, we need to run some logic to calculate what badges they have acquired. This required code so that a new route is available for the front end, such as: getting all available badges, getting the badges the user has acquired, after a session complete has the user acquired a new badge.
