@@ -1,4 +1,3 @@
-// filepath: i:\Hamed\Studying\University of Manitoba\COURSES\Year 4\Last Term\COMP 4350 - Software Engineering 2\Studly Clone\worksheets\sprint2\worksheet.md
 # 1\. Regression Testing Strategy
 
 ## Overview
@@ -189,11 +188,10 @@ Files (Tests):
 ## Shashika:
 For this sprint my main code contribution was on the badge api. This is for when a user has done sessions, we need to run some logic to calculate what badges they have acquired. This required code so that a new route is available for the front end, such as: getting all available badges, getting the badges the user has acquired, after a session complete has the user acquired a new badge.
 For this I created the appropriate files for this:
-
-1. apps/backend/src/controllers/badges.controller.js
-2. apps/backend/src/models/badges.model.js
-3. apps/backend/src/repositories/badges.repository.js
-4. apps/backend/src/routes/v1/badges.routes.js
+1. [badges.controller.js](apps/backend/src/controllers/badges.controller.js)
+2. [badges.model.js](apps/backend/src/models/badges.model.js)
+3. [badges.repository.js](apps/backend/src/repositories/badges.repository.js)
+4. [badges.routes.js](apps/backend/src/routes/v1/badges.routes.js)
 
 After that was taking the feedback from our previous meeting on our code, specifically on our back-end structure. The main one I focused on was on adding a models folder for our back-end development. Previously we had the below structure I decided on from our previous sprints:
 
