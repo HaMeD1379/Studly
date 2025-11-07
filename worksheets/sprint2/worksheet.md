@@ -167,6 +167,32 @@ This allows us to put the fetch into one general utility and then create applica
 ## Shiv:
 ---
 ## Shashika:
+For this sprint my main code contribution was on the badge api. This is for when a user has done sessions, we need to run some logic to calculate what badges they have acquired. This required code so that a new route is available for the front end, such as: getting all available badges, getting the badges the user has acquired, after a session complete has the user acquired a new badge.
+For this I created the appropriate files for this:
+
+1. apps/backend/src/controllers/badges.controller.js
+2. apps/backend/src/models/badges.model.js
+3. apps/backend/src/repositories/badges.repository.js
+4. apps/backend/src/routes/v1/badges.routes.js
+
+After that was taking the feedback from our previous meeting on our code, specifically on our back-end structure. The main one I focused on was on adding a models folder for our back-end development. Previously we had the below structure I decided on from our previous sprints:
+
+
+Config\
+
+controllers\
+
+middleware\
+
+routes\v1\
+
+services\
+
+units\
+
+Now added into this structure: the models\ folder as well as repositories\ folder has been added for the sake of separating code into more layers.
+
+So when I was making the badge api, i focused on making it be more separated, and added the appropriate code into the new models folder. However this was only done for the badge api, and not the other back-end api’s such as sessions. The goal of this sprint was to get our application fully connected and working. So we did not focus on refactoring existing code to follow this slightly updated file structure.
 
 
 ---
