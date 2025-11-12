@@ -1,7 +1,38 @@
 #!/usr/bin/env node
+/**
+ * ────────────────────────────────────────────────────────────────────────────────
+ *  File: tests/support/run-jest-lite.js
+ *  Group: Group 3 — COMP 4350: Software Engineering 2
+ *  Project: Studly (Backend)
+ *  Author: Team 3
+ *  Assisted-by: ChatGPT for comments, documentation, and minor refactors
+ *  Last-Updated: 2025-11-05
+ * ────────────────────────────────────────────────────────────────────────────────
+ *  Summary
+ *  -------
+ *  Lightweight test orchestrator built on Node's native test runner (node:test).
+ *  It discovers test files, starts optional profiling, and can build a V8-based
+ *  coverage report without Jest. This keeps the toolchain minimal while still
+ *  supporting integration/unit tests, coverage, and profiling.
+ *
+ *  Conventions
+ *  -----------
+ *  • Test files must be lowercase with dot-separated segments, e.g.:
+ *    - sessions.test.js
+ *    - badges.service.test.js
+ *  • CamelCase or other naming styles are ignored by discovery.
+ *  • Only *.test.js and *.spec.js files are executed.
+ *
+ *  Usage
+ *  -----
+ *  • npm test                  → run tests
+ *  • npm run test:coverage     → run tests with V8 coverage and generate report
+ *  • ENABLE_PROFILING=1 npm test → run tests with CPU/Heap profiling enabled
+ * ────────────────────────────────────────────────────────────────────────────────
+ */
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { dirname, join, relative, resolve } from 'node:path';
+import { dirname, join, relative, resolve, basename } from 'node:path';
 import { promises as fs } from 'node:fs';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -10,7 +41,41 @@ const testsRoot = join(projectRoot, 'tests');
 
 const args = process.argv.slice(2);
 const wantsCoverage = args.includes('--coverage');
-const nodeArgs = ['--test'];
+const profilingEnabled = process.env.ENABLE_PROFILING === '1' || process.env.STUDLY_PROFILE === '1';
+const nodeArgs = [];
+
+// When profiling is enabled, pre-create an absolute profiles directory and
+// append V8 profiler and trace-event flags so artifacts are written reliably.
+if (profilingEnabled) {
+  const profilesDir = join(projectRoot, 'profiles');
+  await fs.mkdir(profilesDir, { recursive: true }).catch(() => {});
+  nodeArgs.push(
+    '--cpu-prof',
+    `--cpu-prof-dir=${profilesDir}`,
+    '--cpu-prof-name=backend.cpuprofile',
+    '--heap-prof',
+    `--heap-prof-dir=${profilesDir}`,
+    '--heap-prof-name=backend.heapprofile',
+    '--trace-events-enabled',
+    '--trace-event-categories=v8,node,node.async_hooks',
+    `--trace-event-file-pattern=${join(profilesDir, 'node-trace-%p.json')}`,
+  );
+}
+
+// Always run Node's built-in test runner
+nodeArgs.push('--test');
+
+function isLowercaseTestFilename(file) {
+  // Accept only lowercase letters, numbers, dots and hyphens before the suffix
+  // and require .test.js or .spec.js suffix.
+  // Examples:
+  //  ✔ sessions.test.js
+  //  ✔ badges.service.test.js
+  //  ✘ authController.test.js (contains uppercase)
+  //  ✘ InitialBasicTest.js (not a recognized suffix + uppercase)
+  const name = basename(file);
+  return /^(?!.*[A-Z])[a-z0-9][a-z0-9.-]*\.(test|spec)\.js$/.test(name);
+}
 
 async function discoverTestFiles(dir) {
   const entries = await fs.readdir(dir, { withFileTypes: true });
@@ -22,7 +87,7 @@ async function discoverTestFiles(dir) {
       files.push(...await discoverTestFiles(fullPath));
       continue;
     }
-    if (entry.name.endsWith('.test.js') || entry.name.endsWith('.spec.js') || entry.name === 'InitialBasicTest.js') {
+    if (isLowercaseTestFilename(fullPath)) {
       files.push(fullPath);
     }
   }
@@ -226,9 +291,13 @@ function buildHtmlReport(overallPct, summaries) {
 async function run() {
   const testFiles = await discoverTestFiles(testsRoot);
   if (testFiles.length === 0) {
-    console.error('No test files found.');
+    console.error('No test files found. Ensure files use lowercase dot-separated names like sessions.test.js');
     process.exit(1);
   }
+
+  // Prepend profiler hook so it runs before tests
+  const profilerHook = join(testsRoot, 'support', 'profiler.hook.js');
+  const files = [profilerHook, ...testFiles];
 
   const coverageDir = join(projectRoot, 'coverage');
   if (wantsCoverage) {
@@ -239,9 +308,10 @@ async function run() {
     process.env.NODE_V8_COVERAGE = v8Dir;
   }
 
-  const child = spawn(process.execPath, [...nodeArgs, ...testFiles], {
+  const child = spawn(process.execPath, [...nodeArgs, ...files], {
     stdio: 'inherit',
     cwd: projectRoot,
+    env: profilingEnabled ? { ...process.env, ENABLE_PROFILING: process.env.ENABLE_PROFILING || '1' } : process.env,
   });
 
   child.on('exit', async (code, signal) => {
