@@ -12,33 +12,34 @@ import {
   Text,
   TextInput,
   Title,
-} from '@mantine/core';
-import { useEffect, useState } from 'react';
-import { Form, useActionData, useNavigate } from 'react-router-dom';
-import placeholder from '~/assets/landscape-placeholder.svg';
-import { displayNotifications } from '~/utilities/notifications/displayNotifications';
-import { validateEmail } from '~/utilities/validation';
+} from "@mantine/core";
+import { useEffect, useState } from "react";
+import { Form, useActionData, useNavigate } from "react-router-dom";
+//import placeholder from "~/assets/landscape-placeholder.svg";
+import { displayNotifications } from "~/utilities/notifications/displayNotifications";
+import { validateEmail } from "~/utilities/validation";
+import { IconPlaceholder as placeholder } from "@tabler/icons-react";
 export function LoginForm() {
   const navigate = useNavigate();
   //display notifications based on the response from the api so like error messages
   const actionData = useActionData();
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
     if (!email || !password || !(email && validateEmail(email))) {
       e.preventDefault();
-      displayNotifications('Mismatch', 'Provide a valid Email', 'red');
+      displayNotifications("Mismatch", "Provide a valid Email", "red");
     }
   };
   useEffect(() => {
     if (actionData && !actionData.success) {
       const message = actionData.message;
       if (
-        message === 'The HTTP request POST auth/login failed with status 401'
+        message === "The HTTP request POST auth/login failed with status 401"
       ) {
-        displayNotifications('Login Error', 'Invalid Credentials', 'red');
+        displayNotifications("Login Error", "Invalid Credentials", "red");
       }
     }
   }, [actionData]);
@@ -46,81 +47,77 @@ export function LoginForm() {
   return (
     <Box
       style={{
-        alignItems: 'center',
-        backgroundColor: '#f0f0f0',
-        display: 'flex',
-        justifyContent: 'center',
-        margin: '0',
-        minHeight: '100vh',
-        padding: '20px',
+        alignItems: "center",
+        backgroundColor: "#f0f0f0",
+        display: "flex",
+        justifyContent: "center",
+        margin: "0",
+        minHeight: "100vh",
+        padding: "20px",
       }}
+      size="xl"
     >
       <Container my={40} size={420}>
-        <Paper mt={30} p={22} radius='md' shadow='sm' withBorder>
+        <Paper mt={30} p={22} radius="lg" shadow="sm" withBorder>
           <Center>
             <Image
-              alt='Description of your image'
-              h={200}
+              alt="Description of your image"
+              h={150}
               src={placeholder}
-              w='auto'
+              w="auto"
             />
           </Center>
-          <Title ff='Inter, sans-serif' ta='center'>
+          <Title ff="Inter, sans-serif" ta="center">
             Welcome to Studly
           </Title>
-          <Text
-            c='gray'
-            style={{
-              fontSize: 'var(--mantine-font-size-xs)',
-              marginTop: '5px',
-              textAlign: 'center',
-            }}
-          >
+          <Text c="dimmed" style={{ textAlign: "center" }}>
             Sign in to your account to continue your learning journey
           </Text>
-          <Form method='post' onSubmit={handleLogin}>
+          <Form method="post" onSubmit={handleLogin}>
             <TextInput
-              label='Email'
-              name='email'
+              label="Email"
+              name="email"
               onChange={(e) => setEmail(e.target.value)}
-              placeholder='you@mantine.dev'
-              radius='md'
+              placeholder="you@mantine.dev"
+              radius="md"
               required
+              variant="filled"
             />
             <PasswordInput
-              label='Password'
-              mt='md'
-              name='password'
+              label="Password"
+              mt="md"
+              name="password"
               onChange={(e) => setPassword(e.target.value)}
-              placeholder='Your password'
-              radius='md'
+              placeholder="Your password"
+              radius="md"
+              variant="filled"
               required
             />
-            <Group justify='space-between' mt='lg'>
-              <Checkbox label='Remember me' />
+            <Group justify="space-between" mt="lg">
+              <Checkbox label="Remember me" />
               <br />
               <Anchor
-                c='black'
-                component='button'
-                onClick={() => navigate('/forgot-password')}
-                size='sm'
+                c="black"
+                component="button"
+                onClick={() => navigate("/forgot-password")}
+                size="sm"
               >
                 Forgot password?
               </Anchor>
             </Group>
             <Button
               fullWidth
-              mt='xl'
-              radius='md'
+              mt="xl"
+              radius="md"
               styles={{
                 root: {
-                  '&:hover': { backgroundColor: '#222' },
-                  backgroundColor: 'black',
-                  color: 'white',
+                  "&:hover": { backgroundColor: "#222" },
+                  backgroundColor: "black",
+                  color: "white",
                   fontWeight: 500,
                 },
               }}
-              type='submit'
+              type="submit"
             >
               Sign in
             </Button>
@@ -128,18 +125,18 @@ export function LoginForm() {
           <br />
           <Text
             style={{
-              color: 'var(--mantine-color-dimmed)',
-              fontSize: 'var(--mantine-font-size-xs)',
-              marginTop: '5px',
-              textAlign: 'center',
+              color: "var(--mantine-color-dimmed)",
+              fontSize: "var(--mantine-font-size-xs)",
+              marginTop: "5px",
+              textAlign: "center",
             }}
           >
-            Do not have an account?{' '}
+            Do not have an account?{" "}
             <Anchor
-              onClick={() => navigate('/signup')}
+              onClick={() => navigate("/signup")}
               styles={{
                 root: {
-                  color: 'black',
+                  color: "black",
                   fontWeight: 400,
                 },
               }}

@@ -21,11 +21,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const fullName = res.data.data.user.full_name;
     const email = res.data.data.user.email;
     const userid = res.data.data.user.id;
-
+    const refreshToken = res.data.data.session.refresh_token;
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('fullName', fullName);
     localStorage.setItem('email', email);
     localStorage.setItem('userId', userid);
+    localStorage.setItem('refreshToken',refreshToken)
     return redirect('/study');
   }
   return { error: 'Unexpected response from login' };
