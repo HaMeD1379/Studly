@@ -413,8 +413,10 @@ test(STRINGS.TEST.PROFILE_GET_NOT_FOUND, async () => {
     `${STRINGS.API.PROFILE_DATA}/not-found`
   );
 
-  assert.equal(response.status, 404);
-  assert.equal(response.body.error, STRINGS.PROFILE.USER_NOT_FOUND);
+  assert.equal(response.status, 200);
+  assert.equal(response.body.message, STRINGS.PROFILE.GET_SUCCESS);
+  assert.equal(response.body.data.user_id, "not-found");
+  assert.equal(response.body.data.bio, "");
 });
 
 test(STRINGS.TEST.PROFILE_GET_SUPABASE_ERROR, async () => {
@@ -437,11 +439,11 @@ test("should handle unexpected retrieval error", async () => {
   assert.equal(response.body.error, STRINGS.SERVER.INTERNAL_ERROR);
 });
 
-test("should return null bio when bio is not set", async () => {
+test("should return empty string bio when bio is not set", async () => {
   const response = await request("GET", `${STRINGS.API.PROFILE_DATA}/null-bio`);
 
   assert.equal(response.status, 200);
   assert.equal(response.body.message, STRINGS.PROFILE.GET_SUCCESS);
   assert.equal(response.body.data.user_id, "null-bio");
-  assert.equal(response.body.data.bio, null);
+  assert.equal(response.body.data.bio, "");
 });

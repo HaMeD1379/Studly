@@ -132,9 +132,12 @@ export const getProfileData = async (req, res) => {
       .single();
 
     if (error) {
-      // If no profile found (PGRST116), return 404
+      // If no profile found (PGRST116), return empty bio
       if (error.code === "PGRST116") {
-        handleError(res, 404, STRINGS.PROFILE.USER_NOT_FOUND);
+        handleSuccess(res, 200, STRINGS.PROFILE.GET_SUCCESS, {
+          user_id: userId,
+          bio: "",
+        });
         return;
       }
       console.error(STRINGS.PROFILE.GET_ERROR, error.message);
@@ -144,7 +147,7 @@ export const getProfileData = async (req, res) => {
 
     handleSuccess(res, 200, STRINGS.PROFILE.GET_SUCCESS, {
       user_id: userId,
-      bio: data?.bio || null,
+      bio: data?.bio || "",
     });
   } catch (error) {
     console.error(STRINGS.PROFILE.UNEXPECTED_GET_ERROR, error.message);
