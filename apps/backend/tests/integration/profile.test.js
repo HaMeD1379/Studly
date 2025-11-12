@@ -77,6 +77,45 @@ const baseFromMock = (tableName) => {
         }
         return { data, error: null };
       },
+      select() {
+        return this;
+      },
+      eq(field, value) {
+        this._userId = value;
+        return this;
+      },
+      single() {
+        // Throw error for "throw-error" user to test catch block
+        if (this._userId === "throw-error") {
+          throw new Error("Unexpected database error");
+        }
+        // For testing: if user_id is "not-found", simulate not found
+        if (this._userId === "not-found") {
+          return {
+            data: null,
+            error: { code: "PGRST116", message: "No rows found" },
+          };
+        }
+        // For testing: if user_id is MOCK_FAIL_EMAIL, simulate error
+        if (this._userId === STRINGS.MOCK.MOCK_FAIL_EMAIL) {
+          return {
+            data: null,
+            error: { code: "OTHER_ERROR", message: "Database error" },
+          };
+        }
+        // For testing: if user_id is "null-bio", simulate profile with null bio
+        if (this._userId === "null-bio") {
+          return {
+            data: { bio: null },
+            error: null,
+          };
+        }
+        // Default success case
+        return {
+          data: { bio: STRINGS.MOCK.MOCK_BIO },
+          error: null,
+        };
+      },
     };
   }
   return originalFrom(tableName);
@@ -305,4 +344,104 @@ test(STRINGS.TEST.PROFILE_UPDATE_UNEXPECTED_ERROR, async () => {
 
   assert.equal(response.status, 500);
   assert.equal(response.body.error, STRINGS.SERVER.INTERNAL_ERROR);
+});
+
+test("should return 400 when access token is missing", async () => {
+  const response = await request("PATCH", STRINGS.API.PROFILE_UPDATE, {
+    user_id: STRINGS.MOCK.MOCK_ID,
+    full_name: STRINGS.MOCK.MOCK_UPDATED_FULL_NAME,
+    refresh_token: "mock_refresh_token",
+  });
+  // No authorization header
+
+  assert.equal(response.status, 400);
+  assert.equal(response.body.error, STRINGS.VALIDATION.MISSING_ACCESS_TOKEN);
+});
+
+test("should return 400 when access token doesn't start with Bearer", async () => {
+  const response = await request(
+    "PATCH",
+    STRINGS.API.PROFILE_UPDATE,
+    {
+      user_id: STRINGS.MOCK.MOCK_ID,
+      full_name: STRINGS.MOCK.MOCK_UPDATED_FULL_NAME,
+      refresh_token: "mock_refresh_token",
+    },
+    {
+      authorization: "InvalidFormat mock_access_token",
+    }
+  );
+
+  assert.equal(response.status, 400);
+  assert.equal(response.body.error, STRINGS.VALIDATION.MISSING_ACCESS_TOKEN);
+});
+
+test("should return 400 when refresh token is missing", async () => {
+  const response = await request(
+    "PATCH",
+    STRINGS.API.PROFILE_UPDATE,
+    {
+      user_id: STRINGS.MOCK.MOCK_ID,
+      full_name: STRINGS.MOCK.MOCK_UPDATED_FULL_NAME,
+    },
+    {
+      authorization: "Bearer mock_access_token",
+    }
+  );
+  // No refresh_token in body
+
+  assert.equal(response.status, 400);
+  assert.equal(response.body.error, STRINGS.VALIDATION.MISSING_REFRESH_TOKEN);
+});
+
+// GET /api/v1/profile/:id tests
+test(STRINGS.TEST.PROFILE_GET_SUCCESS, async () => {
+  const response = await request(
+    "GET",
+    `${STRINGS.API.PROFILE_DATA}/${STRINGS.MOCK.MOCK_ID}`
+  );
+
+  assert.equal(response.status, 200);
+  assert.equal(response.body.message, STRINGS.PROFILE.GET_SUCCESS);
+  assert.equal(response.body.data.user_id, STRINGS.MOCK.MOCK_ID);
+  assert.equal(response.body.data.bio, STRINGS.MOCK.MOCK_BIO);
+});
+
+test(STRINGS.TEST.PROFILE_GET_NOT_FOUND, async () => {
+  const response = await request(
+    "GET",
+    `${STRINGS.API.PROFILE_DATA}/not-found`
+  );
+
+  assert.equal(response.status, 404);
+  assert.equal(response.body.error, STRINGS.PROFILE.USER_NOT_FOUND);
+});
+
+test(STRINGS.TEST.PROFILE_GET_SUPABASE_ERROR, async () => {
+  const response = await request(
+    "GET",
+    `${STRINGS.API.PROFILE_DATA}/${STRINGS.MOCK.MOCK_FAIL_EMAIL}`
+  );
+
+  assert.equal(response.status, 400);
+  assert.equal(response.body.error, "Database error");
+});
+
+test("should handle unexpected retrieval error", async () => {
+  const response = await request(
+    "GET",
+    `${STRINGS.API.PROFILE_DATA}/throw-error`
+  );
+
+  assert.equal(response.status, 500);
+  assert.equal(response.body.error, STRINGS.SERVER.INTERNAL_ERROR);
+});
+
+test("should return null bio when bio is not set", async () => {
+  const response = await request("GET", `${STRINGS.API.PROFILE_DATA}/null-bio`);
+
+  assert.equal(response.status, 200);
+  assert.equal(response.body.message, STRINGS.PROFILE.GET_SUCCESS);
+  assert.equal(response.body.data.user_id, "null-bio");
+  assert.equal(response.body.data.bio, null);
 });
