@@ -23,8 +23,6 @@ export const profileInformationCard = () => {
   const wordCounter = (text: string) => {
     const maxLength = 200;
     setTextCount(Math.min(text.length, maxLength));
-    const maxLength = 200;
-    setTextCount(Math.min(text.length, maxLength));
   };
 
   useEffect(() => {
