@@ -26,7 +26,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     localStorage.setItem('fullName', fullName);
     localStorage.setItem('email', email);
     localStorage.setItem('userId', userid);
-    localStorage.setItem('refreshToken',refreshToken)
+    localStorage.setItem('refreshToken', refreshToken);
     return redirect('/study');
   }
   return { error: 'Unexpected response from login' };

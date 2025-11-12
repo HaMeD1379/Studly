@@ -18,7 +18,7 @@ export type RequestResolve<Type> = {
 
 type Session = {
   access_token: string;
-  refresh_token:string
+  refresh_token: string;
 };
 
 export type LoginResponse = {

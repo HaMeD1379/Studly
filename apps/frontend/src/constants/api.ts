@@ -14,4 +14,4 @@ export const AUTH_LOGOUT = 'auth/logout';
 export const SESSIONS_SUMMARY = 'sessions/summary';
 export const SESSIONS = 'sessions';
 
-export const PROFILE_CHANGES_BIO = 'profile/update'
+export const PROFILE_CHANGES_BIO = 'profile/update';
