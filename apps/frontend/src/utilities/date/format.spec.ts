@@ -1,16 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import { mockUnlockedBadgeTimestamp } from '~/mocks';
-import { formatToYYYYMMDD } from './format';
+import { formatISOToYYYYMMDD } from './format';
 
 describe('format', () => {
   it('formats timestamp date properly', () => {
-    expect(formatToYYYYMMDD(mockUnlockedBadgeTimestamp)).toMatch(
-      /^\d{4}-\d{1,2}-\d{1,2}$/,
-    );
+    expect(formatISOToYYYYMMDD(mockUnlockedBadgeTimestamp)).toEqual('2024-04-04');
   });
 
-  it('handles -1 and 0 timestamp', () => {
-    expect(formatToYYYYMMDD(-1)).toMatch(/^\d{4}-\d{1,2}-\d{1,2}$/);
-    expect(formatToYYYYMMDD(0)).toMatch(/^\d{4}-\d{1,2}-\d{1,2}$/);
+  it('invalid timestamp returns itself', () => {
+    expect(formatISOToYYYYMMDD('')).toEqual('');
+    expect(formatISOToYYYYMMDD('test')).toEqual('test');
+    expect(formatISOToYYYYMMDD('2024-04-04-04-04-04')).toEqual('2024-04-04-04-04-04');
   });
 });

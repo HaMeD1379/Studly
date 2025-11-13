@@ -4,5 +4,12 @@ export type Badge = {
 };
 
 export type UnlockedBadge = Badge & {
-  timeUnlocked: number;
+  earnedAt: string;
+};
+
+export type BadgeLoader = {
+  badges: {
+    earnedAt: string;
+    badge: Badge;
+  }[];
 };

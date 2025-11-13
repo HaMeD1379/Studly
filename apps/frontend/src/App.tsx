@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { ErrorBoundary, PageSpinner } from '~/components';
 import {
   Badges,
+  badgesLoader,
   Forgot,
   Home,
   Login,
@@ -24,7 +25,13 @@ import '@mantine/dates/styles.css';
 
 const router = createBrowserRouter([
   { action: loginAction, element: <Login />, path: '/' },
-  { element: <Badges />, path: '/badges' },
+  {
+    element: <Badges />,
+    errorElement: <ErrorBoundary />,
+    hydrateFallbackElement: <PageSpinner />,
+    loader: badgesLoader,
+    path: '/badges',
+  },
   { element: <UpdatePassword />, path: '/change-password' },
   { element: <Forgot />, path: '/forgot-password' },
   { element: <Home />, path: '/home' },
