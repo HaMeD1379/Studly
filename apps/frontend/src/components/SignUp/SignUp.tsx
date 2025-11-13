@@ -81,6 +81,7 @@ export function SignUpForm() {
     <Box
       style={{
         alignItems: 'center',
+        background: 'linear-gradient(135deg, #e0f0ff 0%, #4a90e2 100%)',
         backgroundColor: '#f0f0f0',
         display: 'flex',
         justifyContent: 'center',

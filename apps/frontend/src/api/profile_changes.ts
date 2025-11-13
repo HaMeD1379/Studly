@@ -1,6 +1,7 @@
-import { PROFILE_CHANGES_BIO } from '~/constants';
+import { PROFILE_CHANGES_BIO, RETRIEVE_BIO } from '~/constants';
 import {
   type BackendLoginResponse,
+  type profileBio,
   RequestMethods,
   type RequestResolve,
 } from '~/types';
@@ -27,3 +28,9 @@ export const updateBio = async (
       user_id: userId,
     }),
   );
+
+export const fetchBio = async (user_id: string) => {
+  console.log('Fetch bio');
+  const path = `${RETRIEVE_BIO}/${user_id}`;
+  return <RequestResolve<profileBio>>request(RequestMethods.GET, path);
+};

@@ -9,6 +9,7 @@ import {
   Login,
   loginAction,
   logoutAction,
+  ProfileLoader,
   profileChangeAction,
   Settings,
   SignUp,
@@ -40,7 +41,13 @@ const router = createBrowserRouter([
     loader: studyLoader,
     path: '/study',
   },
-  { element: <UserProfile />, path: '/user-profile' },
+  {
+    element: <UserProfile />,
+    errorElement: <ErrorBoundary />,
+    hydrateFallbackElement: <PageSpinner />,
+    loader: ProfileLoader,
+    path: '/user-profile',
+  },
 ]);
 
 export const App = () => {

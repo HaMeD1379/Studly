@@ -4,6 +4,13 @@ vi.mock('@mantine/notifications', () => ({
   },
 }));
 
+vi.mock('~/store/useBioStore', () => ({
+  useBioStore: vi.fn(() => ({
+    bio: 'Mocked bio',
+    setBio: vi.fn(),
+  })),
+}));
+
 import { notifications } from '@mantine/notifications';
 import { fireEvent, screen } from '@testing-library/react';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
@@ -91,11 +98,10 @@ describe('profileInformationCard', () => {
       'realuser@gmail.com',
     );
   });
-  it('has the default values for the name and email fields', () => {
+  it('has the default values for the name and email fields', async () => {
     localStorage.setItem('fullName', 'testUser');
     localStorage.setItem('email', 'realuser@gmail.com');
     render(<RouterProvider router={router} />);
-
     expect(screen.getByTestId('name-text-update')).toHaveValue('testUser');
     expect(screen.getByTestId('email-text-update')).toHaveValue(
       'realuser@gmail.com',
@@ -125,11 +131,9 @@ describe('profileInformationCard', () => {
     fireEvent.change(emailInput, { target: { value: 'jane@example.com' } });
     fireEvent.change(bioInput, { target: { value: 'Hello world' } });
 
-    // Check that inputs update
     expect(nameInput.value).toBe('Jane Doe');
     expect(emailInput.value).toBe('jane@example.com');
 
-    // Check word counter updates
     expect(counter).toHaveTextContent('11/200 characters');
   });
 

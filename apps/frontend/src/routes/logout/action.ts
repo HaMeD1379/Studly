@@ -14,6 +14,7 @@ export const action = async () => {
       localStorage.removeItem('email');
       localStorage.removeItem('userId');
       localStorage.removeItem('fullName');
+      localStorage.removeItem('refreshToken');
       return redirect('/');
     }
   }

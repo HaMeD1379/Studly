@@ -2,6 +2,7 @@ import { Button, Card, Flex, Text, TextInput } from '@mantine/core';
 import { IconCamera } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { Form, useActionData } from 'react-router-dom';
+import { useBioStore } from '~/store/useBioStore';
 import { displayNotifications } from '~/utilities/notifications';
 import { Avatar } from '../Avatar/Avatar';
 
@@ -12,6 +13,7 @@ export const profileInformationCard = () => {
   const [bioText, _setBioText] = useState('');
   const [textCount, setTextCount] = useState(0);
   const actionData = useActionData();
+  const { bio } = useBioStore();
   const changeName = (name: string) => {
     setFullName(name);
     localStorage.setItem('fullName', name);
@@ -128,10 +130,10 @@ export const profileInformationCard = () => {
         </Text>
         <TextInput
           data-testid='bio-text-update'
+          defaultValue={bio}
           maxLength={200}
           name='bio'
           onChange={(e) => wordCounter(e.target.value)}
-          placeholder='Update your bio'
           radius='md'
           size='lg'
           variant='filled'

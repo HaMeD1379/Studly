@@ -133,7 +133,6 @@ describe('Login Tests', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
 
-    // wait for router to process and component to re-render
     await waitFor(() => {
       expect(auth.login).toHaveBeenCalledWith(
         'test@example.com',

@@ -1,13 +1,22 @@
 import { Button, Card, Flex, Progress, Stack, Text } from '@mantine/core';
 import { IconEdit, IconShare } from '@tabler/icons-react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useLoaderData, useNavigate } from 'react-router-dom';
 import { Avatar } from '~/components/';
 import { profileString } from '~/constants';
+import { useBioStore } from '~/store/useBioStore';
 
 export function UserCard() {
   const userName = localStorage.getItem('fullName') || 'Alex Student';
   const email = localStorage.getItem('email') || 'alex@example.com';
   const navigate = useNavigate();
+  const loaderdata = useLoaderData();
+
+  const bio = loaderdata.data.bio;
+  const { setBio } = useBioStore();
+  useEffect(() => {
+    setBio(bio);
+  }, [setBio, bio]);
   return (
     <Card p='lg' radius='md' shadow='sm' w='100%' withBorder>
       <Flex align='center' gap='md' justify='space-between' wrap='wrap'>
@@ -27,7 +36,7 @@ export function UserCard() {
               {email}
             </Text>
             <Text c='gray.6' data-testid='bio-text' fz='sm'>
-              {profileString.default}
+              {bio || profileString.default}
             </Text>
           </Stack>
         </Flex>
