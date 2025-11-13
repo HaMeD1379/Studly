@@ -71,73 +71,73 @@ export const mockBadgesResponse = {
   data: {
     badges: [
       {
-        earnedAt: null,
         badge: {
           description: 'TEST_DESCRIPTION_1',
-          name: 'TEST_NAME_1'
-        }
+          name: 'TEST_NAME_1',
+        },
+        earnedAt: null,
       },
       {
-        earnedAt: null,
         badge: {
           description: 'TEST_DESCRIPTION_2',
-          name: 'TEST_NAME_2'
-        }
+          name: 'TEST_NAME_2',
+        },
+        earnedAt: null,
       },
       {
-        earnedAt: '2024-04-04',
         badge: {
           description: 'TEST_DESCRIPTION_3',
-          name: 'TEST_NAME_3'
-        }
+          name: 'TEST_NAME_3',
+        },
+        earnedAt: '2024-04-04',
       },
       {
-        earnedAt: '2024-07-05',
         badge: {
           description: 'TEST_DESCRIPTION_4',
-          name: 'TEST_NAME_4'
-        }
+          name: 'TEST_NAME_4',
+        },
+        earnedAt: '2024-07-05',
       },
-    ]
+    ],
   },
   error: false,
-}
+};
 
 export const mockBadgesLoaderResponse = {
   data: {
-    unlockedBadges: [
-      {
-        earnedAt: '2024-04-04',
-        description: 'TEST_DESCRIPTION_3',
-        name: 'TEST_NAME_3'
-      },
-      {
-        earnedAt: '2024-07-05',
-        description: 'TEST_DESCRIPTION_4',
-        name: 'TEST_NAME_4'
-      }
-    ],
     allBadges: [
       {
         description: 'TEST_DESCRIPTION_1',
-        name: 'TEST_NAME_1'
+        name: 'TEST_NAME_1',
       },
       {
         description: 'TEST_DESCRIPTION_2',
-        name: 'TEST_NAME_2'
+        name: 'TEST_NAME_2',
       },
       {
         description: 'TEST_DESCRIPTION_3',
-        name: 'TEST_NAME_3'
+        name: 'TEST_NAME_3',
       },
       {
         description: 'TEST_DESCRIPTION_4',
-        name: 'TEST_NAME_4'
-      }
-    ]
+        name: 'TEST_NAME_4',
+      },
+    ],
+    unlockedBadges: [
+      {
+        description: 'TEST_DESCRIPTION_3',
+        earnedAt: '2024-04-04',
+        name: 'TEST_NAME_3',
+      },
+      {
+        description: 'TEST_DESCRIPTION_4',
+        earnedAt: '2024-07-05',
+        name: 'TEST_NAME_4',
+      },
+    ],
   },
   error: false,
-}
+};
 
 export const mockBadgesErrorResponse = {
   data: {
@@ -145,4 +145,4 @@ export const mockBadgesErrorResponse = {
     unlockedBadges: [],
   },
   error: true,
-}
+};

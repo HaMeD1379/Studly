@@ -23,14 +23,18 @@ describe('Badges', () => {
   it('renders', async () => {
     mockUseLoaderData.mockReturnValueOnce({
       data: {
-        unlockedBadges: mockAllUnlockedBadges,
         allBadges: mockAllBadges,
+        unlockedBadges: mockAllUnlockedBadges,
       },
       error: false,
     });
     render(<RouterProvider router={router} />);
 
-    expect(screen.queryByText('No badges unlocked yet! Start Studying to earn badges!')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        'No badges unlocked yet! Start Studying to earn badges!',
+      ),
+    ).not.toBeInTheDocument();
     expect(screen.getByText('Badge Collection')).toBeInTheDocument();
   });
 

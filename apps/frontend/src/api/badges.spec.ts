@@ -12,9 +12,7 @@ vi.mock('~/utilities/session/session', () => ({
 }));
 
 import { describe, expect, it, vi } from 'vitest';
-import {
-  mockFetchAllUserBadgesPath
-} from '~/mocks';
+import { mockFetchAllUserBadgesPath } from '~/mocks';
 import { RequestMethods } from '~/types';
 import { fetchAllUserBadges } from './badges';
 

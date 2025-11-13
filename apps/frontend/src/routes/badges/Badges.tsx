@@ -1,5 +1,5 @@
 import { Container, Text } from '@mantine/core';
-import { useLoaderData, useNavigation } from 'react-router';
+import { useLoaderData } from 'react-router';
 import {
   BadgeCollection,
   BadgeStatistics,
@@ -9,7 +9,7 @@ import {
 
 export const Badges = () => {
   const loaderData = useLoaderData();
-  const { unlockedBadges, allBadges } = loaderData?.data;
+  const { unlockedBadges, allBadges } = loaderData.data;
 
   return (
     <Navbar>

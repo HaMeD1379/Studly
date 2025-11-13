@@ -91,9 +91,7 @@ const validateUnlockedRenderedPage = (pageNumber: number) => {
     expect(screen.getByText(unlockedBadge.name)).not.toBeNull();
     expect(screen.getByText(unlockedBadge.description)).not.toBeNull();
     expect(
-      screen.getByText(
-        `Unlocked ${unlockedBadge.earnedAt}`,
-      ),
+      screen.getByText(`Unlocked ${unlockedBadge.earnedAt}`),
     ).not.toBeNull();
   }
 };
