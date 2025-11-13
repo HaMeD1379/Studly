@@ -21,3 +21,6 @@ export const mockStartSessionBody = JSON.stringify({
 export const endSessionBodyMock = JSON.stringify({
   endTime: '1970-01-03T00:00:00.000Z',
 });
+
+export const mockFetchAllUserBadgesPath =
+  'badges/users/undefined?includeProgress=true';

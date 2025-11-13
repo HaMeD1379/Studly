@@ -1,4 +1,4 @@
-export * from './Badges';
+export * from './badges';
 export * from './ForgotPassword';
 export * from './Home';
 export * from './login';

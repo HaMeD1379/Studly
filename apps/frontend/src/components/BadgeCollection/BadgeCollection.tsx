@@ -13,7 +13,6 @@ import {
   BadgeCollectionFilterStatus,
 } from '~/constants';
 import type { Badge, UnlockedBadge } from '~/types';
-import { formatToYYYYMMDD } from '~/utilities/date';
 
 type BadgeCollectionProps = {
   unlockedBadges: UnlockedBadge[];
@@ -22,7 +21,7 @@ type BadgeCollectionProps = {
 
 type VisibleBadgeValue = {
   badge: Badge;
-  timeUnlocked?: number;
+  earnedAt?: string;
 };
 
 export const BadgeCollection = ({
@@ -53,7 +52,7 @@ export const BadgeCollection = ({
 
       return {
         badge: row,
-        timeUnlocked: foundBadge?.timeUnlocked,
+        earnedAt: foundBadge?.earnedAt,
       };
     });
 
@@ -100,7 +99,7 @@ export const BadgeCollection = ({
         <SimpleGrid cols={3} spacing='lg'>
           {visibleValues.map((value) => {
             const badge = value.badge;
-            const timeUnlocked = value.timeUnlocked;
+            const earnedAt = value.earnedAt;
 
             return (
               <Flex
@@ -113,12 +112,10 @@ export const BadgeCollection = ({
               >
                 <Text fw={700}>{badge.name}</Text>
                 <Text fw={300}>{badge.description}</Text>
-                {timeUnlocked ? (
+                {earnedAt ? (
                   <Flex align='center' gap={4}>
                     <IconMedal2 color='#04A740' size={16} />
-                    <Text c='#04A740'>
-                      Unlocked {formatToYYYYMMDD(timeUnlocked)}
-                    </Text>
+                    <Text c='#04A740'>Unlocked {earnedAt}</Text>
                   </Flex>
                 ) : (
                   <Text c='lightgray'>Locked</Text>

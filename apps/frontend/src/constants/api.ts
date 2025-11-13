@@ -13,3 +13,5 @@ export const AUTH_LOGOUT = 'auth/logout';
 
 export const SESSIONS_SUMMARY = 'sessions/summary';
 export const SESSIONS = 'sessions';
+
+export const BADGES_ALL_USER = 'badges/users';
