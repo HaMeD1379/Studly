@@ -174,7 +174,7 @@ export const createSessionsController = (
       // ============================================================================
       // Note: Badge check happens here because sessions are created with both
       // start and end times (not a traditional "start → later complete" flow)
-      if (session && session.userId && session.endTime) {
+      if (session?.userId && session?.endTime) {
         try {
           const newBadges = await badgeService.checkAndAwardBadges(session.userId);
           
@@ -317,7 +317,7 @@ export const createSessionsController = (
       // Only check badges if endTime was part of the update (indicates completion)
       const isCompletingSession = endTime !== undefined;
       
-      if (isCompletingSession && session.userId) {
+     if (isCompletingSession && session?.userId) {
         try {
           const newBadges = await badgeService.checkAndAwardBadges(session.userId);
           
