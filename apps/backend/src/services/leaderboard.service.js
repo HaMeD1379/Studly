@@ -62,50 +62,58 @@ export const createLeaderboardService = (repository = leaderboardRepository) => 
 
   /**
    * Map database study time leaderboard entry to API format.
-   * @param {object} entry - Raw entry from database (user_id, total_minutes, bio)
+   * @param {object} dbStudyTimeEntry - Raw entry from database (user_id, total_minutes, bio)
    * @param {string} requestingUserId - UUID of requesting user (for isSelf flag)
    * @returns {object} Entry in API format (camelCase)
    */
-  const mapStudyTimeEntryToApi = (entry, requestingUserId) => {
-    if (!entry) return null;
+  const mapStudyTimeEntryToApi = (
+    /** @type {object} */ dbStudyTimeEntry,
+    /** @type {string} */ requestingUserId
+  ) => {
+    if (!dbStudyTimeEntry) return null;
 
-    const isSelf = entry.user_id === requestingUserId;
+    const isSelf = dbStudyTimeEntry.user_id === requestingUserId;
 
     return {
-      userId: entry.user_id,
-      displayName: isSelf ? 'You' : (entry.bio || null),
-      totalMinutes: entry.total_minutes,
+      userId: dbStudyTimeEntry.user_id,
+      displayName: isSelf ? 'You' : (dbStudyTimeEntry.bio || null),
+      totalMinutes: dbStudyTimeEntry.total_minutes,
       isSelf
     };
   };
 
   /**
    * Map database badge count leaderboard entry to API format.
-   * @param {object} entry - Raw entry from database (user_id, badge_count, bio)
+   * @param {object} dbBadgeCountEntry - Raw entry from database (user_id, badge_count, bio)
    * @param {string} requestingUserId - UUID of requesting user (for isSelf flag)
    * @returns {object} Entry in API format (camelCase)
    */
-  const mapBadgeCountEntryToApi = (entry, requestingUserId) => {
-    if (!entry) return null;
+  const mapBadgeCountEntryToApi = (
+    /** @type {object} */ dbBadgeCountEntry,
+    /** @type {string} */ requestingUserId
+  ) => {
+    if (!dbBadgeCountEntry) return null;
 
-    const isSelf = entry.user_id === requestingUserId;
+    const isSelf = dbBadgeCountEntry.user_id === requestingUserId;
 
     return {
-      userId: entry.user_id,
-      displayName: isSelf ? 'You' : (entry.bio || null),
-      badgeCount: entry.badge_count,
+      userId: dbBadgeCountEntry.user_id,
+      displayName: isSelf ? 'You' : (dbBadgeCountEntry.bio || null),
+      badgeCount: dbBadgeCountEntry.badge_count,
       isSelf
     };
   };
 
   /**
    * Add rank field to leaderboard entries (1-based sequential).
-   * @param {Array} entries - Array of leaderboard entries
+   * @param {Array} leaderboardEntries - Array of leaderboard entries
    * @returns {Array} Entries with rank field added
    */
-  const addRankings = (entries) => {
-    return entries.map((entry, index) => ({
-      ...entry,
+  const addRankings = (
+    /** @type {Array} */ leaderboardEntries
+  ) => {
+    return leaderboardEntries.map((leaderboardEntry, index) => ({
+      ...leaderboardEntry,
       rank: index + 1
     }));
   };
@@ -118,73 +126,72 @@ export const createLeaderboardService = (repository = leaderboardRepository) => 
    * Fetch all four leaderboards in a single call.
    * Returns friends and global rankings for both study time and badge count.
    *
-   * @param {string} userId - UUID of the requesting user
+   * @param {string} requestingUserId - UUID of the requesting user
    * @param {number} [limit=7] - Maximum entries per leaderboard
    * @returns {Promise<object>} Complete leaderboard response
    * @throws {Error} If any repository call fails
    */
-  const getLeaderboards = async (userId, limit = 7) => {
+  const getLeaderboards = async (
+    /** @type {string} */ requestingUserId,
+    /** @type {number} */ limit = 7
+  ) => {
     try {
-      // Step 1: Fetch accepted friends for the user
-      const friendIds = await repository.findAcceptedFriendsForUser(userId);
+      const acceptedFriendIds = await repository.findAcceptedFriendsForUser(requestingUserId);
+      const friendUserIdsWithSelf = [...acceptedFriendIds, requestingUserId];
 
-      // Step 2: Build user filter for friends leaderboards (include requesting user)
-      const friendsWithSelf = [...friendIds, userId];
-
-      // Step 3: Fetch all four leaderboards in parallel
       const [
-        friendsStudyTimeRaw,
-        friendsBadgesRaw,
-        globalStudyTimeRaw,
-        globalBadgesRaw
+        friendsStudyTimeDbEntries,
+        friendsBadgeCountDbEntries,
+        globalStudyTimeDbEntries,
+        globalBadgeCountDbEntries
       ] = await Promise.all([
         repository.findStudyTimeLeaderboard({
-          userIds: friendsWithSelf.length > 1 ? friendsWithSelf : [userId],
+          userIds: friendUserIdsWithSelf.length > 1 ? friendUserIdsWithSelf : [requestingUserId],
           limit
         }),
         repository.findBadgeCountLeaderboard({
-          userIds: friendsWithSelf.length > 1 ? friendsWithSelf : [userId],
+          userIds: friendUserIdsWithSelf.length > 1 ? friendUserIdsWithSelf : [requestingUserId],
           limit
         }),
         repository.findStudyTimeLeaderboard({
-          userIds: null, // No filter = global
-          limit
+          userIds: null,
+          limit,
+          ensureUserId: requestingUserId
         }),
         repository.findBadgeCountLeaderboard({
-          userIds: null, // No filter = global
-          limit
+          userIds: null,
+          limit,
+          ensureUserId: requestingUserId
         })
       ]);
 
-      // Step 4: Map to API format with rankings
-      const friendsStudyTime = addRankings(
-        friendsStudyTimeRaw.map(entry => mapStudyTimeEntryToApi(entry, userId))
+      const friendsStudyTimeLeaderboard = addRankings(
+        friendsStudyTimeDbEntries.map(dbEntry => mapStudyTimeEntryToApi(dbEntry, requestingUserId))
       );
 
-      const friendsBadges = addRankings(
-        friendsBadgesRaw.map(entry => mapBadgeCountEntryToApi(entry, userId))
+      const friendsBadgesLeaderboard = addRankings(
+        friendsBadgeCountDbEntries.map(dbEntry => mapBadgeCountEntryToApi(dbEntry, requestingUserId))
       );
 
-      const globalStudyTime = addRankings(
-        globalStudyTimeRaw.map(entry => mapStudyTimeEntryToApi(entry, userId))
+      const globalStudyTimeLeaderboard = addRankings(
+        globalStudyTimeDbEntries.map(dbEntry => mapStudyTimeEntryToApi(dbEntry, requestingUserId))
       );
 
-      const globalBadges = addRankings(
-        globalBadgesRaw.map(entry => mapBadgeCountEntryToApi(entry, userId))
+      const globalBadgesLeaderboard = addRankings(
+        globalBadgeCountDbEntries.map(dbEntry => mapBadgeCountEntryToApi(dbEntry, requestingUserId))
       );
 
-      // Step 5: Build response structure
       return {
         friends: {
-          studyTime: friendsStudyTime,
-          badges: friendsBadges
+          studyTime: friendsStudyTimeLeaderboard,
+          badges: friendsBadgesLeaderboard
         },
         global: {
-          studyTime: globalStudyTime,
-          badges: globalBadges
+          studyTime: globalStudyTimeLeaderboard,
+          badges: globalBadgesLeaderboard
         },
         metadata: {
-          userId,
+          userId: requestingUserId,
           limit,
           generatedAt: new Date().toISOString()
         }

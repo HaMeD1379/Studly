@@ -96,60 +96,74 @@ export const createLeaderboardRepository = (client = supabase) => {
    *
    * @param {object} options - Query options
    * @param {Array<string>} [options.userIds] - Optional array of user IDs to filter
-   * @param {number} [options.limit=7] - Maximum number of results
+   * @param {number} [options.limit=7] - Maximum number of results (used as a guideline)
+   * @param {string} [options.ensureUserId] - User ID that must be included if they have data
    * @returns {Promise<Array>} Array of leaderboard entries with user_id, total_minutes, bio
    * @throws {Error} If query fails
    */
-  const findStudyTimeLeaderboard = async ({ userIds = null, limit = 7 }) => {
+  const findStudyTimeLeaderboard = async ({ userIds: filterUserIds = null, limit = 7, ensureUserId = null }) => {
     try {
-      // Build query to aggregate study time per user
-      let query = client
+      let studyTimeQuery = client
         .from('sessions')
         .select('user_id, total_time, user_profile!inner(bio)')
         .not('end_time', 'is', null); // Only completed sessions
 
       // Apply user filter if provided
-      if (userIds && Array.isArray(userIds) && userIds.length > 0) {
-        query = query.in('user_id', userIds);
+      if (filterUserIds && Array.isArray(filterUserIds) && filterUserIds.length > 0) {
+        studyTimeQuery = studyTimeQuery.in('user_id', filterUserIds);
       }
 
-      const { data: sessions, error } = await query;
+      const { data: sessionRows, error } = await studyTimeQuery;
 
       if (error) {
         throw new Error(`Failed to fetch study time data: ${error.message}`);
       }
 
-      if (!sessions || sessions.length === 0) {
+      if (!sessionRows || sessionRows.length === 0) {
         return [];
       }
 
       // Aggregate total_time per user in JavaScript
-      const userTotals = {};
-      const userBios = {};
+      const totalMinutesByUserId = {};
+      const bioByUserId = {};
 
-      for (const session of sessions) {
-        const userId = session.user_id;
-        const totalTime = Number(session.total_time) || 0;
+      for (const sessionRow of sessionRows) {
+        const sessionUserId = sessionRow.user_id;
+        const sessionTotalTime = Number(sessionRow.total_time) || 0;
 
-        if (!userTotals[userId]) {
-          userTotals[userId] = 0;
-          userBios[userId] = session.user_profile?.bio || null;
+        if (!totalMinutesByUserId[sessionUserId]) {
+          totalMinutesByUserId[sessionUserId] = 0;
+          bioByUserId[sessionUserId] = sessionRow.user_profile?.bio || null;
         }
 
-        userTotals[userId] += totalTime;
+        totalMinutesByUserId[sessionUserId] += sessionTotalTime;
       }
 
       // Convert to array and sort descending by total minutes
-      const results = Object.entries(userTotals)
+      const sortedEntries = Object.entries(totalMinutesByUserId)
         .map(([userId, totalMinutes]) => ({
           user_id: userId,
           total_minutes: totalMinutes,
-          bio: userBios[userId]
+          bio: bioByUserId[userId]
         }))
-        .sort((a, b) => b.total_minutes - a.total_minutes)
-        .slice(0, limit);
+        .sort((firstUser, secondUser) => secondUser.total_minutes - firstUser.total_minutes);
 
-      return results;
+      // Ensure the specified user is included if they have data, even if outside top N
+      if (ensureUserId && totalMinutesByUserId[ensureUserId]) {
+        const topEntries = sortedEntries.slice(0, limit);
+        const userInTop = topEntries.some(entry => entry.user_id === ensureUserId);
+
+        if (!userInTop) {
+          // User has data but is outside top N - include them
+          const userEntry = sortedEntries.find(entry => entry.user_id === ensureUserId);
+          return [...topEntries, userEntry];
+        }
+
+        return topEntries;
+      }
+
+      // No ensureUserId specified, just return top N
+      return sortedEntries.slice(0, limit);
     } catch (err) {
       throw new Error(`Study time leaderboard query failed: ${err.message}`);
     }
@@ -161,58 +175,72 @@ export const createLeaderboardRepository = (client = supabase) => {
    *
    * @param {object} options - Query options
    * @param {Array<string>} [options.userIds] - Optional array of user IDs to filter
-   * @param {number} [options.limit=7] - Maximum number of results
+   * @param {number} [options.limit=7] - Maximum number of results (used as a guideline)
+   * @param {string} [options.ensureUserId] - User ID that must be included if they have data
    * @returns {Promise<Array>} Array of leaderboard entries with user_id, badge_count, bio
    * @throws {Error} If query fails
    */
-  const findBadgeCountLeaderboard = async ({ userIds = null, limit = 7 }) => {
+  const findBadgeCountLeaderboard = async ({ userIds: filterUserIds = null, limit = 7, ensureUserId = null }) => {
     try {
-      // Build query to count badges per user
-      let query = client
+      let badgeCountQuery = client
         .from('user_badge')
         .select('user_id, user_profile!inner(bio)');
 
       // Apply user filter if provided
-      if (userIds && Array.isArray(userIds) && userIds.length > 0) {
-        query = query.in('user_id', userIds);
+      if (filterUserIds && Array.isArray(filterUserIds) && filterUserIds.length > 0) {
+        badgeCountQuery = badgeCountQuery.in('user_id', filterUserIds);
       }
 
-      const { data: userBadges, error } = await query;
+      const { data: badgeRows, error } = await badgeCountQuery;
 
       if (error) {
         throw new Error(`Failed to fetch badge data: ${error.message}`);
       }
 
-      if (!userBadges || userBadges.length === 0) {
+      if (!badgeRows || badgeRows.length === 0) {
         return [];
       }
 
       // Count badges per user in JavaScript
-      const userCounts = {};
-      const userBios = {};
+      const badgeCountByUserId = {};
+      const bioByUserId = {};
 
-      for (const badge of userBadges) {
-        const userId = badge.user_id;
+      for (const badgeRow of badgeRows) {
+        const badgeUserId = badgeRow.user_id;
 
-        if (!userCounts[userId]) {
-          userCounts[userId] = 0;
-          userBios[userId] = badge.user_profile?.bio || null;
+        if (!badgeCountByUserId[badgeUserId]) {
+          badgeCountByUserId[badgeUserId] = 0;
+          bioByUserId[badgeUserId] = badgeRow.user_profile?.bio || null;
         }
 
-        userCounts[userId] += 1;
+        badgeCountByUserId[badgeUserId] += 1;
       }
 
       // Convert to array and sort descending by badge count
-      const results = Object.entries(userCounts)
+      const sortedEntries = Object.entries(badgeCountByUserId)
         .map(([userId, badgeCount]) => ({
           user_id: userId,
           badge_count: badgeCount,
-          bio: userBios[userId]
+          bio: bioByUserId[userId]
         }))
-        .sort((a, b) => b.badge_count - a.badge_count)
-        .slice(0, limit);
+        .sort((firstUser, secondUser) => secondUser.badge_count - firstUser.badge_count);
 
-      return results;
+      // Ensure the specified user is included if they have data, even if outside top N
+      if (ensureUserId && badgeCountByUserId[ensureUserId]) {
+        const topEntries = sortedEntries.slice(0, limit);
+        const userInTop = topEntries.some(entry => entry.user_id === ensureUserId);
+
+        if (!userInTop) {
+          // User has data but is outside top N - include them
+          const userEntry = sortedEntries.find(entry => entry.user_id === ensureUserId);
+          return [...topEntries, userEntry];
+        }
+
+        return topEntries;
+      }
+
+      // No ensureUserId specified, just return top N
+      return sortedEntries.slice(0, limit);
     } catch (err) {
       throw new Error(`Badge count leaderboard query failed: ${err.message}`);
     }
