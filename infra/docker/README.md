@@ -57,3 +57,6 @@ Notes:
 - The backend runs with `STUDLY_USE_MOCK=1` and accepts `INTERNAL_API_TOKEN=studly-local-token`.
 - The frontend image is baked to call `http://localhost:3000/api` and sends `x-api-key=studly-local-token`.
 - If you later add a real DB, modify the compose file to provide `DATABASE_URL` and remove `STUDLY_USE_MOCK`.
+
+# Note: The legacy `docker-compose.prod.yml` file has been removed because it was not used by CI/CD.
+# If you used it for manual runs, prefer `compose.mem.yml` or your own compose file outside this repo.

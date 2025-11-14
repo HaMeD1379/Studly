@@ -21,7 +21,8 @@ export default function requireInternalApiKey(req, res, next) {
     return res.status(500).json({ error: 'Server misconfigured: INTERNAL_API_TOKEN missing' });
   }
 
-  const provided = req.header('x-api-key');
+  // Accept both x-internal-api-key (preferred) and x-api-key (legacy) for backward compatibility
+  const provided = req.header('x-internal-api-key') || req.header('x-api-key');
   if (!provided || provided !== expected) {
     return res.status(401).json({ error: 'Unauthorized' });
   }

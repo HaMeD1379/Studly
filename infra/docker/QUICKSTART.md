@@ -187,3 +187,7 @@ docker compose -f infra\docker\compose.dev.yml down -v
 - Port 5432/3000/5173/8080 already in use: stop any service occupying those ports, or change mappings in the compose files.
 - Frontend shows 401 Unauthorized: ensure `VITE_RAILWAY_API_TOKEN` in frontend matches `INTERNAL_API_TOKEN` accepted by backend (default studly-local-token in mock mode).
 - Docker not starting: make sure Docker Desktop is running.
+
+# Note: The legacy `docker-compose.prod.yml` file has been removed from the repo because it was not used by CI/CD.
+# If you previously relied on it for manual production-like runs, use `compose.mem.yml` instead or recreate a tailored
+# production compose file in your own environment.
