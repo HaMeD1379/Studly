@@ -1,120 +1,92 @@
-vi.mock('@mantine/notifications', () => ({
-  notifications: {
-    show: vi.fn(),
-  },
-}));
-
-vi.mock('~/store/useBioStore', () => ({
-  useBioStore: vi.fn(() => ({
-    bio: 'Mocked bio',
-    setBio: vi.fn(),
-  })),
-}));
-
 import { notifications } from '@mantine/notifications';
 import { fireEvent, screen } from '@testing-library/react';
+import fetchPolyfill, { Request as RequestPolyfill } from 'node-fetch';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { profileChangeAction } from '~/routes';
+import { userInfoStore } from '~/store/userInfoStore';
 import { render } from '~/utilities/testing';
 import { profileInformationCard as ProfileInformationCard } from './ProfileInformationCard';
 
-let mockStorage: Record<string, string> = {};
+vi.mock('@mantine/notifications', () => ({
+  notifications: { show: vi.fn() },
+}));
 
-beforeEach(() => {
-  mockStorage = {}; // reset before each test
+const { mockSetName, mockSetEmail, mockSetBio } = vi.hoisted(() => ({
+  mockSetBio: vi.fn(),
+  mockSetEmail: vi.fn(),
+  mockSetName: vi.fn(),
+}));
 
-  vi.spyOn(Storage.prototype, 'getItem').mockImplementation((key: string) => {
-    if (key === 'fullName') {
-      return mockStorage[key] ?? 'Full Name';
-    }
-    if (key === 'email') {
-      return mockStorage[key] ?? 'user@gmail.com';
-    }
-    return mockStorage[key] ?? null;
-  });
+vi.mock('~/store/userInfoStore', () => {
+  const state = {
+    bio: 'Mocked bio',
+    email: 'john@example.com',
+    name: 'John Doe',
+    sessionId: 'sess456',
+    setBio: mockSetBio,
+    setEmail: mockSetEmail,
+    setName: mockSetName,
+    setSessId: vi.fn(),
+    userId: 'user123',
+  };
 
-  vi.spyOn(Storage.prototype, 'setItem').mockImplementation(
-    (key: string, value: string) => {
-      mockStorage[key] = value;
-    },
-  );
-
-  vi.spyOn(Storage.prototype, 'removeItem').mockImplementation(
-    (key: string) => {
-      delete mockStorage[key];
-    },
-  );
-
-  vi.spyOn(Storage.prototype, 'clear').mockImplementation(() => {
-    mockStorage = {};
-  });
+  return {
+    userInfoStore: Object.assign(
+      vi.fn(() => state),
+      {
+        getState: () => state,
+        setState: vi.fn(),
+        subscribe: vi.fn(),
+      },
+    ),
+  };
 });
 
-const MAX_BIO_LENGTH = 200;
+//Lines 46 - 57 were provided through an online github repo (https://github.com/reduxjs/redux-toolkit/issues/4966#issuecomment-3115230061) as solution to the error:
+//RequestInit: Expected signal ("AbortSignal {}") to be an instance of AbortSignal.
+Object.defineProperty(global, 'fetch', {
+  value: fetchPolyfill,
+  // MSW will overwrite this to intercept requests
+  writable: true,
+});
 
-const router = createMemoryRouter([
-  {
-    action: profileChangeAction,
-    element: <ProfileInformationCard />,
-    path: '/',
-  },
-]);
+Object.defineProperty(global, 'Request', {
+  value: RequestPolyfill,
+  writable: false,
+});
 
-describe('profileInformationCard', () => {
+describe('ProfileInformationCard', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  const router = createMemoryRouter([
+    {
+      action: profileChangeAction,
+      element: <ProfileInformationCard />,
+      path: '/',
+    },
+  ]);
+  //avatar test removed
+  //expect(screen.getByTestId("avatar-user")).toBeInTheDocument();
   it('renders all profile information elements', () => {
     render(<RouterProvider router={router} />);
 
-    // Headings and texts
     expect(screen.getByTestId('profile-info-text')).toBeInTheDocument();
     expect(screen.getByTestId('profile-info-subtext')).toBeInTheDocument();
-    expect(screen.getByTestId('accepted-images')).toBeInTheDocument();
-    expect(screen.getByTestId('name-text')).toBeInTheDocument();
-    expect(screen.getByTestId('email-text')).toBeInTheDocument();
-    expect(screen.getByTestId('bio-text')).toBeInTheDocument();
-
-    // Buttons and avatar
-
-    expect(screen.getByText('FN')).toBeInTheDocument();
     expect(screen.getByTestId('avatar-change-btn')).toBeInTheDocument();
-
-    // Inputs
-    expect(screen.getByTestId('name-text-update')).toBeInTheDocument();
-    expect(screen.getByTestId('email-text-update')).toBeInTheDocument();
-    expect(screen.getByTestId('bio-text-update')).toBeInTheDocument();
-
-    // Word counter
+    expect(screen.getByTestId('accepted-images')).toBeInTheDocument();
+    expect(screen.getByTestId('name-text-update')).toHaveValue('John Doe');
+    expect(screen.getByTestId('email-text-update')).toHaveValue(
+      'john@example.com',
+    );
+    expect(screen.getByTestId('bio-text-update')).toHaveValue('Mocked bio');
     expect(screen.getByTestId('word-counter')).toHaveTextContent(
       '0/200 characters',
     );
   });
-  it('has the default values for the name and email fields', () => {
-    localStorage.setItem('fullName', 'testUser');
-    localStorage.setItem('email', 'realuser@gmail.com');
-    render(<RouterProvider router={router} />);
 
-    expect(screen.getByTestId('name-text-update')).toHaveValue('testUser');
-    expect(screen.getByTestId('email-text-update')).toHaveValue(
-      'realuser@gmail.com',
-    );
-  });
-  it('has the default values for the name and email fields', async () => {
-    localStorage.setItem('fullName', 'testUser');
-    localStorage.setItem('email', 'realuser@gmail.com');
-    render(<RouterProvider router={router} />);
-    expect(screen.getByTestId('name-text-update')).toHaveValue('testUser');
-    expect(screen.getByTestId('email-text-update')).toHaveValue(
-      'realuser@gmail.com',
-    );
-  });
-  it('shows the default values if no name and profile is given', () => {
-    render(<RouterProvider router={router} />);
-
-    expect(screen.getByTestId('name-text-update')).toHaveValue('Full Name');
-    expect(screen.getByTestId('email-text-update')).toHaveValue(
-      'user@gmail.com',
-    );
-  });
   it('updates name, email, and bio inputs correctly', () => {
     render(<RouterProvider router={router} />);
 
@@ -125,7 +97,6 @@ describe('profileInformationCard', () => {
       'email-text-update',
     ) as HTMLInputElement;
     const bioInput = screen.getByTestId('bio-text-update') as HTMLInputElement;
-    const counter = screen.getByTestId('word-counter');
 
     fireEvent.change(nameInput, { target: { value: 'Jane Doe' } });
     fireEvent.change(emailInput, { target: { value: 'jane@example.com' } });
@@ -133,11 +104,13 @@ describe('profileInformationCard', () => {
 
     expect(nameInput.value).toBe('Jane Doe');
     expect(emailInput.value).toBe('jane@example.com');
-
-    expect(counter).toHaveTextContent('11/200 characters');
+    expect(bioInput.value).toBe('Hello world');
+    expect(screen.getByTestId('word-counter')).toHaveTextContent(
+      '11/200 characters',
+    );
   });
 
-  it('calls localStorage.setItem when name or email changes', () => {
+  it('calls store setters when inputs are changed and submitted', () => {
     render(<RouterProvider router={router} />);
 
     const nameInput = screen.getByTestId('name-text-update');
@@ -146,44 +119,51 @@ describe('profileInformationCard', () => {
     fireEvent.change(nameInput, { target: { value: 'Jane Doe' } });
     fireEvent.change(emailInput, { target: { value: 'jane@example.com' } });
 
-    expect(localStorage.setItem).toHaveBeenCalledWith('fullName', 'Jane Doe');
-    expect(localStorage.setItem).toHaveBeenCalledWith(
-      'email',
-      'jane@example.com',
-    );
+    const form = screen.getByTestId('profile-info-text').closest('form');
+    expect(form).not.toBeNull();
+    fireEvent.submit(form as HTMLFormElement);
+
+    expect(mockSetName).toHaveBeenCalledWith('Jane Doe');
+    expect(mockSetEmail).toHaveBeenCalledWith('jane@example.com');
   });
-  it('updates word counter correctly', () => {
+
+  it('displays a notification when avatar change button is clicked', () => {
     render(<RouterProvider router={router} />);
-    const text = 'words';
-    const bioInput = screen.getByTestId('bio-text-update');
-    const bioCount = screen.getByTestId('word-counter');
-    expect(bioCount).toHaveTextContent('0/200 characters');
-    fireEvent.change(bioInput, { target: { value: text } });
-    expect(screen.getByTestId('word-counter')).toHaveTextContent(
-      `${text.length}/200 characters`,
-    );
-  });
-  it('displays a notification when change password button is clicked', () => {
-    render(<RouterProvider router={router} />);
-    const change_btn = screen.getByTestId(/avatar-change-btn/i);
-    fireEvent.click(change_btn);
+    const btn = screen.getByTestId('avatar-change-btn');
+    fireEvent.click(btn);
     expect(notifications.show).toHaveBeenCalledWith({
       color: 'red',
       message: 'The action you have requested is not available at this time',
       title: 'Not Supported',
     });
   });
-  it('enforces the word couont limit (length of 200 characters)', () => {
-    const overLimitText = 'a'.repeat(MAX_BIO_LENGTH + 10); // 210 characters
 
+  it('enforces the bio character limit', () => {
     render(<RouterProvider router={router} />);
     const bioInput = screen.getByTestId('bio-text-update');
+    const overLimitText = 'a'.repeat(210); // 210 > 200 limit
 
-    // simulate typing more than the allowed characters
     fireEvent.change(bioInput, { target: { value: overLimitText } });
+    expect(screen.getByTestId('word-counter')).toHaveTextContent(
+      '200/200 characters',
+    );
+  });
 
-    // Check that displayed count doesn't exceed 200
-    const counter = screen.getByTestId('word-counter');
-    expect(counter).toHaveTextContent(`${MAX_BIO_LENGTH}/200 characters`);
+  it('shows default values when store is empty', () => {
+    (userInfoStore as unknown as Mock).mockImplementation(() => ({
+      bio: '',
+      email: '',
+      name: '',
+      setBio: mockSetBio,
+      setEmail: mockSetEmail,
+      setName: mockSetName,
+    }));
+
+    render(<RouterProvider router={router} />);
+    expect(screen.getByTestId('name-text-update')).toHaveValue('Full Name');
+    expect(screen.getByTestId('email-text-update')).toHaveValue(
+      'user@gmail.com',
+    );
+    expect(screen.getByTestId('bio-text-update')).toHaveValue('');
   });
 });

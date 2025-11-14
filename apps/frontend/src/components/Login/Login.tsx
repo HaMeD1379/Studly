@@ -14,9 +14,9 @@ import {
   TextInput,
   Title,
 } from '@mantine/core';
-import { IconPlaceholder as placeholder } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { Form, useActionData, useNavigate } from 'react-router-dom';
+import placeholder from '~/assets/landscape-placeholder.svg';
 import { displayNotifications } from '~/utilities/notifications/displayNotifications';
 import { validateEmail } from '~/utilities/validation';
 
@@ -35,11 +35,13 @@ export function LoginForm() {
   };
 
   useEffect(() => {
-    if (actionData && !actionData.success) {
-      const message = actionData.message;
-      if (message.includes('401')) {
-        displayNotifications('Login Error', 'Invalid Credentials', 'red');
-      }
+    if (!actionData) return;
+
+    // success false but message might not exist
+    const message = actionData.message;
+
+    if (typeof message === 'string' && message.includes('401')) {
+      displayNotifications('Login Error', 'Invalid Credentials', 'red');
     }
   }, [actionData]);
 
@@ -67,13 +69,7 @@ export function LoginForm() {
           withBorder
         >
           <Center mb='md'>
-            <Image
-              alt='Logo'
-              height={120}
-              src={placeholder}
-              style={{ borderRadius: '50%' }}
-              width={120}
-            />
+            <Image alt='Logo' height={120} src={placeholder} width={120} />
           </Center>
 
           <Stack>

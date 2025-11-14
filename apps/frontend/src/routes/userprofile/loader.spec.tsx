@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
-import { fetchBio } from '~/api/profile_changes';
+import { fetchBio } from '~/api/profileChanges';
 
-vi.mock('~/api/profile_changes', () => ({
+vi.mock('~/api/profileChanges', () => ({
   fetchBio: vi.fn(),
 }));
 

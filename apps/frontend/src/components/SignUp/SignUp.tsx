@@ -13,14 +13,15 @@ import {
   TextInput,
   Title,
 } from '@mantine/core';
-import { useState } from 'react';
-import { Form, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Form, useActionData, useNavigate } from 'react-router-dom';
 import placeholder from '~/assets/landscape-placeholder.svg';
 import { displayNotifications } from '~/utilities/notifications/displayNotifications';
 import { equalPasswords, validateEmail } from '~/utilities/validation';
 
 export function SignUpForm() {
   const navigate = useNavigate();
+  const actionData = useActionData();
 
   const [password1, setPassword1] = useState('');
   const [password2, setPassword2] = useState('');
@@ -39,21 +40,20 @@ export function SignUpForm() {
   });
   const rules = checkRules(password1);
 
-  const handleClick = async (e: React.FormEvent) => {
+  useEffect(() => {
+    if (!actionData) return;
+
+    // success false but message might not exist
+    const message = actionData.message;
+
+    if (typeof message === 'string' && message.includes('409')) {
+      displayNotifications('Signup Error', 'Email already exists!', 'red');
+    }
+  }, [actionData]);
+
+  const handleClick = async (_e: React.FormEvent) => {
     try {
-      if (
-        validateEmail(email) &&
-        equalPasswords(password1, password2) &&
-        name
-      ) {
-        displayNotifications(
-          'Account Created Successfully',
-          'Begin Your Gamified Learning experience now',
-          'green',
-        );
-      } else {
-        e.preventDefault();
-      }
+      validateEmail(email) && equalPasswords(password1, password2) && name;
     } catch (err: unknown) {
       let message = 'An unknown error occurred.';
 
@@ -77,6 +77,7 @@ export function SignUpForm() {
       console.log(error);
     }
   };
+
   return (
     <Box
       style={{

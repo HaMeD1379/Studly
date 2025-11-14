@@ -2,25 +2,24 @@ import { Button, Card, Flex, Text, TextInput } from '@mantine/core';
 import { IconCamera } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { Form, useActionData } from 'react-router-dom';
-import { useBioStore } from '~/store/useBioStore';
+import { userInfoStore } from '~/store/userInfoStore';
 import { displayNotifications } from '~/utilities/notifications';
 import { Avatar } from '../Avatar/Avatar';
 
 export const profileInformationCard = () => {
-  const userName = localStorage.getItem('fullName') || 'John Doe';
-  const [_fullName, setFullName] = useState('');
-  const [_email, setEmail] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [userEmail, setUserEmail] = useState('');
   const [bioText, _setBioText] = useState('');
   const [textCount, setTextCount] = useState(0);
   const actionData = useActionData();
-  const { bio } = useBioStore();
+  const { bio, name, email, setName, setEmail } = userInfoStore();
+  const userName = name || 'John Doe';
+
   const changeName = (name: string) => {
     setFullName(name);
-    localStorage.setItem('fullName', name);
   };
   const changeEmail = (email_input: string) => {
-    setEmail(email_input);
-    localStorage.setItem('email', email_input);
+    setUserEmail(email_input);
   };
   const wordCounter = (text: string) => {
     const maxLength = 200;
@@ -43,11 +42,11 @@ export const profileInformationCard = () => {
   }, [actionData]);
 
   const onClick = () => {
-    if (_fullName) {
-      localStorage.setItem('fullName', _fullName);
+    if (fullName) {
+      setName(fullName);
     }
-    if (_email) {
-      localStorage.setItem('email', _email);
+    if (userEmail) {
+      setEmail(userEmail);
     }
     if (bioText) {
     }
@@ -100,7 +99,7 @@ export const profileInformationCard = () => {
             </Text>
             <TextInput
               data-testid='name-text-update'
-              defaultValue={localStorage.getItem('fullName') || 'Full Name'}
+              defaultValue={name || 'Full Name'}
               name='fullName'
               onChange={(e) => changeName(e.target.value)}
               radius='md'
@@ -116,7 +115,7 @@ export const profileInformationCard = () => {
             </Text>
             <TextInput
               data-testid='email-text-update'
-              defaultValue={localStorage.getItem('email') || 'user@gmail.com'}
+              defaultValue={email || 'user@gmail.com'}
               onChange={(e) => changeEmail(e.target.value)}
               radius='md'
               size='md'

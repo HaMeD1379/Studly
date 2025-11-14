@@ -1,17 +1,3 @@
-vi.mock('~/api', () => ({
-  fetchBio: vi.fn(),
-}));
-
-// Mock useNavigate
-const mockNavigate = vi.fn();
-vi.mock('react-router-dom', async () => {
-  const actual =
-    await vi.importActual<typeof import('react-router-dom')>(
-      'react-router-dom',
-    );
-  return { ...actual, useNavigate: () => mockNavigate };
-});
-
 import { screen } from '@testing-library/react';
 import fetchPolyfill, { Request as RequestPolyfill } from 'node-fetch';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
@@ -21,34 +7,65 @@ import { PageSpinner } from '~/components';
 import { ProfileLoader, UserProfile } from '~/routes';
 import { render } from '~/utilities/testing';
 
-//Lines 21 - 30 were provided through an online github repo as solution to the error:
+vi.mock('~/api', () => ({
+  fetchBio: vi.fn(),
+}));
+
+const mockNavigate = vi.fn();
+vi.mock('react-router-dom', async () => {
+  const actual =
+    await vi.importActual<typeof import('react-router-dom')>(
+      'react-router-dom',
+    );
+  return { ...actual, useNavigate: () => mockNavigate };
+});
+
+const mockSetName = vi.fn();
+const mockSetEmail = vi.fn();
+const mockSetId = vi.fn();
+const mockSetRefreshToken = vi.fn();
+const mockSetBio = vi.fn();
+
+const mockStore = {
+  bio: 'This is my Bio',
+  email: 'testUser@gmail.com',
+  name: 'Test User',
+  setBio: mockSetBio,
+  setEmail: mockSetEmail,
+  setId: mockSetId,
+  setName: mockSetName,
+  setRefreshToken: mockSetRefreshToken,
+  userId: '1',
+};
+
+type MockZustandStore = Mock & {
+  getState: () => typeof mockStore;
+  setState: (newState: Partial<typeof mockStore>) => void;
+};
+
+vi.mock('~/store/userInfoStore', () => {
+  const store = vi.fn(() => mockStore) as MockZustandStore;
+  store.getState = () => mockStore;
+  store.setState = (newState: Partial<typeof mockStore>) =>
+    Object.assign(mockStore, newState);
+  return { userInfoStore: store };
+});
+
+//Lines 50- 57 were provided through an online github repo (https://github.com/reduxjs/redux-toolkit/issues/4966#issuecomment-3115230061) as solution to the error:
 //RequestInit: Expected signal ("AbortSignal {}") to be an instance of AbortSignal.
 Object.defineProperty(global, 'fetch', {
   value: fetchPolyfill,
-  // MSW will overwrite this to intercept requests
   writable: true,
 });
-
 Object.defineProperty(global, 'Request', {
   value: RequestPolyfill,
   writable: false,
 });
-/*
- */
 
 describe('User Profile Tests', () => {
   it('renders all nested components', async () => {
-    localStorage.setItem('userId', '1');
-    localStorage.setItem('fullName', 'Test User');
-    localStorage.setItem('email', 'testUser@gmail.com');
-
     (auth.fetchBio as Mock).mockResolvedValue({
-      data: {
-        data: {
-          bio: 'This is my Bio',
-          user_id: '1',
-        },
-      },
+      data: { data: { bio: 'This is my Bio', user_id: '1' } },
       error: null,
     });
 
@@ -63,7 +80,6 @@ describe('User Profile Tests', () => {
 
     render(<RouterProvider router={router} />);
 
-    // Await each async element individually
     const name_field = await screen.findByTestId('name-text');
     const email_field = await screen.findByTestId('email-text');
     const bio_field = await screen.findByTestId('bio-text');
@@ -79,7 +95,6 @@ describe('User Profile Tests', () => {
     const badges = await screen.findByTestId('badges-card');
     const friends = await screen.findByTestId('friends-card');
 
-    // Assertions
     expect(name_field).toHaveTextContent('Test User');
     expect(email_field).toHaveTextContent('testUser@gmail.com');
     expect(bio_field).toHaveTextContent('This is my Bio');
@@ -93,10 +108,5 @@ describe('User Profile Tests', () => {
     expect(badges).toHaveTextContent('Badges');
     expect(friends).toHaveTextContent('Friends');
     expect(auth.fetchBio).toHaveBeenCalled();
-
-    // Cleanup
-    localStorage.removeItem('userId');
-    localStorage.removeItem('fullName');
-    localStorage.removeItem('email');
   });
 });

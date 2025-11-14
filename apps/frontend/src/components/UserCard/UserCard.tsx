@@ -4,16 +4,17 @@ import { useEffect } from 'react';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 import { Avatar } from '~/components/';
 import { profileString } from '~/constants';
-import { useBioStore } from '~/store/useBioStore';
+import { userInfoStore } from '~/store';
 
 export function UserCard() {
-  const userName = localStorage.getItem('fullName') || 'Alex Student';
-  const email = localStorage.getItem('email') || 'alex@example.com';
+  const { name, email, setBio } = userInfoStore.getState();
+  const userName = name || 'Alex Student';
+  const userEmail = email || 'alex@example.com';
   const navigate = useNavigate();
   const loaderdata = useLoaderData();
 
   const bio = loaderdata.data.bio;
-  const { setBio } = useBioStore();
+
   useEffect(() => {
     setBio(bio);
   }, [setBio, bio]);
@@ -33,7 +34,7 @@ export function UserCard() {
               {userName}
             </Text>
             <Text c='dimmed' data-testid='email-text'>
-              {email}
+              {userEmail}
             </Text>
             <Text c='gray.6' data-testid='bio-text' fz='sm'>
               {bio || profileString.default}
