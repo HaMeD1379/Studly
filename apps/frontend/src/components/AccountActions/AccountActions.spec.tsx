@@ -23,8 +23,8 @@ describe('Account Actions Test', () => {
   });
   it('displays a notification when delete account button is clicked', () => {
     render(<AccountActions />);
-    const delete_btn = screen.getByTestId(/delete-account-btn/i);
-    fireEvent.click(delete_btn);
+    const deleteBtn = screen.getByTestId(/delete-account-btn/i);
+    fireEvent.click(deleteBtn);
     expect(notifications.show).toHaveBeenCalledWith({
       color: 'red',
       message:
@@ -34,8 +34,18 @@ describe('Account Actions Test', () => {
   });
   it('displays a notification when change password button is clicked', () => {
     render(<AccountActions />);
-    const changeButton = screen.getByTestId(/change-password-btn/i);
-    fireEvent.click(changeButton);
+    const changeBtn = screen.getByTestId(/change-password-btn/i);
+    fireEvent.click(changeBtn);
+    expect(notifications.show).toHaveBeenCalledWith({
+      color: 'red',
+      message: 'The action you have requested is not available at this time',
+      title: 'Not Supported',
+    });
+  });
+  it('displays a notification when change password button is clicked', () => {
+    render(<AccountActions />);
+    const changeBtn = screen.getByTestId(/change-password-btn/i);
+    fireEvent.click(changeBtn);
     expect(notifications.show).toHaveBeenCalledWith({
       color: 'red',
       message: 'The action you have requested is not available at this time',

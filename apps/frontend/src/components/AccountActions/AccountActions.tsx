@@ -1,6 +1,6 @@
 import { Box, Button, Card, Flex, Text } from '@mantine/core';
+import { IconDeviceFloppy } from '@tabler/icons-react';
 import { displayNotifications } from '~/utilities/notifications';
-
 export const AccountActions = () => {
   return (
     <Box py='md' w='100%'>
@@ -73,6 +73,15 @@ export const AccountActions = () => {
             </Flex>
           </Card>
         </Box>
+        <Flex gap='sm' justify='flex-end'>
+          <Button
+            form='profile-form'
+            leftSection={<IconDeviceFloppy size={24} />}
+            type='submit'
+          >
+            Save Changes
+          </Button>
+        </Flex>
       </Card>
     </Box>
   );

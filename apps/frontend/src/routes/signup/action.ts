@@ -1,11 +1,14 @@
 import { type ActionFunctionArgs, redirect } from 'react-router';
 import { signUp } from '~/api';
+import { userInfoStore } from '~/store/userInfoStore';
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formdata = await request.formData();
   const fullname = formdata.get('name')?.toString();
   const email = formdata.get('email')?.toString();
   const password = formdata.get('password')?.toString();
+  const { setEmail, setName, setId, setRefreshToken } =
+    userInfoStore.getState();
   if (fullname && email && password) {
     const res = await signUp(email, password, fullname);
     if (res.error) {
@@ -16,11 +19,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       const fullName = res.data.data.user.full_name;
       const email = res.data.data.user.email;
       const userid = res.data.data.user.id;
-
+      const refreshToken = res.data.data.session.refresh_token;
       localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('fullName', fullName);
-      localStorage.setItem('email', email);
-      localStorage.setItem('userId', userid);
+      setEmail(email);
+      setName(fullName);
+      setId(userid);
+      setRefreshToken(refreshToken);
       return redirect('/study');
     }
   }

@@ -8,4 +8,4 @@ export * from './settings';
 export * from './signup';
 export * from './study';
 export * from './UpdatePassword';
-export * from './UserProfile';
+export * from './userprofile';

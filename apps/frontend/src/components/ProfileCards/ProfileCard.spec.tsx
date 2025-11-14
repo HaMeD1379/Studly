@@ -1,18 +1,11 @@
 import { screen } from '@testing-library/react';
-import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
-import { UserProfile } from '~/routes';
 import { render } from '~/utilities/testing';
+import { ProfileCard } from './ProfileCard';
 
 describe('Profile Card tests', () => {
-  const router = createMemoryRouter([
-    {
-      element: <UserProfile />,
-      path: '/',
-    },
-  ]);
   it('displays all elements', () => {
-    render(<RouterProvider router={router} />);
+    render(<ProfileCard />);
     const day_streak = screen.getByTestId('day-streak-card');
     const total_study = screen.getByTestId('total-study-card');
     const badges = screen.getByTestId('badges-card');

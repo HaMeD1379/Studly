@@ -1,14 +1,11 @@
 import { screen } from '@testing-library/react';
-import { createMemoryRouter } from 'react-router';
-import { RouterProvider } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
-import { UserProfile } from '~/routes';
 import { render } from '~/utilities/testing';
+import { ProfileStatistics } from './ProfileStatistics';
 
-const router = createMemoryRouter([{ element: <UserProfile />, path: '/' }]);
 describe('Profile Statistics Tests', () => {
   it('renders all elements', () => {
-    render(<RouterProvider router={router} />);
+    render(<ProfileStatistics />);
     const this_week = screen.getByTestId('this-week-card');
     const subject_distribution = screen.getByTestId(
       'subject-distribution-card',

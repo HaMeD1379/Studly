@@ -1,4 +1,4 @@
-export * from './AccountActions/AccountActions';
+export * from './AccountActions/AccountActions.tsx';
 export * from './Avatar/Avatar';
 export * from './BadgeCollection/BadgeCollection';
 export * from './BadgeStatistics/BadgeStatistics';
@@ -9,7 +9,7 @@ export * from './Navbar/Navbar';
 export * from './PageSpinner/PageSpinner';
 export * from './ProfileCards/ProfileCard';
 export * from './ProfileInformationCard/ProfileInformationCard';
-export * from './ProfileStatistics/ProfileStatistics';
+export * from './ProfileStatistics/ProfileStatistics.tsx';
 export * from './RecentStudySessions/RecentStudySessions';
 export * from './SettingsTabBar/SettingsTabBar';
 export * from './SetupStudySession/SetupStudySession';
