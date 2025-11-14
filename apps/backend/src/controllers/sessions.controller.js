@@ -31,6 +31,7 @@
  */
 
 import sessionsService from '../services/sessions.service.js';
+import badgesService from '../services/badges.service.js';
 
 const parseLimit = (value) => {
   if (value === undefined) return undefined;
@@ -85,12 +86,14 @@ const validateDateString = (value, fieldName) => {
 };
 
 /**
- * Factory for sessions controller — allows injecting a mock service in tests.
+ * Factory for sessions controller — allows injecting mock services in tests.
  * @param {object} service - Sessions service with createSession, completeSession, listSessions
+ * @param {object} badgeService - Badges service for checking earned badges
  * @returns {{startSession: Function, completeSession: Function, listSessions: Function}}
  */
 export const createSessionsController = (
-  service = sessionsService
+  service = sessionsService,
+  badgeService = badgesService
 ) => {
   /**
    * POST /
@@ -98,8 +101,12 @@ export const createSessionsController = (
    * Expected body: {
    *   userId: string,
    *   subject: string,
-   *   startTimestamp?: ISOString,
-   *   targetDurationMillis?: number
+   *   sessionType: number,
+   *   startTime: ISOString,
+   *   endTime: ISOString,
+   *   sessionGoal?: string,
+   *   totalMinutes?: number,
+   *   date: YYYY-MM-DD
    * }
    * Response: 201 Created { session }
    */
@@ -161,6 +168,39 @@ export const createSessionsController = (
       };
 
       const session = await service.createSession(sessionToCreate);
+      
+      // ============================================================================
+      // BADGE INTEGRATION: Check for newly earned badges after creating session
+      // ============================================================================
+      // Note: Badge check happens here because sessions are created with both
+      // start and end times (not a traditional "start → later complete" flow)
+      if (session?.userId && session?.endTime) {
+        try {
+          const newBadges = await badgeService.checkAndAwardBadges(session.userId);
+          
+          return res.status(201).json({ 
+            session,
+            newBadgesEarned: newBadges,
+            badgeCount: newBadges.length
+          });
+        } catch (badgeError) {
+          // Don't fail session creation if badge check fails
+          console.error('[Badge Check Error on Session Creation]', {
+            userId: session.userId,
+            sessionId: session.id,
+            error: badgeError.message
+          });
+          
+          return res.status(201).json({ 
+            session,
+            newBadgesEarned: [],
+            badgeCount: 0,
+            badgeCheckFailed: true
+          });
+        }
+      }
+      
+      // If no endTime (shouldn't happen based on validation, but defensive)
       return res.status(201).json({ session });
     } catch (error) {
       return next(error);
@@ -169,7 +209,7 @@ export const createSessionsController = (
 
   /**
    * PATCH /:sessionId
-   * Update a session.
+   * Update a session (can be used to "complete" by adding endTime).
    * Expected params: { sessionId }
    * Expected body: {
    *   subject?: string,
@@ -180,7 +220,9 @@ export const createSessionsController = (
    *   totalMinutes?: number | null,
    *   date?: YYYY-MM-DD
    * }
-   * Response: 200 OK { session } | 404 if not found
+   * Response: 200 OK { session, newBadgesEarned?: [] } | 404 if not found
+   * 
+   *  Badge Integration: Checks for badges if endTime is being set/updated
    */
   const completeSession = async (req, res, next) => {
     try {
@@ -269,6 +311,39 @@ export const createSessionsController = (
       const session = await service.completeSession(sessionId, updates);
       if (!session) return res.status(404).json({ error: 'Session not found' });
 
+      // ============================================================================
+      // BADGE INTEGRATION: Check for newly earned badges after updating session
+      // ============================================================================
+      // Only check badges if endTime was part of the update (indicates completion)
+      const isCompletingSession = endTime !== undefined;
+      
+     if (isCompletingSession && session?.userId) {
+        try {
+          const newBadges = await badgeService.checkAndAwardBadges(session.userId);
+          
+          return res.status(200).json({ 
+            session,
+            newBadgesEarned: newBadges,
+            badgeCount: newBadges.length
+          });
+        } catch (badgeError) {
+          // Don't fail the session update if badge check fails
+          console.error('[Badge Check Error on Session Update]', {
+            userId: session.userId,
+            sessionId: session.id,
+            error: badgeError.message
+          });
+          
+          return res.status(200).json({ 
+            session,
+            newBadgesEarned: [],
+            badgeCount: 0,
+            badgeCheckFailed: true
+          });
+        }
+      }
+
+      // If not completing (just updating other fields), return session normally
       return res.status(200).json({ session });
     } catch (error) {
       return next(error);
