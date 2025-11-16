@@ -26,7 +26,6 @@ vi.mock('~/store', () => ({
   },
 }));
 
-// ✅ Add this interface
 interface MockStorage {
   getItem: Mock;
   setItem: Mock;
