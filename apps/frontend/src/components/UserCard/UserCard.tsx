@@ -6,7 +6,7 @@ import { Avatar } from '~/components/';
 import { profileString } from '~/constants';
 import { userInfoStore } from '~/store';
 
-export function UserCard() {
+export const UserCard = () => {
   const { name, email, setBio } = userInfoStore.getState();
   const userName = name || 'Alex Student';
   const userEmail = email || 'alex@example.com';
@@ -73,4 +73,4 @@ export function UserCard() {
       </Stack>
     </Card>
   );
-}
+};

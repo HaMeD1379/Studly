@@ -19,7 +19,7 @@ import placeholder from '~/assets/landscape-placeholder.svg';
 import { displayNotifications } from '~/utilities/notifications/displayNotifications';
 import { equalPasswords, validateEmail } from '~/utilities/validation';
 
-export function SignUpForm() {
+export const SignUpForm = () => {
   const navigate = useNavigate();
   const actionData = useActionData();
 
@@ -206,4 +206,4 @@ export function SignUpForm() {
       </Container>
     </Box>
   );
-}
+};

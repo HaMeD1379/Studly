@@ -20,7 +20,7 @@ import placeholder from '~/assets/landscape-placeholder.svg';
 import { displayNotifications } from '~/utilities/notifications/displayNotifications';
 import { validateEmail } from '~/utilities/validation';
 
-export function LoginForm() {
+export const LoginForm = () => {
   const navigate = useNavigate();
   const actionData = useActionData();
 
@@ -158,4 +158,4 @@ export function LoginForm() {
       </Container>
     </Box>
   );
-}
+};

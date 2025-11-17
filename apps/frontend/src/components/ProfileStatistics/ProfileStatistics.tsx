@@ -11,7 +11,7 @@ import {
   Title,
 } from '@mantine/core';
 
-export function ProfileStatistics() {
+export const ProfileStatistics = () => {
   const tabs = ['Overview', 'Detailed Stats', 'Achievements'];
   const subjects = [
     { hours: 120, label: 'Biology' },
@@ -111,4 +111,4 @@ export function ProfileStatistics() {
       </Card>
     </Box>
   );
-}
+};

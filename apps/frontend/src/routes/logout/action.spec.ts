@@ -26,15 +26,14 @@ vi.mock('~/store', () => ({
   },
 }));
 
-// ✅ Add this interface
-interface MockStorage {
+type MockStorage = {
   getItem: Mock;
   setItem: Mock;
   removeItem: Mock;
   clear: Mock;
-}
+};
 
-function createMockStorage(): MockStorage {
+const createMockStorage = (): MockStorage => {
   let store: Record<string, string> = {};
 
   return {
@@ -49,7 +48,7 @@ function createMockStorage(): MockStorage {
       store[key] = val;
     }),
   };
-}
+};
 
 describe('logout action', () => {
   let mockStorage: MockStorage; // ✅ fixed typo
