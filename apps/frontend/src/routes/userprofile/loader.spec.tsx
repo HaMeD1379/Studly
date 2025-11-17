@@ -17,7 +17,7 @@ describe('fetchBio mock test', () => {
       },
     };
 
-    // @ts-expect-error — tell TypeScript we're controlling the mock
+    // @ts-expect-error
     fetchBio.mockResolvedValue(mockResponse);
 
     const result = await fetchBio('123');

@@ -1,3 +1,4 @@
+//local storage mock was generated using GEN AI (Chat GPT)
 const { redirectMock } = vi.hoisted(() => ({
   redirectMock: vi.fn((path: string) => ({ redirect: path })),
 }));
@@ -51,8 +52,7 @@ const createMockStorage = (): MockStorage => {
 };
 
 describe('logout action', () => {
-  let mockStorage: MockStorage; // ✅ fixed typo
-
+  let mockStorage: MockStorage;
   beforeEach(() => {
     mockStorage = createMockStorage();
 
