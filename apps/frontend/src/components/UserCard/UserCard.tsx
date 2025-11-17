@@ -1,12 +1,23 @@
 import { Button, Card, Flex, Progress, Stack, Text } from '@mantine/core';
 import { IconEdit, IconShare } from '@tabler/icons-react';
+import { useEffect } from 'react';
+import { useLoaderData, useNavigate } from 'react-router-dom';
 import { Avatar } from '~/components/';
 import { profileString } from '~/constants';
+import { userInfoStore } from '~/store';
 
-export function UserCard() {
-  const userName = localStorage.getItem('fullName') || 'Alex Student';
-  const email = localStorage.getItem('email') || 'alex@example.com';
+export const UserCard = () => {
+  const { name, email, setBio } = userInfoStore.getState();
+  const userName = name || 'Alex Student';
+  const userEmail = email || 'alex@example.com';
+  const navigate = useNavigate();
+  const loaderdata = useLoaderData();
 
+  const bio = loaderdata.data.bio;
+
+  useEffect(() => {
+    setBio(bio);
+  }, [setBio, bio]);
   return (
     <Card p='lg' radius='md' shadow='sm' w='100%' withBorder>
       <Flex align='center' gap='md' justify='space-between' wrap='wrap'>
@@ -23,10 +34,10 @@ export function UserCard() {
               {userName}
             </Text>
             <Text c='dimmed' data-testid='email-text'>
-              {email}
+              {userEmail}
             </Text>
             <Text c='gray.6' data-testid='bio-text' fz='sm'>
-              {profileString.default}
+              {bio || profileString.default}
             </Text>
           </Stack>
         </Flex>
@@ -36,6 +47,9 @@ export function UserCard() {
             c='dark'
             data-testid='edit-btn'
             leftSection={<IconEdit size={14} />}
+            onClick={() => {
+              navigate('/settings');
+            }}
             style={{ borderColor: 'black' }}
             variant='outline'
           >
@@ -59,4 +73,4 @@ export function UserCard() {
       </Stack>
     </Card>
   );
-}
+};

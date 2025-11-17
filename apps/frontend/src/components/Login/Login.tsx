@@ -9,6 +9,7 @@ import {
   Image,
   Paper,
   PasswordInput,
+  Stack,
   Text,
   TextInput,
   Title,
@@ -18,28 +19,29 @@ import { Form, useActionData, useNavigate } from 'react-router-dom';
 import placeholder from '~/assets/landscape-placeholder.svg';
 import { displayNotifications } from '~/utilities/notifications/displayNotifications';
 import { validateEmail } from '~/utilities/validation';
-export function LoginForm() {
+
+export const LoginForm = () => {
   const navigate = useNavigate();
-  //display notifications based on the response from the api so like error messages
   const actionData = useActionData();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = async (e: React.FormEvent) => {
-    if (!email || !password || !(email && validateEmail(email))) {
+    if (!email || !password || !validateEmail(email)) {
       e.preventDefault();
       displayNotifications('Mismatch', 'Provide a valid Email', 'red');
     }
   };
+
   useEffect(() => {
-    if (actionData && !actionData.success) {
-      const message = actionData.message;
-      if (
-        message === 'The HTTP request POST auth/login failed with status 401'
-      ) {
-        displayNotifications('Login Error', 'Invalid Credentials', 'red');
-      }
+    if (!actionData) return;
+
+    // success false but message might not exist
+    const message = actionData.message;
+
+    if (typeof message === 'string' && message.includes('401')) {
+      displayNotifications('Login Error', 'Invalid Credentials', 'red');
     }
   }, [actionData]);
 
@@ -47,45 +49,52 @@ export function LoginForm() {
     <Box
       style={{
         alignItems: 'center',
-        backgroundColor: '#f0f0f0',
+        background: 'linear-gradient(135deg, #e0f0ff 0%, #4a90e2 100%)',
         display: 'flex',
         justifyContent: 'center',
-        margin: '0',
         minHeight: '100vh',
         padding: '20px',
       }}
     >
-      <Container my={40} size={420}>
-        <Paper mt={30} p={22} radius='md' shadow='sm' withBorder>
-          <Center>
-            <Image
-              alt='Description of your image'
-              h={200}
-              src={placeholder}
-              w='auto'
-            />
+      <Container size={420}>
+        <Paper
+          p={30}
+          radius='xl'
+          shadow='xl'
+          style={{
+            background: 'white',
+            border: '1px solid rgba(0,0,0,0.08)',
+            overflow: 'hidden',
+          }}
+          withBorder
+        >
+          <Center mb='md'>
+            <Image alt='Logo' height={120} src={placeholder} width={120} />
           </Center>
-          <Title ff='Inter, sans-serif' ta='center'>
-            Welcome to Studly
-          </Title>
-          <Text
-            c='gray'
-            style={{
-              fontSize: 'var(--mantine-font-size-xs)',
-              marginTop: '5px',
-              textAlign: 'center',
-            }}
-          >
-            Sign in to your account to continue your learning journey
-          </Text>
+
+          <Stack>
+            <Title c='#222' fw={700} order={2} ta='center'>
+              Welcome to Studly
+            </Title>
+            <Text c='dimmed' ta='center'>
+              Sign in to your account and continue your learning journey
+            </Text>
+          </Stack>
+
           <Form method='post' onSubmit={handleLogin}>
             <TextInput
               label='Email'
+              mt='md'
               name='email'
               onChange={(e) => setEmail(e.target.value)}
-              placeholder='you@mantine.dev'
+              placeholder='you@studly.com'
               radius='md'
               required
+              styles={{
+                input: { backgroundColor: '#f8f9fa', color: '#222' },
+                label: { color: '#222', fontWeight: 500 },
+              }}
+              variant='filled'
             />
             <PasswordInput
               label='Password'
@@ -95,54 +104,52 @@ export function LoginForm() {
               placeholder='Your password'
               radius='md'
               required
+              styles={{
+                input: { backgroundColor: '#f8f9fa', color: '#222' },
+                label: { color: '#222', fontWeight: 500 },
+              }}
+              variant='filled'
             />
-            <Group justify='space-between' mt='lg'>
+
+            <Group mt='md'>
               <Checkbox label='Remember me' />
-              <br />
               <Anchor
                 c='black'
                 component='button'
                 onClick={() => navigate('/forgot-password')}
                 size='sm'
+                variant='text'
               >
                 Forgot password?
               </Anchor>
             </Group>
+
             <Button
               fullWidth
               mt='xl'
               radius='md'
+              size='md'
               styles={{
                 root: {
                   '&:hover': { backgroundColor: '#222' },
                   backgroundColor: 'black',
                   color: 'white',
-                  fontWeight: 500,
+                  fontWeight: 600,
                 },
               }}
               type='submit'
             >
-              Sign in
+              Sign In
             </Button>
           </Form>
-          <br />
-          <Text
-            style={{
-              color: 'var(--mantine-color-dimmed)',
-              fontSize: 'var(--mantine-font-size-xs)',
-              marginTop: '5px',
-              textAlign: 'center',
-            }}
-          >
-            Do not have an account?{' '}
+
+          <Text c='dimmed' mt='md' ta='center'>
+            Don’t have an account?{' '}
             <Anchor
+              c='black'
+              component='button'
+              fw={600}
               onClick={() => navigate('/signup')}
-              styles={{
-                root: {
-                  color: 'black',
-                  fontWeight: 400,
-                },
-              }}
             >
               Sign Up
             </Anchor>
@@ -151,4 +158,4 @@ export function LoginForm() {
       </Container>
     </Box>
   );
-}
+};

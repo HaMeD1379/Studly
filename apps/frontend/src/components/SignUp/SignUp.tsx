@@ -2,22 +2,26 @@ import {
   Anchor,
   Box,
   Button,
+  Center,
   Checkbox,
   Container,
   Group,
+  Image,
   Paper,
   PasswordInput,
   Text,
   TextInput,
   Title,
 } from '@mantine/core';
-import { useState } from 'react';
-import { Form, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Form, useActionData, useNavigate } from 'react-router-dom';
+import placeholder from '~/assets/landscape-placeholder.svg';
 import { displayNotifications } from '~/utilities/notifications/displayNotifications';
 import { equalPasswords, validateEmail } from '~/utilities/validation';
 
-export function SignUpForm() {
+export const SignUpForm = () => {
   const navigate = useNavigate();
+  const actionData = useActionData();
 
   const [password1, setPassword1] = useState('');
   const [password2, setPassword2] = useState('');
@@ -36,21 +40,20 @@ export function SignUpForm() {
   });
   const rules = checkRules(password1);
 
-  const handleClick = async (e: React.FormEvent) => {
+  useEffect(() => {
+    if (!actionData) return;
+
+    // success false but message might not exist
+    const message = actionData.message;
+
+    if (typeof message === 'string' && message.includes('409')) {
+      displayNotifications('Signup Error', 'Email already exists!', 'red');
+    }
+  }, [actionData]);
+
+  const handleClick = async (_e: React.FormEvent) => {
     try {
-      if (
-        validateEmail(email) &&
-        equalPasswords(password1, password2) &&
-        name
-      ) {
-        displayNotifications(
-          'Account Created Successfully',
-          'Begin Your Gamified Learning experience now',
-          'green',
-        );
-      } else {
-        e.preventDefault();
-      }
+      validateEmail(email) && equalPasswords(password1, password2) && name;
     } catch (err: unknown) {
       let message = 'An unknown error occurred.';
 
@@ -74,10 +77,12 @@ export function SignUpForm() {
       console.log(error);
     }
   };
+
   return (
     <Box
       style={{
         alignItems: 'center',
+        background: 'linear-gradient(135deg, #e0f0ff 0%, #4a90e2 100%)',
         backgroundColor: '#f0f0f0',
         display: 'flex',
         justifyContent: 'center',
@@ -105,18 +110,19 @@ export function SignUpForm() {
             ^, &, *, (, ), -, _, +, =)
           </Text>
         </Paper>
-        <Paper mt={30} p={22} radius='md' shadow='sm' withBorder>
+        <Paper mt={30} p={22} radius='lg' shadow='sm' withBorder>
+          <Center>
+            <Image
+              alt='Description of your image'
+              h={150}
+              src={placeholder}
+              w='auto'
+            />
+          </Center>
           <Title ff='Inter, sans-serif' ta='center'>
             Join Studly
           </Title>
-          <Text
-            c='gray'
-            style={{
-              fontSize: 'var(--mantine-font-size-xs)',
-              marginTop: '5px',
-              textAlign: 'center',
-            }}
-          >
+          <Text c='dimmed' style={{ textAlign: 'center' }}>
             Create your account and start your gamified learning journey
           </Text>
           <Form method='post' onSubmit={handleClick}>
@@ -127,6 +133,7 @@ export function SignUpForm() {
               placeholder='Enter your full name'
               radius='md'
               required
+              variant='filled'
             />
             <TextInput
               label='Email'
@@ -134,6 +141,7 @@ export function SignUpForm() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder='yourname@gmail.com'
               required
+              variant='filled'
             />
             <PasswordInput
               label='Create Password'
@@ -142,20 +150,24 @@ export function SignUpForm() {
               onChange={(e) => setPassword1(e.target.value)}
               placeholder='Create a password'
               required
+              variant='filled'
             />
             <PasswordInput
+              fw={600}
               label='Confirm Password'
               mt='md'
               onChange={(e) => setPassword2(e.target.value)}
               placeholder='Confirm your password'
               radius='md'
               required
+              variant='filled'
             />
             <Group justify='space-between' mt='lg'>
               <Checkbox
                 fw={700}
                 label='I agree to the Terms and Conditions'
                 required
+                variant='filled'
               />
             </Group>
             <Button
@@ -176,14 +188,7 @@ export function SignUpForm() {
             </Button>
           </Form>
           <br />
-          <Text
-            style={{
-              color: 'var(--mantine-color-dimmed)',
-              fontSize: 'var(--mantine-font-size-xs)',
-              marginTop: '5px',
-              textAlign: 'center',
-            }}
-          >
+          <Text c='dimmed' style={{ textAlign: 'center' }}>
             Already have an account?{' '}
             <Anchor
               onClick={() => navigate('/')}
@@ -201,4 +206,4 @@ export function SignUpForm() {
       </Container>
     </Box>
   );
-}
+};

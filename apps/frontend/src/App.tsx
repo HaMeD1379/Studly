@@ -9,6 +9,8 @@ import {
   Login,
   loginAction,
   logoutAction,
+  ProfileLoader,
+  profileChangeAction,
   Settings,
   SignUp,
   Study,
@@ -30,7 +32,7 @@ const router = createBrowserRouter([
   { element: <Home />, path: '/home' },
   { action: logoutAction, element: <Login />, path: '/logout' },
   { action: signUpAction, element: <SignUp />, path: '/signup' },
-  { element: <Settings />, path: '/settings' },
+  { action: profileChangeAction, element: <Settings />, path: '/settings' },
   {
     action: studyAction,
     element: <Study />,
@@ -39,7 +41,13 @@ const router = createBrowserRouter([
     loader: studyLoader,
     path: '/study',
   },
-  { element: <UserProfile />, path: '/user-profile' },
+  {
+    element: <UserProfile />,
+    errorElement: <ErrorBoundary />,
+    hydrateFallbackElement: <PageSpinner />,
+    loader: ProfileLoader,
+    path: '/user-profile',
+  },
 ]);
 
 export const App = () => {
