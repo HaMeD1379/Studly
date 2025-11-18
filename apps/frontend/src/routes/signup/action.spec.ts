@@ -41,7 +41,7 @@ describe('signup action', () => {
     body.set('password', '123456');
 
     const request = new Request('http://localhost', {
-      body,
+      body: body.toString(),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
@@ -81,7 +81,7 @@ describe('signup action', () => {
     body.set('password', 'password123');
 
     const request = new Request('http://localhost', {
-      body,
+      body: body.toString(),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
@@ -113,7 +113,7 @@ describe('signup action', () => {
     const body = new URLSearchParams(); // no fields
 
     const request = new Request('http://localhost', {
-      body,
+      body: body.toString(),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
