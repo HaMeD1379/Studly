@@ -15,3 +15,6 @@ export const SESSIONS_SUMMARY = 'sessions/summary';
 export const SESSIONS = 'sessions';
 
 export const BADGES_ALL_USER = 'badges/users';
+
+export const PROFILE_CHANGES_BIO = 'profile/update';
+export const RETRIEVE_BIO = 'profile';

@@ -1,5 +1,28 @@
-import { describe, expect, it } from 'vitest';
-import { mockAccessToken, mockSessionId, mockUserId } from '~/mocks';
+const { mockUserId, mockSessionId, mockAccessToken, mockSetSessId } =
+  vi.hoisted(() => ({
+    mockAccessToken: 'token789',
+    mockSessionId: 'sess456',
+    mockSetSessId: vi.fn(),
+    mockUserId: 'user123',
+  }));
+
+vi.mock('~/store/userInfoStore', () => {
+  return {
+    userInfoStore: {
+      getState: vi.fn(() =>
+        createMockBioStore({
+          sessionId: mockSessionId,
+          setSessId: mockSetSessId,
+          userId: mockUserId,
+        }),
+      ),
+    },
+  };
+});
+
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { userInfoStore } from '~/store';
+import { createMockBioStore } from './mockUserInfo';
 import {
   getAccessToken,
   getSessionId,
@@ -8,39 +31,67 @@ import {
 } from './session';
 
 describe('session', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    localStorage.clear();
+
+    vi.mocked(userInfoStore.getState).mockReturnValue(
+      createMockBioStore({
+        sessionId: mockSessionId,
+        setSessId: mockSetSessId,
+        userId: mockUserId,
+      }),
+    );
+  });
+
   it('returns empty string on getAccessToken if no storage is set', () => {
-    expect(getAccessToken()).toEqual('');
+    expect(getAccessToken()).toBe('');
   });
 
-  it('returns empty string on getUserId if no storage is set', () => {
-    expect(getUserId()).toEqual('');
+  it('returns empty string on getUserId if store has no userId', () => {
+    vi.mocked(userInfoStore.getState).mockReturnValue(
+      createMockBioStore({
+        sessionId: mockSessionId,
+        setSessId: mockSetSessId,
+        userId: '',
+      }),
+    );
+
+    expect(getUserId()).toBe('');
   });
 
-  it('returns empty string on getSessionId if no storage is set', () => {
-    expect(getSessionId()).toEqual('');
+  it('returns empty string on getSessionId if store has no sessionId', () => {
+    vi.mocked(userInfoStore.getState).mockReturnValue(
+      createMockBioStore({
+        sessionId: '',
+        setSessId: mockSetSessId,
+        userId: mockUserId,
+      }),
+    );
+
+    expect(getSessionId()).toBe('');
   });
 
   it('returns token on getAccessToken if storage is set', () => {
     localStorage.setItem('accessToken', mockAccessToken);
-    expect(getAccessToken()).toEqual(mockAccessToken);
-    localStorage.removeItem('accessToken');
+    expect(getAccessToken()).toBe(mockAccessToken);
   });
 
-  it('returns user id on getUserId if storage is set', () => {
-    localStorage.setItem('userId', mockUserId);
-    expect(getUserId()).toEqual(mockUserId);
-    localStorage.removeItem('userId');
+  it('returns user id from store', () => {
+    expect(getUserId()).toBe(mockUserId);
   });
 
-  it('returns session id on getSessionId if storage is set', () => {
-    localStorage.setItem('sessionId', mockSessionId);
-    expect(getSessionId()).toEqual(mockSessionId);
-    localStorage.removeItem('sessionId');
+  it('returns session id from store', () => {
+    expect(getSessionId()).toBe(mockSessionId);
   });
 
-  it('sets session id on local storage correectly', () => {
-    setSessionId(mockSessionId);
-    expect(localStorage.getItem('sessionId')).toEqual(mockSessionId);
-    localStorage.removeItem('sessionId');
+  it('sets session id via store', () => {
+    const newSessionId = 'newSess123';
+
+    expect(mockSetSessId).not.toHaveBeenCalled();
+
+    setSessionId(newSessionId);
+
+    expect(mockSetSessId).toHaveBeenCalledWith(newSessionId);
   });
 });

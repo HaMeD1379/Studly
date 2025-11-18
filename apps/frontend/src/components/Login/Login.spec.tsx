@@ -1,3 +1,14 @@
+vi.mock('~/store/userInfoStore', () => ({
+  userInfoStore: {
+    getState: () => ({
+      setEmail: vi.fn(),
+      setId: vi.fn(),
+      setName: vi.fn(),
+      setRefreshToken: vi.fn(),
+    }),
+  },
+}));
+
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { LoginForm } from './Login';
@@ -9,7 +20,7 @@ import * as auth from '~/api/auth';
 import { loginAction } from '~/routes/login';
 import { render } from '~/utilities/testing';
 
-//Lines 15 - 24 were provided through an online github repo as solution to the error:
+//Lines 15 - 24 were provided through an online github repo (https://github.com/reduxjs/redux-toolkit/issues/4966#issuecomment-3115230061) as solution to the error:
 //RequestInit: Expected signal ("AbortSignal {}") to be an instance of AbortSignal.
 Object.defineProperty(global, 'fetch', {
   value: fetchPolyfill,
@@ -133,7 +144,6 @@ describe('Login Tests', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
 
-    // wait for router to process and component to re-render
     await waitFor(() => {
       expect(auth.login).toHaveBeenCalledWith(
         'test@example.com',

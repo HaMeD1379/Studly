@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { displayNotifications } from '~/utilities/notifications/displayNotifications';
 import { equalPasswords } from '~/utilities/testing/passwordValidation';
 
-export function UpdatePassword() {
+export const UpdatePassword = () => {
   const passwordLen = 8;
   const checkRules = (value: string) => ({
     hasDigit: /\d/.test(value),
@@ -132,4 +132,4 @@ export function UpdatePassword() {
       </Container>
     </Box>
   );
-}
+};

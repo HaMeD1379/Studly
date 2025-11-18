@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router';
 import { displayNotifications } from '~/utilities/notifications/displayNotifications';
 import { validateEmail } from '~/utilities/validation';
 
-export function ForgotPassword() {
+export const ForgotPassword = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
 
@@ -102,4 +102,4 @@ export function ForgotPassword() {
       </Paper>
     </Container>
   );
-}
+};

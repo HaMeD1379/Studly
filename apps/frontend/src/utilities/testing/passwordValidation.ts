@@ -1,10 +1,10 @@
 import { displayNotifications } from '../notifications/displayNotifications';
 
-export function equalPasswords(
+export const equalPasswords = (
   password_1: string,
   password_2: string,
   passwordLen = 8,
-): boolean {
+): boolean => {
   if (!password_1 || !password_2) return false;
 
   return (
@@ -15,7 +15,7 @@ export function equalPasswords(
     containsSpecialCharacter(password_1) &&
     checkPasswordLength(password_1, passwordLen)
   );
-}
+};
 
 const matchingPasswords = (password_1: string, password_2: string) => {
   if (password_1 !== password_2) {

@@ -1,10 +1,13 @@
 import { type ActionFunctionArgs, redirect } from 'react-router';
 import { login } from '~/api';
+import { userInfoStore } from '~/store/userInfoStore';
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const email = formData.get('email')?.toString();
   const password = formData.get('password')?.toString();
+  const { setEmail, setName, setId, setRefreshToken } =
+    userInfoStore.getState();
 
   if (!email || !password) return { error: 'Missing credentials' }; // early exit if missing
   const res = await login(email, password);
@@ -21,11 +24,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const fullName = res.data.data.user.full_name;
     const email = res.data.data.user.email;
     const userid = res.data.data.user.id;
-
+    const refreshToken = res.data.data.session.refresh_token;
     localStorage.setItem('accessToken', accessToken);
-    localStorage.setItem('fullName', fullName);
-    localStorage.setItem('email', email);
-    localStorage.setItem('userId', userid);
+    setEmail(email);
+    setName(fullName);
+    setId(userid);
+    setRefreshToken(refreshToken);
     return redirect('/study');
   }
   return { error: 'Unexpected response from login' };

@@ -46,6 +46,7 @@ import sessionsRoutes from "./routes/v1/sessions.routes.js";
 import profileRoutes from "./routes/v1/profile.routes.js";
 import requireInternalApiKey from "./middleware/internal-api-key.middleware.js";
 import badgesRoutes from "./routes/v1/badges.routes.js";
+import leaderboardRoutes from "./routes/v1/leaderboard.routes.js";
 import profiling from "./middleware/profiling.middleware.js";
 
 const app = express();
@@ -65,6 +66,7 @@ app.use(STRINGS.API.AUTH_ROUTE, authRoutes);
 app.use("/api/v1/sessions", sessionsRoutes);
 app.use("/api/v1/profile", profileRoutes);
 app.use("/api/v1/badges", badgesRoutes);
+app.use("/api/v1/leaderboard", leaderboardRoutes);
 
 const port = process.env.PORT || 3000;
 

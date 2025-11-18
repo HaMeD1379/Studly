@@ -7,16 +7,16 @@ vi.mock('@mantine/core', async () => {
   const actual =
     await vi.importActual<typeof import('@mantine/core')>('@mantine/core');
 
-  interface SegmentedControlItem {
+  type SegmentedControlItem = {
     label: React.ReactNode;
     value: string;
-  }
+  };
 
-  interface SegmentedControlProps {
+  type SegmentedControlProps = {
     data: SegmentedControlItem[];
     disabled?: boolean;
     onChange: (value: string) => void;
-  }
+  };
 
   return {
     ...actual,

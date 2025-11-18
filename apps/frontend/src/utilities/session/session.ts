@@ -1,8 +1,15 @@
-export const getUserId = () => localStorage.getItem('userId') ?? '';
+import { userInfoStore } from '~/store/userInfoStore';
+
+export const getUserId = () => {
+  return userInfoStore.getState().userId ?? '';
+};
+
+export const getSessionId = () => {
+  return userInfoStore.getState().sessionId ?? '';
+};
+
+export const setSessionId = (sessionId: string) => {
+  return userInfoStore.getState().setSessId(sessionId);
+};
 
 export const getAccessToken = () => localStorage.getItem('accessToken') ?? '';
-
-export const setSessionId = (sessionId: string) =>
-  localStorage.setItem('sessionId', sessionId) ?? '';
-
-export const getSessionId = () => localStorage.getItem('sessionId') ?? '';
