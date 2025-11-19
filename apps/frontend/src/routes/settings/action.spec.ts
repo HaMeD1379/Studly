@@ -36,7 +36,7 @@ describe('updateBio action', () => {
     if (fullName) body.set('fullName', fullName);
 
     return new Request('http://localhost', {
-      body,
+      body: body.toString(),
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       method: 'POST',
     });

@@ -2,7 +2,6 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import { mockAllBadges, mockAllUnlockedBadges } from '~/mocks';
-import { formatToYYYYMMDD } from '~/utilities/date';
 import { render } from '~/utilities/testing';
 import { BadgeCollection } from './BadgeCollection';
 
@@ -92,9 +91,7 @@ const validateUnlockedRenderedPage = (pageNumber: number) => {
     expect(screen.getByText(unlockedBadge.name)).not.toBeNull();
     expect(screen.getByText(unlockedBadge.description)).not.toBeNull();
     expect(
-      screen.getByText(
-        `Unlocked ${formatToYYYYMMDD(unlockedBadge.timeUnlocked)}`,
-      ),
+      screen.getByText(`Unlocked ${unlockedBadge.earnedAt}`),
     ).not.toBeNull();
   }
 };
