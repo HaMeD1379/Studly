@@ -62,6 +62,7 @@ const STRINGS = {
     OBJECT: "object",
     FUNCTION: "function",
     INVALID_TOKEN_ERROR: "Invalid token or expired token",
+    SERVER_STATUS_OK: "studly api running",
   },
 
   // SUPABASE ERRORS
@@ -180,6 +181,19 @@ const STRINGS = {
     PROFILE_UPDATE_PATCH: "PATCH /api/v1/profile/update",
     PROFILE_DATA: "/api/v1/profile",
     PROFILE_DATA_GET: "GET /api/v1/profile/:id",
+    // Sessions API routes
+    SESSIONS_ROUTE: "/api/v1/sessions",
+    SESSIONS_CREATE_POST: "POST /api/v1/sessions",
+    SESSIONS_UPDATE_PATCH: "PATCH /api/v1/sessions/:id",
+    SESSIONS_LIST_GET: "GET /api/v1/sessions",
+    SESSIONS_SUMMARY_GET: "GET /api/v1/sessions/summary",
+    // Public and protection routes
+    HEALTHCHECK_ROUTE: "/health",
+    ROOT_ROUTE: "/",
+    PROTECTED_API_PREFIX: "/api",
+    PROFILE_ROUTE: "/api/v1/profile",
+    BADGES_ROUTE: "/api/v1/badges",
+    LEADERBOARD_ROUTE: "/api/v1/leaderboard",
   },
 
   TEST: {
