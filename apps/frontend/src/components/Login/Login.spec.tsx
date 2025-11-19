@@ -80,7 +80,7 @@ describe('Login Tests', () => {
 
     expect(notifications.show).toHaveBeenCalledWith({
       color: 'red',
-      message: 'Provide a valid Email',
+      message: 'Provide a valid email',
       title: 'Mismatch',
     });
   });

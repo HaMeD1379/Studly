@@ -70,7 +70,7 @@ describe('Sign up activity', () => {
     fireEvent.click(signUpButton);
     expect(notifications.show).toHaveBeenCalledWith({
       color: 'red',
-      message: 'Provide a valid Email',
+      message: 'Provide a valid email',
       title: 'Mismatch',
     });
   });

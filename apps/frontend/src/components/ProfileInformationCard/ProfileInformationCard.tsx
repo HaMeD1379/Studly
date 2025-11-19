@@ -18,8 +18,8 @@ export const profileInformationCard = () => {
   const changeName = (name: string) => {
     setFullName(name);
   };
-  const changeEmail = (email_input: string) => {
-    setUserEmail(email_input);
+  const changeEmail = (email: string) => {
+    setUserEmail(email);
   };
   const wordCounter = (text: string) => {
     const maxLength = 200;

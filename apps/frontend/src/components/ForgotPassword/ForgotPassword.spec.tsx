@@ -47,7 +47,7 @@ describe('Sign up activity', () => {
 
     expect(notifications.show).toHaveBeenCalledWith({
       color: 'red',
-      message: 'Provide a valid Email',
+      message: 'Provide a valid email',
       title: 'Mismatch',
     });
   });
@@ -104,7 +104,7 @@ describe('Sign up activity', () => {
 
     expect(notifications.show).toHaveBeenCalledWith({
       color: 'red',
-      message: 'Provide a valid Email',
+      message: 'Provide a valid email',
       title: 'Missing Field',
     });
   });

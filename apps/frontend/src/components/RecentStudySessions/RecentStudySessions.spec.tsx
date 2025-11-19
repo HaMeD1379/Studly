@@ -9,7 +9,7 @@ describe('RecentStudySessions', () => {
     render(<RecentStudySessions recentStudySessions={[]} />);
 
     expect(screen.getByText('Recent Sessions')).not.toBeNull();
-    expect(screen.getByText('No sessions completed yet.')).not.toBeNull();
+    expect(screen.getByText('No sessions completed yet')).not.toBeNull();
     expect(screen.getByText('Start your first session!')).not.toBeNull();
   });
 

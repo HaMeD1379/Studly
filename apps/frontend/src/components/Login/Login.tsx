@@ -17,7 +17,16 @@ import {
 import { useEffect, useState } from 'react';
 import { Form, useActionData, useNavigate } from 'react-router-dom';
 import placeholder from '~/assets/landscape-placeholder.svg';
-import { FORGOT_PASSWORD, SIGNUP } from '~/constants';
+import {
+  FORGOT_PASSWORD,
+  LOGIN_BUTTON_TEXT,
+  LOGIN_DESCRIPTION,
+  LOGIN_FORGOT_PASSWORD_BUTTON_TEXT,
+  LOGIN_HEADER,
+  LOGIN_SIGN_UP_BUTTON_TEXT,
+  LOGIN_SIGN_UP_PREFIX,
+  SIGNUP,
+} from '~/constants';
 import { displayNotifications } from '~/utilities/notifications/displayNotifications';
 import { validateEmail } from '~/utilities/validation';
 
@@ -31,7 +40,7 @@ export const LoginForm = () => {
   const handleLogin = async (e: React.FormEvent) => {
     if (!email || !password || !validateEmail(email)) {
       e.preventDefault();
-      displayNotifications('Mismatch', 'Provide a valid Email', 'red');
+      displayNotifications('Mismatch', 'Provide a valid email', 'red');
     }
   };
 
@@ -75,10 +84,10 @@ export const LoginForm = () => {
 
           <Stack>
             <Title c='#222' fw={700} order={2} ta='center'>
-              Welcome to Studly
+              {LOGIN_HEADER}
             </Title>
             <Text c='dimmed' ta='center'>
-              Sign in to your account and continue your learning journey
+              {LOGIN_DESCRIPTION}
             </Text>
           </Stack>
 
@@ -120,23 +129,23 @@ export const LoginForm = () => {
                 size='sm'
                 variant='text'
               >
-                Forgot password?
+                {LOGIN_FORGOT_PASSWORD_BUTTON_TEXT}
               </Anchor>
             </Group>
 
             <Button fullWidth mt='xl' radius='md' size='md' type='submit'>
-              Sign In
+              {LOGIN_BUTTON_TEXT}
             </Button>
           </Form>
 
           <Text c='dimmed' mt='md' ta='center'>
-            Don’t have an account?{' '}
+            {LOGIN_SIGN_UP_PREFIX}{' '}
             <Anchor
               component='button'
               fw={600}
               onClick={() => navigate(SIGNUP)}
             >
-              Sign Up
+              {LOGIN_SIGN_UP_BUTTON_TEXT}
             </Anchor>
           </Text>
         </Paper>

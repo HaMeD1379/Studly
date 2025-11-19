@@ -16,7 +16,19 @@ import {
 import { useEffect, useState } from 'react';
 import { Form, useActionData, useNavigate } from 'react-router-dom';
 import placeholder from '~/assets/landscape-placeholder.svg';
-import { LOGIN } from '~/constants';
+import {
+  LOGIN,
+  SIGN_UP_ALREADY_HAVE_ACCOUNT_TEXT,
+  SIGN_UP_BUTTON_TEXT,
+  SIGN_UP_DESCRIPTION,
+  SIGN_UP_HEADER,
+  SIGN_UP_RULE_1,
+  SIGN_UP_RULE_2,
+  SIGN_UP_RULE_3,
+  SIGN_UP_RULE_4,
+  SIGN_UP_RULE_5,
+  SIGN_UP_SIGN_IN_BUTTON_TEXT,
+} from '~/constants';
 import { displayNotifications } from '~/utilities/notifications/displayNotifications';
 import { equalPasswords, validateEmail } from '~/utilities/validation';
 
@@ -94,22 +106,11 @@ export const SignUpForm = () => {
     >
       <Container className='classes.container' my={40} size={420}>
         <Paper mt={30} p={22} radius='lg' shadow='xl' withBorder>
-          <Text c={rules.matchesLen ? 'green' : 'red'}>
-            • Password must be at least one 8 characters long
-          </Text>
-          <Text c={rules.hasLowercase ? 'green' : 'red'}>
-            • Password must contain at least one lowercase letter
-          </Text>
-          <Text c={rules.hasUppercase ? 'green' : 'red'}>
-            • Password must contain at least one uppercase letter
-          </Text>
-          <Text c={rules.hasDigit ? 'green' : 'red'}>
-            • Password must contain at least one digit (0-9)
-          </Text>
-          <Text c={rules.hasSpecial ? 'green' : 'red'}>
-            • Password must contain at least one special character (@, #, $, %,
-            ^, &, *, (, ), -, _, +, =)
-          </Text>
+          <Text c={rules.matchesLen ? 'green' : 'red'}>{SIGN_UP_RULE_1}</Text>
+          <Text c={rules.hasLowercase ? 'green' : 'red'}>{SIGN_UP_RULE_2}</Text>
+          <Text c={rules.hasUppercase ? 'green' : 'red'}>{SIGN_UP_RULE_3}</Text>
+          <Text c={rules.hasDigit ? 'green' : 'red'}>{SIGN_UP_RULE_4}</Text>
+          <Text c={rules.hasSpecial ? 'green' : 'red'}>{SIGN_UP_RULE_5}</Text>
         </Paper>
         <Paper mt={30} p={22} radius='lg' shadow='sm' withBorder>
           <Center>
@@ -121,10 +122,10 @@ export const SignUpForm = () => {
             />
           </Center>
           <Title ff='Inter, sans-serif' ta='center'>
-            Join Studly
+            {SIGN_UP_HEADER}
           </Title>
           <Text c='dimmed' style={{ textAlign: 'center' }}>
-            Create your account and start your gamified learning journey
+            {SIGN_UP_DESCRIPTION}
           </Text>
           <Form method='post' onSubmit={handleClick}>
             <TextInput
@@ -172,14 +173,14 @@ export const SignUpForm = () => {
               />
             </Group>
             <Button fullWidth mt='xl' radius='md' type='submit'>
-              Sign Up
+              {SIGN_UP_BUTTON_TEXT}
             </Button>
           </Form>
           <br />
           <Text c='dimmed' style={{ textAlign: 'center' }}>
-            Already have an account?{' '}
+            {SIGN_UP_ALREADY_HAVE_ACCOUNT_TEXT}{' '}
             <Anchor onClick={() => navigate(LOGIN)} styles={{}}>
-              Sign In
+              {SIGN_UP_SIGN_IN_BUTTON_TEXT}
             </Anchor>
           </Text>
         </Paper>
