@@ -1,9 +1,9 @@
 import type { ActionFunctionArgs } from 'react-router';
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { updateBio } from '~/api';
+import { PROFILE } from '~/constants';
 import { userInfo } from '~/store';
 import { action } from './action';
-import { PROFILE } from '~/constants';
 
 vi.mock('~/api', () => ({
   updateBio: vi.fn(),

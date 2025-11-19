@@ -17,9 +17,9 @@ import { notifications } from '@mantine/notifications';
 import fetchPolyfill, { Request as RequestPolyfill } from 'node-fetch';
 import { createMemoryRouter, RouterProvider, redirect } from 'react-router-dom';
 import * as auth from '~/api/auth';
+import { FORGOT_PASSWORD, LOGIN, SIGNUP, STUDY } from '~/constants';
 import { loginAction } from '~/routes/login';
 import { render } from '~/utilities/testing';
-import { FORGOT_PASSWORD, LOGIN, SIGNUP, STUDY } from '~/constants';
 
 //Lines 15 - 24 were provided through an online github repo (https://github.com/reduxjs/redux-toolkit/issues/4966#issuecomment-3115230061) as solution to the error:
 //RequestInit: Expected signal ("AbortSignal {}") to be an instance of AbortSignal.

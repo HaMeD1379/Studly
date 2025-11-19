@@ -7,10 +7,8 @@ export const mockStartSessionSubject = 'Mathematics';
 
 export const mockStopSessionPath = `${SESSIONS}/${mockSessionId}`;
 
-export const mockFetchSessionSummaryPath =
-  `sessions/summary?userId=${mockUserId}&from=1970-01-02T00:00:00.000Z&to=1970-01-03T00:00:00.000Z`;
-export const mockFetchSessionListPath =
-  `sessions?userId=${mockUserId}&limit=3&to=1970-01-03T00:00:00.000Z`;
+export const mockFetchSessionSummaryPath = `sessions/summary?userId=${mockUserId}&from=1970-01-02T00:00:00.000Z&to=1970-01-03T00:00:00.000Z`;
+export const mockFetchSessionListPath = `sessions?userId=${mockUserId}&limit=3&to=1970-01-03T00:00:00.000Z`;
 export const mockStartSessionBody = JSON.stringify({
   endTime: '1970-01-03T00:00:00.000Z',
   sessionType: 1,
@@ -23,5 +21,4 @@ export const endSessionBodyMock = JSON.stringify({
   endTime: '1970-01-03T00:00:00.000Z',
 });
 
-export const mockFetchAllUserBadgesPath =
-  `badges/users/${mockUserId}?includeProgress=true`;
+export const mockFetchAllUserBadgesPath = `badges/users/${mockUserId}?includeProgress=true`;

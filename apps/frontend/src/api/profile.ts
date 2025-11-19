@@ -29,7 +29,9 @@ export const updateBio = async (
     }),
   );
 
-export const fetchBio = async (userId: string): Promise<RequestResolve<ProfileBio>> => {
+export const fetchBio = async (
+  userId: string,
+): Promise<RequestResolve<ProfileBio>> => {
   const path = `${RETRIEVE_BIO}/${userId}`;
   return await request<ProfileBio>(RequestMethods.GET, path);
 };

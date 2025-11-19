@@ -124,13 +124,7 @@ export const LoginForm = () => {
               </Anchor>
             </Group>
 
-            <Button
-              fullWidth
-              mt='xl'
-              radius='md'
-              size='md'
-              type='submit'
-            >
+            <Button fullWidth mt='xl' radius='md' size='md' type='submit'>
               Sign In
             </Button>
           </Form>

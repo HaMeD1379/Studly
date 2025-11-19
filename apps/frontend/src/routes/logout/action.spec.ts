@@ -9,8 +9,8 @@ vi.mock('react-router', () => ({
 
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { logout } from '~/api';
-import { action } from './action';
 import { LOGIN } from '~/constants';
+import { action } from './action';
 
 vi.mock('~/api', () => ({
   logout: vi.fn(),

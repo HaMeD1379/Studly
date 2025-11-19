@@ -8,10 +8,16 @@ import {
   IconSettings,
   IconUser,
 } from '@tabler/icons-react';
-import { Form, Outlet, useLocation, useNavigate, useNavigation } from 'react-router-dom';
+import { useState } from 'react';
+import {
+  Form,
+  Outlet,
+  useLocation,
+  useNavigate,
+  useNavigation,
+} from 'react-router-dom';
 import { BADGES, HOME, LOGOUT, PROFILE, SETTINGS, STUDY } from '~/constants';
 import { PageSpinner } from '../PageSpinner/PageSpinner';
-import { useState } from 'react';
 
 type StyledButtonProps = {
   children: React.ReactNode;
@@ -24,9 +30,10 @@ type StyledButtonProps = {
 export const Navbar = () => {
   const navigation = useNavigation();
   const location = useLocation().pathname;
-  const isLoading = navigation.state === "loading";
+  const isLoading = navigation.state === 'loading';
 
-  const [currentlySelectedPath, setCurrentlySelectedPath] = useState<string>(location);
+  const [currentlySelectedPath, setCurrentlySelectedPath] =
+    useState<string>(location);
 
   return (
     <AppShell
@@ -46,31 +53,51 @@ export const Navbar = () => {
           </Flex>
           <Divider my='sm' />
           <Flex direction='column' gap={4}>
-            <StyledButton path={HOME} currentlySelectedPath={currentlySelectedPath} onClick={() => setCurrentlySelectedPath(HOME)}>
+            <StyledButton
+              currentlySelectedPath={currentlySelectedPath}
+              onClick={() => setCurrentlySelectedPath(HOME)}
+              path={HOME}
+            >
               <Flex align='center' gap={4}>
                 <IconHome size={20} />
                 Home
               </Flex>
             </StyledButton>
-            <StyledButton path={STUDY} currentlySelectedPath={currentlySelectedPath} onClick={() => setCurrentlySelectedPath(STUDY)}>
+            <StyledButton
+              currentlySelectedPath={currentlySelectedPath}
+              onClick={() => setCurrentlySelectedPath(STUDY)}
+              path={STUDY}
+            >
               <Flex align='center' gap={4}>
                 <IconClock size={20} />
                 Study Session
               </Flex>
             </StyledButton>
-            <StyledButton path={BADGES} currentlySelectedPath={currentlySelectedPath} onClick={() => setCurrentlySelectedPath(BADGES)}>
+            <StyledButton
+              currentlySelectedPath={currentlySelectedPath}
+              onClick={() => setCurrentlySelectedPath(BADGES)}
+              path={BADGES}
+            >
               <Flex align='center' gap={4}>
                 <IconMedal2 size={20} />
                 Badges
               </Flex>
             </StyledButton>
-            <StyledButton path={PROFILE} currentlySelectedPath={currentlySelectedPath} onClick={() => setCurrentlySelectedPath(PROFILE)}>
+            <StyledButton
+              currentlySelectedPath={currentlySelectedPath}
+              onClick={() => setCurrentlySelectedPath(PROFILE)}
+              path={PROFILE}
+            >
               <Flex align='center' gap={4}>
                 <IconUser size={20} />
                 Profile
               </Flex>
             </StyledButton>
-            <StyledButton path={SETTINGS} currentlySelectedPath={currentlySelectedPath} onClick={() => setCurrentlySelectedPath(SETTINGS)}>
+            <StyledButton
+              currentlySelectedPath={currentlySelectedPath}
+              onClick={() => setCurrentlySelectedPath(SETTINGS)}
+              path={SETTINGS}
+            >
               <Flex align='center' gap={4}>
                 <IconSettings size={20} />
                 Settings
@@ -81,7 +108,12 @@ export const Navbar = () => {
           <Flex direction='column' mt='auto'>
             <Divider my='sm' />
             <Form action={LOGOUT} method='post'>
-              <StyledButton path={LOGOUT} currentlySelectedPath={currentlySelectedPath} onClick={(() => setCurrentlySelectedPath(LOGOUT))} isSubmit>
+              <StyledButton
+                currentlySelectedPath={currentlySelectedPath}
+                isSubmit
+                onClick={() => setCurrentlySelectedPath(LOGOUT)}
+                path={LOGOUT}
+              >
                 <Flex align='center' gap={4}>
                   <IconLogout size={20} />
                   Logout
@@ -97,7 +129,13 @@ export const Navbar = () => {
   );
 };
 
-const StyledButton = ({ children, currentlySelectedPath, path, onClick, isSubmit = false }: StyledButtonProps) => {
+const StyledButton = ({
+  children,
+  currentlySelectedPath,
+  path,
+  onClick,
+  isSubmit = false,
+}: StyledButtonProps) => {
   const navigate = useNavigate();
   const handleClick = () => {
     if (isSubmit) {

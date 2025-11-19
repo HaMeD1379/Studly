@@ -33,10 +33,10 @@ import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { describe, expect, it, type Mock, vi } from 'vitest';
 import * as auth from '~/api';
 import { PageSpinner } from '~/components';
+import { LOGIN, SETTINGS } from '~/constants';
 import { ProfileLoader } from '~/routes';
 import { render } from '~/utilities/testing';
 import { UserCard } from './UserCard';
-import { LOGIN, SETTINGS } from '~/constants';
 
 //Lines 43 - 52 were provided through an online github repo (https://github.com/reduxjs/redux-toolkit/issues/4966#issuecomment-3115230061) as solution to the error:
 //RequestInit: Expected signal ("AbortSignal {}") to be an instance of AbortSignal.

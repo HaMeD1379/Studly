@@ -3,10 +3,9 @@ import { describe, expect, it } from 'vitest';
 import { render } from '~/utilities/testing';
 import { PageSpinner } from './PageSpinner';
 
-
 describe('PageSpinner', () => {
   it('renders', () => {
-    render(<PageSpinner/>);
+    render(<PageSpinner />);
 
     expect(screen.getByLabelText('loading-spinner')).toBeInTheDocument();
   });

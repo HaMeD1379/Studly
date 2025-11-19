@@ -23,9 +23,9 @@ import fetchPolyfill, { Request as RequestPolyfill } from 'node-fetch';
 import { createMemoryRouter, RouterProvider, redirect } from 'react-router-dom';
 import { vi } from 'vitest';
 import * as signupAuth from '~/api/auth';
+import { LOGIN, STUDY } from '~/constants';
 import { signUpAction } from '~/routes';
 import { render } from '~/utilities/testing';
-import { LOGIN, STUDY } from '~/constants';
 
 Object.defineProperty(global, 'fetch', {
   value: fetchPolyfill,

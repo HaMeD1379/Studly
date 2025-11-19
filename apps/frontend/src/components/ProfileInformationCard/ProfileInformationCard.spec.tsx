@@ -3,11 +3,11 @@ import { fireEvent, screen } from '@testing-library/react';
 import fetchPolyfill, { Request as RequestPolyfill } from 'node-fetch';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+import { LOGIN } from '~/constants';
 import { profileChangeAction } from '~/routes';
 import { userInfo } from '~/store/userInfo';
 import { render } from '~/utilities/testing';
 import { profileInformationCard as ProfileInformationCard } from './ProfileInformationCard';
-import { LOGIN } from '~/constants';
 
 vi.mock('@mantine/notifications', () => ({
   notifications: { show: vi.fn() },

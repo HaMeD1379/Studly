@@ -1,4 +1,5 @@
 import { afterAll, expect, vi } from 'vitest';
+import { LOGIN } from '~/constants';
 import {
   mockFailureMessage,
   mockFailureRequest,
@@ -8,7 +9,6 @@ import {
 } from '~/mocks';
 import { RequestMethods } from '~/types';
 import { request } from './requests';
-import { LOGIN } from '~/constants';
 
 describe('requests', () => {
   it('returns with data', async () => {

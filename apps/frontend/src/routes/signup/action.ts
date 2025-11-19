@@ -8,8 +8,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const fullname = formdata.get('name')?.toString();
   const email = formdata.get('email')?.toString();
   const password = formdata.get('password')?.toString();
-  const { setEmail, setName, setId, setRefreshToken } =
-  userInfo.getState();
+  const { setEmail, setName, setId, setRefreshToken } = userInfo.getState();
   if (fullname && email && password) {
     const res = await signUp(email, password, fullname);
     if (res.error) {

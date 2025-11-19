@@ -17,10 +17,10 @@ import fetchPolyfill, { Request as RequestPolyfill } from 'node-fetch';
 import { createMemoryRouter, RouterProvider, redirect } from 'react-router-dom';
 import { describe, expect, it, type Mock, vi } from 'vitest';
 import * as logoutApi from '~/api/auth';
+import { BADGES, HOME, LOGIN, STUDY } from '~/constants';
 import { logoutAction } from '~/routes/logout';
 import { render } from '~/utilities/testing';
 import { Navbar } from './Navbar';
-import { BADGES, HOME, LOGIN, STUDY } from '~/constants';
 
 Object.defineProperty(global, 'fetch', {
   value: fetchPolyfill,
@@ -41,9 +41,9 @@ describe('Navbar', () => {
   });
   const router = createMemoryRouter([
     {
-      element: <Navbar/>,
+      children: [{ element: <div>MOCK_CHILDREN</div> }],
+      element: <Navbar />,
       path: LOGIN,
-      children: [{ element: <div>MOCK_CHILDREN</div> }]
     },
   ]);
 

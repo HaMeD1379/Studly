@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { login } from '~/api';
-import { action } from './action';
 import { STUDY } from '~/constants';
+import { action } from './action';
 
 vi.mock('~/api', () => ({
   login: vi.fn(),

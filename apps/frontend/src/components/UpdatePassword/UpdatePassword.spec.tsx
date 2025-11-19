@@ -15,9 +15,9 @@ vi.mock('@mantine/notifications', () => ({
 import { notifications } from '@mantine/notifications';
 import { fireEvent, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import { STUDY } from '~/constants';
 import { render } from '~/utilities/testing';
 import { UpdatePassword } from './UpdatePassword';
-import { STUDY } from '~/constants';
 
 describe('Update Password tests', () => {
   it('Shows email and password fields and update password buttons', () => {

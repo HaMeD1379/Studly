@@ -1,10 +1,6 @@
 import { Container, Text } from '@mantine/core';
 import { useLoaderData } from 'react-router';
-import {
-  BadgeCollection,
-  BadgeStatistics,
-  ErrorBoundary,
-} from '~/components';
+import { BadgeCollection, BadgeStatistics, ErrorBoundary } from '~/components';
 
 export const Badges = () => {
   const loaderData = useLoaderData();

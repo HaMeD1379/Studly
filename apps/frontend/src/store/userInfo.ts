@@ -8,8 +8,8 @@ export const userInfo = create<UserStore>((set, get) => ({
   name: '',
   refreshToken: '',
   sessionId: '',
-  userId: '',
-  setAccessStored: (newAccessStored) => set({ isAccessStored: newAccessStored }),
+  setAccessStored: (newAccessStored) =>
+    set({ isAccessStored: newAccessStored }),
   setBio: (newBio) => set({ bio: newBio }),
   setCheckAccess: () => {
     const { isAccessStored } = get();
@@ -28,4 +28,5 @@ export const userInfo = create<UserStore>((set, get) => ({
   setName: (newName) => set({ name: newName }),
   setRefreshToken: (newRefreshToken) => set({ refreshToken: newRefreshToken }),
   setSessionId: (newSessionId) => set({ sessionId: newSessionId }),
+  userId: '',
 }));

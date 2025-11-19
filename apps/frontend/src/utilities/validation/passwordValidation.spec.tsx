@@ -4,10 +4,10 @@ import fetchPolyfill, { Request as RequestPolyfill } from 'node-fetch';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
 import { SignUpForm } from '~/components';
+import { LOGIN } from '~/constants';
 import { signUpAction } from '~/routes';
 import { render } from '../testing';
 import { equalPasswords } from './passwordValidation';
-import { LOGIN } from '~/constants';
 
 vi.mock('@mantine/notifications', () => ({
   notifications: {

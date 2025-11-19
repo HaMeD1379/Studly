@@ -171,23 +171,14 @@ export const SignUpForm = () => {
                 variant='filled'
               />
             </Group>
-            <Button
-              fullWidth
-              mt='xl'
-              radius='md'
-              type='submit'
-            >
+            <Button fullWidth mt='xl' radius='md' type='submit'>
               Sign Up
             </Button>
           </Form>
           <br />
           <Text c='dimmed' style={{ textAlign: 'center' }}>
             Already have an account?{' '}
-            <Anchor
-              onClick={() => navigate(LOGIN)}
-              styles={{
-              }}
-            >
+            <Anchor onClick={() => navigate(LOGIN)} styles={{}}>
               Sign In
             </Anchor>
           </Text>
