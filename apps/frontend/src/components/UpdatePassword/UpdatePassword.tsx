@@ -9,6 +9,7 @@ import {
 } from '@mantine/core';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { STUDY } from '~/constants';
 import { displayNotifications } from '~/utilities/notifications/displayNotifications';
 import { equalPasswords } from '~/utilities/testing/passwordValidation';
 
@@ -34,9 +35,9 @@ export const UpdatePassword = () => {
 
     try {
       if (equalPasswords(password_1, password_2)) {
-        navigate('/study');
+        navigate(STUDY);
         displayNotifications('Password Change Successful', '', 'green');
-        navigate('/study');
+        navigate(STUDY);
       }
     } catch (err: unknown) {
       if (err instanceof Error) {

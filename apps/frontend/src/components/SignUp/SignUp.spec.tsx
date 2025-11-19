@@ -25,6 +25,7 @@ import { vi } from 'vitest';
 import * as signupAuth from '~/api/auth';
 import { signUpAction } from '~/routes';
 import { render } from '~/utilities/testing';
+import { LOGIN, STUDY } from '~/constants';
 
 Object.defineProperty(global, 'fetch', {
   value: fetchPolyfill,
@@ -38,7 +39,7 @@ Object.defineProperty(global, 'Request', {
 });
 
 const router = createMemoryRouter([
-  { action: signUpAction, element: <SignUpForm />, path: '/' },
+  { action: signUpAction, element: <SignUpForm />, path: LOGIN },
 ]);
 
 vi.mock('~/api/auth', () => ({
@@ -101,6 +102,6 @@ describe('Sign up activity', () => {
       params: {},
       request: req,
     });
-    expect(result).toEqual(redirect('/study'));
+    expect(result).toEqual(redirect(STUDY));
   });
 });

@@ -9,6 +9,7 @@ import {
   IconUser,
 } from '@tabler/icons-react';
 import { Form, useLocation, useNavigate } from 'react-router-dom';
+import { BADGES, HOME, LOGOUT, PROFILE, SETTINGS, STUDY } from '~/constants';
 
 type NavbarProps = {
   children: React.ReactNode;
@@ -45,31 +46,31 @@ export const Navbar = ({ children }: NavbarProps) => {
 
           {/* Main navigation buttons */}
           <Flex direction='column' gap={4}>
-            <StyledButton path='/home'>
+            <StyledButton path={HOME}>
               <Flex align='center' gap={4}>
                 <IconHome size={20} />
                 Home
               </Flex>
             </StyledButton>
-            <StyledButton path='/study'>
+            <StyledButton path={STUDY}>
               <Flex align='center' gap={4}>
                 <IconClock size={20} />
                 Study Session
               </Flex>
             </StyledButton>
-            <StyledButton path='/badges'>
+            <StyledButton path={BADGES}>
               <Flex align='center' gap={4}>
                 <IconMedal2 size={20} />
                 Badges
               </Flex>
             </StyledButton>
-            <StyledButton path='/user-profile'>
+            <StyledButton path={PROFILE}>
               <Flex align='center' gap={4}>
                 <IconUser size={20} />
                 Profile
               </Flex>
             </StyledButton>
-            <StyledButton path='/settings'>
+            <StyledButton path={SETTINGS}>
               <Flex align='center' gap={4}>
                 <IconSettings size={20} />
                 Settings
@@ -79,8 +80,8 @@ export const Navbar = ({ children }: NavbarProps) => {
 
           <Flex direction='column' mt='auto'>
             <Divider my='sm' />
-            <Form action='/logout' method='post'>
-              <StyledButton path='/logout' type='submit'>
+            <Form action={LOGOUT} method='post'>
+              <StyledButton path={LOGOUT} type='submit'>
                 <Flex align='center' gap={4}>
                   <IconLogout size={20} />
                   Logout

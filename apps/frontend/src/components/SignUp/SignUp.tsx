@@ -16,6 +16,7 @@ import {
 import { useEffect, useState } from 'react';
 import { Form, useActionData, useNavigate } from 'react-router-dom';
 import placeholder from '~/assets/landscape-placeholder.svg';
+import { LOGIN } from '~/constants';
 import { displayNotifications } from '~/utilities/notifications/displayNotifications';
 import { equalPasswords, validateEmail } from '~/utilities/validation';
 
@@ -191,7 +192,7 @@ export const SignUpForm = () => {
           <Text c='dimmed' style={{ textAlign: 'center' }}>
             Already have an account?{' '}
             <Anchor
-              onClick={() => navigate('/')}
+              onClick={() => navigate(LOGIN)}
               styles={{
                 root: {
                   color: 'black',

@@ -1,5 +1,6 @@
 import { type ActionFunctionArgs, redirect } from 'react-router';
 import { updateBio } from '~/api';
+import { PROFILE } from '~/constants';
 import { userInfoStore } from '~/store';
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -21,7 +22,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   }
 
   if (!res.error && res.data) {
-    return redirect('/user-profile');
+    return redirect(PROFILE);
   }
   return { error: 'Unexpected response from profile update' };
 };

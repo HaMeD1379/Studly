@@ -3,7 +3,7 @@ import { IconEdit, IconShare } from '@tabler/icons-react';
 import { useEffect } from 'react';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 import { Avatar } from '~/components/';
-import { profileString } from '~/constants';
+import { PROFILE_BIO_DEFAULT, SETTINGS } from '~/constants';
 import { userInfoStore } from '~/store';
 
 export const UserCard = () => {
@@ -18,6 +18,7 @@ export const UserCard = () => {
   useEffect(() => {
     setBio(bio);
   }, [setBio, bio]);
+
   return (
     <Card p='lg' radius='md' shadow='sm' w='100%' withBorder>
       <Flex align='center' gap='md' justify='space-between' wrap='wrap'>
@@ -37,7 +38,7 @@ export const UserCard = () => {
               {userEmail}
             </Text>
             <Text c='gray.6' data-testid='bio-text' fz='sm'>
-              {bio || profileString.default}
+              {bio || PROFILE_BIO_DEFAULT}
             </Text>
           </Stack>
         </Flex>
@@ -48,7 +49,7 @@ export const UserCard = () => {
             data-testid='edit-btn'
             leftSection={<IconEdit size={14} />}
             onClick={() => {
-              navigate('/settings');
+              navigate(SETTINGS);
             }}
             style={{ borderColor: 'black' }}
             variant='outline'

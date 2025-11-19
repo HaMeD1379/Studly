@@ -1,5 +1,6 @@
 import { type ActionFunctionArgs, redirect } from 'react-router';
 import { signUp } from '~/api';
+import { STUDY } from '~/constants';
 import { userInfoStore } from '~/store/userInfoStore';
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -25,7 +26,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       setName(fullName);
       setId(userid);
       setRefreshToken(refreshToken);
-      return redirect('/study');
+      return redirect(STUDY);
     }
   }
 };

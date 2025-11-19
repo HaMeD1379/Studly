@@ -1,5 +1,6 @@
 import { redirect } from 'react-router';
 import { logout } from '~/api';
+import { LOGIN } from '~/constants';
 import { userInfoStore } from '~/store';
 
 export const action = async () => {
@@ -15,7 +16,7 @@ export const action = async () => {
       localStorage.removeItem('accessToken');
       setAccessStored(false);
       setCheckAccess();
-      return redirect('/');
+      return redirect(LOGIN);
     }
   }
   return { error: 'Logout api call failed' };

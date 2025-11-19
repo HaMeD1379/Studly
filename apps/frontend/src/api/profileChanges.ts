@@ -12,8 +12,8 @@ export const updateBio = async (
   token: string,
   refreshToken: string,
   userId: string,
-  name_change?: string,
-  bio_change?: string,
+  name?: string,
+  bio?: string,
 ): Promise<RequestResolve<BackendLoginResponse>> =>
   await request(
     RequestMethods.PATCH,
@@ -22,15 +22,14 @@ export const updateBio = async (
       Authorization: `Bearer ${token}`,
     },
     JSON.stringify({
-      bio: bio_change,
-      full_name: name_change,
+      bio,
+      full_name: name,
       refresh_token: refreshToken,
       user_id: userId,
     }),
   );
 
-export const fetchBio = async (user_id: string) => {
-  console.log('Fetch bio');
-  const path = `${RETRIEVE_BIO}/${user_id}`;
+export const fetchBio = async (userId: string) => {
+  const path = `${RETRIEVE_BIO}/${userId}`;
   return <RequestResolve<profileBio>>request(RequestMethods.GET, path);
 };

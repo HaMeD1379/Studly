@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { signUp } from '~/api';
 import { action } from './action';
+import { STUDY } from '~/constants';
 
 vi.mock('~/api', () => ({
   signUp: vi.fn(),
@@ -101,7 +102,7 @@ describe('signup action', () => {
     }
 
     expect(result.status).toBe(302);
-    expect(result.headers.get('Location')).toBe('/study');
+    expect(result.headers.get('Location')).toBe(STUDY);
 
     expect(mockSetEmail).toHaveBeenCalledWith('john@example.com');
     expect(mockSetName).toHaveBeenCalledWith('John Doe');

@@ -7,7 +7,7 @@ vi.mock('react-router-dom', async () => {
     );
   return {
     ...actual,
-    useLocation: () => ({ pathname: '/' }),
+    useLocation: () => ({ pathname: LOGIN }),
     useNavigate: () => mockNavigate,
   };
 });
@@ -21,6 +21,7 @@ import * as logoutApi from '~/api/auth';
 import { logoutAction } from '~/routes/logout';
 import { render } from '~/utilities/testing';
 import { Navbar } from './Navbar';
+import { BADGES, HOME, LOGIN, STUDY } from '~/constants';
 
 Object.defineProperty(global, 'fetch', {
   value: fetchPolyfill,
@@ -43,7 +44,7 @@ describe('Navbar', () => {
     {
       action: mockAction,
       element: <Navbar>MOCK_CHILDREN</Navbar>,
-      path: '/',
+      path: LOGIN,
     },
   ]);
 
@@ -71,19 +72,19 @@ describe('Navbar', () => {
     await act(async () => {
       fireEvent.click(homeButton);
     });
-    expect(mockNavigate).toHaveBeenCalledWith('/home');
+    expect(mockNavigate).toHaveBeenCalledWith(HOME);
     mockNavigate.mockClear();
 
     await act(async () => {
       fireEvent.click(studySessionButton);
     });
-    expect(mockNavigate).toHaveBeenCalledWith('/study');
+    expect(mockNavigate).toHaveBeenCalledWith(STUDY);
     mockNavigate.mockClear();
 
     await act(async () => {
       fireEvent.click(badgesButton);
     });
-    expect(mockNavigate).toHaveBeenCalledWith('/badges');
+    expect(mockNavigate).toHaveBeenCalledWith(BADGES);
     mockNavigate.mockClear();
   });
   it('navigates to the login page when logout button is clicked', async () => {
@@ -95,7 +96,7 @@ describe('Navbar', () => {
 
     const result = await logoutAction();
 
-    expect(result).toEqual(redirect('/'));
+    expect(result).toEqual(redirect(LOGIN));
     expect(localStorage.getItem('accessToken')).toBeNull();
   });
 });

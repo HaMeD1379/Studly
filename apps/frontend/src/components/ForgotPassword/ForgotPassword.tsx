@@ -13,6 +13,7 @@ import {
 import { IconArrowLeft } from '@tabler/icons-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { LOGIN } from '~/constants';
 import { displayNotifications } from '~/utilities/notifications/displayNotifications';
 import { validateEmail } from '~/utilities/validation';
 
@@ -75,7 +76,7 @@ export const ForgotPassword = () => {
               <Center inline>
                 <IconArrowLeft
                   data-testid='back-arrow'
-                  onClick={() => navigate('/')}
+                  onClick={() => navigate(LOGIN)}
                   size={12}
                   stroke={1.5}
                 />

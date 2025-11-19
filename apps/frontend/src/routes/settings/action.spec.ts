@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { updateBio } from '~/api';
 import { userInfoStore } from '~/store';
 import { action } from './action';
+import { PROFILE } from '~/constants';
 
 vi.mock('~/api', () => ({
   updateBio: vi.fn(),
@@ -88,7 +89,7 @@ describe('updateBio action', () => {
     expect(result).toBeInstanceOf(Response);
     if (result instanceof Response) {
       expect(result.status).toBe(302);
-      expect(result.headers.get('Location')).toBe('/user-profile');
+      expect(result.headers.get('Location')).toBe(PROFILE);
     }
   });
 

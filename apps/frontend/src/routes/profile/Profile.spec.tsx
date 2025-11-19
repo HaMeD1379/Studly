@@ -4,6 +4,7 @@ import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { describe, expect, it, type Mock, vi } from 'vitest';
 import * as auth from '~/api';
 import { PageSpinner } from '~/components';
+import { LOGIN } from '~/constants';
 import { ProfileLoader, UserProfile } from '~/routes';
 import { render } from '~/utilities/testing';
 
@@ -74,7 +75,7 @@ describe('User Profile Tests', () => {
         element: <UserProfile />,
         hydrateFallbackElement: <PageSpinner />,
         loader: ProfileLoader,
-        path: '/',
+        path: LOGIN,
       },
     ]);
 

@@ -19,6 +19,7 @@ import { createMemoryRouter, RouterProvider, redirect } from 'react-router-dom';
 import * as auth from '~/api/auth';
 import { loginAction } from '~/routes/login';
 import { render } from '~/utilities/testing';
+import { FORGOT_PASSWORD, LOGIN, SIGNUP, STUDY } from '~/constants';
 
 //Lines 15 - 24 were provided through an online github repo (https://github.com/reduxjs/redux-toolkit/issues/4966#issuecomment-3115230061) as solution to the error:
 //RequestInit: Expected signal ("AbortSignal {}") to be an instance of AbortSignal.
@@ -53,7 +54,7 @@ vi.mock('~/api/auth', () => ({
 }));
 
 const router = createMemoryRouter([
-  { action: loginAction, element: <LoginForm />, path: '/' },
+  { action: loginAction, element: <LoginForm />, path: LOGIN },
 ]);
 
 describe('Login Tests', () => {
@@ -113,19 +114,19 @@ describe('Login Tests', () => {
       request: req,
     });
 
-    expect(result).toEqual(redirect('/study'));
+    expect(result).toEqual(redirect(STUDY));
   });
 
   it('Navigates to forgot password page', () => {
     render(<RouterProvider router={router} />);
     fireEvent.click(screen.getByText(/Forgot password\?/i));
-    expect(mockNavigate).toHaveBeenCalledWith('/forgot-password');
+    expect(mockNavigate).toHaveBeenCalledWith(FORGOT_PASSWORD);
   });
 
   it('Navitates to signup page', () => {
     render(<RouterProvider router={router} />);
     fireEvent.click(screen.getByText(/Sign Up/i));
-    expect(mockNavigate).toHaveBeenCalledWith('/signup');
+    expect(mockNavigate).toHaveBeenCalledWith(SIGNUP);
   });
 
   it('shows error on invalid credentials', async () => {

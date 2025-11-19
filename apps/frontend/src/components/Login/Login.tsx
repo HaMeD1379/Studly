@@ -17,6 +17,7 @@ import {
 import { useEffect, useState } from 'react';
 import { Form, useActionData, useNavigate } from 'react-router-dom';
 import placeholder from '~/assets/landscape-placeholder.svg';
+import { FORGOT_PASSWORD, SIGNUP } from '~/constants';
 import { displayNotifications } from '~/utilities/notifications/displayNotifications';
 import { validateEmail } from '~/utilities/validation';
 
@@ -116,7 +117,7 @@ export const LoginForm = () => {
               <Anchor
                 c='black'
                 component='button'
-                onClick={() => navigate('/forgot-password')}
+                onClick={() => navigate(FORGOT_PASSWORD)}
                 size='sm'
                 variant='text'
               >
@@ -149,7 +150,7 @@ export const LoginForm = () => {
               c='black'
               component='button'
               fw={600}
-              onClick={() => navigate('/signup')}
+              onClick={() => navigate(SIGNUP)}
             >
               Sign Up
             </Anchor>

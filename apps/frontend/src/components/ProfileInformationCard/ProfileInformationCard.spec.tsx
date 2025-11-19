@@ -7,6 +7,7 @@ import { profileChangeAction } from '~/routes';
 import { userInfoStore } from '~/store/userInfoStore';
 import { render } from '~/utilities/testing';
 import { profileInformationCard as ProfileInformationCard } from './ProfileInformationCard';
+import { LOGIN } from '~/constants';
 
 vi.mock('@mantine/notifications', () => ({
   notifications: { show: vi.fn() },
@@ -65,7 +66,7 @@ describe('ProfileInformationCard', () => {
     {
       action: profileChangeAction,
       element: <ProfileInformationCard />,
-      path: '/',
+      path: LOGIN,
     },
   ]);
   //avatar test removed

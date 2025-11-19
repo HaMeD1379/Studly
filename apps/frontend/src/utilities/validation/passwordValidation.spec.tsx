@@ -7,6 +7,7 @@ import { SignUpForm } from '~/components';
 import { signUpAction } from '~/routes';
 import { render } from '../testing';
 import { equalPasswords } from './passwordValidation';
+import { LOGIN } from '~/constants';
 
 vi.mock('@mantine/notifications', () => ({
   notifications: {
@@ -28,7 +29,7 @@ Object.defineProperty(global, 'Request', {
 });
 
 const router = createMemoryRouter([
-  { action: signUpAction, element: <SignUpForm />, path: '/' },
+  { action: signUpAction, element: <SignUpForm />, path: LOGIN },
 ]);
 
 describe('Password Validation Tests', () => {

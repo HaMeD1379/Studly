@@ -10,6 +10,7 @@ vi.mock('react-router', () => ({
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { logout } from '~/api';
 import { action } from './action';
+import { LOGIN } from '~/constants';
 
 vi.mock('~/api', () => ({
   logout: vi.fn(),
@@ -99,7 +100,7 @@ describe('logout action', () => {
     expect(mockStorage.removeItem).toHaveBeenCalledWith('accessToken');
     expect(mockSetAccessStored).toHaveBeenCalledWith(false);
     expect(mockSetCheckAccess).toHaveBeenCalled();
-    expect(redirectMock).toHaveBeenCalledWith('/');
-    expect(result).toEqual({ redirect: '/' });
+    expect(redirectMock).toHaveBeenCalledWith(LOGIN);
+    expect(result).toEqual({ redirect: LOGIN });
   });
 });

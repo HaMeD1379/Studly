@@ -8,6 +8,7 @@ import {
 } from '~/mocks';
 import { RequestMethods } from '~/types';
 import { request } from './requests';
+import { LOGIN } from '~/constants';
 
 describe('requests', () => {
   it('returns with data', async () => {
@@ -16,7 +17,7 @@ describe('requests', () => {
       vi.fn(() => mockSuccessRequest),
     );
 
-    const fetchRequest = await request(RequestMethods.GET, '/');
+    const fetchRequest = await request(RequestMethods.GET, LOGIN);
 
     expect(fetchRequest.data).not.toBeUndefined();
     expect(fetchRequest.error).toBeUndefined();
@@ -29,7 +30,7 @@ describe('requests', () => {
       vi.fn(() => mockFailureRequest),
     );
 
-    const fetchRequest = await request(RequestMethods.GET, '/');
+    const fetchRequest = await request(RequestMethods.GET, LOGIN);
 
     expect(fetchRequest.data).toBeUndefined();
     expect(fetchRequest.error).not.toBeUndefined();
