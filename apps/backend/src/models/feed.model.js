@@ -5,45 +5,47 @@
  *  Summary
  *  -------
  *  Zod schemas for feed activity data validation and type safety.
- *  Defines activity types for the home page social feed.
+ *  Defines activity types that appear in user's social feed.
  *
  *  Activity Types:
  *  ---------------
- *  • badge_earned: User earned a new badge
- *  • study_milestone: User hit X total hours/sessions milestone
- *  • streak_milestone: User reached a streak milestone
+ *  • badge_earned: Friend earned a badge
+ *  • study_milestone: Friend reached X total hours
+ *  • streak_milestone: Friend reached X day streak
  *
  *  Design Notes
  *  ------------
- *  • Maps snake_case DB fields to camelCase API fields
- *  • Activity types are polymorphic (different data shapes)
- *  • Pagination uses cursor-based approach with timestamps
+ *  • Activities are derived from user_badge and sessions tables
+ *  • No dedicated activities table - computed on query
+ *  • Sorted by timestamp DESC for reverse chronological feed
  *
  * ────────────────────────────────────────────────────────────────────────────────
  */
 
 import { z } from 'zod';
 
-// Activity type enum
+/**
+ * Activity types that can appear in feed
+ */
 export const ActivityType = z.enum([
   'badge_earned',
-  'study_milestone',
+  'study_milestone', 
   'streak_milestone'
 ]);
 
 /**
- * Base user info that appears in all activities
+ * User info embedded in activity (from profile/auth)
  */
 export const ActivityUserSchema = z.object({
   userId: z.string().uuid(),
-  username: z.string().min(1),
+  username: z.string(),
   avatarUrl: z.string().url().nullable().optional()
 });
 
 /**
- * Badge earned activity data
+ * Badge data for badge_earned activities
  */
-export const BadgeActivityDataSchema = z.object({
+export const ActivityBadgeSchema = z.object({
   badgeId: z.string().uuid(),
   name: z.string(),
   description: z.string(),
@@ -52,94 +54,57 @@ export const BadgeActivityDataSchema = z.object({
 });
 
 /**
- * Study milestone activity data
- * Examples: "Reached 5 hours", "Completed 10 sessions"
+ * Milestone data for study/streak milestones
  */
-export const StudyMilestoneDataSchema = z.object({
-  type: z.enum(['total_hours', 'session_count']),
+export const ActivityMilestoneSchema = z.object({
+  type: z.enum(['total_hours', 'total_sessions', 'streak_days']),
   value: z.number().positive(),
   description: z.string()
 });
 
 /**
- * Streak milestone activity data
- * Example: "On a 10-day streak!"
+ * Base activity schema
  */
-export const StreakMilestoneDataSchema = z.object({
-  days: z.number().positive(),
-  description: z.string()
-});
-
-/**
- * Union schema for activity data (polymorphic)
- */
-export const ActivityDataSchema = z.union([
-  z.object({ badge: BadgeActivityDataSchema }),
-  z.object({ milestone: StudyMilestoneDataSchema }),
-  z.object({ streak: StreakMilestoneDataSchema })
-]);
-
-/**
- * Complete activity schema
- */
-export const ActivitySchema = z.object({
-  id: z.string().uuid(),
+export const FeedActivitySchema = z.object({
+  id: z.string(), // Composite: type + userId + timestamp
   type: ActivityType,
   timestamp: z.string().datetime(),
-  user: ActivityUserSchema
-}).and(ActivityDataSchema);
-
-/**
- * Pagination metadata
- */
-export const PaginationSchema = z.object({
-  hasMore: z.boolean(),
-  nextCursor: z.string().datetime().nullable(),
-  count: z.number().nonnegative()
+  user: ActivityUserSchema,
+  badge: ActivityBadgeSchema.optional(), // Only for badge_earned
+  milestone: ActivityMilestoneSchema.optional() // Only for milestones
 });
 
 /**
- * Feed response schema
+ * Feed response with pagination
  */
 export const FeedResponseSchema = z.object({
-  activities: z.array(ActivitySchema),
-  pagination: PaginationSchema
+  activities: z.array(FeedActivitySchema),
+  pagination: z.object({
+    hasMore: z.boolean(),
+    nextCursor: z.string().datetime().nullable(),
+    count: z.number()
+  })
 });
 
 // ============================================================================
-// Input Validation Schemas for API Endpoints
-// ============================================================================
-
-export const GetFeedInputSchema = z.object({
-  userId: z.string().uuid(),
-  limit: z.coerce.number().positive().max(50).optional().default(20),
-  before: z.string().datetime().optional()
-});
-
-// ============================================================================
-// Milestone Thresholds (Business Rules)
+// Input Validation Schemas
 // ============================================================================
 
 /**
- * Define which milestones trigger feed activities
- * Notable achievements worth sharing
+ * GET /feed query params
  */
-export const MILESTONE_THRESHOLDS = {
-  TOTAL_HOURS: [1, 5, 10, 25, 50, 100], // Hours
-  SESSION_COUNT: [1, 10, 25, 50, 100, 250], // Number of sessions
-  STREAK_DAYS: [3, 7, 14, 30, 60, 100] // Consecutive days
-};
+export const GetFeedInputSchema = z.object({
+  userId: z.string().uuid(),
+  limit: z.coerce.number().int().min(1).max(50).optional().default(20),
+  before: z.string().datetime().optional() // Cursor for pagination
+});
 
 export default {
   ActivityType,
   ActivityUserSchema,
-  BadgeActivityDataSchema,
-  StudyMilestoneDataSchema,
-  StreakMilestoneDataSchema,
-  ActivityDataSchema,
-  ActivitySchema,
-  PaginationSchema,
+  ActivityBadgeSchema,
+  ActivityMilestoneSchema,
+  FeedActivitySchema,
   FeedResponseSchema,
-  GetFeedInputSchema,
-  MILESTONE_THRESHOLDS
+  GetFeedInputSchema
 };
