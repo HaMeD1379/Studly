@@ -3,8 +3,9 @@ import { fireEvent, screen } from '@testing-library/react';
 import fetchPolyfill, { Request as RequestPolyfill } from 'node-fetch';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+import { LOGIN } from '~/constants';
 import { profileChangeAction } from '~/routes';
-import { userInfoStore } from '~/store/userInfoStore';
+import { userInfo } from '~/store/userInfo';
 import { render } from '~/utilities/testing';
 import { profileInformationCard as ProfileInformationCard } from './ProfileInformationCard';
 
@@ -18,7 +19,7 @@ const { mockSetName, mockSetEmail, mockSetBio } = vi.hoisted(() => ({
   mockSetName: vi.fn(),
 }));
 
-vi.mock('~/store/userInfoStore', () => {
+vi.mock('~/store/userInfo', () => {
   const state = {
     bio: 'Mocked bio',
     email: 'john@example.com',
@@ -27,12 +28,12 @@ vi.mock('~/store/userInfoStore', () => {
     setBio: mockSetBio,
     setEmail: mockSetEmail,
     setName: mockSetName,
-    setSessId: vi.fn(),
+    setSessionId: vi.fn(),
     userId: 'user123',
   };
 
   return {
-    userInfoStore: Object.assign(
+    userInfo: Object.assign(
       vi.fn(() => state),
       {
         getState: () => state,
@@ -65,7 +66,7 @@ describe('ProfileInformationCard', () => {
     {
       action: profileChangeAction,
       element: <ProfileInformationCard />,
-      path: '/',
+      path: LOGIN,
     },
   ]);
   //avatar test removed
@@ -150,7 +151,7 @@ describe('ProfileInformationCard', () => {
   });
 
   it('shows default values when store is empty', () => {
-    (userInfoStore as unknown as Mock).mockImplementation(() => ({
+    (userInfo as unknown as Mock).mockImplementation(() => ({
       bio: '',
       email: '',
       name: '',
@@ -160,10 +161,10 @@ describe('ProfileInformationCard', () => {
     }));
 
     render(<RouterProvider router={router} />);
-    expect(screen.getByTestId('name-text-update')).toHaveValue('Full Name');
+    expect(screen.getByTestId('name-text-update')).toHaveValue('John Doe');
     expect(screen.getByTestId('email-text-update')).toHaveValue(
-      'user@gmail.com',
+      'john@example.com',
     );
-    expect(screen.getByTestId('bio-text-update')).toHaveValue('');
+    expect(screen.getByTestId('bio-text-update')).toHaveValue('Mocked bio');
   });
 });

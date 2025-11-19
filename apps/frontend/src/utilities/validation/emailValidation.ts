@@ -15,6 +15,6 @@ const validEmailFormat = (email: string) => {
   ) {
     return true;
   }
-  displayNotifications('Mismatch', 'Provide a valid Email', 'red');
+  displayNotifications('Mismatch', 'Provide a valid email', 'red');
   return false;
 };

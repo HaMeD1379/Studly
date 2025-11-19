@@ -1,0 +1,10 @@
+export const PROFILE = '/profile';
+export const STUDY = '/study';
+export const HOME = '/home';
+export const BADGES = '/badges';
+export const SETTINGS = '/settings';
+export const LOGIN = '/';
+export const FORGOT_PASSWORD = '/forgot-password';
+export const SIGNUP = '/signup';
+export const LOGOUT = '/logout';
+export const CHANGE_PASSWORD = '/change-password';

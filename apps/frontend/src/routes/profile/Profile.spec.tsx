@@ -3,6 +3,7 @@ import fetchPolyfill, { Request as RequestPolyfill } from 'node-fetch';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { describe, expect, it, type Mock, vi } from 'vitest';
 import { PageSpinner } from '~/components';
+import { LOGIN } from '~/constants';
 import { ProfileLoader, UserProfile } from '~/routes';
 import { render } from '~/utilities/testing';
 
@@ -55,7 +56,7 @@ vi.mock('~/store/userInfoStore', () => {
   store.getState = () => mockStore;
   store.setState = (newState: Partial<typeof mockStore>) =>
     Object.assign(mockStore, newState);
-  return { userInfoStore: store };
+  return { userInfo: store };
 });
 
 //Lines 50- 57 were provided through an online github repo (https://github.com/reduxjs/redux-toolkit/issues/4966#issuecomment-3115230061) as solution to the error:
@@ -76,7 +77,7 @@ describe('User Profile Tests', () => {
         element: <UserProfile />,
         hydrateFallbackElement: <PageSpinner />,
         loader: ProfileLoader,
-        path: '/',
+        path: LOGIN,
       },
     ]);
 
@@ -97,8 +98,8 @@ describe('User Profile Tests', () => {
     const badges = await screen.findByTestId('badges-card');
     const friends = await screen.findByTestId('friends-card');
 
-    expect(name_field).toHaveTextContent('Test User');
-    expect(email_field).toHaveTextContent('testUser@gmail.com');
+    expect(name_field).toHaveTextContent('Alex Student');
+    expect(email_field).toHaveTextContent('alex@example.com');
     expect(bio_field).toHaveTextContent('This is my Bio');
     expect(edit_btn).toHaveTextContent('Edit');
     expect(share_btn).toHaveTextContent('Share');

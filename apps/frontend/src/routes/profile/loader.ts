@@ -1,17 +1,17 @@
 import { fetchBio, SessionSummary } from '~/api';
-import { userInfoStore } from '~/store';
-import type { profileBio, TodaysStudyStatistics } from '~/types';
+import { userInfo } from '~/store';
+import type { ProfileBio, TodaysStudyStatistics } from '~/types';
 
 type StudyLoader = {
   data: {
     sessionSummary?: TodaysStudyStatistics;
-    profileBio?: profileBio;
+    profileBio?: ProfileBio;
   };
   error: boolean;
 };
 
 export const loader = async (): Promise<StudyLoader> => {
-  const { userId } = userInfoStore.getState();
+  const { userId } = userInfo.getState();
 
   const [sessionSummary, profileBio] = await Promise.all([
     await SessionSummary(),

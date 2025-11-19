@@ -1,9 +1,13 @@
+const { mockFetchBio } = vi.hoisted(() => ({
+  mockFetchBio: vi.fn(),
+}));
+
 import { describe, expect, it, type Mock, vi } from 'vitest';
 import { SessionSummary } from '~/api';
-import { fetchBio } from '~/api/profileChanges';
+import { fetchBio } from '~/api/profile';
 
-vi.mock('~/api/profileChanges', () => ({
-  fetchBio: vi.fn(),
+vi.mock('~/api/profile', () => ({
+  fetchBio: mockFetchBio,
   SessionSummary: vi.fn(),
 }));
 
@@ -13,13 +17,13 @@ describe('fetchBio mock test', () => {
       data: {
         data: {
           bio: "Hello, I'm a mocked bio",
-          user_id: '123',
+          userId: '123',
         },
         message: 'Bio fetched successfully',
       },
     };
-    // @ts-expect-error
-    fetchBio.mockResolvedValue(mockResponse);
+
+    mockFetchBio.mockResolvedValue(mockResponse);
 
     const result = await fetchBio('123');
 

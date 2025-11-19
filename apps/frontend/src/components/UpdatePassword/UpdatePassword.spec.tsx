@@ -15,6 +15,7 @@ vi.mock('@mantine/notifications', () => ({
 import { notifications } from '@mantine/notifications';
 import { fireEvent, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import { STUDY } from '~/constants';
 import { render } from '~/utilities/testing';
 import { UpdatePassword } from './UpdatePassword';
 
@@ -35,7 +36,7 @@ describe('Update Password tests', () => {
     fireEvent.change(password, { target: { value: '0106Abcd*' } });
     fireEvent.change(password_2, { target: { value: '0106Abcd*' } });
     fireEvent.click(updatePassButton);
-    expect(mockNavigate).toHaveBeenCalledWith('/study');
+    expect(mockNavigate).toHaveBeenCalledWith(STUDY);
   });
   it('Shows an error if new password is not valid', async () => {
     render(<UpdatePassword />);

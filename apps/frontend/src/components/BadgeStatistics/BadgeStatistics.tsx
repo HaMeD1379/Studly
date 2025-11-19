@@ -1,5 +1,12 @@
 import { Flex, Progress, Text } from '@mantine/core';
 import { IconMedal2, IconTarget, IconTimeline } from '@tabler/icons-react';
+import {
+  BADGES_COMPLETE,
+  BADGES_PROGRESS,
+  BADGES_TOTAL,
+  BADGES_UNLOCKED,
+  BADGES_UNLOCKED_SUFFIX,
+} from '~/constants';
 
 type BadgeStatisticsProps = {
   badgesUnlocked: number;
@@ -28,7 +35,7 @@ export const BadgeStatistics = ({
             {badgesUnlocked}
           </Text>
           <Text fw={300} size='sm'>
-            Unlocked
+            {BADGES_UNLOCKED}
           </Text>
         </Flex>
         <Flex
@@ -44,7 +51,7 @@ export const BadgeStatistics = ({
             {totalBadges}
           </Text>
           <Text fw={300} size='sm'>
-            Total
+            {BADGES_TOTAL}
           </Text>
         </Flex>
         <Flex
@@ -60,16 +67,16 @@ export const BadgeStatistics = ({
             {badgesProgress}%
           </Text>
           <Text fw={300} size='sm'>
-            Complete
+            {BADGES_COMPLETE}
           </Text>
         </Flex>
       </Flex>
       <Flex bd='1px solid lightgray' bdrs={8} direction='column' p={24}>
         <Text fw={700} size='xs'>
-          Collection Progress
+          {BADGES_PROGRESS}
         </Text>
         <Text fw={300} size='xs'>
-          {badgesUnlocked} of {totalBadges} badges unlocked
+          {badgesUnlocked} of {totalBadges} {BADGES_UNLOCKED_SUFFIX}
         </Text>
         <Progress color='gray' mt={16} value={badgesProgress} />
       </Flex>

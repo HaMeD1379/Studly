@@ -8,20 +8,54 @@ import {
   IconSettings,
   IconUser,
 } from '@tabler/icons-react';
-import { Form, useLocation, useNavigate } from 'react-router-dom';
-
-type NavbarProps = {
-  children: React.ReactNode;
-};
+import { useState } from 'react';
+import {
+  Form,
+  Outlet,
+  useLocation,
+  useNavigate,
+  useNavigation,
+} from 'react-router-dom';
+import {
+  BADGES,
+  HOME,
+  LOGIN,
+  LOGOUT,
+  NAVBAR_BADGES,
+  NAVBAR_HEADER,
+  NAVBAR_HOME,
+  NAVBAR_LOGOUT,
+  NAVBAR_PROFILE,
+  NAVBAR_SETTINGS,
+  NAVBAR_STUDY,
+  PROFILE,
+  SETTINGS,
+  STUDY,
+} from '~/constants';
+import { userInfo } from '~/store';
+import { PageSpinner } from '../PageSpinner/PageSpinner';
 
 type StyledButtonProps = {
   children: React.ReactNode;
+  currentlySelectedPath: string;
   path: string;
-  type?: 'button' | 'submit' | 'reset';
-  onClick?: () => void;
+  onClick: () => void;
+  isSubmit?: boolean;
 };
 
-export const Navbar = ({ children }: NavbarProps) => {
+export const Navbar = () => {
+  const navigate = useNavigate();
+  if (!userInfo.getState().accessToken) {
+    navigate(LOGIN);
+  }
+
+  const navigation = useNavigation();
+  const location = useLocation().pathname;
+  const isLoading = navigation.state === 'loading';
+
+  const [currentlySelectedPath, setCurrentlySelectedPath] =
+    useState<string>(location);
+
   return (
     <AppShell
       navbar={{
@@ -31,59 +65,79 @@ export const Navbar = ({ children }: NavbarProps) => {
       padding={24}
     >
       <AppShell.Navbar p='md'>
-        {/* Wrap the whole navbar content in a vertical Flex */}
         <Flex direction='column' h='100%'>
-          {/* Header */}
           <Flex align='center' gap={4} pl={16} py={8}>
             <IconMedal color='#228be6' />
             <Text fw={900} size='lg'>
-              Studly
+              {NAVBAR_HEADER}
             </Text>
           </Flex>
-
           <Divider my='sm' />
-
-          {/* Main navigation buttons */}
           <Flex direction='column' gap={4}>
-            <StyledButton path='/home'>
+            <StyledButton
+              currentlySelectedPath={currentlySelectedPath}
+              onClick={() => setCurrentlySelectedPath(HOME)}
+              path={HOME}
+            >
               <Flex align='center' gap={4}>
                 <IconHome size={20} />
-                Home
+                {NAVBAR_HOME}
               </Flex>
             </StyledButton>
-            <StyledButton path='/study'>
+            <StyledButton
+              currentlySelectedPath={currentlySelectedPath}
+              onClick={() => setCurrentlySelectedPath(STUDY)}
+              path={STUDY}
+            >
               <Flex align='center' gap={4}>
                 <IconClock size={20} />
-                Study Session
+                {NAVBAR_STUDY}
               </Flex>
             </StyledButton>
-            <StyledButton path='/badges'>
+            <StyledButton
+              currentlySelectedPath={currentlySelectedPath}
+              onClick={() => setCurrentlySelectedPath(BADGES)}
+              path={BADGES}
+            >
               <Flex align='center' gap={4}>
                 <IconMedal2 size={20} />
-                Badges
+                {NAVBAR_BADGES}
               </Flex>
             </StyledButton>
-            <StyledButton path='/user-profile'>
+            <StyledButton
+              currentlySelectedPath={currentlySelectedPath}
+              onClick={() => setCurrentlySelectedPath(PROFILE)}
+              path={PROFILE}
+            >
               <Flex align='center' gap={4}>
                 <IconUser size={20} />
-                Profile
+                {NAVBAR_PROFILE}
               </Flex>
             </StyledButton>
-            <StyledButton path='/settings'>
+            <StyledButton
+              currentlySelectedPath={currentlySelectedPath}
+              onClick={() => setCurrentlySelectedPath(SETTINGS)}
+              path={SETTINGS}
+            >
               <Flex align='center' gap={4}>
                 <IconSettings size={20} />
-                Settings
+                {NAVBAR_SETTINGS}
               </Flex>
             </StyledButton>
           </Flex>
 
           <Flex direction='column' mt='auto'>
             <Divider my='sm' />
-            <Form action='/logout' method='post'>
-              <StyledButton path='/logout' type='submit'>
+            <Form action={LOGOUT} method='post'>
+              <StyledButton
+                currentlySelectedPath={currentlySelectedPath}
+                isSubmit
+                onClick={() => setCurrentlySelectedPath(LOGOUT)}
+                path={LOGOUT}
+              >
                 <Flex align='center' gap={4}>
                   <IconLogout size={20} />
-                  Logout
+                  {NAVBAR_LOGOUT}
                 </Flex>
               </StyledButton>
             </Form>
@@ -91,32 +145,37 @@ export const Navbar = ({ children }: NavbarProps) => {
         </Flex>
       </AppShell.Navbar>
 
-      <AppShell.Main>{children}</AppShell.Main>
+      <AppShell.Main>{isLoading ? <PageSpinner /> : <Outlet />}</AppShell.Main>
     </AppShell>
   );
 };
 
-const StyledButton = ({ children, path, type, onClick }: StyledButtonProps) => {
+const StyledButton = ({
+  children,
+  currentlySelectedPath,
+  path,
+  onClick,
+  isSubmit = false,
+}: StyledButtonProps) => {
   const navigate = useNavigate();
-  const currentPath = useLocation()?.pathname;
   const handleClick = () => {
-    if (type === 'submit') {
+    if (isSubmit) {
       return;
     }
 
-    if (onClick) onClick(); //execute onclick method if we get one
+    onClick();
     navigate(path);
   };
 
   return (
     <Button
-      {...(type ? { type } : {})}
-      color={currentPath === path ? 'blue' : 'dark-gray'}
+      {...(isSubmit ? { type: 'submit' } : {})}
+      color={currentlySelectedPath === path ? 'blue' : 'dark-gray'}
       fullWidth
       justify='left'
       onClick={handleClick}
       radius='md'
-      variant={currentPath === path ? 'filled' : 'transparent'}
+      variant={currentlySelectedPath === path ? 'filled' : 'transparent'}
     >
       {children}
     </Button>

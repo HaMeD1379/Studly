@@ -9,8 +9,14 @@ import {
 import { IconMedal2 } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import {
+  BADGES_LOCKED,
   BADGES_PER_COLLECTION_PAGE,
+  BADGES_UNLOCKED,
   BadgeCollectionFilterStatus,
+  NO_BADGES_LINE_1,
+  NO_BADGES_LINE_2,
+  NO_UNLOCKED_BADGES_LINE_1,
+  NO_UNLOCKED_BADGES_LINE_2,
 } from '~/constants';
 import type { Badge, UnlockedBadge } from '~/types';
 
@@ -80,8 +86,8 @@ export const BadgeCollection = ({
           direction='column'
           p={142}
         >
-          <Text c='gray'>No badges unlocked yet!</Text>
-          <Text c='gray'>Start studying to earn badges!</Text>
+          <Text c='gray'>{NO_UNLOCKED_BADGES_LINE_1}</Text>
+          <Text c='gray'>{NO_UNLOCKED_BADGES_LINE_2}</Text>
         </Flex>
       ) : filterStatus === BadgeCollectionFilterStatus.AllBadges &&
         allBadges.length === 0 ? (
@@ -92,8 +98,8 @@ export const BadgeCollection = ({
           direction='column'
           p={142}
         >
-          <Text c='gray'>There are no badges to display here</Text>
-          <Text c='gray'>Please try again later</Text>
+          <Text c='gray'>{NO_BADGES_LINE_1}</Text>
+          <Text c='gray'>{NO_BADGES_LINE_2}</Text>
         </Flex>
       ) : (
         <SimpleGrid cols={3} spacing='lg'>
@@ -115,10 +121,12 @@ export const BadgeCollection = ({
                 {earnedAt ? (
                   <Flex align='center' gap={4}>
                     <IconMedal2 color='#04A740' size={16} />
-                    <Text c='#04A740'>Unlocked {earnedAt}</Text>
+                    <Text c='#04A740'>
+                      {BADGES_UNLOCKED} {earnedAt}
+                    </Text>
                   </Flex>
                 ) : (
-                  <Text c='lightgray'>Locked</Text>
+                  <Text c='lightgray'>{BADGES_LOCKED}</Text>
                 )}
               </Flex>
             );

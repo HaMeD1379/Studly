@@ -1,10 +1,10 @@
 import { BADGES_ALL_USER } from '~/constants';
+import { userInfo } from '~/store';
 import { type BadgeLoader, RequestMethods } from '~/types';
 import { request } from '~/utilities/requests';
-import { getUserId } from '~/utilities/session';
 
 export const fetchAllUserBadges = async () => {
-  const userId = getUserId();
+  const { userId } = userInfo.getState();
 
   const path = `${BADGES_ALL_USER}/${userId}?includeProgress=true`;
 

@@ -15,7 +15,7 @@ import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { ERROR_BOUNDARY_PAGE_TEXT } from '~/constants';
+import { ERROR_BOUNDARY_PAGE_TEXT, LOGIN } from '~/constants';
 import {
   mockStartStudySessionFetcherRequest,
   mockStartStudySessionFetcherRequestTime,
@@ -24,7 +24,7 @@ import {
 import { render } from '~/utilities/testing';
 import { Study } from './Study';
 
-const router = createMemoryRouter([{ element: <Study />, path: '/' }]);
+const router = createMemoryRouter([{ element: <Study />, path: LOGIN }]);
 
 describe('Study', () => {
   beforeEach(() => {

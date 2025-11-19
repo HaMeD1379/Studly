@@ -1,7 +1,8 @@
 import type { ActionFunctionArgs } from 'react-router';
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { updateBio } from '~/api';
-import { userInfoStore } from '~/store';
+import { PROFILE } from '~/constants';
+import { userInfo } from '~/store';
 import { action } from './action';
 
 vi.mock('~/api', () => ({
@@ -9,12 +10,13 @@ vi.mock('~/api', () => ({
 }));
 
 const mockGetState = {
+  accessToken: 'mockAccessToken',
   refreshToken: 'refresh123',
   userId: 'user123',
 };
 
 vi.mock('~/store', () => ({
-  userInfoStore: {
+  userInfo: {
     getState: vi.fn(() => mockGetState),
   },
 }));
@@ -22,12 +24,6 @@ vi.mock('~/store', () => ({
 describe('updateBio action', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.stubGlobal('localStorage', {
-      clear: vi.fn(),
-      getItem: vi.fn(),
-      removeItem: vi.fn(),
-      setItem: vi.fn(),
-    });
   });
 
   const makeRequest = (bio?: string, fullName?: string) => {
@@ -43,11 +39,11 @@ describe('updateBio action', () => {
   };
 
   it('returns an error when required fields or tokens are missing', async () => {
-    (userInfoStore.getState as Mock).mockReturnValueOnce({
+    (userInfo.getState as Mock).mockReturnValueOnce({
+      accessToken: 'token',
       refreshToken: 'refresh123',
       userId: null,
     });
-    (localStorage.getItem as Mock).mockReturnValue('token');
 
     const req = makeRequest('My bio', 'John Doe');
     const result = await action({ request: req } as ActionFunctionArgs);
@@ -56,8 +52,7 @@ describe('updateBio action', () => {
   });
 
   it('returns proper error object when updateBio fails', async () => {
-    (userInfoStore.getState as Mock).mockReturnValue(mockGetState);
-    (localStorage.getItem as Mock).mockReturnValue('mockAccessToken');
+    (userInfo.getState as Mock).mockReturnValue(mockGetState);
 
     (updateBio as Mock).mockResolvedValue({
       error: { status: 400 },
@@ -74,8 +69,7 @@ describe('updateBio action', () => {
   });
 
   it('redirects when updateBio succeeds', async () => {
-    (userInfoStore.getState as Mock).mockReturnValue(mockGetState);
-    (localStorage.getItem as Mock).mockReturnValue('mockAccessToken');
+    (userInfo.getState as Mock).mockReturnValue(mockGetState);
 
     (updateBio as Mock).mockResolvedValue({
       data: { updated: true },
@@ -88,13 +82,12 @@ describe('updateBio action', () => {
     expect(result).toBeInstanceOf(Response);
     if (result instanceof Response) {
       expect(result.status).toBe(302);
-      expect(result.headers.get('Location')).toBe('/user-profile');
+      expect(result.headers.get('Location')).toBe(PROFILE);
     }
   });
 
   it('returns unexpected error when API response is malformed', async () => {
-    (userInfoStore.getState as Mock).mockReturnValue(mockGetState);
-    (localStorage.getItem as Mock).mockReturnValue('mockAccessToken');
+    (userInfo.getState as Mock).mockReturnValue(mockGetState);
 
     (updateBio as Mock).mockResolvedValue({
       data: null,

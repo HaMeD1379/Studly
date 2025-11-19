@@ -1,6 +1,7 @@
-vi.mock('~/store/userInfoStore', () => ({
-  userInfoStore: {
+vi.mock('~/store/userInfo', () => ({
+  userInfo: {
     getState: () => ({
+      setAccessToken: vi.fn(),
       setEmail: vi.fn(),
       setId: vi.fn(),
       setName: vi.fn(),
@@ -17,6 +18,7 @@ import { notifications } from '@mantine/notifications';
 import fetchPolyfill, { Request as RequestPolyfill } from 'node-fetch';
 import { createMemoryRouter, RouterProvider, redirect } from 'react-router-dom';
 import * as auth from '~/api/auth';
+import { FORGOT_PASSWORD, LOGIN, SIGNUP, STUDY } from '~/constants';
 import { loginAction } from '~/routes/login';
 import { render } from '~/utilities/testing';
 
@@ -53,7 +55,7 @@ vi.mock('~/api/auth', () => ({
 }));
 
 const router = createMemoryRouter([
-  { action: loginAction, element: <LoginForm />, path: '/' },
+  { action: loginAction, element: <LoginForm />, path: LOGIN },
 ]);
 
 describe('Login Tests', () => {
@@ -79,7 +81,7 @@ describe('Login Tests', () => {
 
     expect(notifications.show).toHaveBeenCalledWith({
       color: 'red',
-      message: 'Provide a valid Email',
+      message: 'Provide a valid email',
       title: 'Mismatch',
     });
   });
@@ -113,19 +115,19 @@ describe('Login Tests', () => {
       request: req,
     });
 
-    expect(result).toEqual(redirect('/study'));
+    expect(result).toEqual(redirect(STUDY));
   });
 
   it('Navigates to forgot password page', () => {
     render(<RouterProvider router={router} />);
     fireEvent.click(screen.getByText(/Forgot password\?/i));
-    expect(mockNavigate).toHaveBeenCalledWith('/forgot-password');
+    expect(mockNavigate).toHaveBeenCalledWith(FORGOT_PASSWORD);
   });
 
   it('Navitates to signup page', () => {
     render(<RouterProvider router={router} />);
     fireEvent.click(screen.getByText(/Sign Up/i));
-    expect(mockNavigate).toHaveBeenCalledWith('/signup');
+    expect(mockNavigate).toHaveBeenCalledWith(SIGNUP);
   });
 
   it('shows error on invalid credentials', async () => {

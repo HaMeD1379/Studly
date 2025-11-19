@@ -1,21 +1,22 @@
 import { redirect } from 'react-router';
 import { logout } from '~/api';
-import { userInfoStore } from '~/store';
+import { LOGIN } from '~/constants';
+import { userInfo } from '~/store';
 
 export const action = async () => {
-  const token = localStorage.getItem('accessToken');
-  const { setAccessStored, setCheckAccess } = userInfoStore.getState();
-  if (token) {
-    const res = await logout(token);
+  const { accessToken, setAccessToken, setAccessStored, setCheckAccess } =
+    userInfo.getState();
+  if (accessToken) {
+    const res = await logout(accessToken);
 
     if (res.error) {
       return res.error;
     }
     if (!res.error && res.data) {
-      localStorage.removeItem('accessToken');
+      setAccessToken('');
       setAccessStored(false);
       setCheckAccess();
-      return redirect('/');
+      return redirect(LOGIN);
     }
   }
   return { error: 'Logout api call failed' };

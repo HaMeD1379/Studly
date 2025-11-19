@@ -1,5 +1,4 @@
-const { requestMock, getUserIdMock } = vi.hoisted(() => ({
-  getUserIdMock: vi.fn(),
+const { requestMock } = vi.hoisted(() => ({
   requestMock: vi.fn(),
 }));
 
@@ -7,12 +6,16 @@ vi.mock('~/utilities/requests/requests', () => ({
   request: requestMock,
 }));
 
-vi.mock('~/utilities/session/session', () => ({
-  getUserId: getUserIdMock,
+vi.mock('~/store/userInfo', () => ({
+  userInfo: {
+    getState: vi.fn(() => ({
+      userId: mockUserId,
+    })),
+  },
 }));
 
 import { describe, expect, it, vi } from 'vitest';
-import { mockFetchAllUserBadgesPath } from '~/mocks';
+import { mockFetchAllUserBadgesPath, mockUserId } from '~/mocks';
 import { RequestMethods } from '~/types';
 import { fetchAllUserBadges } from './badges';
 

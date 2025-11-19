@@ -1,7 +1,7 @@
 import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { ErrorBoundary, PageSpinner } from '~/components';
+import { ErrorBoundary, Navbar, PageSpinner } from '~/components';
 import {
   Badges,
   badgesLoader,
@@ -24,37 +24,54 @@ import {
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 import '@mantine/dates/styles.css';
+import {
+  BADGES,
+  CHANGE_PASSWORD,
+  FORGOT_PASSWORD,
+  HOME,
+  LOGIN,
+  LOGOUT,
+  PROFILE,
+  SETTINGS,
+  SIGNUP,
+  STUDY,
+} from './constants';
 
 const router = createBrowserRouter([
-  { action: loginAction, element: <Login />, path: '/' },
   {
-    element: <Badges />,
-    errorElement: <ErrorBoundary />,
-    hydrateFallbackElement: <PageSpinner />,
-    loader: badgesLoader,
-    path: '/badges',
+    children: [
+      {
+        element: <Badges />,
+        errorElement: <ErrorBoundary />,
+        hydrateFallbackElement: <PageSpinner />,
+        loader: badgesLoader,
+        path: BADGES,
+      },
+      {
+        action: studyAction,
+        element: <Study />,
+        errorElement: <ErrorBoundary />,
+        hydrateFallbackElement: <PageSpinner />,
+        loader: studyLoader,
+        path: STUDY,
+      },
+      {
+        element: <UserProfile />,
+        errorElement: <ErrorBoundary />,
+        hydrateFallbackElement: <PageSpinner />,
+        loader: ProfileLoader,
+        path: PROFILE,
+      },
+      { element: <Home />, path: HOME },
+      { action: profileChangeAction, element: <Settings />, path: SETTINGS },
+    ],
+    element: <Navbar />,
   },
-  { element: <UpdatePassword />, path: '/change-password' },
-  { element: <Forgot />, path: '/forgot-password' },
-  { element: <Home />, path: '/home' },
-  { action: logoutAction, element: <Login />, path: '/logout' },
-  { action: signUpAction, element: <SignUp />, path: '/signup' },
-  { action: profileChangeAction, element: <Settings />, path: '/settings' },
-  {
-    action: studyAction,
-    element: <Study />,
-    errorElement: <ErrorBoundary />,
-    hydrateFallbackElement: <PageSpinner />,
-    loader: studyLoader,
-    path: '/study',
-  },
-  {
-    element: <UserProfile />,
-    errorElement: <ErrorBoundary />,
-    hydrateFallbackElement: <PageSpinner />,
-    loader: ProfileLoader,
-    path: '/user-profile',
-  },
+  { action: loginAction, element: <Login />, path: LOGIN },
+  { element: <UpdatePassword />, path: CHANGE_PASSWORD },
+  { element: <Forgot />, path: FORGOT_PASSWORD },
+  { action: logoutAction, element: <Login />, path: LOGOUT },
+  { action: signUpAction, element: <SignUp />, path: SIGNUP },
 ]);
 
 export const App = () => {

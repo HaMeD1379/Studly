@@ -13,6 +13,13 @@ import {
 import { IconArrowLeft } from '@tabler/icons-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import {
+  BACK_TO_LOGIN,
+  FORGOT_PASSWORD_EMAIL,
+  FORGOT_PASSWORD_HEADER,
+  LOGIN,
+  RESET_PASSWORD_BUTTON_TEXT,
+} from '~/constants';
 import { displayNotifications } from '~/utilities/notifications/displayNotifications';
 import { validateEmail } from '~/utilities/validation';
 
@@ -23,7 +30,7 @@ export const ForgotPassword = () => {
   const handleClick = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) {
-      displayNotifications('Missing Field', 'Provide a valid Email', 'red');
+      displayNotifications('Missing Field', 'Provide a valid email', 'red');
       return;
     }
     if (validateEmail(email)) {
@@ -44,10 +51,10 @@ export const ForgotPassword = () => {
           textAlign: 'center',
         }}
       >
-        Forgot your password?
+        {FORGOT_PASSWORD_HEADER}
       </Title>
       <Text c='dimmed' fz='sm' ta='center'>
-        Enter your email to get a reset link
+        {FORGOT_PASSWORD_EMAIL}
       </Text>
 
       <Paper mt='xl' p={30} radius='md' shadow='md' withBorder>
@@ -75,11 +82,11 @@ export const ForgotPassword = () => {
               <Center inline>
                 <IconArrowLeft
                   data-testid='back-arrow'
-                  onClick={() => navigate('/')}
+                  onClick={() => navigate(LOGIN)}
                   size={12}
                   stroke={1.5}
                 />
-                <Box ml={5}>Back to the login page</Box>
+                <Box ml={5}>{BACK_TO_LOGIN}</Box>
               </Center>
             </Anchor>
             <Button
@@ -95,7 +102,7 @@ export const ForgotPassword = () => {
               }}
               type='submit'
             >
-              Reset password
+              {RESET_PASSWORD_BUTTON_TEXT}
             </Button>
           </Group>
         </form>

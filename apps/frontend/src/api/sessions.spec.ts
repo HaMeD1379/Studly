@@ -1,6 +1,5 @@
-const { requestMock, getUserIdMock, getSessionIdMock } = vi.hoisted(() => ({
+const { requestMock, getSessionIdMock } = vi.hoisted(() => ({
   getSessionIdMock: vi.fn(),
-  getUserIdMock: vi.fn(),
   requestMock: vi.fn(),
 }));
 
@@ -8,9 +7,13 @@ vi.mock('~/utilities/requests/requests', () => ({
   request: requestMock,
 }));
 
-vi.mock('~/utilities/session/session', () => ({
-  getSessionId: getSessionIdMock,
-  getUserId: getUserIdMock,
+vi.mock('~/store/userInfo', () => ({
+  userInfo: {
+    getState: vi.fn(() => ({
+      sessionId: mockSessionId,
+      userId: mockUserId,
+    })),
+  },
 }));
 
 import { describe, expect, it, vi } from 'vitest';
@@ -25,6 +28,7 @@ import {
   mockStartSessionStop,
   mockStartSessionSubject,
   mockStopSessionPath,
+  mockUserId,
 } from '~/mocks';
 import { RequestMethods } from '~/types';
 import {

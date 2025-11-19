@@ -21,7 +21,7 @@ vi.mock('react-router-dom', async () => {
 
 vi.mock('~/store', () => {
   return {
-    userInfoStore: {
+    userInfo: {
       getState: () => ({
         bio: '',
         email: 'testUser@gmail.com',
@@ -37,6 +37,7 @@ vi.mock('~/store', () => {
 import { fireEvent, screen } from '@testing-library/react';
 import fetchPolyfill, { Request as RequestPolyfill } from 'node-fetch';
 import { describe, expect, it, vi } from 'vitest';
+import { SETTINGS } from '~/constants';
 import { render } from '~/utilities/testing';
 import { UserCard } from './UserCard';
 
@@ -72,7 +73,7 @@ describe('User Card tests', () => {
   it('naviagtes to settings when edit button is clicked', () => {
     render(<UserCard />);
     fireEvent.click(screen.getByTestId('edit-btn'));
-    expect(mockNavigate).toHaveBeenCalledWith('/settings');
+    expect(mockNavigate).toHaveBeenCalledWith(SETTINGS);
   });
   it('displays the result from the fetch bio api call in the bio field', () => {
     render(<UserCard />);

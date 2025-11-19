@@ -17,6 +17,7 @@ import { MantineProvider } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { MemoryRouter } from 'react-router-dom';
 import { vi } from 'vitest';
+import { LOGIN } from '~/constants';
 
 describe('Sign up activity', () => {
   it('Shows email and password fields', () => {
@@ -46,7 +47,7 @@ describe('Sign up activity', () => {
 
     expect(notifications.show).toHaveBeenCalledWith({
       color: 'red',
-      message: 'Provide a valid Email',
+      message: 'Provide a valid email',
       title: 'Mismatch',
     });
   });
@@ -84,7 +85,7 @@ describe('Sign up activity', () => {
     const backArrow = screen.getByTestId('back-arrow');
     fireEvent.click(backArrow);
 
-    expect(mockNavigate).toHaveBeenCalledWith('/');
+    expect(mockNavigate).toHaveBeenCalledWith(LOGIN);
   });
 
   it('Show provide a valid email notification if email field is empty', () => {
@@ -103,7 +104,7 @@ describe('Sign up activity', () => {
 
     expect(notifications.show).toHaveBeenCalledWith({
       color: 'red',
-      message: 'Provide a valid Email',
+      message: 'Provide a valid email',
       title: 'Missing Field',
     });
   });

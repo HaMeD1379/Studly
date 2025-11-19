@@ -1,19 +1,22 @@
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { login } from '~/api';
+import { STUDY } from '~/constants';
 import { action } from './action';
 
 vi.mock('~/api', () => ({
   login: vi.fn(),
 }));
 
+const mockSetAccessToken = vi.fn();
 const mockSetEmail = vi.fn();
 const mockSetName = vi.fn();
 const mockSetId = vi.fn();
 const mockSetRefreshToken = vi.fn();
 
-vi.mock('~/store/userInfoStore', () => ({
-  userInfoStore: {
+vi.mock('~/store/userInfo', () => ({
+  userInfo: {
     getState: () => ({
+      setAccessToken: mockSetAccessToken,
       setEmail: mockSetEmail,
       setId: mockSetId,
       setName: mockSetName,
@@ -89,7 +92,7 @@ describe('login action', () => {
     expect(result).toBeInstanceOf(Response);
     if (result instanceof Response) {
       expect(result.status).toBe(302);
-      expect(result.headers.get('Location')).toBe('/study');
+      expect(result.headers.get('Location')).toBe(STUDY);
     }
 
     expect(mockSetEmail).toHaveBeenCalledWith('john@example.com');
