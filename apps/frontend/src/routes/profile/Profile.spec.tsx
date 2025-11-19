@@ -5,15 +5,13 @@ const mockLoaderData = {
   },
   error: false,
 };
-
-import { screen } from '@testing-library/react';
-import fetchPolyfill, { Request as RequestPolyfill } from 'node-fetch';
-import { createMemoryRouter, RouterProvider } from 'react-router-dom';
-import { describe, expect, it, type Mock, vi } from 'vitest';
-
-import { PageSpinner } from '~/components';
-import { ProfileLoader, UserProfile } from '~/routes';
-import { render } from '~/utilities/testing';
+vi.mock('~/store/userInfo', () => {
+  const store = vi.fn(() => mockStore) as MockZustandStore;
+  store.getState = () => mockStore;
+  store.setState = (newState: Partial<typeof mockStore>) =>
+    Object.assign(mockStore, newState);
+  return { userInfo: store };
+});
 
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', async () => {
@@ -27,6 +25,15 @@ vi.mock('react-router-dom', async () => {
     useNavigate: () => mockNavigate,
   };
 });
+
+import { screen } from '@testing-library/react';
+import fetchPolyfill, { Request as RequestPolyfill } from 'node-fetch';
+import { createMemoryRouter, RouterProvider } from 'react-router-dom';
+import { describe, expect, it, type Mock, vi } from 'vitest';
+
+import { PageSpinner } from '~/components';
+import { ProfileLoader, UserProfile } from '~/routes';
+import { render } from '~/utilities/testing';
 
 const mockSetName = vi.fn();
 const mockSetEmail = vi.fn();
@@ -50,14 +57,6 @@ type MockZustandStore = Mock & {
   getState: () => typeof mockStore;
   setState: (newState: Partial<typeof mockStore>) => void;
 };
-
-vi.mock('~/store/userInfo', () => {
-  const store = vi.fn(() => mockStore) as MockZustandStore;
-  store.getState = () => mockStore;
-  store.setState = (newState: Partial<typeof mockStore>) =>
-    Object.assign(mockStore, newState);
-  return { userInfo: store };
-});
 
 //Lines 50- 57 were provided through an online github repo (https://github.com/reduxjs/redux-toolkit/issues/4966#issuecomment-3115230061) as solution to the error:
 //RequestInit: Expected signal ("AbortSignal {}") to be an instance of AbortSignal.
