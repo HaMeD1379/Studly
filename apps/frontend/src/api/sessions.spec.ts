@@ -8,9 +8,13 @@ vi.mock('~/utilities/requests/requests', () => ({
   request: requestMock,
 }));
 
-vi.mock('~/utilities/session/session', () => ({
-  getSessionId: getSessionIdMock,
-  getUserId: getUserIdMock,
+vi.mock('~/store/userInfoStore', () => ({
+  userInfoStore: {
+    getState: vi.fn(() => ({
+      sessionId: mockSessionId,
+      userId: mockUserId,
+    })),
+  },
 }));
 
 import { describe, expect, it, vi } from 'vitest';
@@ -25,6 +29,7 @@ import {
   mockStartSessionStop,
   mockStartSessionSubject,
   mockStopSessionPath,
+  mockUserId,
 } from '~/mocks';
 import { RequestMethods } from '~/types';
 import {

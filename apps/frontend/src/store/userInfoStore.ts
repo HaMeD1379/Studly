@@ -1,31 +1,15 @@
 import { create } from 'zustand';
+import type { UserStore } from '~/types';
 
-export type BioStore = {
-  bio: string;
-  name: string;
-  email: string;
-  userId: string;
-  refreshToken: string;
-  isAccessStored: boolean;
-  sessionId: string;
-  setBio: (newBio: string) => void;
-  setName: (newName: string) => void;
-  setEmail: (newEmail: string) => void;
-  setId: (newId: string) => void;
-  setSessId: (newSessionId: string) => void;
-  setRefreshToken: (refresh_token: string) => void;
-  setAccessStored: (bool: boolean) => void;
-  setCheckAccess: () => void;
-};
-
-export const userInfoStore = create<BioStore>((set, get) => ({
+export const userInfoStore = create<UserStore>((set, get) => ({
   bio: '',
   email: '',
   isAccessStored: false,
   name: '',
   refreshToken: '',
   sessionId: '',
-  setAccessStored: (bool) => set({ isAccessStored: bool }),
+  userId: '',
+  setAccessStored: (newAccessStored) => set({ isAccessStored: newAccessStored }),
   setBio: (newBio) => set({ bio: newBio }),
   setCheckAccess: () => {
     const { isAccessStored } = get();
@@ -42,7 +26,6 @@ export const userInfoStore = create<BioStore>((set, get) => ({
   setEmail: (newEmail) => set({ email: newEmail }),
   setId: (newId) => set({ userId: newId }),
   setName: (newName) => set({ name: newName }),
-  setRefreshToken: (refresh_token) => set({ refreshToken: refresh_token }),
-  setSessId: (session_id) => set({ sessionId: session_id }),
-  userId: '',
+  setRefreshToken: (newRefreshToken) => set({ refreshToken: newRefreshToken }),
+  setSessionId: (newSessionId) => set({ sessionId: newSessionId }),
 }));

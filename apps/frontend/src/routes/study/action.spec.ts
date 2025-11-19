@@ -11,8 +11,12 @@ vi.mock('~/api/sessions', () => ({
   stopSession: stopSessionMock,
 }));
 
-vi.mock('~/utilities/session/session', () => ({
-  setSessionId: setSessionIdMock,
+vi.mock('~/store/userInfoStore', () => ({
+  userInfoStore: {
+    getState: vi.fn(() => ({
+      setSessionId: setSessionIdMock,
+    })),
+  },
 }));
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';

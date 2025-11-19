@@ -27,7 +27,7 @@ vi.mock('~/store/userInfoStore', () => {
     setBio: mockSetBio,
     setEmail: mockSetEmail,
     setName: mockSetName,
-    setSessId: vi.fn(),
+    setSessionId: vi.fn(),
     userId: 'user123',
   };
 

@@ -10,10 +10,7 @@ type StudyLoader = {
 };
 
 export const loader = async (): Promise<StudyLoader> => {
-  const [summary, sessionsList] = await Promise.all([
-    await fetchTodaysSessionSummary(),
-    await fetchSessionsList(),
-  ]);
+  const [summary, sessionsList] = await Promise.all([fetchTodaysSessionSummary(), fetchSessionsList()]);
 
   return {
     data: {
