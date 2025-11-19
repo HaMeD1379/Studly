@@ -6,7 +6,7 @@ export const formatISOToYYYYMMDD = (timestamp: string) => {
 
 export const getSunday = (date: Date) => {
   const d = new Date(date); // avoid mutating original
-  const day = d.getDay();   // Sunday = 0
+  const day = d.getDay(); // Sunday = 0
 
   // subtract day (0–6) to go back to Sunday
   d.setDate(d.getDate() - day);

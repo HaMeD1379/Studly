@@ -74,13 +74,13 @@ export const stopSession = async () => {
 };
 
 export const SessionSummary = async () => {
-   const userId = getUserId();
+  const userId = getUserId();
 
   const to = new Date(Date.now()).toISOString();
 
-  const from = getSunday(new Date(Date.now()))
+  const from = getSunday(new Date(Date.now()));
   const path = `${SESSIONS_SUMMARY}?userId=${userId}&from=${from}&to=${to}`;
   const result = await request<SessionSummaryLoader>(RequestMethods.GET, path);
 
   return result;
-}
+};
