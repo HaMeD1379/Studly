@@ -54,11 +54,19 @@ export const updateProfile = async (req, res) => {
   const accessToken = req.headers.authorization?.replace("Bearer ", "");
 
   try {
-    const useMock = process.env.STUDLY_USE_MOCK === '1';
-    const hasSupabaseEnv = Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY);
+    const useMock = process.env.STUDLY_USE_MOCK === "1";
+    const hasSupabaseEnv = Boolean(
+      process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY
+    );
 
     // Update full_name in auth.users metadata if provided and access token exists
-    if (fullName !== undefined && accessToken && refreshToken && !useMock && hasSupabaseEnv) {
+    if (
+      fullName !== undefined &&
+      accessToken &&
+      refreshToken &&
+      !useMock &&
+      hasSupabaseEnv
+    ) {
       // Create a temporary client with the user's session
       const userSupabase = createSupabaseClient(
         process.env.SUPABASE_URL,
@@ -112,6 +120,42 @@ export const updateProfile = async (req, res) => {
   }
 };
 
+export const getProfileData = async (req, res) => {
+  const { id: userId } = req.params;
+
+  try {
+    // Retrieve bio from user_profile table
+    const { data, error } = await supabase
+      .from("user_profile")
+      .select("bio")
+      .eq("user_id", userId)
+      .single();
+
+    if (error) {
+      // If no profile found (PGRST116), return empty bio
+      if (error.code === "PGRST116") {
+        handleSuccess(res, 200, STRINGS.PROFILE.GET_SUCCESS, {
+          user_id: userId,
+          bio: "",
+        });
+        return;
+      }
+      console.error(STRINGS.PROFILE.GET_ERROR, error.message);
+      handleError(res, 400, error.message);
+      return;
+    }
+
+    handleSuccess(res, 200, STRINGS.PROFILE.GET_SUCCESS, {
+      user_id: userId,
+      bio: data?.bio || "",
+    });
+  } catch (error) {
+    console.error(STRINGS.PROFILE.UNEXPECTED_GET_ERROR, error.message);
+    handleError(res, 500, STRINGS.SERVER.INTERNAL_ERROR);
+  }
+};
+
 export default {
   updateProfile,
+  getProfileData,
 };

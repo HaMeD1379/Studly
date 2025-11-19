@@ -107,6 +107,8 @@ const STRINGS = {
     MISSING_RESET_PASSWORD_TOKEN: "Missing reset password token",
     MISSING_USER_ID: "Missing user ID",
     INVALID_BIO_LENGTH: "Bio must be 500 characters or less",
+    MISSING_ACCESS_TOKEN: "Missing access token in query parameters",
+    MISSING_REFRESH_TOKEN: "Missing refresh token",
   },
 
   // PROFILE
@@ -114,6 +116,9 @@ const STRINGS = {
     UPDATE_SUCCESS: "Profile updated successfully",
     UPDATE_ERROR: "Supabase profile update error: ",
     UNEXPECTED_UPDATE_ERROR: "Unexpected profile update error:",
+    GET_SUCCESS: "Profile retrieved successfully",
+    GET_ERROR: "Failed to retrieve profile",
+    UNEXPECTED_GET_ERROR: "Unexpected profile retrieval error:",
     USER_NOT_FOUND: "User not found",
     MISSING_USER_ID: "Missing user ID",
   },
@@ -173,6 +178,8 @@ const STRINGS = {
     RESET_PASSWORD_AUTH_POST: "POST /api/v1/auth/reset-password",
     PROFILE_UPDATE: "/api/v1/profile/update",
     PROFILE_UPDATE_PATCH: "PATCH /api/v1/profile/update",
+    PROFILE_DATA: "/api/v1/profile",
+    PROFILE_DATA_GET: "GET /api/v1/profile/:id",
   },
 
   TEST: {
@@ -235,6 +242,14 @@ const STRINGS = {
     PROFILE_UPDATE_BIO_ONLY:
       "should update only bio when full_name is not provided",
     PROFILE_UPDATE_BOTH: "should update both full_name and bio when provided",
+    PROFILE_GET_SUCCESS:
+      "should return 200 when profile data is retrieved successfully",
+    PROFILE_GET_MISSING_USER_ID:
+      "should return 400 when user ID is missing for GET",
+    PROFILE_GET_NOT_FOUND: "should return 404 when user profile not found",
+    PROFILE_GET_SUPABASE_ERROR: "should handle Supabase retrieval error",
+    PROFILE_GET_UNEXPECTED_ERROR:
+      "should handle unexpected profile retrieval error",
 
     SUPABASE_CLIENT_CONFIGURATION: "Supabase Client Configuration",
     SUPABASE_EXPORT_CLIENT: "should export a Supabase client instance",
