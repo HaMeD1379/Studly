@@ -48,6 +48,8 @@ import requireInternalApiKey from "./middleware/internal-api-key.middleware.js";
 import badgesRoutes from "./routes/v1/badges.routes.js";
 import leaderboardRoutes from "./routes/v1/leaderboard.routes.js";
 import profiling from "./middleware/profiling.middleware.js";
+import feedRoutes from "./routes/v1/feed.routes.js"; 
+
 
 const app = express();
 
@@ -67,6 +69,8 @@ app.use("/api/v1/sessions", sessionsRoutes);
 app.use("/api/v1/profile", profileRoutes);
 app.use("/api/v1/badges", badgesRoutes);
 app.use("/api/v1/leaderboard", leaderboardRoutes);
+app.use("/api/v1/feed", feedRoutes);
+
 
 const port = process.env.PORT || 3000;
 
