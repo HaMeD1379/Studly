@@ -29,7 +29,7 @@
  * ────────────────────────────────────────────────────────────────────────────────
  */
 
-import test, { beforeEach } from 'node:test';
+import test, { beforeEach, afterEach } from 'node:test';
 import assert from 'node:assert/strict';
 
 import STRINGS from '../../src/config/strings.config.js';
@@ -37,19 +37,6 @@ import supabase from '../../src/config/supabase.client.js';
 
 process.env.NODE_ENV = 'test';
 const { default: app } = await import('../../src/index.js');
-
-const startServer = () =>
-  new Promise((resolve) => {
-    const server = app.listen(0, () => {
-      const address = server.address();
-      resolve({ server, url: `http://127.0.0.1:${address.port}` });
-    });
-  });
-
-const stopServer = (server) =>
-  new Promise((resolve, reject) => {
-    server.close((err) => (err ? reject(err) : resolve()));
-  });
 
 const getSessionsTable = () => {
   // @ts-ignore — test-only mutation of supabase mock internals
@@ -85,54 +72,61 @@ const seedSessionRow = (overrides = {}) => {
   return row;
 };
 
+let server;
+
 beforeEach(() => {
   resetSessionsTable();
+  // Start test server
+  server = app.listen(0);
 });
 
-const requestWithInternalKey = async (method, path, options = {}) => {
-  const token = process.env.INTERNAL_API_TOKEN ?? STRINGS.MOCK.INTERNAL_API_TOKEN;
-  const { server, url } = await startServer();
-
-  try {
-    let fullUrl = `${url}${path}`;
-    const { query, body } = options;
-
-    if (query && Object.keys(query).length > 0) {
-      const params = new URLSearchParams();
-      for (const [key, value] of Object.entries(query)) {
-        if (value !== undefined && value !== null) {
-          params.append(key, String(value));
-        }
-      }
-      const qs = params.toString();
-      if (qs) fullUrl += `?${qs}`;
-    }
-
-    const response = await fetch(fullUrl, {
-      method,
-      headers: {
-        ...(body ? { 'Content-Type': 'application/json' } : {}),
-        'x-internal-api-key': token,
-      },
-      body: body ? JSON.stringify(body) : undefined,
-    });
-
-    const text = await response.text();
-    let parsed;
-    try {
-      parsed = text ? JSON.parse(text) : undefined;
-    } catch {
-      parsed = undefined;
-    }
-
-    return { status: response.status, body: parsed };
-  } finally {
-    await stopServer(server);
+afterEach(() => {
+  // Close server
+  if (server) {
+    server.close();
   }
+});
+
+const request = async (method, path, options = {}) => {
+  const token = process.env.INTERNAL_API_TOKEN ?? STRINGS.MOCK.INTERNAL_API_TOKEN;
+  const port = server.address().port;
+
+  let fullUrl = `http://localhost:${port}${path}`;
+  const { query, body } = options;
+
+  if (query && Object.keys(query).length > 0) {
+    const params = new URLSearchParams();
+    for (const [key, value] of Object.entries(query)) {
+      if (value !== undefined && value !== null) {
+        params.append(key, String(value));
+      }
+    }
+    const qs = params.toString();
+    if (qs) fullUrl += `?${qs}`;
+  }
+
+  const response = await fetch(fullUrl, {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      'x-internal-api-key': token,
+    },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+
+  const text = await response.text();
+  let parsed;
+  try {
+    parsed = text ? JSON.parse(text) : undefined;
+  } catch {
+    parsed = undefined;
+  }
+
+  return { status: response.status, body: parsed };
 };
 
-test('POST /api/v1/sessions creates a session and returns the persisted payload', async () => {
-  const response = await requestWithInternalKey('POST', STRINGS.API.SESSIONS_ROUTE, {
+test('POST /api/v1/sessions - should create a session and return the persisted payload', async () => {
+  const response = await request('POST', STRINGS.API.SESSIONS_ROUTE, {
     body: {
       userId: 'user-1',
       subject: 'Math',
@@ -150,7 +144,7 @@ test('POST /api/v1/sessions creates a session and returns the persisted payload'
   assert.equal(response.body.session.totalMinutes, 90);
 });
 
-test('PATCH /api/v1/sessions/:id updates an existing session and recalculates totalMinutes when needed', async () => {
+test('PATCH /api/v1/sessions/:id - should update an existing session and recalculate totalMinutes', async () => {
   const seeded = seedSessionRow({
     id: 'session-123',
     user_id: 'user-1',
@@ -158,17 +152,13 @@ test('PATCH /api/v1/sessions/:id updates an existing session and recalculates to
     total_time: 60,
   });
 
-  const response = await requestWithInternalKey(
-    'PATCH',
-    `${STRINGS.API.SESSIONS_ROUTE}/${seeded.id}`,
-    {
-      body: {
-        startTime: '2025-01-01T00:00:00.000Z',
-        endTime: '2025-01-01T02:00:00.000Z',
-        sessionGoal: 'Extended study',
-      },
+  const response = await request('PATCH', `${STRINGS.API.SESSIONS_ROUTE}/${seeded.id}`, {
+    body: {
+      startTime: '2025-01-01T00:00:00.000Z',
+      endTime: '2025-01-01T02:00:00.000Z',
+      sessionGoal: 'Extended study',
     },
-  );
+  });
 
   assert.equal(response.status, 200);
   assert.equal(response.body.session.id, 'session-123');
@@ -176,13 +166,13 @@ test('PATCH /api/v1/sessions/:id updates an existing session and recalculates to
   assert.equal(response.body.session.sessionGoal, 'Extended study');
 });
 
-test('GET /api/v1/sessions lists sessions for a user with filters applied', async () => {
+test('GET /api/v1/sessions - should list sessions for a user with filters applied', async () => {
   // Seed multiple sessions; only some should be returned
   seedSessionRow({ id: 's-1', user_id: 'user-1', subject: 'Math', total_time: 60 });
   seedSessionRow({ id: 's-2', user_id: 'user-1', subject: 'Math', total_time: 120 });
   seedSessionRow({ id: 's-3', user_id: 'user-2', subject: 'History', total_time: 30 });
 
-  const response = await requestWithInternalKey('GET', STRINGS.API.SESSIONS_ROUTE, {
+  const response = await request('GET', STRINGS.API.SESSIONS_ROUTE, {
     query: {
       userId: 'user-1',
       subject: 'Math',
@@ -198,14 +188,14 @@ test('GET /api/v1/sessions lists sessions for a user with filters applied', asyn
   );
 });
 
-test('GET /api/v1/sessions/summary returns aggregate metrics and subject breakdown', async () => {
+test('GET /api/v1/sessions/summary - should return aggregate metrics and subject breakdown', async () => {
   // 2 Math (60 + 120), 1 History (30), 1 subjectless (15)
   seedSessionRow({ user_id: 'user-1', subject: 'Math', total_time: 60 });
   seedSessionRow({ user_id: 'user-1', subject: 'Math', total_time: 120 });
   seedSessionRow({ user_id: 'user-1', subject: 'History', total_time: 30 });
   seedSessionRow({ user_id: 'user-1', subject: null, total_time: 15 });
 
-  const response = await requestWithInternalKey('GET', `${STRINGS.API.SESSIONS_ROUTE}/summary`, {
+  const response = await request('GET', `${STRINGS.API.SESSIONS_ROUTE}/summary`, {
     query: {
       userId: 'user-1',
     },
@@ -227,8 +217,8 @@ test('GET /api/v1/sessions/summary returns aggregate metrics and subject breakdo
   assert.equal(averageMinutesPerSession, 225 / 4);
 });
 
-test('GET /api/v1/sessions/summary returns 400 when userId is missing', async () => {
-  const response = await requestWithInternalKey('GET', `${STRINGS.API.SESSIONS_ROUTE}/summary`);
+test('GET /api/v1/sessions/summary - should return 400 when userId is missing', async () => {
+  const response = await request('GET', `${STRINGS.API.SESSIONS_ROUTE}/summary`);
   assert.equal(response.status, 400);
   assert.deepEqual(response.body, {
     error: 'userId query parameter is required',
