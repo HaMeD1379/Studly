@@ -33,7 +33,7 @@ describe('login action', () => {
     if (password) body.set('password', password);
 
     return new Request('http://localhost/', {
-      body,
+      body: body.toString(),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },

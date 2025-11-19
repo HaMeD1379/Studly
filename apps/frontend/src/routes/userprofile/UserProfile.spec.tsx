@@ -9,7 +9,6 @@ import { render } from "~/utilities/testing";
 
 vi.mock("~/api", () => ({
   fetchBio: vi.fn(),
-  SessionSummary: vi.fn(),
 }));
 
 const mockNavigate = vi.fn();

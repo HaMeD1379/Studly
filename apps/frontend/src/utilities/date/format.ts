@@ -1,7 +1,7 @@
-export const formatToYYYYMMDD = (timestamp: number) => {
-  const date = new Date(timestamp);
+export const formatISOToYYYYMMDD = (timestamp: string) => {
+  const split = timestamp.split('T');
 
-  return `${date.getFullYear()}-${date.getMonth()}-${date.getDay()}`;
+  return split?.length > 0 ? split[0] : timestamp;
 };
 
 export const getSunday = (date: Date) => {
