@@ -10,6 +10,7 @@ vi.mock('~/api', () => ({
 }));
 
 const mockGetState = {
+  accessToken: 'mockAccessToken',
   refreshToken: 'refresh123',
   userId: 'user123',
 };
@@ -23,12 +24,6 @@ vi.mock('~/store', () => ({
 describe('updateBio action', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.stubGlobal('localStorage', {
-      clear: vi.fn(),
-      getItem: vi.fn(),
-      removeItem: vi.fn(),
-      setItem: vi.fn(),
-    });
   });
 
   const makeRequest = (bio?: string, fullName?: string) => {
@@ -45,10 +40,10 @@ describe('updateBio action', () => {
 
   it('returns an error when required fields or tokens are missing', async () => {
     (userInfo.getState as Mock).mockReturnValueOnce({
+      accessToken: 'token',
       refreshToken: 'refresh123',
       userId: null,
     });
-    (localStorage.getItem as Mock).mockReturnValue('token');
 
     const req = makeRequest('My bio', 'John Doe');
     const result = await action({ request: req } as ActionFunctionArgs);
@@ -58,7 +53,6 @@ describe('updateBio action', () => {
 
   it('returns proper error object when updateBio fails', async () => {
     (userInfo.getState as Mock).mockReturnValue(mockGetState);
-    (localStorage.getItem as Mock).mockReturnValue('mockAccessToken');
 
     (updateBio as Mock).mockResolvedValue({
       error: { status: 400 },
@@ -76,7 +70,6 @@ describe('updateBio action', () => {
 
   it('redirects when updateBio succeeds', async () => {
     (userInfo.getState as Mock).mockReturnValue(mockGetState);
-    (localStorage.getItem as Mock).mockReturnValue('mockAccessToken');
 
     (updateBio as Mock).mockResolvedValue({
       data: { updated: true },
@@ -95,7 +88,6 @@ describe('updateBio action', () => {
 
   it('returns unexpected error when API response is malformed', async () => {
     (userInfo.getState as Mock).mockReturnValue(mockGetState);
-    (localStorage.getItem as Mock).mockReturnValue('mockAccessToken');
 
     (updateBio as Mock).mockResolvedValue({
       data: null,

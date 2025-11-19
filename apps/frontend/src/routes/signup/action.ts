@@ -8,7 +8,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const fullname = formdata.get('name')?.toString();
   const email = formdata.get('email')?.toString();
   const password = formdata.get('password')?.toString();
-  const { setEmail, setName, setId, setRefreshToken } = userInfo.getState();
+  const { setAccessToken, setEmail, setName, setId, setRefreshToken } =
+    userInfo.getState();
   if (fullname && email && password) {
     const res = await signUp(email, password, fullname);
     if (res.error) {
@@ -20,7 +21,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       const email = res.data.data.user.email;
       const userid = res.data.data.user.id;
       const refreshToken = res.data.data.session.refresh_token;
-      localStorage.setItem('accessToken', accessToken);
+      setAccessToken(accessToken);
       setEmail(email);
       setName(fullName);
       setId(userid);

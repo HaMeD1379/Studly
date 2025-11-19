@@ -12,12 +12,26 @@ vi.mock('react-router-dom', async () => {
   };
 });
 
+const mockSetAccessToken = vi.fn();
+
+vi.mock('~/store', () => ({
+  userInfo: {
+    getState: () => ({
+      accessToken: mockAccessToken,
+      setAccessStored: vi.fn(),
+      setAccessToken: mockSetAccessToken,
+      setCheckAccess: vi.fn(),
+    }),
+  },
+}));
+
 import { act, fireEvent, screen } from '@testing-library/react';
 import fetchPolyfill, { Request as RequestPolyfill } from 'node-fetch';
 import { createMemoryRouter, RouterProvider, redirect } from 'react-router-dom';
 import { describe, expect, it, type Mock, vi } from 'vitest';
 import * as logoutApi from '~/api/auth';
 import { BADGES, HOME, LOGIN, STUDY } from '~/constants';
+import { mockAccessToken } from '~/mocks';
 import { logoutAction } from '~/routes/logout';
 import { render } from '~/utilities/testing';
 import { Navbar } from './Navbar';
@@ -85,16 +99,16 @@ describe('Navbar', () => {
     expect(mockNavigate).toHaveBeenCalledWith(BADGES);
     mockNavigate.mockClear();
   });
+
   it('navigates to the login page when logout button is clicked', async () => {
     (logoutApi.logout as Mock).mockResolvedValue({
       data: {},
       message: 'Logout successful',
     });
-    localStorage.setItem('accessToken', 'abc123');
 
     const result = await logoutAction();
 
     expect(result).toEqual(redirect(LOGIN));
-    expect(localStorage.getItem('accessToken')).toBeNull();
+    expect(mockSetAccessToken).toHaveBeenCalledWith('');
   });
 });

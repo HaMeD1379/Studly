@@ -7,7 +7,7 @@ vi.mock('react-router', () => ({
   redirect: redirectMock,
 }));
 
-import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+import { describe, expect, it, type Mock, vi } from 'vitest';
 import { logout } from '~/api';
 import { LOGIN } from '~/constants';
 import { action } from './action';
@@ -16,53 +16,26 @@ vi.mock('~/api', () => ({
   logout: vi.fn(),
 }));
 
+let accessToken = '';
+const mockSetAccessToken = (value: string) => {
+  accessToken = value;
+};
 const mockSetAccessStored = vi.fn();
 const mockSetCheckAccess = vi.fn();
 
 vi.mock('~/store', () => ({
   userInfo: {
     getState: () => ({
+      accessToken,
       setAccessStored: mockSetAccessStored,
+      setAccessToken: mockSetAccessToken,
       setCheckAccess: mockSetCheckAccess,
     }),
   },
 }));
 
-type MockStorage = {
-  getItem: Mock;
-  setItem: Mock;
-  removeItem: Mock;
-  clear: Mock;
-};
-
-const createMockStorage = (): MockStorage => {
-  let store: Record<string, string> = {};
-
-  return {
-    clear: vi.fn(() => {
-      store = {};
-    }),
-    getItem: vi.fn((key) => store[key] ?? null),
-    removeItem: vi.fn((key) => {
-      delete store[key];
-    }),
-    setItem: vi.fn((key, val) => {
-      store[key] = val;
-    }),
-  };
-};
-
 describe('logout action', () => {
-  let mockStorage: MockStorage;
-  beforeEach(() => {
-    mockStorage = createMockStorage();
-
-    vi.stubGlobal('localStorage', mockStorage);
-  });
-
   it('returns error when no token exists', async () => {
-    mockStorage.getItem.mockReturnValueOnce(null);
-
     const result = await action();
 
     expect(result).toEqual({ error: 'Logout api call failed' });
@@ -72,7 +45,7 @@ describe('logout action', () => {
   });
 
   it('returns API error when logout returns an error', async () => {
-    mockStorage.getItem.mockReturnValueOnce('validToken');
+    mockSetAccessToken('validToken');
 
     (logout as Mock).mockResolvedValueOnce({
       data: null,
@@ -88,7 +61,7 @@ describe('logout action', () => {
   });
 
   it('clears access, updates store, and redirects on successful logout', async () => {
-    mockStorage.getItem.mockReturnValueOnce('validToken');
+    mockSetAccessToken('validToken');
 
     (logout as Mock).mockResolvedValueOnce({
       data: { ok: true },
@@ -97,7 +70,7 @@ describe('logout action', () => {
 
     const result = await action();
 
-    expect(mockStorage.removeItem).toHaveBeenCalledWith('accessToken');
+    expect(accessToken).toEqual('');
     expect(mockSetAccessStored).toHaveBeenCalledWith(false);
     expect(mockSetCheckAccess).toHaveBeenCalled();
     expect(redirectMock).toHaveBeenCalledWith(LOGIN);

@@ -1,6 +1,7 @@
 vi.mock('~/store/userInfo', () => ({
   userInfo: {
     getState: () => ({
+      setAccessToken: vi.fn(),
       setEmail: vi.fn(),
       setId: vi.fn(),
       setName: vi.fn(),

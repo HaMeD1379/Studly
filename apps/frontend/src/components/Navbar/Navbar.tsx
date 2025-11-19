@@ -19,6 +19,7 @@ import {
 import {
   BADGES,
   HOME,
+  LOGIN,
   LOGOUT,
   NAVBAR_BADGES,
   NAVBAR_HEADER,
@@ -31,6 +32,7 @@ import {
   SETTINGS,
   STUDY,
 } from '~/constants';
+import { userInfo } from '~/store';
 import { PageSpinner } from '../PageSpinner/PageSpinner';
 
 type StyledButtonProps = {
@@ -42,6 +44,11 @@ type StyledButtonProps = {
 };
 
 export const Navbar = () => {
+  const navigate = useNavigate();
+  if (!userInfo.getState().accessToken) {
+    navigate(LOGIN);
+  }
+
   const navigation = useNavigation();
   const location = useLocation().pathname;
   const isLoading = navigation.state === 'loading';

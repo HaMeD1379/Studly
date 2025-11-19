@@ -7,7 +7,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const email = formData.get('email')?.toString();
   const password = formData.get('password')?.toString();
-  const { setEmail, setName, setId, setRefreshToken } = userInfo.getState();
+  const { setAccessToken, setEmail, setName, setId, setRefreshToken } =
+    userInfo.getState();
 
   if (!email || !password) return { error: 'Missing credentials' }; // early exit if missing
   const res = await login(email, password);
@@ -25,7 +26,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const email = res.data.data.user.email;
     const userid = res.data.data.user.id;
     const refreshToken = res.data.data.session.refresh_token;
-    localStorage.setItem('accessToken', accessToken);
+    setAccessToken(accessToken);
     setEmail(email);
     setName(fullName);
     setId(userid);

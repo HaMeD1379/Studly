@@ -45,4 +45,11 @@ describe('userInfo', () => {
     const { refreshToken } = userInfo.getState();
     expect(refreshToken).toBe('token');
   });
+  it('updates accessToken when setAccessToken is called', () => {
+    const { setAccessToken } = userInfo.getState();
+    setAccessToken('token');
+
+    const { accessToken } = userInfo.getState();
+    expect(accessToken).toBe('token');
+  });
 });

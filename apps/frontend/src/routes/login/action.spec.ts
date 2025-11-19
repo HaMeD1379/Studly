@@ -7,6 +7,7 @@ vi.mock('~/api', () => ({
   login: vi.fn(),
 }));
 
+const mockSetAccessToken = vi.fn();
 const mockSetEmail = vi.fn();
 const mockSetName = vi.fn();
 const mockSetId = vi.fn();
@@ -15,6 +16,7 @@ const mockSetRefreshToken = vi.fn();
 vi.mock('~/store/userInfo', () => ({
   userInfo: {
     getState: () => ({
+      setAccessToken: mockSetAccessToken,
       setEmail: mockSetEmail,
       setId: mockSetId,
       setName: mockSetName,

@@ -7,13 +7,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const bio = formData.get('bio')?.toString();
   const fullName = formData.get('fullName')?.toString();
-  const token = localStorage.getItem('accessToken');
 
-  const { userId, refreshToken } = userInfo.getState();
-  if (!(bio || fullName) || !userId || !token || !refreshToken)
+  const { accessToken, userId, refreshToken } = userInfo.getState();
+  if (!(bio || fullName) || !userId || !accessToken || !refreshToken)
     return { error: 'Missing credentials' }; // early exit if missing
 
-  const res = await updateBio(token, refreshToken, userId, fullName, bio);
+  const res = await updateBio(accessToken, refreshToken, userId, fullName, bio);
   if (res.error) {
     return {
       message: `The HTTP request PATCH v1/profile/update failed with status ${res.error.status}`,
