@@ -68,7 +68,9 @@ const seedSessionRow = (overrides = {}) => {
   const row = {
     id: overrides.id ?? `session-${table.length + 1}`,
     user_id: overrides.user_id ?? 'user-1',
-    subject: overrides.subject ?? 'Math',
+    subject: Object.prototype.hasOwnProperty.call(overrides, 'subject')
+      ? overrides.subject
+      : 'Math',
     session_type: overrides.session_type ?? 1,
     start_time: overrides.start_time ?? '2025-01-01T00:00:00.000Z',
     end_time: overrides.end_time ?? '2025-01-01T01:00:00.000Z',

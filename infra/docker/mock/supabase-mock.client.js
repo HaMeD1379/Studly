@@ -358,5 +358,7 @@ function createAuthApi() {
 }
 
 const supabase = createMockClient();
+// Expose internal tables for test suites that seed data directly (e.g., sessions).
+supabase.tables = tables;
 export default supabase;
 
