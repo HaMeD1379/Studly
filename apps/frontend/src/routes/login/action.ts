@@ -1,14 +1,13 @@
 import { type ActionFunctionArgs, redirect } from 'react-router';
 import { login } from '~/api';
 import { STUDY } from '~/constants';
-import { userInfoStore } from '~/store/userInfoStore';
+import { userInfo } from '~/store/userInfo';
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const email = formData.get('email')?.toString();
   const password = formData.get('password')?.toString();
-  const { setEmail, setName, setId, setRefreshToken } =
-    userInfoStore.getState();
+  const { setEmail, setName, setId, setRefreshToken } = userInfo.getState();
 
   if (!email || !password) return { error: 'Missing credentials' }; // early exit if missing
   const res = await login(email, password);

@@ -4,7 +4,7 @@ import {
   SESSIONS,
   SESSIONS_SUMMARY,
 } from '~/constants';
-import { userInfoStore } from '~/store';
+import { userInfo } from '~/store';
 import {
   type CreateStudySessionAction,
   RequestMethods,
@@ -14,7 +14,7 @@ import {
 import { request } from '~/utilities/requests';
 
 export const fetchTodaysSessionSummary = async () => {
-  const { userId } = userInfoStore.getState();
+  const { userId } = userInfo.getState();
 
   const from = new Date(Date.now() - MS_IN_A_DAY).toISOString();
   const to = new Date(Date.now()).toISOString();
@@ -25,7 +25,7 @@ export const fetchTodaysSessionSummary = async () => {
 };
 
 export const fetchSessionsList = async () => {
-  const { userId } = userInfoStore.getState();
+  const { userId } = userInfo.getState();
   const endTime = new Date(Date.now()).toISOString();
   const path = `${SESSIONS}?userId=${userId}&limit=${RECENT_STUDY_SESSIONS_LIST_SIZE}&to=${endTime}`;
   const result = await request<SessionListLoader>(RequestMethods.GET, path);
@@ -40,7 +40,7 @@ export const startSession = async (
 ) => {
   const startTimeISO = new Date(startTime).toISOString();
   const endTimeISO = new Date(endTime).toISOString();
-  const { userId } = userInfoStore.getState();
+  const { userId } = userInfo.getState();
 
   const result = await request<CreateStudySessionAction>(
     RequestMethods.POST,
@@ -59,7 +59,7 @@ export const startSession = async (
 };
 
 export const stopSession = async () => {
-  const { sessionId } = userInfoStore.getState();
+  const { sessionId } = userInfo.getState();
 
   const path = `${SESSIONS}/${sessionId}`;
   const result = await request(

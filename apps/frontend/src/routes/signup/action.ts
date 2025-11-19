@@ -1,7 +1,7 @@
 import { type ActionFunctionArgs, redirect } from 'react-router';
 import { signUp } from '~/api';
 import { STUDY } from '~/constants';
-import { userInfoStore } from '~/store/userInfoStore';
+import { userInfo } from '~/store/userInfo';
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formdata = await request.formData();
@@ -9,7 +9,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const email = formdata.get('email')?.toString();
   const password = formdata.get('password')?.toString();
   const { setEmail, setName, setId, setRefreshToken } =
-    userInfoStore.getState();
+  userInfo.getState();
   if (fullname && email && password) {
     const res = await signUp(email, password, fullname);
     if (res.error) {

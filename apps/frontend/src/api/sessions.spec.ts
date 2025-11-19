@@ -8,8 +8,8 @@ vi.mock('~/utilities/requests/requests', () => ({
   request: requestMock,
 }));
 
-vi.mock('~/store/userInfoStore', () => ({
-  userInfoStore: {
+vi.mock('~/store/userInfo', () => ({
+  userInfo: {
     getState: vi.fn(() => ({
       sessionId: mockSessionId,
       userId: mockUserId,

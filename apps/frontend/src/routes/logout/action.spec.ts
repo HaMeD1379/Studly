@@ -20,7 +20,7 @@ const mockSetAccessStored = vi.fn();
 const mockSetCheckAccess = vi.fn();
 
 vi.mock('~/store', () => ({
-  userInfoStore: {
+  userInfo: {
     getState: () => ({
       setAccessStored: mockSetAccessStored,
       setCheckAccess: mockSetCheckAccess,

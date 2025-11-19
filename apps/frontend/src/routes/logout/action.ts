@@ -1,11 +1,11 @@
 import { redirect } from 'react-router';
 import { logout } from '~/api';
 import { LOGIN } from '~/constants';
-import { userInfoStore } from '~/store';
+import { userInfo } from '~/store';
 
 export const action = async () => {
   const token = localStorage.getItem('accessToken');
-  const { setAccessStored, setCheckAccess } = userInfoStore.getState();
+  const { setAccessStored, setCheckAccess } = userInfo.getState();
   if (token) {
     const res = await logout(token);
 

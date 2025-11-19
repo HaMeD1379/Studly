@@ -14,7 +14,7 @@ vi.mock('react-router-dom', async () => {
 
 vi.mock('~/store', () => {
   return {
-    userInfoStore: {
+    userInfo: {
       getState: () => ({
         bio: '',
         email: 'testUser@gmail.com',

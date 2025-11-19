@@ -12,8 +12,8 @@ const mockSetName = vi.fn();
 const mockSetId = vi.fn();
 const mockSetRefreshToken = vi.fn();
 
-vi.mock('~/store/userInfoStore', () => ({
-  userInfoStore: {
+vi.mock('~/store/userInfo', () => ({
+  userInfo: {
     getState: () => ({
       setEmail: mockSetEmail,
       setId: mockSetId,

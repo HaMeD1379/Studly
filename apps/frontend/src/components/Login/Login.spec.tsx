@@ -1,5 +1,5 @@
-vi.mock('~/store/userInfoStore', () => ({
-  userInfoStore: {
+vi.mock('~/store/userInfo', () => ({
+  userInfo: {
     getState: () => ({
       setEmail: vi.fn(),
       setId: vi.fn(),

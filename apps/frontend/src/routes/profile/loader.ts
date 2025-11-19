@@ -1,9 +1,9 @@
 import { fetchBio } from '~/api';
-import { userInfoStore } from '~/store';
+import { userInfo } from '~/store';
 import type { ProfileBio } from '~/types';
 
 export const loader = async (): Promise<ProfileBio> => {
-  const { userId } = userInfoStore.getState();
+  const { userId } = userInfo.getState();
   if (userId) {
     const res = await fetchBio(userId);
     if (res.data) {

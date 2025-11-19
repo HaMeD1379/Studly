@@ -11,8 +11,8 @@ vi.mock('~/api/sessions', () => ({
   stopSession: stopSessionMock,
 }));
 
-vi.mock('~/store/userInfoStore', () => ({
-  userInfoStore: {
+vi.mock('~/store/userInfo', () => ({
+  userInfo: {
     getState: vi.fn(() => ({
       setSessionId: setSessionIdMock,
     })),

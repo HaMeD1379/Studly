@@ -1,5 +1,4 @@
-const { requestMock, getUserIdMock } = vi.hoisted(() => ({
-  getUserIdMock: vi.fn(),
+const { requestMock } = vi.hoisted(() => ({
   requestMock: vi.fn(),
 }));
 
@@ -7,8 +6,8 @@ vi.mock('~/utilities/requests/requests', () => ({
   request: requestMock,
 }));
 
-vi.mock('~/store/userInfoStore', () => ({
-  userInfoStore: {
+vi.mock('~/store/userInfo', () => ({
+  userInfo: {
     getState: vi.fn(() => ({
       userId: mockUserId,
     })),

@@ -1,7 +1,7 @@
 import { type ActionFunctionArgs, redirect } from 'react-router';
 import { updateBio } from '~/api';
 import { PROFILE } from '~/constants';
-import { userInfoStore } from '~/store';
+import { userInfo } from '~/store';
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
@@ -9,7 +9,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const fullName = formData.get('fullName')?.toString();
   const token = localStorage.getItem('accessToken');
 
-  const { userId, refreshToken } = userInfoStore.getState();
+  const { userId, refreshToken } = userInfo.getState();
   if (!(bio || fullName) || !userId || !token || !refreshToken)
     return { error: 'Missing credentials' }; // early exit if missing
 

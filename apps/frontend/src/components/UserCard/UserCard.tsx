@@ -4,10 +4,10 @@ import { useEffect } from 'react';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 import { Avatar } from '~/components/';
 import { PROFILE_BIO_DEFAULT, SETTINGS } from '~/constants';
-import { userInfoStore } from '~/store';
+import { userInfo } from '~/store';
 
 export const UserCard = () => {
-  const { name, email, setBio } = userInfoStore.getState();
+  const { name, email, setBio } = userInfo.getState();
   const userName = name || 'Alex Student';
   const userEmail = email || 'alex@example.com';
   const navigate = useNavigate();

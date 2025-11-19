@@ -44,12 +44,12 @@ type MockZustandStore = Mock & {
   setState: (newState: Partial<typeof mockStore>) => void;
 };
 
-vi.mock('~/store/userInfoStore', () => {
+vi.mock('~/store/userInfo', () => {
   const store = vi.fn(() => mockStore) as MockZustandStore;
   store.getState = () => mockStore;
   store.setState = (newState: Partial<typeof mockStore>) =>
     Object.assign(mockStore, newState);
-  return { userInfoStore: store };
+  return { userInfo: store };
 });
 
 //Lines 50- 57 were provided through an online github repo (https://github.com/reduxjs/redux-toolkit/issues/4966#issuecomment-3115230061) as solution to the error:

@@ -1,6 +1,6 @@
 import type { ActionFunctionArgs } from 'react-router';
 import { startSession, stopSession } from '~/api';
-import { userInfoStore } from '~/store';
+import { userInfo } from '~/store';
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
@@ -15,7 +15,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const sessionId = result.data?.session.id;
 
     if (sessionId) {
-      userInfoStore.getState().setSessionId(sessionId);
+      userInfo.getState().setSessionId(sessionId);
     }
 
     return result;
