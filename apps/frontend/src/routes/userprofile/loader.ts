@@ -1,19 +1,29 @@
-import { fetchBio } from '~/api';
+import { fetchBio,SessionSummary } from '~/api';
 import { userInfoStore } from '~/store';
-import type { profileBio } from '~/types';
-export const loader = async (): Promise<profileBio> => {
+import type { profileBio, TodaysStudyStatistics } from '~/types';
+
+
+type StudyLoader = {
+  data: {
+    sessionSummary?: TodaysStudyStatistics;
+    profileBio?: profileBio;
+  };
+  error: boolean;
+};
+
+export const loader = async (): Promise<StudyLoader> => {
   const { userId } = userInfoStore.getState();
-  if (userId) {
-    const res = await fetchBio(userId);
-    if (res.data) {
-      return res.data;
-    }
-  }
+
+    const [sessionSummary, profileBio] = await Promise.all([
+        await SessionSummary(),
+        await fetchBio(userId),
+      ]);
+
   return {
     data: {
-      bio: '',
-      user_id: `${userId}`,
+      sessionSummary: sessionSummary.data ?? undefined,
+      profileBio: profileBio.data ?? undefined,
     },
-    message: 'Error in loader',
+    error: !!(sessionSummary.error || profileBio.error),
   };
 };

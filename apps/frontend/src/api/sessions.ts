@@ -10,6 +10,7 @@ import {
   type SessionListLoader,
   type SessionSummaryLoader,
 } from '~/types';
+import { getSunday } from '~/utilities/date';
 import { request } from '~/utilities/requests';
 import { getSessionId, getUserId } from '~/utilities/session';
 
@@ -71,3 +72,15 @@ export const stopSession = async () => {
 
   return result;
 };
+
+export const SessionSummary = async () => {
+   const userId = getUserId();
+
+  const to = new Date(Date.now()).toISOString();
+
+  const from = getSunday(new Date(Date.now()))
+  const path = `${SESSIONS_SUMMARY}?userId=${userId}&from=${from}&to=${to}`;
+  const result = await request<SessionSummaryLoader>(RequestMethods.GET, path);
+
+  return result;
+}
