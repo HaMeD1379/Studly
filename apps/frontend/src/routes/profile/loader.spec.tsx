@@ -15,7 +15,7 @@ describe('fetchBio mock test', () => {
       data: {
         data: {
           bio: "Hello, I'm a mocked bio",
-          user_id: '123',
+          userId: '123',
         },
         message: 'Bio fetched successfully',
       },

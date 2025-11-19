@@ -66,7 +66,7 @@ Object.defineProperty(global, 'Request', {
 describe('User Profile Tests', () => {
   it('renders all nested components', async () => {
     (auth.fetchBio as Mock).mockResolvedValue({
-      data: { data: { bio: 'This is my Bio', user_id: '1' } },
+      data: { data: { bio: 'This is my Bio', userId: '1' } },
       error: null,
     });
 

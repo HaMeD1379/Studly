@@ -1,7 +1,8 @@
 import { fetchBio } from '~/api';
 import { userInfoStore } from '~/store';
-import type { profileBio } from '~/types';
-export const loader = async (): Promise<profileBio> => {
+import type { ProfileBio } from '~/types';
+
+export const loader = async (): Promise<ProfileBio> => {
   const { userId } = userInfoStore.getState();
   if (userId) {
     const res = await fetchBio(userId);
@@ -12,7 +13,7 @@ export const loader = async (): Promise<profileBio> => {
   return {
     data: {
       bio: '',
-      user_id: `${userId}`,
+      userId: `${userId}`,
     },
     message: 'Error in loader',
   };

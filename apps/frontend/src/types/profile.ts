@@ -1,9 +1,9 @@
 type UserMetadata = {
-  user_id: string;
+  userId: string;
   bio: string;
 };
 
-export type profileBio = {
+export type ProfileBio = {
   message: string;
   data: UserMetadata;
 };

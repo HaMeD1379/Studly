@@ -84,7 +84,7 @@ describe('Profile Card tests', () => {
       data: {
         data: {
           bio: 'This is my Bio',
-          user_id: '1',
+          userId: '1',
         },
       },
       error: null,
