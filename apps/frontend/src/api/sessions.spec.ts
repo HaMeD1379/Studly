@@ -1,6 +1,5 @@
-const { requestMock, getUserIdMock, getSessionIdMock } = vi.hoisted(() => ({
+const { requestMock, getSessionIdMock } = vi.hoisted(() => ({
   getSessionIdMock: vi.fn(),
-  getUserIdMock: vi.fn(),
   requestMock: vi.fn(),
 }));
 

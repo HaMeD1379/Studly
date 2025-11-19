@@ -115,7 +115,6 @@ export const LoginForm = () => {
             <Group mt='md'>
               <Checkbox label='Remember me' />
               <Anchor
-                c='black'
                 component='button'
                 onClick={() => navigate(FORGOT_PASSWORD)}
                 size='sm'
@@ -130,14 +129,6 @@ export const LoginForm = () => {
               mt='xl'
               radius='md'
               size='md'
-              styles={{
-                root: {
-                  '&:hover': { backgroundColor: '#222' },
-                  backgroundColor: 'black',
-                  color: 'white',
-                  fontWeight: 600,
-                },
-              }}
               type='submit'
             >
               Sign In
@@ -147,7 +138,6 @@ export const LoginForm = () => {
           <Text c='dimmed' mt='md' ta='center'>
             Don’t have an account?{' '}
             <Anchor
-              c='black'
               component='button'
               fw={600}
               onClick={() => navigate(SIGNUP)}

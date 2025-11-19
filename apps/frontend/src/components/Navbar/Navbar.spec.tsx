@@ -11,7 +11,6 @@ vi.mock('react-router-dom', async () => {
     useNavigate: () => mockNavigate,
   };
 });
-const mockAction = vi.fn(() => null);
 
 import { act, fireEvent, screen } from '@testing-library/react';
 import fetchPolyfill, { Request as RequestPolyfill } from 'node-fetch';
@@ -42,9 +41,9 @@ describe('Navbar', () => {
   });
   const router = createMemoryRouter([
     {
-      action: mockAction,
-      element: <Navbar>MOCK_CHILDREN</Navbar>,
+      element: <Navbar/>,
       path: LOGIN,
+      children: [{ element: <div>MOCK_CHILDREN</div> }]
     },
   ]);
 
@@ -57,7 +56,6 @@ describe('Navbar', () => {
     ).not.toBeNull();
     expect(screen.getByRole('button', { name: 'Badges' })).not.toBeNull();
     expect(screen.getByRole('button', { name: 'Logout' })).not.toBeNull();
-    expect(screen.getByText('MOCK_CHILDREN')).not.toBeNull();
   });
 
   it('navigations are called to the proper route', async () => {

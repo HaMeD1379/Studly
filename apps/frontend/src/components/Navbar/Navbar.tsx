@@ -8,21 +8,26 @@ import {
   IconSettings,
   IconUser,
 } from '@tabler/icons-react';
-import { Form, useLocation, useNavigate } from 'react-router-dom';
+import { Form, Outlet, useLocation, useNavigate, useNavigation } from 'react-router-dom';
 import { BADGES, HOME, LOGOUT, PROFILE, SETTINGS, STUDY } from '~/constants';
-
-type NavbarProps = {
-  children: React.ReactNode;
-};
+import { PageSpinner } from '../PageSpinner/PageSpinner';
+import { useState } from 'react';
 
 type StyledButtonProps = {
   children: React.ReactNode;
+  currentlySelectedPath: string;
   path: string;
-  type?: 'button' | 'submit' | 'reset';
-  onClick?: () => void;
+  onClick: () => void;
+  isSubmit?: boolean;
 };
 
-export const Navbar = ({ children }: NavbarProps) => {
+export const Navbar = () => {
+  const navigation = useNavigation();
+  const location = useLocation().pathname;
+  const isLoading = navigation.state === "loading";
+
+  const [currentlySelectedPath, setCurrentlySelectedPath] = useState<string>(location);
+
   return (
     <AppShell
       navbar={{
@@ -32,45 +37,40 @@ export const Navbar = ({ children }: NavbarProps) => {
       padding={24}
     >
       <AppShell.Navbar p='md'>
-        {/* Wrap the whole navbar content in a vertical Flex */}
         <Flex direction='column' h='100%'>
-          {/* Header */}
           <Flex align='center' gap={4} pl={16} py={8}>
             <IconMedal color='#228be6' />
             <Text fw={900} size='lg'>
               Studly
             </Text>
           </Flex>
-
           <Divider my='sm' />
-
-          {/* Main navigation buttons */}
           <Flex direction='column' gap={4}>
-            <StyledButton path={HOME}>
+            <StyledButton path={HOME} currentlySelectedPath={currentlySelectedPath} onClick={() => setCurrentlySelectedPath(HOME)}>
               <Flex align='center' gap={4}>
                 <IconHome size={20} />
                 Home
               </Flex>
             </StyledButton>
-            <StyledButton path={STUDY}>
+            <StyledButton path={STUDY} currentlySelectedPath={currentlySelectedPath} onClick={() => setCurrentlySelectedPath(STUDY)}>
               <Flex align='center' gap={4}>
                 <IconClock size={20} />
                 Study Session
               </Flex>
             </StyledButton>
-            <StyledButton path={BADGES}>
+            <StyledButton path={BADGES} currentlySelectedPath={currentlySelectedPath} onClick={() => setCurrentlySelectedPath(BADGES)}>
               <Flex align='center' gap={4}>
                 <IconMedal2 size={20} />
                 Badges
               </Flex>
             </StyledButton>
-            <StyledButton path={PROFILE}>
+            <StyledButton path={PROFILE} currentlySelectedPath={currentlySelectedPath} onClick={() => setCurrentlySelectedPath(PROFILE)}>
               <Flex align='center' gap={4}>
                 <IconUser size={20} />
                 Profile
               </Flex>
             </StyledButton>
-            <StyledButton path={SETTINGS}>
+            <StyledButton path={SETTINGS} currentlySelectedPath={currentlySelectedPath} onClick={() => setCurrentlySelectedPath(SETTINGS)}>
               <Flex align='center' gap={4}>
                 <IconSettings size={20} />
                 Settings
@@ -81,7 +81,7 @@ export const Navbar = ({ children }: NavbarProps) => {
           <Flex direction='column' mt='auto'>
             <Divider my='sm' />
             <Form action={LOGOUT} method='post'>
-              <StyledButton path={LOGOUT} type='submit'>
+              <StyledButton path={LOGOUT} currentlySelectedPath={currentlySelectedPath} onClick={(() => setCurrentlySelectedPath(LOGOUT))} isSubmit>
                 <Flex align='center' gap={4}>
                   <IconLogout size={20} />
                   Logout
@@ -92,32 +92,31 @@ export const Navbar = ({ children }: NavbarProps) => {
         </Flex>
       </AppShell.Navbar>
 
-      <AppShell.Main>{children}</AppShell.Main>
+      <AppShell.Main>{isLoading ? <PageSpinner /> : <Outlet />}</AppShell.Main>
     </AppShell>
   );
 };
 
-const StyledButton = ({ children, path, type, onClick }: StyledButtonProps) => {
+const StyledButton = ({ children, currentlySelectedPath, path, onClick, isSubmit = false }: StyledButtonProps) => {
   const navigate = useNavigate();
-  const currentPath = useLocation()?.pathname;
   const handleClick = () => {
-    if (type === 'submit') {
+    if (isSubmit) {
       return;
     }
 
-    if (onClick) onClick(); //execute onclick method if we get one
+    onClick();
     navigate(path);
   };
 
   return (
     <Button
-      {...(type ? { type } : {})}
-      color={currentPath === path ? 'blue' : 'dark-gray'}
+      {...(isSubmit ? { type: 'submit' } : {})}
+      color={currentlySelectedPath === path ? 'blue' : 'dark-gray'}
       fullWidth
       justify='left'
       onClick={handleClick}
       radius='md'
-      variant={currentPath === path ? 'filled' : 'transparent'}
+      variant={currentlySelectedPath === path ? 'filled' : 'transparent'}
     >
       {children}
     </Button>

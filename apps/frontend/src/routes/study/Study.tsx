@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useFetcher, useLoaderData } from 'react-router';
 import {
   ErrorBoundary,
-  Navbar,
   RecentStudySessions,
   SetupStudySession,
   StudySession,
@@ -60,50 +59,48 @@ export const Study = () => {
   };
 
   return (
-    <Navbar>
-      <Container fluid p='xl'>
-        {loaderData?.error || actionData?.error ? (
-          <ErrorBoundary />
-        ) : (
-          <>
-            <Text fw={700} size='xl'>
-              Study Session
-            </Text>
-            <Text fw={300} mb={32} size='md'>
-              Focus and track your study time
-            </Text>
-            <Grid grow gutter='lg'>
-              <Grid.Col span='auto'>
-                <Flex direction='column' gap='lg'>
-                  <StudySession
-                    endStudyTimestamp={endStudyTimestamp}
-                    isSessionSetup={!!subject && !!sessionLength}
-                    onStartStudy={startStudySession}
-                    onStopStudy={stopStudySession}
-                    startStudyTimestamp={startStudyTimestamp}
-                  />
-                  <SetupStudySession
-                    onUpdateLength={setSessionLength}
-                    onUpdateSubject={setSubject}
-                  />
-                </Flex>
-              </Grid.Col>
-              <Grid.Col span='auto'>
-                <Flex direction='column' gap='lg'>
-                  <TodaysStudyStatistics
-                    sessionsLogged={summaryData?.sessionsLogged ?? 0}
-                    totalMinutesStudied={summaryData?.totalMinutesStudied ?? 0}
-                  />
-                  <RecentStudySessions
-                    recentStudySessions={sessionListData ?? []}
-                  />
-                  <StudyTips />
-                </Flex>
-              </Grid.Col>
-            </Grid>
-          </>
-        )}
-      </Container>
-    </Navbar>
+    <Container fluid p='xl'>
+      {loaderData?.error || actionData?.error ? (
+        <ErrorBoundary />
+      ) : (
+        <>
+          <Text fw={700} size='xl'>
+            Study Session
+          </Text>
+          <Text fw={300} mb={32} size='md'>
+            Focus and track your study time
+          </Text>
+          <Grid grow gutter='lg'>
+            <Grid.Col span='auto'>
+              <Flex direction='column' gap='lg'>
+                <StudySession
+                  endStudyTimestamp={endStudyTimestamp}
+                  isSessionSetup={!!subject && !!sessionLength}
+                  onStartStudy={startStudySession}
+                  onStopStudy={stopStudySession}
+                  startStudyTimestamp={startStudyTimestamp}
+                />
+                <SetupStudySession
+                  onUpdateLength={setSessionLength}
+                  onUpdateSubject={setSubject}
+                />
+              </Flex>
+            </Grid.Col>
+            <Grid.Col span='auto'>
+              <Flex direction='column' gap='lg'>
+                <TodaysStudyStatistics
+                  sessionsLogged={summaryData?.sessionsLogged ?? 0}
+                  totalMinutesStudied={summaryData?.totalMinutesStudied ?? 0}
+                />
+                <RecentStudySessions
+                  recentStudySessions={sessionListData ?? []}
+                />
+                <StudyTips />
+              </Flex>
+            </Grid.Col>
+          </Grid>
+        </>
+      )}
+    </Container>
   );
 };

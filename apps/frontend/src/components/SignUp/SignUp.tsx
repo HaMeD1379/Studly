@@ -175,14 +175,6 @@ export const SignUpForm = () => {
               fullWidth
               mt='xl'
               radius='md'
-              styles={{
-                root: {
-                  '&:hover': { backgroundColor: '#222' },
-                  backgroundColor: 'black',
-                  color: 'white',
-                  fontWeight: 500,
-                },
-              }}
               type='submit'
             >
               Sign Up
@@ -194,13 +186,9 @@ export const SignUpForm = () => {
             <Anchor
               onClick={() => navigate(LOGIN)}
               styles={{
-                root: {
-                  color: 'black',
-                  fontWeight: 400,
-                },
               }}
             >
-              Sign in
+              Sign In
             </Anchor>
           </Text>
         </Paper>
