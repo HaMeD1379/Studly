@@ -14,7 +14,7 @@ vi.mock('react-router-dom', async () => {
 
 vi.mock('~/store', () => {
   return {
-    userInfoStore: {
+    userInfo: {
       getState: () => ({
         bio: '',
         email: 'testUser@gmail.com',
@@ -33,7 +33,7 @@ import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { describe, expect, it, type Mock, vi } from 'vitest';
 import * as auth from '~/api';
 import { PageSpinner } from '~/components';
-import { profileString } from '~/constants';
+import { LOGIN, SETTINGS } from '~/constants';
 import { ProfileLoader } from '~/routes';
 import { render } from '~/utilities/testing';
 import { UserCard } from './UserCard';
@@ -56,7 +56,7 @@ describe('Profile Card tests', () => {
     {
       element: <UserCard />,
       loader: ProfileLoader,
-      path: '/',
+      path: LOGIN,
     },
   ]);
   it('displays all elements', async () => {
@@ -70,21 +70,21 @@ describe('Profile Card tests', () => {
 
     expect(nameField).toHaveTextContent('Test User');
     expect(emailField).toHaveTextContent('testUser@gmail.com');
-    expect(bioField).toHaveTextContent(profileString.default);
+    expect(bioField).toHaveTextContent('Edit Profile to update your bio');
     expect(editBtn).toHaveTextContent('Edit');
     expect(shareBtn).toHaveTextContent('Share');
   });
   it('naviagtes to settings when edit button is clicked', () => {
     render(<RouterProvider router={router} />);
     fireEvent.click(screen.getByTestId('edit-btn'));
-    expect(mockNavigate).toHaveBeenCalledWith('/settings');
+    expect(mockNavigate).toHaveBeenCalledWith(SETTINGS);
   });
   it('displays the result from the fetch bio api call in the bio field', () => {
     (auth.fetchBio as Mock).mockResolvedValue({
       data: {
         data: {
           bio: 'This is my Bio',
-          user_id: '1',
+          userId: '1',
         },
       },
       error: null,
@@ -95,7 +95,7 @@ describe('Profile Card tests', () => {
         element: <UserCard />,
         hydrateFallbackElement: <PageSpinner />,
         loader: ProfileLoader,
-        path: '/',
+        path: LOGIN,
       },
     ]);
 

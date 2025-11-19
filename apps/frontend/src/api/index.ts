@@ -1,3 +1,3 @@
 export * from './auth';
-export * from './profileChanges';
+export * from './profile';
 export * from './sessions';

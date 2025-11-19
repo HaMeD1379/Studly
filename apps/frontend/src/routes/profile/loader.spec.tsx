@@ -1,8 +1,12 @@
-import { describe, expect, it, vi } from 'vitest';
-import { fetchBio } from '~/api/profileChanges';
+const { mockFetchBio } = vi.hoisted(() => ({
+  mockFetchBio: vi.fn(),
+}));
 
-vi.mock('~/api/profileChanges', () => ({
-  fetchBio: vi.fn(),
+import { describe, expect, it, vi } from 'vitest';
+import { fetchBio } from '~/api';
+
+vi.mock('~/api/profile', () => ({
+  fetchBio: mockFetchBio,
 }));
 
 describe('fetchBio mock test', () => {
@@ -11,14 +15,13 @@ describe('fetchBio mock test', () => {
       data: {
         data: {
           bio: "Hello, I'm a mocked bio",
-          user_id: '123',
+          userId: '123',
         },
         message: 'Bio fetched successfully',
       },
     };
 
-    // @ts-expect-error
-    fetchBio.mockResolvedValue(mockResponse);
+    mockFetchBio.mockResolvedValue(mockResponse);
 
     const result = await fetchBio('123');
 

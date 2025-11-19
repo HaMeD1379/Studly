@@ -4,6 +4,7 @@ import fetchPolyfill, { Request as RequestPolyfill } from 'node-fetch';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
 import { SignUpForm } from '~/components';
+import { LOGIN } from '~/constants';
 import { signUpAction } from '~/routes';
 import { render } from '../testing';
 import { equalPasswords } from './passwordValidation';
@@ -28,7 +29,7 @@ Object.defineProperty(global, 'Request', {
 });
 
 const router = createMemoryRouter([
-  { action: signUpAction, element: <SignUpForm />, path: '/' },
+  { action: signUpAction, element: <SignUpForm />, path: LOGIN },
 ]);
 
 describe('Password Validation Tests', () => {

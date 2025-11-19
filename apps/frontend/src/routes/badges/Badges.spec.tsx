@@ -8,12 +8,12 @@ vi.mock('react-router', () => ({
 import { screen } from '@testing-library/react';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { ERROR_BOUNDARY_PAGE_TEXT } from '~/constants';
+import { ERROR_BOUNDARY_PAGE_TEXT, LOGIN } from '~/constants';
 import { mockAllBadges, mockAllUnlockedBadges } from '~/mocks';
 import { render } from '~/utilities/testing';
 import { Badges } from './Badges';
 
-const router = createMemoryRouter([{ element: <Badges />, path: '/' }]);
+const router = createMemoryRouter([{ element: <Badges />, path: LOGIN }]);
 
 describe('Badges', () => {
   beforeEach(() => {

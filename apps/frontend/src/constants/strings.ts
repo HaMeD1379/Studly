@@ -1,2 +1,114 @@
+export const PROFILE_BIO_DEFAULT = 'Edit Profile to update your bio';
+
+// account actions
+export const ACCOUNT_ACTIONS = 'Account Actions';
+export const ACCOUNT_ACTIONS_SAVE = 'Save Changes';
+
+// change password
+export const CHANGE_PASSWORD_HEADER = 'Change Password';
+export const CHANGE_PASSWORD_TEXT = 'Update your password';
+export const CHANGE_PASSWORD_BUTTON_TEXT = 'Change';
+
+// delete account
+export const DELETE_ACCOUNT_HEADER = 'Delete Account';
+export const DELETE_ACCOUNT_TEXT =
+  'Permanently delete your account and all data';
+export const DELETE_ACCOUNT_BUTTON_TEXT = 'Delete';
+
+// badge collection
+export const NO_UNLOCKED_BADGES_LINE_1 = 'No badges unlocked yet!';
+export const NO_UNLOCKED_BADGES_LINE_2 = 'Start studying to earn badges!';
+export const NO_BADGES_LINE_1 = 'There are no badges to display here';
+export const NO_BADGES_LINE_2 = 'Please try again later';
+export const BADGES_UNLOCKED = 'Unlocked';
+export const BADGES_LOCKED = 'Locked';
+
+// badge statistics
+export const BADGES_TOTAL = 'Total';
+export const BADGES_COMPLETE = 'Complete';
+export const BADGES_PROGRESS = 'Collection Progress';
+export const BADGES_UNLOCKED_SUFFIX = 'badges unlocked';
+
+// error boundary
 export const ERROR_BOUNDARY_PAGE_TEXT =
   'Uh oh! Something went wrong! Please try again later or refresh the page.';
+
+// forgot password
+export const FORGOT_PASSWORD_HEADER = 'Forgot your password?';
+export const FORGOT_PASSWORD_EMAIL = 'Enter your email to get a reset link';
+export const BACK_TO_LOGIN = 'Back to the login page';
+export const RESET_PASSWORD_BUTTON_TEXT = 'Reset password';
+
+// login
+export const LOGIN_HEADER = 'Welcome to Studly';
+export const LOGIN_DESCRIPTION =
+  'Sign in to your account and continue your learning journey';
+export const LOGIN_FORGOT_PASSWORD_BUTTON_TEXT = 'Forgot password?';
+export const LOGIN_BUTTON_TEXT = 'Sign In';
+export const LOGIN_SIGN_UP_PREFIX = "Don't have an account?";
+export const LOGIN_SIGN_UP_BUTTON_TEXT = 'Sign Up';
+
+// navbar
+export const NAVBAR_HEADER = 'Studly';
+export const NAVBAR_HOME = 'Home';
+export const NAVBAR_STUDY = 'Study Session';
+export const NAVBAR_BADGES = 'Badges';
+export const NAVBAR_PROFILE = 'Profile';
+export const NAVBAR_SETTINGS = 'Settings';
+export const NAVBAR_LOGOUT = 'Logout';
+
+// recent study sessions
+export const RECENT_HEADER = 'Recent Sessions';
+export const RECENT_COLUMN_1 = 'Session Ended';
+export const RECENT_COLUMN_2 = 'Subject';
+export const RECENT_COLUMN_3 = 'Length';
+export const RECENT_NO_SESSIONS = 'No sessions completed yet';
+export const RECENT_START_SESSION = 'Start your first session!';
+
+// setup study session
+export const STUDY_HEADER = 'Session Setup';
+export const STUDY_QUICK_SESSION_HEADER = 'Quick Session Length';
+export const STUDY_QUICK_15_MINS = '15 minutes';
+export const STUDY_QUICK_30_MINS = '30 minutes';
+export const STUDY_QUICK_45_MINS = '45 minutes';
+export const STUDY_QUICK_1_HOUR = '1 hour';
+
+// sign up
+export const SIGN_UP_RULE_1 =
+  '• Password must be at least one 8 characters long';
+export const SIGN_UP_RULE_2 =
+  '• Password must contain at least one lowercase letter';
+export const SIGN_UP_RULE_3 =
+  '• Password must contain at least one uppercase letter';
+export const SIGN_UP_RULE_4 =
+  '• Password must contain at least one digit (0-9)';
+export const SIGN_UP_RULE_5 =
+  '• Password must contain at least one special character (@, #, $, %, ^, &, *, (, ), -, _, +, =)';
+export const SIGN_UP_HEADER = 'Join Studly';
+export const SIGN_UP_DESCRIPTION =
+  'Create your account and start your gamified learning journey';
+export const SIGN_UP_BUTTON_TEXT = 'Sign Up';
+export const SIGN_UP_ALREADY_HAVE_ACCOUNT_TEXT = 'Already have an account?';
+export const SIGN_UP_SIGN_IN_BUTTON_TEXT = 'Sign In';
+
+// study session
+export const STUDY_SESSION_HEADER = 'Current Session';
+export const STUDY_SESSION_DESCRIPTION = 'Configure your study session';
+export const STUDY_SESSION_TIME_REMAINING = 'remaining';
+export const STUDY_SESSION_START_BUTTON_TEXT = 'Start';
+export const STUDY_SESSION_STOP_BUTTON_TEXT = 'Stop';
+
+// study tips
+export const STUDY_TIPS_HEADER = 'Study Tips';
+export const STUDY_TIPS_1 = 'Take regular breaks to maintain focus';
+export const STUDY_TIPS_2 = 'Set specific goals for each session';
+export const STUDY_TIPS_3 = 'Remove distractions from your study area';
+export const STUDY_TIPS_4 = 'Celebrate completing your sessions';
+
+// todays study statistics
+export const TODAYS_STUDY_HEADER = "Today's Progress";
+export const TODAYS_STUDY_TIME = 'Study Time';
+export const TODAYS_STUDY_SESSIONS = 'Sessions';
+
+// update password
+export const UPDATE_PASSWORD_BUTTON_TEXT = 'Update Password';

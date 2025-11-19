@@ -1,7 +1,15 @@
 import { Box, Button, Flex, Group, Select, Text } from '@mantine/core';
 import { TimePicker } from '@mantine/dates';
 import { useEffect, useState } from 'react';
-import { SETUP_STUDY_SESSION_OPTIONS } from '~/constants';
+import {
+  SETUP_STUDY_SESSION_OPTIONS,
+  STUDY_HEADER,
+  STUDY_QUICK_1_HOUR,
+  STUDY_QUICK_15_MINS,
+  STUDY_QUICK_30_MINS,
+  STUDY_QUICK_45_MINS,
+  STUDY_QUICK_SESSION_HEADER,
+} from '~/constants';
 
 type SetupStudySessionProps = {
   onUpdateSubject: (subject: string | null) => void;
@@ -48,7 +56,7 @@ export const SetupStudySession = ({
 
   return (
     <Flex bd='1px solid lightgray' bdrs={8} direction='column' gap='lg' p={24}>
-      <Text>Session Setup</Text>
+      <Text>{STUDY_HEADER}</Text>
       <Select
         clearable
         data={SETUP_STUDY_SESSION_OPTIONS}
@@ -60,7 +68,7 @@ export const SetupStudySession = ({
       />
       <Box>
         <Text fw={500} size='sm'>
-          Quick Session Length
+          {STUDY_QUICK_SESSION_HEADER}
         </Text>
         <Flex direction='column' gap='sm'>
           <Group grow>
@@ -71,7 +79,7 @@ export const SetupStudySession = ({
                 !customTime && sessionLengthMins === 15 ? 'filled' : 'outline'
               }
             >
-              15 minutes
+              {STUDY_QUICK_15_MINS}
             </Button>
             <Button
               onClick={() => updateQuickSession(30)}
@@ -80,7 +88,7 @@ export const SetupStudySession = ({
                 !customTime && sessionLengthMins === 30 ? 'filled' : 'outline'
               }
             >
-              30 minutes
+              {STUDY_QUICK_30_MINS}
             </Button>
           </Group>
           <Group grow>
@@ -91,7 +99,7 @@ export const SetupStudySession = ({
                 !customTime && sessionLengthMins === 45 ? 'filled' : 'outline'
               }
             >
-              45 minutes
+              {STUDY_QUICK_45_MINS}
             </Button>
             <Button
               onClick={() => updateQuickSession(60)}
@@ -100,7 +108,7 @@ export const SetupStudySession = ({
                 !customTime && sessionLengthMins === 60 ? 'filled' : 'outline'
               }
             >
-              1 hour
+              {STUDY_QUICK_1_HOUR}
             </Button>
           </Group>
           <TimePicker

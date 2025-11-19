@@ -1,32 +1,32 @@
 import { displayNotifications } from '~/utilities/notifications';
 
 export const equalPasswords = (
-  password_1: string,
-  password_2: string,
+  password1: string,
+  password2: string,
   passwordLen = 8,
 ): boolean => {
-  if (!password_1 || !password_2) return false;
+  if (!password1 || !password2) return false;
 
   return (
-    matchingPasswords(password_1, password_2) &&
-    lowercaseCheck(password_1) &&
-    uppercaseCheck(password_1) &&
-    containsNumber(password_1) &&
-    containsSpecialCharacter(password_1) &&
-    checkPasswordLength(password_1, passwordLen)
+    matchingPasswords(password1, password2) &&
+    lowercaseCheck(password1) &&
+    uppercaseCheck(password1) &&
+    containsNumber(password1) &&
+    containsSpecialCharacter(password1) &&
+    checkPasswordLength(password1, passwordLen)
   );
 };
 
-const matchingPasswords = (password_1: string, password_2: string) => {
-  if (password_1 !== password_2) {
+const matchingPasswords = (password1: string, password2: string) => {
+  if (password1 !== password2) {
     displayNotifications('Mismatch', 'Passwords do not match', 'red');
     return false;
   }
   return true;
 };
 
-const lowercaseCheck = (password_1: string) => {
-  if (!/[a-z]/.test(password_1)) {
+const lowercaseCheck = (password1: string) => {
+  if (!/[a-z]/.test(password1)) {
     displayNotifications(
       'Weak Password',
       'Password must contain a lowercase letter',
@@ -37,8 +37,8 @@ const lowercaseCheck = (password_1: string) => {
   return true;
 };
 
-const uppercaseCheck = (password_1: string) => {
-  if (!/[A-Z]/.test(password_1)) {
+const uppercaseCheck = (password1: string) => {
+  if (!/[A-Z]/.test(password1)) {
     displayNotifications(
       'Weak Password',
       'Password must contain an uppercase letter',
@@ -49,8 +49,8 @@ const uppercaseCheck = (password_1: string) => {
   return true;
 };
 
-const containsNumber = (password_1: string) => {
-  if (!/\d/.test(password_1)) {
+const containsNumber = (password1: string) => {
+  if (!/\d/.test(password1)) {
     displayNotifications(
       'Weak Password',
       'Password must contain a number',
@@ -61,8 +61,8 @@ const containsNumber = (password_1: string) => {
   return true;
 };
 
-const containsSpecialCharacter = (password_1: string) => {
-  if (!/[@#$%^&*()\-_+=]/.test(password_1)) {
+const containsSpecialCharacter = (password1: string) => {
+  if (!/[@#$%^&*()\-_+=]/.test(password1)) {
     displayNotifications(
       'Weak Password',
       'Password must contain a special character',
@@ -73,8 +73,8 @@ const containsSpecialCharacter = (password_1: string) => {
   return true;
 };
 
-const checkPasswordLength = (password_1: string, passwordLen: number) => {
-  if (password_1.length < passwordLen) {
+const checkPasswordLength = (password1: string, passwordLen: number) => {
+  if (password1.length < passwordLen) {
     displayNotifications(
       'Weak Password',
       `Password must be longer than ${passwordLen} characters`,

@@ -4,6 +4,7 @@ import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { describe, expect, it, type Mock, vi } from 'vitest';
 import * as auth from '~/api';
 import { PageSpinner } from '~/components';
+import { LOGIN } from '~/constants';
 import { ProfileLoader, UserProfile } from '~/routes';
 import { render } from '~/utilities/testing';
 
@@ -43,12 +44,12 @@ type MockZustandStore = Mock & {
   setState: (newState: Partial<typeof mockStore>) => void;
 };
 
-vi.mock('~/store/userInfoStore', () => {
+vi.mock('~/store/userInfo', () => {
   const store = vi.fn(() => mockStore) as MockZustandStore;
   store.getState = () => mockStore;
   store.setState = (newState: Partial<typeof mockStore>) =>
     Object.assign(mockStore, newState);
-  return { userInfoStore: store };
+  return { userInfo: store };
 });
 
 //Lines 50- 57 were provided through an online github repo (https://github.com/reduxjs/redux-toolkit/issues/4966#issuecomment-3115230061) as solution to the error:
@@ -65,7 +66,7 @@ Object.defineProperty(global, 'Request', {
 describe('User Profile Tests', () => {
   it('renders all nested components', async () => {
     (auth.fetchBio as Mock).mockResolvedValue({
-      data: { data: { bio: 'This is my Bio', user_id: '1' } },
+      data: { data: { bio: 'This is my Bio', userId: '1' } },
       error: null,
     });
 
@@ -74,7 +75,7 @@ describe('User Profile Tests', () => {
         element: <UserProfile />,
         hydrateFallbackElement: <PageSpinner />,
         loader: ProfileLoader,
-        path: '/',
+        path: LOGIN,
       },
     ]);
 

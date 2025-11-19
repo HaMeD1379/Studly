@@ -1,7 +1,14 @@
 import { Button, Flex, Progress, Text, Tooltip } from '@mantine/core';
 import { useInterval } from '@mantine/hooks';
 import { useCallback, useEffect, useState } from 'react';
-import { START_SESSION_BUTTON_TOOLTIP } from '~/constants';
+import {
+  START_SESSION_BUTTON_TOOLTIP,
+  STUDY_SESSION_DESCRIPTION,
+  STUDY_SESSION_HEADER,
+  STUDY_SESSION_START_BUTTON_TEXT,
+  STUDY_SESSION_STOP_BUTTON_TEXT,
+  STUDY_SESSION_TIME_REMAINING,
+} from '~/constants';
 
 type StudySessionProps = {
   isSessionSetup: boolean;
@@ -85,9 +92,9 @@ export const StudySession = ({
   return (
     <Flex bd='1px solid lightgray' bdrs={8} direction='column' p={24}>
       <Text fw={600} size='sm'>
-        Current Session
+        {STUDY_SESSION_HEADER}
       </Text>
-      <Text size='sm'>Configure your study session</Text>
+      <Text size='sm'>{STUDY_SESSION_DESCRIPTION}</Text>
       <Flex align='center' direction='column' py={8}>
         <Text fw={700} style={{ fontSize: 54 }}>
           {formattedTimeLeft}
@@ -95,7 +102,9 @@ export const StudySession = ({
       </Flex>
       <Progress size='lg' transitionDuration={200} value={progressBarPercent} />
       <Flex align='center' direction='column'>
-        <Text size='sm'>{fullFormattedTimeLeft} remaining</Text>
+        <Text size='sm'>
+          {fullFormattedTimeLeft} {STUDY_SESSION_TIME_REMAINING}
+        </Text>
       </Flex>
       <Flex gap='sm' justify='center' pt={24}>
         {!isSessionSetup && (
@@ -109,10 +118,10 @@ export const StudySession = ({
           id='start-button'
           onClick={onStartStudy}
         >
-          Start
+          {STUDY_SESSION_START_BUTTON_TEXT}
         </Button>
         <Button disabled={startStudyTimestamp === 0} onClick={onStopStudy}>
-          Stop
+          {STUDY_SESSION_STOP_BUTTON_TEXT}
         </Button>
       </Flex>
     </Flex>

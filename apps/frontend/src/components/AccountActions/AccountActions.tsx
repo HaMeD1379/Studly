@@ -1,24 +1,35 @@
 import { Box, Button, Card, Flex, Text } from '@mantine/core';
 import { IconDeviceFloppy } from '@tabler/icons-react';
+import {
+  ACCOUNT_ACTIONS,
+  ACCOUNT_ACTIONS_SAVE,
+  CHANGE_PASSWORD_BUTTON_TEXT,
+  CHANGE_PASSWORD_HEADER,
+  CHANGE_PASSWORD_TEXT,
+  DELETE_ACCOUNT_BUTTON_TEXT,
+  DELETE_ACCOUNT_HEADER,
+  DELETE_ACCOUNT_TEXT,
+} from '~/constants';
 import { displayNotifications } from '~/utilities/notifications';
+
 export const AccountActions = () => {
   return (
     <Box py='md' w='100%'>
       <Card p='lg' radius='md' shadow='sm' w='100%' withBorder>
-        <Text data-testid='account-actions-text'>Account actions</Text>
+        <Text data-testid='account-actions-text'>{ACCOUNT_ACTIONS}</Text>
         <Box py='md' w='100%'>
           <Card p='lg' radius='lg' shadow='sm' w='100%' withBorder>
             <Flex align='center' justify='space-between'>
               <div>
                 <Text data-testid='change-password-text' fw={600}>
-                  Change Password
+                  {CHANGE_PASSWORD_HEADER}
                 </Text>
                 <Text
                   c='dimmed'
                   data-testid='change-password-subtext'
                   size='sm'
                 >
-                  Update your password
+                  {CHANGE_PASSWORD_TEXT}
                 </Text>
               </div>
               <Button
@@ -33,7 +44,7 @@ export const AccountActions = () => {
                 }}
                 variant='default'
               >
-                Change
+                {CHANGE_PASSWORD_BUTTON_TEXT}
               </Button>
             </Flex>
           </Card>
@@ -50,10 +61,10 @@ export const AccountActions = () => {
             <Flex align='center' justify='space-between'>
               <div>
                 <Text c='red' data-testid='delete-account-text' fw={600}>
-                  Delete Account
+                  {DELETE_ACCOUNT_HEADER}
                 </Text>
                 <Text c='dimmed' data-testid='delete-account-subtext' size='sm'>
-                  Permanently delete your account and all data
+                  {DELETE_ACCOUNT_TEXT}
                 </Text>
               </div>
               <Button
@@ -68,7 +79,7 @@ export const AccountActions = () => {
                 }}
                 variant='filled'
               >
-                Delete
+                {DELETE_ACCOUNT_BUTTON_TEXT}
               </Button>
             </Flex>
           </Card>
@@ -79,7 +90,7 @@ export const AccountActions = () => {
             leftSection={<IconDeviceFloppy size={24} />}
             type='submit'
           >
-            Save Changes
+            {ACCOUNT_ACTIONS_SAVE}
           </Button>
         </Flex>
       </Card>

@@ -23,6 +23,7 @@ import fetchPolyfill, { Request as RequestPolyfill } from 'node-fetch';
 import { createMemoryRouter, RouterProvider, redirect } from 'react-router-dom';
 import { vi } from 'vitest';
 import * as signupAuth from '~/api/auth';
+import { LOGIN, STUDY } from '~/constants';
 import { signUpAction } from '~/routes';
 import { render } from '~/utilities/testing';
 
@@ -38,7 +39,7 @@ Object.defineProperty(global, 'Request', {
 });
 
 const router = createMemoryRouter([
-  { action: signUpAction, element: <SignUpForm />, path: '/' },
+  { action: signUpAction, element: <SignUpForm />, path: LOGIN },
 ]);
 
 vi.mock('~/api/auth', () => ({
@@ -69,7 +70,7 @@ describe('Sign up activity', () => {
     fireEvent.click(signUpButton);
     expect(notifications.show).toHaveBeenCalledWith({
       color: 'red',
-      message: 'Provide a valid Email',
+      message: 'Provide a valid email',
       title: 'Mismatch',
     });
   });
@@ -101,6 +102,6 @@ describe('Sign up activity', () => {
       params: {},
       request: req,
     });
-    expect(result).toEqual(redirect('/study'));
+    expect(result).toEqual(redirect(STUDY));
   });
 });

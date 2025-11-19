@@ -2,7 +2,7 @@ import { Button, Card, Flex, Text, TextInput } from '@mantine/core';
 import { IconCamera } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { Form, useActionData } from 'react-router-dom';
-import { userInfoStore } from '~/store/userInfoStore';
+import { userInfo } from '~/store/userInfo';
 import { displayNotifications } from '~/utilities/notifications';
 import { Avatar } from '../Avatar/Avatar';
 
@@ -12,14 +12,14 @@ export const profileInformationCard = () => {
   const [bioText, _setBioText] = useState('');
   const [textCount, setTextCount] = useState(0);
   const actionData = useActionData();
-  const { bio, name, email, setName, setEmail } = userInfoStore();
+  const { bio, name, email, setName, setEmail } = userInfo.getState();
   const userName = name || 'John Doe';
 
   const changeName = (name: string) => {
     setFullName(name);
   };
-  const changeEmail = (email_input: string) => {
-    setUserEmail(email_input);
+  const changeEmail = (email: string) => {
+    setUserEmail(email);
   };
   const wordCounter = (text: string) => {
     const maxLength = 200;
