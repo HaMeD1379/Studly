@@ -1,6 +1,12 @@
 /**
  * ────────────────────────────────────────────────────────────────────────────────
  *  File: src/controllers/sessions.controller.js
+ *  Group: Group 3 — COMP 4350: Software Engineering 2
+ *  Project: Studly
+ *  Author: Hamed Esmaeilzadeh (team member)
+ *  Assisted-by: ChatGPT (GPT-5 Thinking) for comments, documentation, debugging,
+ *               and partial code contributions
+ *  Last-Updated: 2025-11-19
  * ────────────────────────────────────────────────────────────────────────────────
  *  Summary
  *  -------
@@ -10,23 +16,16 @@
  *
  *  Endpoints (paired with router):
  *  • startSession(req, res)        → POST   /           : create a new session
- *  • completeSession(req, res)     → PATCH  /:sessionId : mark session complete
+ *  • completeSession(req, res)     → PATCH  /:sessionId : update/complete session
  *  • listSessions(req, res)        → GET    /           : list sessions by user
  *  • getSessionsSummary(req, res)  → GET    /summary    : aggregate study stats
  *
  *  Design Notes
  *  ------------
  *  • Separation of concerns: keeps DB logic in the service layer.
- *  • Dependency injection: accepts a service for easy Jest mocking.
+ *  • Dependency injection: accepts a service for easy mocking in unit tests.
  *  • Defensive programming: explicit 4xx responses for client issues.
- *  • Badge integration: Auto-checks for newly earned badges after completing session.
- *
- *  TODOs
- *  -----
- *  • [VALIDATION] Replace inline checks with schema validation (Zod/Joi).
- *  • [AUTHZ] Enforce authentication/authorization once roles are defined.
- *  • [OBSERVABILITY] Add structured logging (reqId, userId) and metrics.
- *  • [ERROR-MAPPING] Map known service errors to consistent HTTP codes.
+ *  • Badge integration: auto-checks for newly earned badges after completing session.
  * ────────────────────────────────────────────────────────────────────────────────
  */
 
@@ -168,7 +167,7 @@ export const createSessionsController = (
       };
 
       const session = await service.createSession(sessionToCreate);
-      
+
       // ============================================================================
       // BADGE INTEGRATION: Check for newly earned badges after creating session
       // ============================================================================
@@ -177,8 +176,8 @@ export const createSessionsController = (
       if (session?.userId && session?.endTime) {
         try {
           const newBadges = await badgeService.checkAndAwardBadges(session.userId);
-          
-          return res.status(201).json({ 
+
+          return res.status(201).json({
             session,
             newBadgesEarned: newBadges,
             badgeCount: newBadges.length
@@ -190,8 +189,8 @@ export const createSessionsController = (
             sessionId: session.id,
             error: badgeError.message
           });
-          
-          return res.status(201).json({ 
+
+          return res.status(201).json({
             session,
             newBadgesEarned: [],
             badgeCount: 0,
@@ -199,7 +198,7 @@ export const createSessionsController = (
           });
         }
       }
-      
+
       // If no endTime (shouldn't happen based on validation, but defensive)
       return res.status(201).json({ session });
     } catch (error) {
@@ -221,7 +220,7 @@ export const createSessionsController = (
    *   date?: YYYY-MM-DD
    * }
    * Response: 200 OK { session, newBadgesEarned?: [] } | 404 if not found
-   * 
+   *
    *  Badge Integration: Checks for badges if endTime is being set/updated
    */
   const completeSession = async (req, res, next) => {
@@ -316,12 +315,12 @@ export const createSessionsController = (
       // ============================================================================
       // Only check badges if endTime was part of the update (indicates completion)
       const isCompletingSession = endTime !== undefined;
-      
+
      if (isCompletingSession && session?.userId) {
         try {
           const newBadges = await badgeService.checkAndAwardBadges(session.userId);
-          
-          return res.status(200).json({ 
+
+          return res.status(200).json({
             session,
             newBadgesEarned: newBadges,
             badgeCount: newBadges.length
@@ -333,8 +332,8 @@ export const createSessionsController = (
             sessionId: session.id,
             error: badgeError.message
           });
-          
-          return res.status(200).json({ 
+
+          return res.status(200).json({
             session,
             newBadgesEarned: [],
             badgeCount: 0,
@@ -405,9 +404,17 @@ export const createSessionsController = (
 
   /**
    * GET /summary
-   * Aggregates total minutes and session counts for dashboards.
+   * Aggregates total minutes and session counts for dashboards, including a
+   * per-subject breakdown suitable for subject heatmaps.
    * Expected query: ?userId=...&from=...&to=...&sessionType=...
-   * Response: 200 OK { totalMinutesStudied, sessionsLogged }
+   * Response: 200 OK {
+   *   totalMinutesStudied,
+   *   sessionsLogged,
+   *   subjectSummaries: [
+   *     { subject, totalMinutesStudied, sessionsLogged }
+   *   ],
+   *   averageMinutesPerSession
+   * }
    */
   const getSessionsSummary = async (req, res, next) => {
     try {
@@ -442,7 +449,18 @@ export const createSessionsController = (
         sessionType: parsedSessionType,
       });
 
-      return res.status(200).json(summary);
+      const totalMinutesStudied = summary.totalMinutesStudied ?? 0;
+      const sessionsLogged = summary.sessionsLogged ?? 0;
+      const subjectSummaries = summary.subjectSummaries ?? [];
+      const averageMinutesPerSession =
+        sessionsLogged > 0 ? totalMinutesStudied / sessionsLogged : null;
+
+      return res.status(200).json({
+        totalMinutesStudied,
+        sessionsLogged,
+        subjectSummaries,
+        averageMinutesPerSession,
+      });
     } catch (error) {
       return next(error);
     }

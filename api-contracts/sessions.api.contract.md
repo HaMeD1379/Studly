@@ -148,7 +148,7 @@ Retrieve study sessions for a user. Results are sorted by `endTime` descending.
 ### 4. Session Summary
 **GET** `/api/v1/sessions/summary`
 
-Return aggregate metrics for dashboard views.
+Return aggregate metrics for dashboard views, including a per-subject breakdown.
 
 **Query Parameters:**
 - `userId` (required)
@@ -160,9 +160,35 @@ Return aggregate metrics for dashboard views.
 ```json
 {
   "totalMinutesStudied": 240,
-  "sessionsLogged": 4
+  "sessionsLogged": 4,
+  "subjectSummaries": [
+    {
+      "subject": "Math",
+      "totalMinutesStudied": 180,
+      "sessionsLogged": 3
+    },
+    {
+      "subject": "History",
+      "totalMinutesStudied": 60,
+      "sessionsLogged": 1
+    }
+  ],
+  "averageMinutesPerSession": 60
 }
 ```
+
+**Field Semantics:**
+- `totalMinutesStudied` — Sum of `totalMinutes` across all sessions matching the filters.
+- `sessionsLogged` — Count of sessions matching the filters.
+- `subjectSummaries` — Per-subject aggregates for the same filtered set of sessions. Each
+  object contains:
+  - `subject` — Subject string for the grouped sessions. Sessions with no subject are
+    still included in the top-level totals but omitted from `subjectSummaries`.
+  - `totalMinutesStudied` — Sum of `totalMinutes` for sessions with the given subject.
+  - `sessionsLogged` — Count of sessions with the given subject.
+- `averageMinutesPerSession` — Optional helper metric, computed as
+  `totalMinutesStudied / sessionsLogged` and rounded to a sensible precision. When
+  `sessionsLogged` is 0, this field is `null`.
 
 **Error Responses:**
 - **400 Bad Request:** Missing `userId` or invalid timestamps
