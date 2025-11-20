@@ -1,15 +1,21 @@
-type LeaderboardRow = {
+type LeaderboardEntry = {
   userId: string,
   displayName: string,
   rank: number,
-  totalMinutes?: number,
-  badgeCount?: number,
   isSelf: boolean,
 };
 
+type BadgeLeaderboardEntry = LeaderboardEntry | {
+  badgeCount: number,
+};
+
+type StudyTimeLeaderboardEntry = LeaderboardEntry | {
+  totalMinutes: number,
+};
+
 type LeaderboardPage = {
-  studyTime: LeaderboardRow[];
-  badges: LeaderboardRow[];
+  studyTime: StudyTimeLeaderboardEntry[];
+  badges: BadgeLeaderboardEntry[];
 };
 
 export type LeaderboardLoader = {
