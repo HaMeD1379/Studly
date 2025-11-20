@@ -2,7 +2,7 @@ import { fetchLeaderboards } from '~/api/leaderboard';
 
 type LeaderboardsLoader = {
   data: {
-    leaderboards: string[]
+    leaderboard: string[]
   };
   error: boolean;
 };
@@ -12,7 +12,7 @@ export const loader = async (): Promise<LeaderboardsLoader> => {
 
   return {
     data: {
-      leaderboards: []
+      leaderboard: []
     },
     error: false,
   };

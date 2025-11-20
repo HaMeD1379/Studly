@@ -19,3 +19,4 @@ export * from './StudyTips/StudyTips';
 export * from './TodaysStudyStatistics/TodaysStudyStatistics';
 export * from './UpdatePassword/UpdatePassword';
 export * from './UserCard/UserCard';
+export * from './LeaderboardPage/LeaderboardPage';

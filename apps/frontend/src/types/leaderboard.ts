@@ -1,15 +1,14 @@
 type LeaderboardEntry = {
-  userId: string,
   displayName: string,
   rank: number,
   isSelf: boolean,
 };
 
-type BadgeLeaderboardEntry = LeaderboardEntry | {
+export type BadgeLeaderboardEntry = LeaderboardEntry & {
   badgeCount: number,
 };
 
-type StudyTimeLeaderboardEntry = LeaderboardEntry | {
+export type StudyTimeLeaderboardEntry = LeaderboardEntry & {
   totalMinutes: number,
 };
 
@@ -22,3 +21,8 @@ export type LeaderboardLoader = {
   friends: LeaderboardPage[];
   global: LeaderboardPage[];
 };
+
+export enum LeaderboardPageType {
+  StudyTime = 'studyTime',
+  Badges = 'badges',
+}
