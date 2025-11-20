@@ -6,6 +6,7 @@ import {
   IconMedal,
   IconMedal2,
   IconSettings,
+  IconTrophy,
   IconUser,
 } from '@tabler/icons-react';
 import { useState } from 'react';
@@ -19,11 +20,13 @@ import {
 import {
   BADGES,
   HOME,
+  LEADERBOARD,
   LOGIN,
   LOGOUT,
   NAVBAR_BADGES,
   NAVBAR_HEADER,
   NAVBAR_HOME,
+  NAVBAR_LEADERBOARDS,
   NAVBAR_LOGOUT,
   NAVBAR_PROFILE,
   NAVBAR_SETTINGS,
@@ -102,6 +105,16 @@ export const Navbar = () => {
               <Flex align='center' gap={4}>
                 <IconMedal2 size={20} />
                 {NAVBAR_BADGES}
+              </Flex>
+            </StyledButton>
+            <StyledButton
+              currentlySelectedPath={currentlySelectedPath}
+              onClick={() => setCurrentlySelectedPath(LEADERBOARD)}
+              path={LEADERBOARD}
+            >
+              <Flex align='center' gap={4}>
+                <IconTrophy size={20} />
+                {NAVBAR_LEADERBOARDS}
               </Flex>
             </StyledButton>
             <StyledButton

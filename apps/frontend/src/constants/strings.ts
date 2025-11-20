@@ -56,6 +56,7 @@ export const NAVBAR_BADGES = 'Badges';
 export const NAVBAR_PROFILE = 'Profile';
 export const NAVBAR_SETTINGS = 'Settings';
 export const NAVBAR_LOGOUT = 'Logout';
+export const NAVBAR_LEADERBOARDS = 'Leaderboard';
 
 // recent study sessions
 export const RECENT_HEADER = 'Recent Sessions';
@@ -112,3 +113,11 @@ export const TODAYS_STUDY_SESSIONS = 'Sessions';
 
 // update password
 export const UPDATE_PASSWORD_BUTTON_TEXT = 'Update Password';
+
+// study page
+export const STUDY_ROUTE_HEADER = 'Study Session';
+export const STUDY_ROUTE_SUBHEADER = 'Focus and track your study time';
+
+// leaderboards page
+export const LEADERBOARD_ROUTE_HEADER = 'Leaderboard';
+export const LEADERBOARD_ROUTE_SUBHEADER = 'See how you rank among your fellow students';

@@ -20,6 +20,8 @@ import {
   studyLoader,
   UpdatePassword,
   UserProfile,
+  Leaderboard,
+  leaderboardLoader,
 } from '~/routes';
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
@@ -29,6 +31,7 @@ import {
   CHANGE_PASSWORD,
   FORGOT_PASSWORD,
   HOME,
+  LEADERBOARD,
   LOGIN,
   LOGOUT,
   PROFILE,
@@ -64,6 +67,7 @@ const router = createBrowserRouter([
       },
       { element: <Home />, path: HOME },
       { action: profileChangeAction, element: <Settings />, path: SETTINGS },
+      { element: <Leaderboard />, loader: leaderboardLoader, path: LEADERBOARD },
     ],
     element: <Navbar />,
   },
