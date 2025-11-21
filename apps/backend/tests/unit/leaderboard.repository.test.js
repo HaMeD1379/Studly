@@ -23,15 +23,13 @@ test('findStudyTimeLeaderboard - should include ensureUserId even if outside top
         return {
           select: () => ({
             not: () => ({
-              in: () => ({
-                data: [
-                  { user_id: MOCK_USER_1, total_time: 1000 },
-                  { user_id: MOCK_USER_2, total_time: 800 },
-                  { user_id: MOCK_USER_3, total_time: 600 },
-                  { user_id: MOCK_USER_4, total_time: 100 }
-                ],
-                error: null
-              })
+              data: [
+                { user_id: MOCK_USER_1, total_time: 1000 },
+                { user_id: MOCK_USER_2, total_time: 800 },
+                { user_id: MOCK_USER_3, total_time: 600 },
+                { user_id: MOCK_USER_4, total_time: 100 }
+              ],
+              error: null
             })
           })
         };
@@ -84,14 +82,12 @@ test('findStudyTimeLeaderboard - should not duplicate ensureUserId if already in
         return {
           select: () => ({
             not: () => ({
-              in: () => ({
-                data: [
-                  { user_id: MOCK_USER_1, total_time: 1000 },
-                  { user_id: MOCK_USER_2, total_time: 800 },
-                  { user_id: MOCK_USER_3, total_time: 600 }
-                ],
-                error: null
-              })
+              data: [
+                { user_id: MOCK_USER_1, total_time: 1000 },
+                { user_id: MOCK_USER_2, total_time: 800 },
+                { user_id: MOCK_USER_3, total_time: 600 }
+              ],
+              error: null
             })
           })
         };
@@ -134,18 +130,16 @@ test('findBadgeCountLeaderboard - should include ensureUserId even if outside to
       if (tableName === 'user_badge') {
         return {
           select: () => ({
-            in: () => ({
-              data: [
-                { user_id: MOCK_USER_1 },
-                { user_id: MOCK_USER_1 },
-                { user_id: MOCK_USER_1 },
-                { user_id: MOCK_USER_2 },
-                { user_id: MOCK_USER_2 },
-                { user_id: MOCK_USER_3 },
-                { user_id: MOCK_USER_4 }
-              ],
-              error: null
-            })
+            data: [
+              { user_id: MOCK_USER_1 },
+              { user_id: MOCK_USER_1 },
+              { user_id: MOCK_USER_1 },
+              { user_id: MOCK_USER_2 },
+              { user_id: MOCK_USER_2 },
+              { user_id: MOCK_USER_3 },
+              { user_id: MOCK_USER_4 }
+            ],
+            error: null
           })
         };
       }
@@ -197,13 +191,11 @@ test('findBadgeCountLeaderboard - should handle ensureUserId with no data', asyn
       if (tableName === 'user_badge') {
         return {
           select: () => ({
-            in: () => ({
-              data: [
-                { user_id: MOCK_USER_1 },
-                { user_id: MOCK_USER_2 }
-              ],
-              error: null
-            })
+            data: [
+              { user_id: MOCK_USER_1 },
+              { user_id: MOCK_USER_2 }
+            ],
+            error: null
           })
         };
       }
