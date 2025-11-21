@@ -64,6 +64,28 @@ function verbose(message) {
   }
 }
 
+// Helper to determine whether an OpenAPI definition represents a real table.
+// Supabase/PostgREST generate helper definitions like <table>_insert and
+// <table>_update alongside the base table name. Those helpers should not be
+// treated as actual tables when generating the SQL schema, otherwise bogus
+// tables like public.<table>_insert will be created and keep the schema
+// perpetually out of sync.
+function isRealTableDefinition(tableName) {
+  // Skip obvious helper/variant definitions that Supabase emits.
+  // This list can be expanded if we encounter new helper suffixes.
+  const helperSuffixes = [
+    '_insert',
+    '_update',
+    '_read',
+    '_row',
+    '_schema',
+  ];
+
+  // Internal / system definitions are filtered elsewhere, so we only
+  // need to guard against helper variants here.
+  return !helperSuffixes.some(suffix => tableName.endsWith(suffix));
+}
+
 // ============================================================================
 // Load Environment Variables
 // ============================================================================
@@ -115,6 +137,12 @@ async function fetchSupabaseSchema(supabaseUrl, supabaseKey) {
       for (const [tableName, tableSchema] of Object.entries(schema.definitions)) {
         // Skip internal tables
         if (tableName.startsWith('pg_') || tableName === 'information_schema') {
+          continue;
+        }
+
+        // Skip helper definitions (e.g., sessions_insert, sessions_update)
+        if (!isRealTableDefinition(tableName)) {
+          verbose(`Skipping helper definition '${tableName}'`);
           continue;
         }
 
@@ -583,4 +611,3 @@ main().catch(err => {
   console.error(err);
   process.exit(1);
 });
-
