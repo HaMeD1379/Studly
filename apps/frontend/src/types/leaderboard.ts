@@ -1,15 +1,15 @@
 type LeaderboardEntry = {
-  displayName: string | null,
-  rank: number,
-  isSelf: boolean,
+  displayName: string | null;
+  rank: number;
+  isSelf: boolean;
 };
 
 export type BadgeLeaderboardEntry = LeaderboardEntry & {
-  badgeCount: number,
+  badgeCount: number;
 };
 
 export type StudyTimeLeaderboardEntry = LeaderboardEntry & {
-  totalMinutes: number,
+  totalMinutes: number;
 };
 
 type LeaderboardPage = {

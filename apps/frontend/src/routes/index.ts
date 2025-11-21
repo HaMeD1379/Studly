@@ -1,6 +1,7 @@
 export * from './badges';
 export * from './ForgotPassword';
 export * from './Home';
+export * from './leaderboard';
 export * from './login';
 export * from './logout';
 export * from './logout';
@@ -9,4 +10,3 @@ export * from './settings';
 export * from './signup';
 export * from './study';
 export * from './UpdatePassword';
-export * from './leaderboard'

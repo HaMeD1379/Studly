@@ -33,32 +33,32 @@ describe('loader', () => {
     });
 
     const result = await loader();
-  
+
     expect(result).toEqual({
       data: {
         friends: {
-          studyTime: [],
           badges: [],
+          studyTime: [],
         },
         global: {
-          studyTime: [],
           badges: [],
+          studyTime: [],
         },
       },
       error: false,
-    })
-  })
+    });
+  });
 
   it('returns error', async () => {
     mockFetchLeaderboards.mockResolvedValueOnce({
       data: {
         friends: {
-          studyTime: [],
           badges: [],
+          studyTime: [],
         },
         global: {
-          studyTime: [],
           badges: [],
+          studyTime: [],
         },
       },
       error: true,

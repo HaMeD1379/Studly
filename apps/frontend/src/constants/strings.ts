@@ -120,10 +120,11 @@ export const STUDY_ROUTE_SUBHEADER = 'Focus and track your study time';
 
 // leaderboards page
 export const LEADERBOARD_ROUTE_HEADER = 'Leaderboard';
-export const LEADERBOARD_ROUTE_SUBHEADER = 'See how you rank among your fellow students';
-export const LEADERBOARD_PAGE_STUDY_HEADER = 'Study Time Leaders'
+export const LEADERBOARD_ROUTE_SUBHEADER =
+  'See how you rank among your fellow students';
+export const LEADERBOARD_PAGE_STUDY_HEADER = 'Study Time Leaders';
 export const LEADERBOARD_PAGE_STUDY_SUBHEADER = 'Weekly study time rankings';
-export const LEADERBOARD_PAGE_BADGES_HEADER = 'Badge Leaders'
+export const LEADERBOARD_PAGE_BADGES_HEADER = 'Badge Leaders';
 export const LEADERBOARD_PAGE_BADGES_SUBHEADER = 'Weekly badges rankings';
 export const LEADERBOARD_PAGE_FRIENDS_BUTTON_TEXT = 'Friends Only';
 export const LEADERBOARD_NO_DATA = 'There is no data for this leaderboard';

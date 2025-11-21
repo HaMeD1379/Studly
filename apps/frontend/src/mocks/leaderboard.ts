@@ -1,59 +1,55 @@
 export const mockStudyTimeLeaderboard = [
   {
     displayName: 'John',
-    rank: 1,
     isSelf: false,
+    rank: 1,
     totalMinutes: 100,
   },
   {
     displayName: 'Joe',
-    rank: 2,
     isSelf: false,
+    rank: 2,
     totalMinutes: 60,
   },
   {
     displayName: 'You',
-    rank: 3,
     isSelf: true,
+    rank: 3,
     totalMinutes: 59,
   },
 ];
 
 export const mockBadgesLeaderboard = [
   {
-    displayName: 'John',
-    rank: 1,
-    isSelf: false,
     badgeCount: 4,
-  },
-  {
-    displayName: 'Joe',
-    rank: 2,
+    displayName: 'John',
     isSelf: false,
-    badgeCount: 2,
+    rank: 1,
   },
   {
-    displayName: 'You',
-    rank: 3,
-    isSelf: true,
+    badgeCount: 2,
+    displayName: 'Joe',
+    isSelf: false,
+    rank: 2,
+  },
+  {
     badgeCount: 1,
+    displayName: 'You',
+    isSelf: true,
+    rank: 3,
   },
 ];
 
 export const mockLeaderboardLoaderResponse = {
   data: {
     friends: {
-      studyTime: [
-        mockStudyTimeLeaderboard[0],
-      ],
-      badges: [
-        mockBadgesLeaderboard[0]
-      ],
+      badges: [mockBadgesLeaderboard[0]],
+      studyTime: [mockStudyTimeLeaderboard[0]],
     },
     global: {
-      studyTime: mockStudyTimeLeaderboard,
       badges: mockBadgesLeaderboard,
-    }
+      studyTime: mockStudyTimeLeaderboard,
+    },
   },
   error: false,
 };
@@ -61,12 +57,12 @@ export const mockLeaderboardLoaderResponse = {
 export const mockLeaderboardErrorResponse = {
   data: {
     friends: {
-      studyTime: [],
       badges: [],
+      studyTime: [],
     },
     global: {
-      studyTime: [],
       badges: [],
+      studyTime: [],
     },
   },
   error: true,

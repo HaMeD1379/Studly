@@ -7,7 +7,9 @@ import {
   badgesLoader,
   Forgot,
   Home,
+  Leaderboard,
   Login,
+  leaderboardLoader,
   loginAction,
   logoutAction,
   ProfileLoader,
@@ -20,8 +22,6 @@ import {
   studyLoader,
   UpdatePassword,
   UserProfile,
-  Leaderboard,
-  leaderboardLoader,
 } from '~/routes';
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
@@ -67,7 +67,12 @@ const router = createBrowserRouter([
       },
       { element: <Home />, path: HOME },
       { action: profileChangeAction, element: <Settings />, path: SETTINGS },
-      { element: <Leaderboard />, loader: leaderboardLoader, path: LEADERBOARD, errorElement: <ErrorBoundary /> },
+      {
+        element: <Leaderboard />,
+        errorElement: <ErrorBoundary />,
+        loader: leaderboardLoader,
+        path: LEADERBOARD,
+      },
     ],
     element: <Navbar />,
   },

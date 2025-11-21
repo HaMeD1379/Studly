@@ -21,5 +21,5 @@ describe('format', () => {
     expect(formatMinutesToHoursAndMinutes(59)).toEqual('59m');
     expect(formatMinutesToHoursAndMinutes(60)).toEqual('1h 0m');
     expect(formatMinutesToHoursAndMinutes(61)).toEqual('1h 1m');
-  })
+  });
 });

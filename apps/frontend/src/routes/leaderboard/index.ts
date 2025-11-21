@@ -1,2 +1,2 @@
-export * from './Leaderboard'
-export { loader as leaderboardLoader } from './loader'
+export * from './Leaderboard';
+export { loader as leaderboardLoader } from './loader';

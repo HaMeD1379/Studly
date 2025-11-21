@@ -1,5 +1,5 @@
 import { fetchLeaderboards } from '~/api';
-import { LeaderboardResponse } from '~/types';
+import type { LeaderboardResponse } from '~/types';
 
 type LeaderboardsLoader = {
   data: LeaderboardResponse;
@@ -12,14 +12,14 @@ export const loader = async (): Promise<LeaderboardsLoader> => {
   return {
     data: leaderboardsData.data ?? {
       friends: {
-        studyTime: [],
         badges: [],
+        studyTime: [],
       },
       global: {
-        studyTime: [],
         badges: [],
+        studyTime: [],
       },
     },
     error: !!leaderboardsData.error,
   };
-}
+};

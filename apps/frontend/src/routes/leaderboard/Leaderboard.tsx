@@ -1,18 +1,30 @@
 import { Button, Container, Flex, SegmentedControl, Text } from '@mantine/core';
 import { IconUsers } from '@tabler/icons-react';
-import { useState, useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useLoaderData } from 'react-router';
 import { ErrorBoundary, LeaderboardPage } from '~/components';
-import { LEADERBOARD_PAGE_FRIENDS_BUTTON_TEXT, LEADERBOARD_ROUTE_HEADER, LEADERBOARD_ROUTE_SUBHEADER } from '~/constants';
-import { BadgeLeaderboardEntry, LeaderboardPageType, StudyTimeLeaderboardEntry } from '~/types';
+import {
+  LEADERBOARD_PAGE_FRIENDS_BUTTON_TEXT,
+  LEADERBOARD_ROUTE_HEADER,
+  LEADERBOARD_ROUTE_SUBHEADER,
+} from '~/constants';
+import {
+  type BadgeLeaderboardEntry,
+  LeaderboardPageType,
+  type StudyTimeLeaderboardEntry,
+} from '~/types';
 
 export const Leaderboard = () => {
   const loaderData = useLoaderData();
 
   const [friendsOnly, setFriendsOnly] = useState<boolean>(false);
-  const [leaderboardPageType, setLeaderboardPageType] = useState<string>(LeaderboardPageType.StudyTime);
+  const [leaderboardPageType, setLeaderboardPageType] = useState<string>(
+    LeaderboardPageType.StudyTime,
+  );
 
-  const rows = useMemo((): BadgeLeaderboardEntry[] | StudyTimeLeaderboardEntry[] => {
+  const rows = useMemo(():
+    | BadgeLeaderboardEntry[]
+    | StudyTimeLeaderboardEntry[] => {
     const data = loaderData?.data;
 
     if (!data) {
@@ -43,31 +55,33 @@ export const Leaderboard = () => {
           <Flex direction='column' gap={12}>
             <Flex justify='space-between'>
               <SegmentedControl
-                w='25%'
+                bdrs={8}
                 data={[
                   { label: 'Study Time', value: LeaderboardPageType.StudyTime },
                   { label: 'Badges', value: LeaderboardPageType.Badges },
                 ]}
-                value={leaderboardPageType}
                 onChange={setLeaderboardPageType}
-                bdrs={8}
+                value={leaderboardPageType}
+                w='25%'
               />
-              <Button w='15%' c={friendsOnly ? 'white' :'gray'} bdrs={8} bd='1px solid lightgray' bg={friendsOnly ? 'blue' : 'white'} onClick={() => setFriendsOnly(!friendsOnly)}>
+              <Button
+                bd='1px solid lightgray'
+                bdrs={8}
+                bg={friendsOnly ? 'blue' : 'white'}
+                c={friendsOnly ? 'white' : 'gray'}
+                onClick={() => setFriendsOnly(!friendsOnly)}
+                w='15%'
+              >
                 <Flex>
-                  <IconUsers/>
-                  <Text>
-                    {LEADERBOARD_PAGE_FRIENDS_BUTTON_TEXT}
-                  </Text>
+                  <IconUsers />
+                  <Text>{LEADERBOARD_PAGE_FRIENDS_BUTTON_TEXT}</Text>
                 </Flex>
               </Button>
             </Flex>
-            <LeaderboardPage
-              rows={rows}
-              type={leaderboardPageType}
-            />
+            <LeaderboardPage rows={rows} type={leaderboardPageType} />
           </Flex>
         </>
       )}
     </Container>
-  )
+  );
 };

@@ -23,4 +23,4 @@ export const mockEndSessionBody = JSON.stringify({
 
 export const mockFetchAllUserBadgesPath = `badges/users/${mockUserId}?includeProgress=true`;
 
-export const mockFetchLeaderboardsPath = `leaderboard?userId=${mockUserId}`
+export const mockFetchLeaderboardsPath = `leaderboard?userId=${mockUserId}`;
