@@ -52,31 +52,38 @@ const mockFriends = [
 ];
 
 const mockSessions = [
-  { user_id: TEST_USER_ID, total_time: 500, end_time: '2025-11-01T10:00:00Z', user_profile: { bio: 'Test User' } },
-  { user_id: TEST_USER_ID, total_time: 300, end_time: '2025-11-02T10:00:00Z', user_profile: { bio: 'Test User' } },
-  { user_id: TEST_FRIEND_1, total_time: 1000, end_time: '2025-11-01T10:00:00Z', user_profile: { bio: 'Friend One' } },
-  { user_id: TEST_FRIEND_1, total_time: 500, end_time: '2025-11-02T10:00:00Z', user_profile: { bio: 'Friend One' } },
-  { user_id: TEST_FRIEND_2, total_time: 600, end_time: '2025-11-01T10:00:00Z', user_profile: { bio: 'Friend Two' } },
-  { user_id: TEST_OTHER_USER, total_time: 2000, end_time: '2025-11-01T10:00:00Z', user_profile: { bio: 'Top User' } }
+  { user_id: TEST_USER_ID, total_time: 500, end_time: '2025-11-01T10:00:00Z' },
+  { user_id: TEST_USER_ID, total_time: 300, end_time: '2025-11-02T10:00:00Z' },
+  { user_id: TEST_FRIEND_1, total_time: 1000, end_time: '2025-11-01T10:00:00Z' },
+  { user_id: TEST_FRIEND_1, total_time: 500, end_time: '2025-11-02T10:00:00Z' },
+  { user_id: TEST_FRIEND_2, total_time: 600, end_time: '2025-11-01T10:00:00Z' },
+  { user_id: TEST_OTHER_USER, total_time: 2000, end_time: '2025-11-01T10:00:00Z' }
 ];
 
 const mockUserBadges = [
-  { user_id: TEST_USER_ID, badge_id: 'b1', user_profile: { bio: 'Test User' } },
-  { user_id: TEST_USER_ID, badge_id: 'b2', user_profile: { bio: 'Test User' } },
-  { user_id: TEST_FRIEND_1, badge_id: 'b1', user_profile: { bio: 'Friend One' } },
-  { user_id: TEST_FRIEND_1, badge_id: 'b2', user_profile: { bio: 'Friend One' } },
-  { user_id: TEST_FRIEND_1, badge_id: 'b3', user_profile: { bio: 'Friend One' } },
-  { user_id: TEST_FRIEND_2, badge_id: 'b1', user_profile: { bio: 'Friend Two' } },
-  { user_id: TEST_OTHER_USER, badge_id: 'b1', user_profile: { bio: 'Top User' } },
-  { user_id: TEST_OTHER_USER, badge_id: 'b2', user_profile: { bio: 'Top User' } },
-  { user_id: TEST_OTHER_USER, badge_id: 'b3', user_profile: { bio: 'Top User' } },
-  { user_id: TEST_OTHER_USER, badge_id: 'b4', user_profile: { bio: 'Top User' } }
+  { user_id: TEST_USER_ID, badge_id: 'b1' },
+  { user_id: TEST_USER_ID, badge_id: 'b2' },
+  { user_id: TEST_FRIEND_1, badge_id: 'b1' },
+  { user_id: TEST_FRIEND_1, badge_id: 'b2' },
+  { user_id: TEST_FRIEND_1, badge_id: 'b3' },
+  { user_id: TEST_FRIEND_2, badge_id: 'b1' },
+  { user_id: TEST_OTHER_USER, badge_id: 'b1' },
+  { user_id: TEST_OTHER_USER, badge_id: 'b2' },
+  { user_id: TEST_OTHER_USER, badge_id: 'b3' },
+  { user_id: TEST_OTHER_USER, badge_id: 'b4' }
+];
+
+const mockProfiles = [
+  { user_id: TEST_USER_ID, bio: 'Test User' },
+  { user_id: TEST_FRIEND_1, bio: 'Friend One' },
+  { user_id: TEST_FRIEND_2, bio: 'Friend Two' },
+  { user_id: TEST_OTHER_USER, bio: 'Top User' }
 ];
 
 let server;
 
 beforeEach(() => {
-  // Reset Supabase mocks
+  // Reset Supabase mocks to match repository implementation
   supabase.from = (tableName) => {
     if (tableName === 'friends') {
       return {
@@ -84,10 +91,10 @@ beforeEach(() => {
           eq: () => ({
             or: () => ({
               data: mockFriends,
-              error: null
-            })
-          })
-        })
+              error: null,
+            }),
+          }),
+        }),
       };
     }
 
@@ -96,18 +103,13 @@ beforeEach(() => {
         select: () => ({
           not: () => ({
             in: (column, values) => {
-              // Filter sessions by user_ids
-              const filtered = mockSessions.filter(s =>
-                !values || values.includes(s.user_id)
-              );
+              const filtered = Array.isArray(values)
+                ? mockSessions.filter((s) => values.includes(s.user_id))
+                : mockSessions;
               return { data: filtered, error: null };
             },
-            data: mockSessions,
-            error: null
           }),
-          data: mockSessions,
-          error: null
-        })
+        }),
       };
     }
 
@@ -115,15 +117,25 @@ beforeEach(() => {
       return {
         select: () => ({
           in: (column, values) => {
-            // Filter badges by user_ids
-            const filtered = mockUserBadges.filter(b =>
-              !values || values.includes(b.user_id)
-            );
+            const filtered = Array.isArray(values)
+              ? mockUserBadges.filter((b) => values.includes(b.user_id))
+              : mockUserBadges;
             return { data: filtered, error: null };
           },
-          data: mockUserBadges,
-          error: null
-        })
+        }),
+      };
+    }
+
+    if (tableName === 'user_profile') {
+      return {
+        select: () => ({
+          in: (column, values) => {
+            const filtered = Array.isArray(values)
+              ? mockProfiles.filter((p) => values.includes(p.user_id))
+              : mockProfiles;
+            return { data: filtered, error: null };
+          },
+        }),
       };
     }
 
@@ -135,10 +147,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  // Restore original Supabase client
   supabase.from = originalFrom;
-
-  // Close server
   if (server) {
     server.close();
   }
@@ -336,4 +345,3 @@ test('GET /api/v1/leaderboard - should use default limit of 7 when not specified
   const body = await res.json();
   assert.strictEqual(body.metadata.limit, 7);
 });
-

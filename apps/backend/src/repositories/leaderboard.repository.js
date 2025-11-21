@@ -56,13 +56,12 @@ import supabase from '../config/supabase.client.js';
  * @returns {object} repository - Contains data access functions for leaderboards.
  */
 export const createLeaderboardRepository = (client = supabase) => {
-  // Helper to support both real Supabase (promise-based) and test mocks
-  // that return plain { data, error } objects from the final query call.
   const resolveQueryResult = async (maybePromise) => {
+    // Real Supabase returns a Promise; mocks may return a plain { data, error } object
     if (maybePromise && typeof maybePromise.then === 'function') {
       return maybePromise;
     }
-    return maybePromise;
+    return maybePromise ?? { data: null, error: null };
   };
 
   /**
@@ -111,10 +110,10 @@ export const createLeaderboardRepository = (client = supabase) => {
    */
   const findStudyTimeLeaderboard = async ({ userIds: filterUserIds = null, limit = 7, ensureUserId = null }) => {
     try {
-      // First, fetch sessions data
+      // Fetch sessions (completed only) WITHOUT attempting to join user_profile
       let studyTimeQuery = client
         .from('sessions')
-        .select('user_id, total_time, user_profile: user_profile(bio)')
+        .select('user_id, total_time')
         .not('end_time', 'is', null); // Only completed sessions
 
       // Apply user filter if provided
@@ -122,42 +121,54 @@ export const createLeaderboardRepository = (client = supabase) => {
         studyTimeQuery = studyTimeQuery.in('user_id', filterUserIds);
       }
 
-      const { data: sessionRows, error } = await resolveQueryResult(studyTimeQuery);
+      const { data: sessionRows, error: sessionError } = await resolveQueryResult(studyTimeQuery);
 
-      if (error) {
-        throw new Error(`Failed to fetch study time data: ${error.message}`);
+      if (sessionError) {
+        throw new Error(`Failed to fetch study time data: ${sessionError.message}`);
       }
 
       if (!sessionRows || sessionRows.length === 0) {
         return [];
       }
 
-      // Aggregate total_time per user in JavaScript
+      // Aggregate total_time per user
       const totalMinutesByUserId = {};
-      const bioByUserId = {};
-
       for (const sessionRow of sessionRows) {
         const sessionUserId = sessionRow.user_id;
         const sessionTotalTime = Number(sessionRow.total_time) || 0;
-
         if (!totalMinutesByUserId[sessionUserId]) {
           totalMinutesByUserId[sessionUserId] = 0;
         }
-
         totalMinutesByUserId[sessionUserId] += sessionTotalTime;
+      }
 
-        if (sessionRow.user_profile && typeof sessionRow.user_profile.bio !== 'undefined') {
-          bioByUserId[sessionUserId] = sessionRow.user_profile.bio || null;
+      const userIds = Object.keys(totalMinutesByUserId);
+
+      // Fetch profiles separately and join in JS
+      let profilesByUserId = {};
+      if (userIds.length > 0) {
+        const { data: profileRows, error: profileError } = await client
+          .from('user_profile')
+          .select('user_id, bio')
+          .in('user_id', userIds);
+
+        if (profileError) {
+          // Do not hard-fail the whole leaderboard if profile join fails; just log and continue
+          console.error('[Leaderboard Repository] Failed to fetch user_profile for studyTime leaderboard:', profileError.message);
+        } else if (profileRows && profileRows.length > 0) {
+          profilesByUserId = profileRows.reduce((acc, row) => {
+            acc[row.user_id] = row.bio || null;
+            return acc;
+          }, {});
         }
       }
 
-      // Convert to array and sort descending by total minutes
       const sortedEntries = Object.entries(totalMinutesByUserId)
         .map(([userId, totalMinutes]) => ({
           user_id: userId,
           total_minutes: totalMinutes,
-          bio: Object.prototype.hasOwnProperty.call(bioByUserId, userId)
-            ? bioByUserId[userId]
+          bio: Object.prototype.hasOwnProperty.call(profilesByUserId, userId)
+            ? profilesByUserId[userId]
             : null,
         }))
         .sort((firstUser, secondUser) => secondUser.total_minutes - firstUser.total_minutes);
@@ -196,20 +207,20 @@ export const createLeaderboardRepository = (client = supabase) => {
    */
   const findBadgeCountLeaderboard = async ({ userIds: filterUserIds = null, limit = 7, ensureUserId = null }) => {
     try {
-      // First, fetch badge data
+      // Fetch user_badge WITHOUT attempting to join user_profile
       let badgeCountQuery = client
         .from('user_badge')
-        .select('user_id, user_profile: user_profile(bio)');
+        .select('user_id');
 
       // Apply user filter if provided
       if (filterUserIds && Array.isArray(filterUserIds) && filterUserIds.length > 0) {
         badgeCountQuery = badgeCountQuery.in('user_id', filterUserIds);
       }
 
-      const { data: badgeRows, error } = await resolveQueryResult(badgeCountQuery);
+      const { data: badgeRows, error: badgeError } = await resolveQueryResult(badgeCountQuery);
 
-      if (error) {
-        throw new Error(`Failed to fetch badge data: ${error.message}`);
+      if (badgeError) {
+        throw new Error(`Failed to fetch badge data: ${badgeError.message}`);
       }
 
       if (!badgeRows || badgeRows.length === 0) {
@@ -218,29 +229,40 @@ export const createLeaderboardRepository = (client = supabase) => {
 
       // Count badges per user in JavaScript
       const badgeCountByUserId = {};
-      const bioByUserId = {};
-
       for (const badgeRow of badgeRows) {
         const badgeUserId = badgeRow.user_id;
-
         if (!badgeCountByUserId[badgeUserId]) {
           badgeCountByUserId[badgeUserId] = 0;
         }
-
         badgeCountByUserId[badgeUserId] += 1;
+      }
 
-        if (badgeRow.user_profile && typeof badgeRow.user_profile.bio !== 'undefined') {
-          bioByUserId[badgeUserId] = badgeRow.user_profile.bio || null;
+      const userIds = Object.keys(badgeCountByUserId);
+
+      // Fetch profiles separately and join in JS
+      let profilesByUserId = {};
+      if (userIds.length > 0) {
+        const { data: profileRows, error: profileError } = await client
+          .from('user_profile')
+          .select('user_id, bio')
+          .in('user_id', userIds);
+
+        if (profileError) {
+          console.error('[Leaderboard Repository] Failed to fetch user_profile for badge leaderboard:', profileError.message);
+        } else if (profileRows && profileRows.length > 0) {
+          profilesByUserId = profileRows.reduce((acc, row) => {
+            acc[row.user_id] = row.bio || null;
+            return acc;
+          }, {});
         }
       }
 
-      // Convert to array and sort descending by badge count
       const sortedEntries = Object.entries(badgeCountByUserId)
         .map(([userId, badgeCount]) => ({
           user_id: userId,
           badge_count: badgeCount,
-          bio: Object.prototype.hasOwnProperty.call(bioByUserId, userId)
-            ? bioByUserId[userId]
+          bio: Object.prototype.hasOwnProperty.call(profilesByUserId, userId)
+            ? profilesByUserId[userId]
             : null,
         }))
         .sort((firstUser, secondUser) => secondUser.badge_count - firstUser.badge_count);

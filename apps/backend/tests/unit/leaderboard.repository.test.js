@@ -23,17 +23,37 @@ test('findStudyTimeLeaderboard - should include ensureUserId even if outside top
         return {
           select: () => ({
             not: () => ({
+              in: () => ({
+                data: [
+                  { user_id: MOCK_USER_1, total_time: 1000 },
+                  { user_id: MOCK_USER_2, total_time: 800 },
+                  { user_id: MOCK_USER_3, total_time: 600 },
+                  { user_id: MOCK_USER_4, total_time: 100 }
+                ],
+                error: null
+              })
+            })
+          })
+        };
+      }
+
+      if (tableName === 'user_profile') {
+        return {
+          select: () => ({
+            in: () => ({
               data: [
-                { user_id: MOCK_USER_1, total_time: 1000, user_profile: { bio: 'Top User' } },
-                { user_id: MOCK_USER_2, total_time: 800, user_profile: { bio: 'Second User' } },
-                { user_id: MOCK_USER_3, total_time: 600, user_profile: { bio: 'Third User' } },
-                { user_id: MOCK_USER_4, total_time: 100, user_profile: { bio: 'Bottom User' } }
+                { user_id: MOCK_USER_1, bio: 'Top User' },
+                { user_id: MOCK_USER_2, bio: 'Second User' },
+                { user_id: MOCK_USER_3, bio: 'Third User' },
+                { user_id: MOCK_USER_4, bio: 'Bottom User' }
               ],
               error: null
             })
           })
         };
       }
+
+      return { select: () => ({ data: [], error: null }) };
     }
   };
 
@@ -64,16 +84,35 @@ test('findStudyTimeLeaderboard - should not duplicate ensureUserId if already in
         return {
           select: () => ({
             not: () => ({
+              in: () => ({
+                data: [
+                  { user_id: MOCK_USER_1, total_time: 1000 },
+                  { user_id: MOCK_USER_2, total_time: 800 },
+                  { user_id: MOCK_USER_3, total_time: 600 }
+                ],
+                error: null
+              })
+            })
+          })
+        };
+      }
+
+      if (tableName === 'user_profile') {
+        return {
+          select: () => ({
+            in: () => ({
               data: [
-                { user_id: MOCK_USER_1, total_time: 1000, user_profile: { bio: 'Top User' } },
-                { user_id: MOCK_USER_2, total_time: 800, user_profile: { bio: 'Second User' } },
-                { user_id: MOCK_USER_3, total_time: 600, user_profile: { bio: 'Third User' } }
+                { user_id: MOCK_USER_1, bio: 'Top User' },
+                { user_id: MOCK_USER_2, bio: 'Second User' },
+                { user_id: MOCK_USER_3, bio: 'Third User' }
               ],
               error: null
             })
           })
         };
       }
+
+      return { select: () => ({ data: [], error: null }) };
     }
   };
 
@@ -95,19 +134,39 @@ test('findBadgeCountLeaderboard - should include ensureUserId even if outside to
       if (tableName === 'user_badge') {
         return {
           select: () => ({
-            data: [
-              { user_id: MOCK_USER_1, user_profile: { bio: 'Top User' } },
-              { user_id: MOCK_USER_1, user_profile: { bio: 'Top User' } },
-              { user_id: MOCK_USER_1, user_profile: { bio: 'Top User' } },
-              { user_id: MOCK_USER_2, user_profile: { bio: 'Second User' } },
-              { user_id: MOCK_USER_2, user_profile: { bio: 'Second User' } },
-              { user_id: MOCK_USER_3, user_profile: { bio: 'Third User' } },
-              { user_id: MOCK_USER_4, user_profile: { bio: 'Bottom User' } }
-            ],
-            error: null
+            in: () => ({
+              data: [
+                { user_id: MOCK_USER_1 },
+                { user_id: MOCK_USER_1 },
+                { user_id: MOCK_USER_1 },
+                { user_id: MOCK_USER_2 },
+                { user_id: MOCK_USER_2 },
+                { user_id: MOCK_USER_3 },
+                { user_id: MOCK_USER_4 }
+              ],
+              error: null
+            })
           })
         };
       }
+
+      if (tableName === 'user_profile') {
+        return {
+          select: () => ({
+            in: () => ({
+              data: [
+                { user_id: MOCK_USER_1, bio: 'Top User' },
+                { user_id: MOCK_USER_2, bio: 'Second User' },
+                { user_id: MOCK_USER_3, bio: 'Third User' },
+                { user_id: MOCK_USER_4, bio: 'Bottom User' }
+              ],
+              error: null
+            })
+          })
+        };
+      }
+
+      return { select: () => ({ data: [], error: null }) };
     }
   };
 
@@ -138,14 +197,32 @@ test('findBadgeCountLeaderboard - should handle ensureUserId with no data', asyn
       if (tableName === 'user_badge') {
         return {
           select: () => ({
-            data: [
-              { user_id: MOCK_USER_1, user_profile: { bio: 'Top User' } },
-              { user_id: MOCK_USER_2, user_profile: { bio: 'Second User' } }
-            ],
-            error: null
+            in: () => ({
+              data: [
+                { user_id: MOCK_USER_1 },
+                { user_id: MOCK_USER_2 }
+              ],
+              error: null
+            })
           })
         };
       }
+
+      if (tableName === 'user_profile') {
+        return {
+          select: () => ({
+            in: () => ({
+              data: [
+                { user_id: MOCK_USER_1, bio: 'Top User' },
+                { user_id: MOCK_USER_2, bio: 'Second User' }
+              ],
+              error: null
+            })
+          })
+        };
+      }
+
+      return { select: () => ({ data: [], error: null }) };
     }
   };
 
@@ -159,4 +236,3 @@ test('findBadgeCountLeaderboard - should handle ensureUserId with no data', asyn
   // Should have exactly 2 entries (ensureUserId not included since they have no data)
   assert.strictEqual(result.length, 2, 'Should not include ensureUserId if they have no data');
 });
-
