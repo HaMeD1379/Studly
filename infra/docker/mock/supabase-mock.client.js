@@ -5,19 +5,21 @@
  *  Project: Studly
  *  Author: Hamed Esmaezadeh
  *  Comments: Generated partially with GPT-5 and commented by GPT
- *  Last-Updated: 2025-11-04
+ *  Last-Updated: 2025-11-20
  * ────────────────────────────────────────────────────────────────────────────────
  *  Summary
  *  -------
  *  In-memory, minimal Supabase-compatible client used for "mock DB mode".
- *  Provides auth methods and CRUD-like table access for sessions, badge,
- *  user_badge, and user_profile tables to support local, self-contained runs.
+ *  Provides auth methods and CRUD-like table access matching the schema defined
+ *  in infra/docker/db/init/01_schema.sql: user_profile, sessions, badge,
+ *  user_badge, and friends tables to support local, self-contained runs.
  *
  *  Notes
  *  -----
  *  • Auth changes to enable mock DB mode (signup/login/reset/update) were also
  *    generated as part of this module.
  *  • Kept under infra/docker to avoid polluting apps/backend.
+ *  • Schema synchronized with infra/docker/db/init/01_schema.sql
  *
  *  @module infra/docker/mock/supabase-mock.client
  * ────────────────────────────────────────────────────────────────────────────────
@@ -30,15 +32,18 @@
 import crypto from 'node:crypto';
 
 // In-memory stores (simple JS arrays/objects). No persistence between process runs.
-// This mirrors the tables used by the backend services and repositories.
+// This mirrors the tables from infra/docker/db/init/01_schema.sql
 const tables = {
-  // sessions table used by sessions.service
-  sessions: [],
-  // badge and user_badge used by badges repository/service
-  badge: [],
-  user_badge: [],
-  // user_profile used by profile.controller upsert
+  // user_profile: basic profile info keyed by Supabase auth user id
   user_profile: [],
+  // sessions: study sessions for a given user
+  sessions: [],
+  // badge: catalog of badges that can be earned
+  badge: [],
+  // user_badge: join table between users and badges they have earned
+  user_badge: [],
+  // friends: friend relationships between users
+  friends: [],
 };
 
 // Utility
@@ -183,20 +188,20 @@ class QueryBuilder {
 
   _execute() {
     // Special-case information_schema.columns to satisfy column discovery in sessions.service.
-    // We return a fixed set of columns for the public.sessions table.
+    // We return the columns for public.sessions as defined in infra/docker/db/init/01_schema.sql
     if (this.tableName === 'information_schema.columns') {
       const defaultCols = [
         'id',
         'user_id',
-        'subject',
-        'session_type',
         'start_time',
         'end_time',
         'date',
-        'session_goal',
-        'total_time',
+        'subject',
+        'session_type',
         'inserted_at',
         'updated_at',
+        'session_goal',
+        'total_time',
       ];
       let rows = defaultCols.map((c) => ({
         column_name: c,
@@ -212,20 +217,37 @@ class QueryBuilder {
     if (!store) return { data: [], error: null };
 
     const doInsert = (row) => {
-      // Normalize defaults for known tables (ids and timestamps) to match expectations.
+      // Normalize defaults for known tables (ids and timestamps) to match schema.
+      // Schema: infra/docker/db/init/01_schema.sql
       const r = { ...row };
+
+      // sessions table defaults
       if (this.tableName === 'sessions') {
         r.id = r.id || genId();
+        r.date = r.date || new Date().toISOString().split('T')[0]; // YYYY-MM-DD
         r.inserted_at = r.inserted_at || nowIso();
         r.updated_at = r.updated_at || nowIso();
       }
+
+      // badge table defaults
       if (this.tableName === 'badge') {
         r.badge_id = r.badge_id || genId();
         r.created_at = r.created_at || nowIso();
       }
+
+      // user_badge table defaults
       if (this.tableName === 'user_badge') {
         r.earned_at = r.earned_at || nowIso();
       }
+
+      // friends table defaults
+      if (this.tableName === 'friends') {
+        r.id = r.id || genId();
+        r.updated_at = r.updated_at || nowIso();
+      }
+
+      // user_profile has no defaults beyond what's provided
+
       store.push(r);
       return r;
     };

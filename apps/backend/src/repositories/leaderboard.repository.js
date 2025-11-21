@@ -103,9 +103,10 @@ export const createLeaderboardRepository = (client = supabase) => {
    */
   const findStudyTimeLeaderboard = async ({ userIds: filterUserIds = null, limit = 7, ensureUserId = null }) => {
     try {
+      // First, fetch sessions data
       let studyTimeQuery = client
         .from('sessions')
-        .select('user_id, total_time, user_profile!inner(bio)')
+        .select('user_id, total_time')
         .not('end_time', 'is', null); // Only completed sessions
 
       // Apply user filter if provided
@@ -125,7 +126,7 @@ export const createLeaderboardRepository = (client = supabase) => {
 
       // Aggregate total_time per user in JavaScript
       const totalMinutesByUserId = {};
-      const bioByUserId = {};
+      const uniqueUserIds = new Set();
 
       for (const sessionRow of sessionRows) {
         const sessionUserId = sessionRow.user_id;
@@ -133,10 +134,26 @@ export const createLeaderboardRepository = (client = supabase) => {
 
         if (!totalMinutesByUserId[sessionUserId]) {
           totalMinutesByUserId[sessionUserId] = 0;
-          bioByUserId[sessionUserId] = sessionRow.user_profile?.bio || null;
         }
 
         totalMinutesByUserId[sessionUserId] += sessionTotalTime;
+        uniqueUserIds.add(sessionUserId);
+      }
+
+      // Fetch user profiles separately
+      const { data: profileRows, error: profileError } = await client
+        .from('user_profile')
+        .select('user_id, bio')
+        .in('user_id', Array.from(uniqueUserIds));
+
+      if (profileError) {
+        throw new Error(`Failed to fetch user profiles: ${profileError.message}`);
+      }
+
+      // Map bio by user ID
+      const bioByUserId = {};
+      for (const profileRow of (profileRows || [])) {
+        bioByUserId[profileRow.user_id] = profileRow.bio || null;
       }
 
       // Convert to array and sort descending by total minutes
@@ -182,9 +199,10 @@ export const createLeaderboardRepository = (client = supabase) => {
    */
   const findBadgeCountLeaderboard = async ({ userIds: filterUserIds = null, limit = 7, ensureUserId = null }) => {
     try {
+      // First, fetch badge data
       let badgeCountQuery = client
         .from('user_badge')
-        .select('user_id, user_profile!inner(bio)');
+        .select('user_id');
 
       // Apply user filter if provided
       if (filterUserIds && Array.isArray(filterUserIds) && filterUserIds.length > 0) {
@@ -203,17 +221,33 @@ export const createLeaderboardRepository = (client = supabase) => {
 
       // Count badges per user in JavaScript
       const badgeCountByUserId = {};
-      const bioByUserId = {};
+      const uniqueUserIds = new Set();
 
       for (const badgeRow of badgeRows) {
         const badgeUserId = badgeRow.user_id;
 
         if (!badgeCountByUserId[badgeUserId]) {
           badgeCountByUserId[badgeUserId] = 0;
-          bioByUserId[badgeUserId] = badgeRow.user_profile?.bio || null;
         }
 
         badgeCountByUserId[badgeUserId] += 1;
+        uniqueUserIds.add(badgeUserId);
+      }
+
+      // Fetch user profiles separately
+      const { data: profileRows, error: profileError } = await client
+        .from('user_profile')
+        .select('user_id, bio')
+        .in('user_id', Array.from(uniqueUserIds));
+
+      if (profileError) {
+        throw new Error(`Failed to fetch user profiles: ${profileError.message}`);
+      }
+
+      // Map bio by user ID
+      const bioByUserId = {};
+      for (const profileRow of (profileRows || [])) {
+        bioByUserId[profileRow.user_id] = profileRow.bio || null;
       }
 
       // Convert to array and sort descending by badge count
