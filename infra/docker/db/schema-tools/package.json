@@ -1,0 +1,17 @@
+{
+  "name": "studly-schema-tools",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "description": "Schema synchronization tools for Studly database",
+  "scripts": {
+    "sync": "node sync-schema.js",
+    "sync:dry-run": "node sync-schema.js --dry-run",
+    "sync:verbose": "node sync-schema.js --verbose",
+    "sync:check": "node sync-schema.js --dry-run --verbose"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.75.0"
+  }
+}
+
