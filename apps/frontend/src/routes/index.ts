@@ -1,5 +1,6 @@
 export * from './badges';
 export * from './ForgotPassword';
+export * from './friends';
 export * from './Home';
 export * from './login';
 export * from './logout';

@@ -7,7 +7,7 @@ import { PROFILE_BIO_DEFAULT, SETTINGS } from '~/constants';
 import { userInfo } from '~/store';
 
 export const UserCard = () => {
-  const { name, email, setBio } = userInfo.getState();
+  const { name, email, setBio, avatarState } = userInfo.getState();
   const userName = name || 'Alex Student';
   const userEmail = email || 'alex@example.com';
   const navigate = useNavigate();
@@ -28,6 +28,7 @@ export const UserCard = () => {
             backgroundColor='#959595'
             name={userName}
             size={80}
+            status={avatarState}
             textColor='#fff'
           />
           <Stack>

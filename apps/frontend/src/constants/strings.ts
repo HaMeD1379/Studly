@@ -4,6 +4,17 @@ export const PROFILE_BIO_DEFAULT = 'Edit Profile to update your bio';
 export const ACCOUNT_ACTIONS = 'Account Actions';
 export const ACCOUNT_ACTIONS_SAVE = 'Save Changes';
 
+//avatar states
+export const AVATAR_ONLINE = 'online';
+export const AVATAR_OFFLINE = 'offline';
+export const AVATAR_STUDYING = 'studying';
+export const AVATAR_STATES = [
+  AVATAR_ONLINE,
+  AVATAR_OFFLINE,
+  AVATAR_STUDYING,
+] as const;
+export type AvatarState = (typeof AVATAR_STATES)[number];
+
 // change password
 export const CHANGE_PASSWORD_HEADER = 'Change Password';
 export const CHANGE_PASSWORD_TEXT = 'Update your password';
@@ -112,3 +123,14 @@ export const TODAYS_STUDY_SESSIONS = 'Sessions';
 
 // update password
 export const UPDATE_PASSWORD_BUTTON_TEXT = 'Update Password';
+
+//Friends page
+export const FRIENDS_HEADER = 'FRIENDS';
+export const FRIENDS_HEADER_DESCRIPTION =
+  'Connect with fellow students and study together';
+export const FRIENDS_TAB_FRIENDS = 'Friends';
+export const FRIENDS_TAB_REQUESTS = 'Requests';
+export const FRIENDS_TAB_SUGGESTIONS = 'Suggestions';
+export const FRIENDS_CARD_ONLINE = 'Online';
+export const FRIENDS_CARD_STUDYING = 'Studying';
+export const FRIENDS_SEARCHBAR_PLACEHOLDER = 'Search friends...';

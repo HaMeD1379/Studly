@@ -5,8 +5,15 @@ import {
   IconTrendingUp,
   IconUsers,
 } from '@tabler/icons-react';
+import { useEffect, useState } from 'react';
+import { profileInfo } from '~/store/profileInfo';
 
 export const ProfileCard = () => {
+  const { allTimeHoursStudied } = profileInfo();
+  const [totalHours, setTotalHours] = useState('');
+  useEffect(() => {
+    setTotalHours(allTimeHoursStudied);
+  });
   const stats = [
     {
       icon: <IconTrendingUp color='green' size={28} />,
@@ -16,7 +23,7 @@ export const ProfileCard = () => {
     {
       icon: <IconClock color='blue' size={28} />,
       label: 'Total Study',
-      value: '257h',
+      value: totalHours,
     },
     {
       icon: <IconAward color='orange' size={28} />,

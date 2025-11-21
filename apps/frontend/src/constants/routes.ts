@@ -8,3 +8,4 @@ export const FORGOT_PASSWORD = '/forgot-password';
 export const SIGNUP = '/signup';
 export const LOGOUT = '/logout';
 export const CHANGE_PASSWORD = '/change-password';
+export const FRIENDS = '/friends';

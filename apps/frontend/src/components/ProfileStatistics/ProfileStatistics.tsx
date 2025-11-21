@@ -10,18 +10,30 @@ import {
   Text,
   Title,
 } from '@mantine/core';
+import { useEffect, useMemo } from 'react';
 import { useLoaderData } from 'react-router-dom';
-
+import { profileInfo } from '~/store/profileInfo';
+import { hoursAndMinutes } from '~/utilities/date';
+import { calculateHistoryStatistics } from '~/utilities/profileStatistics/calculateHistoryStatistics';
 export const ProfileStatistics = () => {
   const tabs = ['Overview', 'Detailed Stats', 'Achievements'];
-  const subjects = [
-    { hours: 120, label: 'Biology' },
-    { hours: 95, label: 'Chemistry' },
-    { hours: 80, label: 'Mathematics' },
-    { hours: 65, label: 'Physics' },
-  ];
+  const { setAllTimeHoursStudied } = profileInfo();
   const loaderdata = useLoaderData();
   const summary = loaderdata.data.sessionSummary;
+  const allTimeStats = useMemo(
+    () => calculateHistoryStatistics(loaderdata.data.sessions),
+    [loaderdata.data.sessions],
+  );
+  useEffect(() => {
+    if (!loaderdata?.data?.sessions) return;
+
+    const [, totalHours] = allTimeStats;
+    setAllTimeHoursStudied(totalHours);
+  }, [loaderdata, setAllTimeHoursStudied, allTimeStats]);
+
+  const mapped = Object.fromEntries(
+    Object.entries(allTimeStats[0]).map(([key, value]) => [key, value]),
+  );
   return (
     <Box w='100%'>
       {/* Tab Control */}
@@ -48,7 +60,9 @@ export const ProfileStatistics = () => {
           <Stack mt='md'>
             <Text
               data-testid={'totalMinStudied'}
-            >{`Study Time: ${summary.totalMinutesStudied}`}</Text>
+            >{`Study Time: ${hoursAndMinutes(
+              summary.totalMinutesStudied,
+            )}`}</Text>
             <Text
               data-testid={'SessionCompleted'}
             >{`Sessions Completed: ${summary.sessionsLogged}`}</Text>
@@ -104,13 +118,13 @@ export const ProfileStatistics = () => {
           Time spent on different subjects
         </Text>
         <Stack mt='md'>
-          {subjects.map((s) => (
-            <div key={s.label}>
+          {Object.entries(mapped).map(([key, value]) => (
+            <div key={key}>
               <Flex justify='space-between'>
-                <Text fw={500}>{s.label}</Text>
-                <Text c='dimmed'>{s.hours}h</Text>
+                <Text fw={500}>{key}</Text>
+                <Text c='dimmed'>{hoursAndMinutes(value)}</Text>
               </Flex>
-              <Progress size='md' value={(s.hours / 120) * 100} />
+              <Progress size='md' value={(value / 120) * 100} />
             </div>
           ))}
         </Stack>

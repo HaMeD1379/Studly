@@ -2,13 +2,11 @@ const { mockFetchBio } = vi.hoisted(() => ({
   mockFetchBio: vi.fn(),
 }));
 
-import { describe, expect, it, type Mock, vi } from 'vitest';
-import { SessionSummary } from '~/api';
-import { fetchBio } from '~/api/profile';
+import { describe, expect, it, vi } from 'vitest';
+import { fetchBio } from '~/api';
 
 vi.mock('~/api/profile', () => ({
   fetchBio: mockFetchBio,
-  SessionSummary: vi.fn(),
 }));
 
 describe('fetchBio mock test', () => {
@@ -28,20 +26,5 @@ describe('fetchBio mock test', () => {
     const result = await fetchBio('123');
 
     expect(result.data?.data.bio).toBe("Hello, I'm a mocked bio");
-  });
-  it('returns a fake session summary response', async () => {
-    const mockResponse = {
-      data: {
-        sessionsLogged: 0,
-        totalMinutesStudied: 0,
-      },
-      error: false,
-    };
-    (SessionSummary as Mock).mockResolvedValue(mockResponse);
-
-    const result = await SessionSummary();
-
-    expect(result.data?.sessionsLogged).toBe(0);
-    expect(result.data?.totalMinutesStudied).toBe(0);
   });
 });

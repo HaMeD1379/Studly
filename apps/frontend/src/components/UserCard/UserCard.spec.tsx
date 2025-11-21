@@ -23,6 +23,7 @@ vi.mock('~/store', () => {
   return {
     userInfo: {
       getState: () => ({
+        avatarState: 'online',
         bio: '',
         email: 'testUser@gmail.com',
         name: 'Test User',
@@ -63,12 +64,16 @@ describe('User Card tests', () => {
     const bioField = await screen.findByTestId('bio-text');
     const editBtn = await screen.findByTestId('edit-btn');
     const shareBtn = await screen.findByTestId('share-btn');
+    const avatarComponent = await screen.findByTestId('avatar');
+    const statusDot = screen.getByTestId('status-dot');
 
     expect(nameField).toHaveTextContent('Test User');
     expect(emailField).toHaveTextContent('testUser@gmail.com');
     expect(bioField).toHaveTextContent('This is my Bio');
     expect(editBtn).toHaveTextContent('Edit');
     expect(shareBtn).toHaveTextContent('Share');
+    expect(avatarComponent).toBeInTheDocument();
+    expect(statusDot).toBeInTheDocument();
   });
   it('naviagtes to settings when edit button is clicked', () => {
     render(<UserCard />);

@@ -7,6 +7,7 @@ import {
   IconMedal2,
   IconSettings,
   IconUser,
+  IconUsers,
 } from '@tabler/icons-react';
 import { useState } from 'react';
 import {
@@ -18,6 +19,8 @@ import {
 } from 'react-router-dom';
 import {
   BADGES,
+  FRIENDS,
+  FRIENDS_TAB_FRIENDS,
   HOME,
   LOGIN,
   LOGOUT,
@@ -102,6 +105,16 @@ export const Navbar = () => {
               <Flex align='center' gap={4}>
                 <IconMedal2 size={20} />
                 {NAVBAR_BADGES}
+              </Flex>
+            </StyledButton>
+            <StyledButton
+              currentlySelectedPath={currentlySelectedPath}
+              onClick={() => setCurrentlySelectedPath(FRIENDS)}
+              path={FRIENDS}
+            >
+              <Flex align='center' gap={4}>
+                <IconUsers size={20} />
+                {FRIENDS_TAB_FRIENDS}
               </Flex>
             </StyledButton>
             <StyledButton

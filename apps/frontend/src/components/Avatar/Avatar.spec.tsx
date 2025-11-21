@@ -12,4 +12,21 @@ describe('Avatar component Test', () => {
     const initials = screen.getByText('JD');
     expect(initials).toBeInTheDocument();
   });
+  it('renders the online status dot', () => {
+    render(<Avatar name='John Doe' status='online' />);
+    const statusDot = screen.getByTestId('status-dot');
+    expect(statusDot).toHaveStyle('background-color: #40c057');
+  });
+
+  it('renders the studying status dot', () => {
+    render(<Avatar name='Jane Doe' status='studying' />);
+    const statusDot = screen.getByTestId('status-dot');
+    expect(statusDot).toHaveStyle('background-color: #228be6');
+  });
+
+  it('renders the offline status dot by default', () => {
+    render(<Avatar name='Alice' />);
+    const statusDot = screen.getByTestId('status-dot');
+    expect(statusDot).toHaveStyle('background-color: #adb5bd');
+  });
 });

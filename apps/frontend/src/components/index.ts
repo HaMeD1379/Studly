@@ -4,6 +4,8 @@ export * from './BadgeCollection/BadgeCollection';
 export * from './BadgeStatistics/BadgeStatistics';
 export * from './ErrorBoundary/ErrorBoundary';
 export * from './ForgotPassword/ForgotPassword';
+export * from './FriendsHeader/FriendsHeader';
+export * from './FriendsStatus/FriendsStatus';
 export * from './Login/Login';
 export * from './Navbar/Navbar';
 export * from './PageSpinner/PageSpinner';
