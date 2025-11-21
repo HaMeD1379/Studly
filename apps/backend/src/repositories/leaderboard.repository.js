@@ -56,6 +56,14 @@ import supabase from '../config/supabase.client.js';
  * @returns {object} repository - Contains data access functions for leaderboards.
  */
 export const createLeaderboardRepository = (client = supabase) => {
+  // Helper to support both real Supabase (promise-based) and test mocks
+  // that return plain { data, error } objects from the final query call.
+  const resolveQueryResult = async (maybePromise) => {
+    if (maybePromise && typeof maybePromise.then === 'function') {
+      return maybePromise;
+    }
+    return maybePromise;
+  };
 
   /**
    * Find all accepted friends for a given user.
@@ -82,7 +90,7 @@ export const createLeaderboardRepository = (client = supabase) => {
     }
 
     // Extract friend IDs (the other user in each relationship)
-    const friendIds = data.map(row =>
+    const friendIds = data.map((row) =>
       row.from_user === userId ? row.to_user : row.from_user
     );
 
@@ -106,7 +114,7 @@ export const createLeaderboardRepository = (client = supabase) => {
       // First, fetch sessions data
       let studyTimeQuery = client
         .from('sessions')
-        .select('user_id, total_time')
+        .select('user_id, total_time, user_profile: user_profile(bio)')
         .not('end_time', 'is', null); // Only completed sessions
 
       // Apply user filter if provided
@@ -114,7 +122,7 @@ export const createLeaderboardRepository = (client = supabase) => {
         studyTimeQuery = studyTimeQuery.in('user_id', filterUserIds);
       }
 
-      const { data: sessionRows, error } = await studyTimeQuery;
+      const { data: sessionRows, error } = await resolveQueryResult(studyTimeQuery);
 
       if (error) {
         throw new Error(`Failed to fetch study time data: ${error.message}`);
@@ -126,7 +134,7 @@ export const createLeaderboardRepository = (client = supabase) => {
 
       // Aggregate total_time per user in JavaScript
       const totalMinutesByUserId = {};
-      const uniqueUserIds = new Set();
+      const bioByUserId = {};
 
       for (const sessionRow of sessionRows) {
         const sessionUserId = sessionRow.user_id;
@@ -137,23 +145,10 @@ export const createLeaderboardRepository = (client = supabase) => {
         }
 
         totalMinutesByUserId[sessionUserId] += sessionTotalTime;
-        uniqueUserIds.add(sessionUserId);
-      }
 
-      // Fetch user profiles separately
-      const { data: profileRows, error: profileError } = await client
-        .from('user_profile')
-        .select('user_id, bio')
-        .in('user_id', Array.from(uniqueUserIds));
-
-      if (profileError) {
-        throw new Error(`Failed to fetch user profiles: ${profileError.message}`);
-      }
-
-      // Map bio by user ID
-      const bioByUserId = {};
-      for (const profileRow of (profileRows || [])) {
-        bioByUserId[profileRow.user_id] = profileRow.bio || null;
+        if (sessionRow.user_profile && typeof sessionRow.user_profile.bio !== 'undefined') {
+          bioByUserId[sessionUserId] = sessionRow.user_profile.bio || null;
+        }
       }
 
       // Convert to array and sort descending by total minutes
@@ -161,18 +156,20 @@ export const createLeaderboardRepository = (client = supabase) => {
         .map(([userId, totalMinutes]) => ({
           user_id: userId,
           total_minutes: totalMinutes,
-          bio: bioByUserId[userId]
+          bio: Object.prototype.hasOwnProperty.call(bioByUserId, userId)
+            ? bioByUserId[userId]
+            : null,
         }))
         .sort((firstUser, secondUser) => secondUser.total_minutes - firstUser.total_minutes);
 
       // Ensure the specified user is included if they have data, even if outside top N
       if (ensureUserId && totalMinutesByUserId[ensureUserId]) {
         const topEntries = sortedEntries.slice(0, limit);
-        const userInTop = topEntries.some(entry => entry.user_id === ensureUserId);
+        const userInTop = topEntries.some((entry) => entry.user_id === ensureUserId);
 
         if (!userInTop) {
           // User has data but is outside top N - include them
-          const userEntry = sortedEntries.find(entry => entry.user_id === ensureUserId);
+          const userEntry = sortedEntries.find((entry) => entry.user_id === ensureUserId);
           return [...topEntries, userEntry];
         }
 
@@ -202,14 +199,14 @@ export const createLeaderboardRepository = (client = supabase) => {
       // First, fetch badge data
       let badgeCountQuery = client
         .from('user_badge')
-        .select('user_id');
+        .select('user_id, user_profile: user_profile(bio)');
 
       // Apply user filter if provided
       if (filterUserIds && Array.isArray(filterUserIds) && filterUserIds.length > 0) {
         badgeCountQuery = badgeCountQuery.in('user_id', filterUserIds);
       }
 
-      const { data: badgeRows, error } = await badgeCountQuery;
+      const { data: badgeRows, error } = await resolveQueryResult(badgeCountQuery);
 
       if (error) {
         throw new Error(`Failed to fetch badge data: ${error.message}`);
@@ -221,7 +218,7 @@ export const createLeaderboardRepository = (client = supabase) => {
 
       // Count badges per user in JavaScript
       const badgeCountByUserId = {};
-      const uniqueUserIds = new Set();
+      const bioByUserId = {};
 
       for (const badgeRow of badgeRows) {
         const badgeUserId = badgeRow.user_id;
@@ -231,23 +228,10 @@ export const createLeaderboardRepository = (client = supabase) => {
         }
 
         badgeCountByUserId[badgeUserId] += 1;
-        uniqueUserIds.add(badgeUserId);
-      }
 
-      // Fetch user profiles separately
-      const { data: profileRows, error: profileError } = await client
-        .from('user_profile')
-        .select('user_id, bio')
-        .in('user_id', Array.from(uniqueUserIds));
-
-      if (profileError) {
-        throw new Error(`Failed to fetch user profiles: ${profileError.message}`);
-      }
-
-      // Map bio by user ID
-      const bioByUserId = {};
-      for (const profileRow of (profileRows || [])) {
-        bioByUserId[profileRow.user_id] = profileRow.bio || null;
+        if (badgeRow.user_profile && typeof badgeRow.user_profile.bio !== 'undefined') {
+          bioByUserId[badgeUserId] = badgeRow.user_profile.bio || null;
+        }
       }
 
       // Convert to array and sort descending by badge count
@@ -255,18 +239,20 @@ export const createLeaderboardRepository = (client = supabase) => {
         .map(([userId, badgeCount]) => ({
           user_id: userId,
           badge_count: badgeCount,
-          bio: bioByUserId[userId]
+          bio: Object.prototype.hasOwnProperty.call(bioByUserId, userId)
+            ? bioByUserId[userId]
+            : null,
         }))
         .sort((firstUser, secondUser) => secondUser.badge_count - firstUser.badge_count);
 
       // Ensure the specified user is included if they have data, even if outside top N
       if (ensureUserId && badgeCountByUserId[ensureUserId]) {
         const topEntries = sortedEntries.slice(0, limit);
-        const userInTop = topEntries.some(entry => entry.user_id === ensureUserId);
+        const userInTop = topEntries.some((entry) => entry.user_id === ensureUserId);
 
         if (!userInTop) {
           // User has data but is outside top N - include them
-          const userEntry = sortedEntries.find(entry => entry.user_id === ensureUserId);
+          const userEntry = sortedEntries.find((entry) => entry.user_id === ensureUserId);
           return [...topEntries, userEntry];
         }
 
@@ -283,10 +269,9 @@ export const createLeaderboardRepository = (client = supabase) => {
   return {
     findAcceptedFriendsForUser,
     findStudyTimeLeaderboard,
-    findBadgeCountLeaderboard
+    findBadgeCountLeaderboard,
   };
 };
 
 // Default export: production instance using configured Supabase client
 export default createLeaderboardRepository(supabase);
-
