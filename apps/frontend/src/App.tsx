@@ -67,7 +67,7 @@ const router = createBrowserRouter([
       },
       { element: <Home />, path: HOME },
       { action: profileChangeAction, element: <Settings />, path: SETTINGS },
-      { element: <Leaderboard />, loader: leaderboardLoader, path: LEADERBOARD },
+      { element: <Leaderboard />, loader: leaderboardLoader, path: LEADERBOARD, errorElement: <ErrorBoundary /> },
     ],
     element: <Navbar />,
   },

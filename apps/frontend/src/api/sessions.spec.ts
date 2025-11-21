@@ -19,7 +19,7 @@ vi.mock('~/store/userInfo', () => ({
 import { describe, expect, it, vi } from 'vitest';
 import { MS_IN_A_DAY, SESSIONS } from '~/constants';
 import {
-  endSessionBodyMock,
+  mockEndSessionBody,
   mockFetchSessionListPath,
   mockFetchSessionSummaryPath,
   mockSessionId,
@@ -79,7 +79,7 @@ describe('sessions', () => {
       RequestMethods.PATCH,
       mockStopSessionPath,
       undefined,
-      endSessionBodyMock,
+      mockEndSessionBody,
     );
   });
 });

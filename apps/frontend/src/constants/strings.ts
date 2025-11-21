@@ -127,3 +127,6 @@ export const LEADERBOARD_PAGE_BADGES_HEADER = 'Badge Leaders'
 export const LEADERBOARD_PAGE_BADGES_SUBHEADER = 'Weekly badges rankings';
 export const LEADERBOARD_PAGE_FRIENDS_BUTTON_TEXT = 'Friends Only';
 export const LEADERBOARD_NO_DATA = 'There is no data for this leaderboard';
+export const LEADERBOARD_SINGLE_BADGES_TEXT = 'badge';
+export const LEADERBOARD_MULTIPLE_BADGES_TEXT = 'badges';
+export const LEADERBOARD_NO_NAME = 'Unknown';

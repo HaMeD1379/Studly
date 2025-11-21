@@ -1,5 +1,5 @@
 type LeaderboardEntry = {
-  displayName: string,
+  displayName: string | null,
   rank: number,
   isSelf: boolean,
 };
@@ -17,9 +17,9 @@ type LeaderboardPage = {
   badges: BadgeLeaderboardEntry[];
 };
 
-export type LeaderboardLoader = {
-  friends: LeaderboardPage[];
-  global: LeaderboardPage[];
+export type LeaderboardResponse = {
+  friends: LeaderboardPage;
+  global: LeaderboardPage;
 };
 
 export enum LeaderboardPageType {
