@@ -60,7 +60,7 @@ export const LeaderboardPage = ({ rows, type }: LeaderboardPageProps) => {
     <Flex direction='column'>
       <Text fw={600}>{header}</Text>
       <Text size='sm'>{subheader}</Text>
-      <Flex direction='column' gap={12} pt={16}>
+      <Flex direction='column' gap={10} pt={14}>
         {(rows &&
           rows.length > 0 &&
           rows.map((row) => (
@@ -71,7 +71,7 @@ export const LeaderboardPage = ({ rows, type }: LeaderboardPageProps) => {
               bg={isSelf(row) ? '#EDEDED' : 'white'}
               justify='space-between'
               key={`leaderboard-row-${row.rank}`}
-              p={16}
+              p={14}
             >
               <Flex align='center' gap={16}>
                 {row.rank === 1 ? (
