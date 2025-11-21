@@ -92,5 +92,11 @@ sandbox/
 /package.json
 /package-lock.json
 /my_screenshots/
-/my_screenshots/
 /apps/backend/profiles/
+/apps/backend/test-supabase-connection.js
+/apps/backend/test-supabase-data.js
+/apps/backend/test-supabase-comprehensive.js
+/apps/backend/test-actual-tables.js
+/apps/backend/SUPABASE_TEST_RESULTS.md
+/apps/backend/mylocaltests/
+/infra/docker/db/schema-tools/
