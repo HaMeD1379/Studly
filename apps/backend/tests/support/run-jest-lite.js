@@ -40,6 +40,13 @@ const projectRoot = resolve(dirname(__filename), '..', '..');
 const testsRoot = join(projectRoot, 'tests');
 
 const args = process.argv.slice(2);
+
+// Ensure the mock Supabase client is always used during test runs, even if real
+// credentials are present in the environment. This prevents integration tests
+// from accidentally hitting live infrastructure or throwing 500s when the
+// database isn't reachable.
+process.env.STUDLY_USE_MOCK = process.env.STUDLY_USE_MOCK ?? '1';
+
 const wantsCoverage = args.includes('--coverage');
 const profilingEnabled = process.env.ENABLE_PROFILING === '1' || process.env.STUDLY_PROFILE === '1';
 const nodeArgs = [];

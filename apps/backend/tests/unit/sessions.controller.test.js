@@ -364,11 +364,15 @@ describe('sessions.controller', () => {
       assert.equal(service.summarizeSessionsByDate.mock.calls.length, 0);
     });
 
-    it('forwards parameters to the service', async () => {
+    it('forwards parameters to the service and returns enriched summary', async () => {
       const service = createMockService();
       service.summarizeSessionsByDate = mock.fn(async () => ({
         totalMinutesStudied: 120,
-        sessionsLogged: 2,
+        sessionsLogged: 3,
+        subjectSummaries: [
+          { subject: 'Math', totalMinutesStudied: 90, sessionsLogged: 2 },
+          { subject: 'History', totalMinutesStudied: 30, sessionsLogged: 1 },
+        ],
       }));
 
       const { getSessionsSummary } = createSessionsController(service);
@@ -395,7 +399,46 @@ describe('sessions.controller', () => {
         from: '2024-01-01T00:00:00.000Z',
         to: '2024-01-07T00:00:00.000Z',
       });
-      assert.deepEqual(res.body, { totalMinutesStudied: 120, sessionsLogged: 2 });
+      assert.deepEqual(res.body, {
+        totalMinutesStudied: 120,
+        sessionsLogged: 3,
+        subjectSummaries: [
+          { subject: 'Math', totalMinutesStudied: 90, sessionsLogged: 2 },
+          { subject: 'History', totalMinutesStudied: 30, sessionsLogged: 1 },
+        ],
+        averageMinutesPerSession: 40,
+      });
+    });
+
+    it('computes averageMinutesPerSession as null when there are no sessions', async () => {
+      const service = createMockService();
+      service.summarizeSessionsByDate = mock.fn(async () => ({
+        totalMinutesStudied: 0,
+        sessionsLogged: 0,
+        subjectSummaries: [],
+      }));
+
+      const { getSessionsSummary } = createSessionsController(service);
+      const res = createMockResponse();
+      const next = mock.fn();
+
+      await getSessionsSummary(
+        {
+          query: {
+            userId: 'user-1',
+          },
+        },
+        res,
+        next,
+      );
+
+      assert.equal(res.statusCode, 200);
+      assert.deepEqual(res.body, {
+        totalMinutesStudied: 0,
+        sessionsLogged: 0,
+        subjectSummaries: [],
+        averageMinutesPerSession: null,
+      });
     });
 
     it('forwards errors to next', async () => {

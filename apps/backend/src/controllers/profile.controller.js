@@ -55,22 +55,23 @@ export const updateProfile = async (req, res) => {
 
   try {
     const useMock = process.env.STUDLY_USE_MOCK === "1";
+    const isTest = process.env.NODE_ENV === "test";
     const hasSupabaseEnv = Boolean(
       process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY
     );
 
     // Update full_name in auth.users metadata if provided and access token exists
+    // In test mode, we still need to run this code to test error handling with mocked client
     if (
       fullName !== undefined &&
       accessToken &&
       refreshToken &&
-      !useMock &&
-      hasSupabaseEnv
+      (isTest || (!useMock && hasSupabaseEnv))
     ) {
       // Create a temporary client with the user's session
       const userSupabase = createSupabaseClient(
-        process.env.SUPABASE_URL,
-        process.env.SUPABASE_ANON_KEY
+        process.env.SUPABASE_URL || "http://mock-url",
+        process.env.SUPABASE_ANON_KEY || "mock-key"
       );
 
       // Set the session using both access_token and refresh_token

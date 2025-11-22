@@ -6,7 +6,7 @@
  *  Author: Hamed Esmaeilzadeh (team member)
  *  Assisted-by: ChatGPT (GPT-5 Thinking) for comments, documentation, debugging,
  *               and partial code contributions
- *  Last-Updated: 2025-10-16
+ *  Last-Updated: 2025-11-19
  * ────────────────────────────────────────────────────────────────────────────────
  *  Summary
  *  -------
@@ -26,12 +26,6 @@
  *  • Encapsulates direct DB access, promoting Separation of Concerns.
  *  • Uses dependency injection for testability (custom mock Supabase client).
  *  • Throws meaningful errors for controller-level handling.
- *
- *  TODOs
- *  -----
- *  • [VALIDATION] Ensure data types and required fields validated pre-insert/update.
- *  • [LOGGING] Add structured logging for DB operations.
- *  • [TRANSACTIONS] Consider wrapping multi-step operations in transactions.
  *
  *  @module services/sessions
  *  @see ../controllers/sessions.controller.js
@@ -507,14 +501,35 @@ export const createSessionsService = (client = supabase, options = {}) => {
     const mapped = rows.map(mapDbSessionToApi);
     const dateFiltered = filterSessionsByDateRange(mapped, { from, to });
 
-    const totalMinutes = dateFiltered.reduce(
+    const totalMinutesStudied = dateFiltered.reduce(
       (acc, session) => acc + (session.totalMinutes ?? 0),
       0,
     );
 
+    const sessionsLogged = dateFiltered.length;
+
+    const subjectAccumulator = new Map();
+    for (const session of dateFiltered) {
+      if (!session.subject) continue; // omit missing/empty subject from per-subject breakdown
+
+      const current = subjectAccumulator.get(session.subject) ?? {
+        subject: session.subject,
+        totalMinutesStudied: 0,
+        sessionsLogged: 0,
+      };
+
+      current.totalMinutesStudied += session.totalMinutes ?? 0;
+      current.sessionsLogged += 1;
+
+      subjectAccumulator.set(session.subject, current);
+    }
+
+    const subjectSummaries = Array.from(subjectAccumulator.values());
+
     return {
-      totalMinutesStudied: totalMinutes,
-      sessionsLogged: dateFiltered.length,
+      totalMinutesStudied,
+      sessionsLogged,
+      subjectSummaries,
     };
   };
 
