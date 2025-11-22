@@ -2,6 +2,7 @@ export * from './badges';
 export * from './ForgotPassword';
 export * from './friends';
 export * from './Home';
+export * from './leaderboard';
 export * from './login';
 export * from './logout';
 export * from './logout';

@@ -1,4 +1,4 @@
-import { AppShell, Button, Divider, Flex, Text } from '@mantine/core';
+import { AppShell, Button, Divider, Flex, Text } from "@mantine/core";
 import {
   IconClock,
   IconHome,
@@ -6,27 +6,30 @@ import {
   IconMedal,
   IconMedal2,
   IconSettings,
+  IconTrophy,
   IconUser,
   IconUsers,
-} from '@tabler/icons-react';
-import { useState } from 'react';
+} from "@tabler/icons-react";
+import { useState } from "react";
 import {
   Form,
   Outlet,
   useLocation,
   useNavigate,
   useNavigation,
-} from 'react-router-dom';
+} from "react-router-dom";
 import {
   BADGES,
   FRIENDS,
   FRIENDS_TAB_FRIENDS,
   HOME,
+  LEADERBOARD,
   LOGIN,
   LOGOUT,
   NAVBAR_BADGES,
   NAVBAR_HEADER,
   NAVBAR_HOME,
+  NAVBAR_LEADERBOARDS,
   NAVBAR_LOGOUT,
   NAVBAR_PROFILE,
   NAVBAR_SETTINGS,
@@ -34,9 +37,9 @@ import {
   PROFILE,
   SETTINGS,
   STUDY,
-} from '~/constants';
-import { userInfo } from '~/store';
-import { PageSpinner } from '../PageSpinner/PageSpinner';
+} from "~/constants";
+import { userInfo } from "~/store";
+import { PageSpinner } from "../PageSpinner/PageSpinner";
 
 type StyledButtonProps = {
   children: React.ReactNode;
@@ -54,7 +57,7 @@ export const Navbar = () => {
 
   const navigation = useNavigation();
   const location = useLocation().pathname;
-  const isLoading = navigation.state === 'loading';
+  const isLoading = navigation.state === "loading";
 
   const [currentlySelectedPath, setCurrentlySelectedPath] =
     useState<string>(location);
@@ -62,27 +65,27 @@ export const Navbar = () => {
   return (
     <AppShell
       navbar={{
-        breakpoint: 'sm',
+        breakpoint: "sm",
         width: 200,
       }}
       padding={24}
     >
-      <AppShell.Navbar p='md'>
-        <Flex direction='column' h='100%'>
-          <Flex align='center' gap={4} pl={16} py={8}>
-            <IconMedal color='#228be6' />
-            <Text fw={900} size='lg'>
+      <AppShell.Navbar p="md">
+        <Flex direction="column" h="100%">
+          <Flex align="center" gap={4} pl={16} py={8}>
+            <IconMedal color="#228be6" />
+            <Text fw={900} size="lg">
               {NAVBAR_HEADER}
             </Text>
           </Flex>
-          <Divider my='sm' />
-          <Flex direction='column' gap={4}>
+          <Divider my="sm" />
+          <Flex direction="column" gap={4}>
             <StyledButton
               currentlySelectedPath={currentlySelectedPath}
               onClick={() => setCurrentlySelectedPath(HOME)}
               path={HOME}
             >
-              <Flex align='center' gap={4}>
+              <Flex align="center" gap={4}>
                 <IconHome size={20} />
                 {NAVBAR_HOME}
               </Flex>
@@ -92,7 +95,7 @@ export const Navbar = () => {
               onClick={() => setCurrentlySelectedPath(STUDY)}
               path={STUDY}
             >
-              <Flex align='center' gap={4}>
+              <Flex align="center" gap={4}>
                 <IconClock size={20} />
                 {NAVBAR_STUDY}
               </Flex>
@@ -102,7 +105,7 @@ export const Navbar = () => {
               onClick={() => setCurrentlySelectedPath(BADGES)}
               path={BADGES}
             >
-              <Flex align='center' gap={4}>
+              <Flex align="center" gap={4}>
                 <IconMedal2 size={20} />
                 {NAVBAR_BADGES}
               </Flex>
@@ -112,9 +115,19 @@ export const Navbar = () => {
               onClick={() => setCurrentlySelectedPath(FRIENDS)}
               path={FRIENDS}
             >
-              <Flex align='center' gap={4}>
+              <Flex align="center" gap={4}>
                 <IconUsers size={20} />
                 {FRIENDS_TAB_FRIENDS}
+              </Flex>
+            </StyledButton>
+            <StyledButton
+              currentlySelectedPath={currentlySelectedPath}
+              onClick={() => setCurrentlySelectedPath(LEADERBOARD)}
+              path={LEADERBOARD}
+            >
+              <Flex align="center" gap={4}>
+                <IconTrophy size={20} />
+                {NAVBAR_LEADERBOARDS}
               </Flex>
             </StyledButton>
             <StyledButton
@@ -122,7 +135,7 @@ export const Navbar = () => {
               onClick={() => setCurrentlySelectedPath(PROFILE)}
               path={PROFILE}
             >
-              <Flex align='center' gap={4}>
+              <Flex align="center" gap={4}>
                 <IconUser size={20} />
                 {NAVBAR_PROFILE}
               </Flex>
@@ -132,23 +145,23 @@ export const Navbar = () => {
               onClick={() => setCurrentlySelectedPath(SETTINGS)}
               path={SETTINGS}
             >
-              <Flex align='center' gap={4}>
+              <Flex align="center" gap={4}>
                 <IconSettings size={20} />
                 {NAVBAR_SETTINGS}
               </Flex>
             </StyledButton>
           </Flex>
 
-          <Flex direction='column' mt='auto'>
-            <Divider my='sm' />
-            <Form action={LOGOUT} method='post'>
+          <Flex direction="column" mt="auto">
+            <Divider my="sm" />
+            <Form action={LOGOUT} method="post">
               <StyledButton
                 currentlySelectedPath={currentlySelectedPath}
                 isSubmit
                 onClick={() => setCurrentlySelectedPath(LOGOUT)}
                 path={LOGOUT}
               >
-                <Flex align='center' gap={4}>
+                <Flex align="center" gap={4}>
                   <IconLogout size={20} />
                   {NAVBAR_LOGOUT}
                 </Flex>
@@ -182,13 +195,13 @@ const StyledButton = ({
 
   return (
     <Button
-      {...(isSubmit ? { type: 'submit' } : {})}
-      color={currentlySelectedPath === path ? 'blue' : 'dark-gray'}
+      {...(isSubmit ? { type: "submit" } : {})}
+      color={currentlySelectedPath === path ? "blue" : "dark-gray"}
       fullWidth
-      justify='left'
+      justify="left"
       onClick={handleClick}
-      radius='md'
-      variant={currentlySelectedPath === path ? 'filled' : 'transparent'}
+      radius="md"
+      variant={currentlySelectedPath === path ? "filled" : "transparent"}
     >
       {children}
     </Button>

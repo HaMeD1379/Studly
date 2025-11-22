@@ -4,6 +4,16 @@ export const formatISOToYYYYMMDD = (timestamp: string) => {
   return split?.length > 0 ? split[0] : timestamp;
 };
 
+export const formatMinutesToHoursAndMinutes = (minutes: number): string => {
+  const actualMinutes = Math.floor(minutes % 60);
+  const actualHours = Math.floor((minutes / 60) % 60);
+
+  const formattedHours = actualHours > 0 ? `${actualHours}h` : '';
+  const formattedMinutes = `${actualMinutes}m`;
+  const space = actualHours > 0 ? ' ' : '';
+
+  return `${formattedHours}${space}${formattedMinutes}`;
+};
 export const getSunday = (date: Date) => {
   const d = new Date(date); // avoid mutating original
   const day = d.getDay(); // Sunday = 0

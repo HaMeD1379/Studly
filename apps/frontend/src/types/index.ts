@@ -1,5 +1,6 @@
 export * from './actions';
 export * from './badges';
+export * from './leaderboard';
 export * from './loaders';
 export * from './profile';
 export * from './requests';

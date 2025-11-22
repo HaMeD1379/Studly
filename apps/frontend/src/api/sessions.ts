@@ -11,7 +11,7 @@ import {
   type SessionListLoader,
   type SessionSummaryLoader,
 } from '~/types';
-import { getSunday } from '~/utilities/date';
+import { getSunday } from '~/utilities/time';
 import { request } from '~/utilities/requests';
 
 export const fetchTodaysSessionSummary = async () => {

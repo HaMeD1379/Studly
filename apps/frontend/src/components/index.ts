@@ -6,6 +6,7 @@ export * from './ErrorBoundary/ErrorBoundary';
 export * from './ForgotPassword/ForgotPassword';
 export * from './FriendsHeader/FriendsHeader';
 export * from './FriendsStatus/FriendsStatus';
+export * from './LeaderboardPage/LeaderboardPage';
 export * from './Login/Login';
 export * from './Navbar/Navbar';
 export * from './PageSpinner/PageSpinner';
