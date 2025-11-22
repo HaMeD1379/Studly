@@ -56,6 +56,7 @@ export const NAVBAR_BADGES = 'Badges';
 export const NAVBAR_PROFILE = 'Profile';
 export const NAVBAR_SETTINGS = 'Settings';
 export const NAVBAR_LOGOUT = 'Logout';
+export const NAVBAR_LEADERBOARDS = 'Leaderboard';
 
 // recent study sessions
 export const RECENT_HEADER = 'Recent Sessions';
@@ -112,3 +113,21 @@ export const TODAYS_STUDY_SESSIONS = 'Sessions';
 
 // update password
 export const UPDATE_PASSWORD_BUTTON_TEXT = 'Update Password';
+
+// study page
+export const STUDY_ROUTE_HEADER = 'Study Session';
+export const STUDY_ROUTE_SUBHEADER = 'Focus and track your study time';
+
+// leaderboards page
+export const LEADERBOARD_ROUTE_HEADER = 'Leaderboard';
+export const LEADERBOARD_ROUTE_SUBHEADER =
+  'See how you rank among your fellow students';
+export const LEADERBOARD_PAGE_STUDY_HEADER = 'Study Time Leaders';
+export const LEADERBOARD_PAGE_STUDY_SUBHEADER = 'Weekly study time rankings';
+export const LEADERBOARD_PAGE_BADGES_HEADER = 'Badge Leaders';
+export const LEADERBOARD_PAGE_BADGES_SUBHEADER = 'Weekly badges rankings';
+export const LEADERBOARD_PAGE_FRIENDS_BUTTON_TEXT = 'Friends Only';
+export const LEADERBOARD_NO_DATA = 'There is no data for this leaderboard';
+export const LEADERBOARD_SINGLE_BADGES_TEXT = 'badge';
+export const LEADERBOARD_MULTIPLE_BADGES_TEXT = 'badges';
+export const LEADERBOARD_NO_NAME = 'Unknown';

@@ -1,6 +1,6 @@
 import { fetchAllUserBadges } from '~/api/badges';
 import type { Badge, UnlockedBadge } from '~/types';
-import { formatISOToYYYYMMDD } from '~/utilities/date';
+import { formatISOToYYYYMMDD } from '~/utilities/time';
 
 type BadgeLoaderResponse = {
   data: {

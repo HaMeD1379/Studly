@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { mockUnlockedBadgeTimestamp } from '~/mocks';
-import { formatISOToYYYYMMDD } from './format';
+import { formatISOToYYYYMMDD, formatMinutesToHoursAndMinutes } from './format';
 
 describe('format', () => {
   it('formats timestamp date properly', () => {
@@ -15,5 +15,11 @@ describe('format', () => {
     expect(formatISOToYYYYMMDD('2024-04-04-04-04-04')).toEqual(
       '2024-04-04-04-04-04',
     );
+  });
+
+  it('format minutes time properly', () => {
+    expect(formatMinutesToHoursAndMinutes(59)).toEqual('59m');
+    expect(formatMinutesToHoursAndMinutes(60)).toEqual('1h 0m');
+    expect(formatMinutesToHoursAndMinutes(61)).toEqual('1h 1m');
   });
 });

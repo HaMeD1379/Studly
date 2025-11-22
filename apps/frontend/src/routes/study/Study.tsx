@@ -10,6 +10,7 @@ import {
   StudyTips,
   TodaysStudyStatistics,
 } from '~/components';
+import { STUDY_ROUTE_HEADER, STUDY_ROUTE_SUBHEADER } from '~/constants';
 import { RequestMethods } from '~/types';
 
 export const Study = () => {
@@ -65,10 +66,10 @@ export const Study = () => {
       ) : (
         <>
           <Text fw={700} size='xl'>
-            Study Session
+            {STUDY_ROUTE_HEADER}
           </Text>
           <Text fw={300} mb={32} size='md'>
-            Focus and track your study time
+            {STUDY_ROUTE_SUBHEADER}
           </Text>
           <Grid grow gutter='lg'>
             <Grid.Col span='auto'>
