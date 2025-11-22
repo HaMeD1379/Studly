@@ -8,6 +8,7 @@ describe('userInfo', () => {
     userInfo.setState({ email: '' });
     userInfo.setState({ userId: '' });
     userInfo.setState({ refreshToken: '' });
+    userInfo.setState({ avatarState: 'offline' });
   });
 
   it('updates bio when setBio is called', () => {
@@ -51,5 +52,12 @@ describe('userInfo', () => {
 
     const { accessToken } = userInfo.getState();
     expect(accessToken).toBe('token');
+  });
+  it('updates avatar state when called', () => {
+    const { setAvatarState } = userInfo.getState();
+    setAvatarState('online');
+
+    const { avatarState } = userInfo.getState();
+    expect(avatarState).toBe('online');
   });
 });

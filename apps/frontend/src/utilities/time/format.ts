@@ -14,3 +14,27 @@ export const formatMinutesToHoursAndMinutes = (minutes: number): string => {
 
   return `${formattedHours}${space}${formattedMinutes}`;
 };
+export const getSunday = (date: Date) => {
+  const d = new Date(date); // avoid mutating original
+  const day = d.getDay(); // Sunday = 0
+
+  // subtract day (0–6) to go back to Sunday
+  d.setDate(d.getDate() - day);
+  return d;
+};
+
+export const hoursAndMinutes = (timeLen: number) => {
+  let minute: string = '';
+  let hours: string = '';
+  if (timeLen < 0) throw new Error('Invalid time length');
+  if (timeLen > 60) {
+    hours = Math.floor(timeLen / 60).toString();
+    minute = (timeLen % 60).toString();
+    if (hours !== '1' && hours !== '0') {
+      return `${`${hours} hours ${minute} minutes`}`;
+    }
+    return `${`${hours} hour ${minute} minutes`}`;
+  }
+  minute = timeLen.toString();
+  return `${`${minute}m`}`;
+};

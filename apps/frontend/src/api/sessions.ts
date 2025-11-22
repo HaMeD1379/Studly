@@ -11,6 +11,7 @@ import {
   type SessionListLoader,
   type SessionSummaryLoader,
 } from '~/types';
+import { getSunday } from '~/utilities/time';
 import { request } from '~/utilities/requests';
 
 export const fetchTodaysSessionSummary = async () => {
@@ -70,6 +71,18 @@ export const stopSession = async () => {
       endTime: new Date(Date.now()).toISOString(),
     }),
   );
+
+  return result;
+};
+
+export const SessionSummary = async () => {
+  const { userId } = userInfo.getState();
+
+  const to = new Date(Date.now()).toISOString();
+
+  const from = getSunday(new Date(Date.now()));
+  const path = `${SESSIONS_SUMMARY}?userId=${userId}&from=${from}&to=${to}`;
+  const result = await request<SessionSummaryLoader>(RequestMethods.GET, path);
 
   return result;
 };

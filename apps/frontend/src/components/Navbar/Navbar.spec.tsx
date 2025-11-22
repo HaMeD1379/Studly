@@ -30,7 +30,15 @@ import fetchPolyfill, { Request as RequestPolyfill } from 'node-fetch';
 import { createMemoryRouter, RouterProvider, redirect } from 'react-router-dom';
 import { describe, expect, it, type Mock, vi } from 'vitest';
 import * as logoutApi from '~/api/auth';
-import { BADGES, HOME, LOGIN, STUDY } from '~/constants';
+import {
+  BADGES,
+  FRIENDS,
+  HOME,
+  LOGIN,
+  PROFILE,
+  SETTINGS,
+  STUDY,
+} from '~/constants';
 import { mockAccessToken } from '~/mocks';
 import { logoutAction } from '~/routes/logout';
 import { render } from '~/utilities/testing';
@@ -70,6 +78,9 @@ describe('Navbar', () => {
     ).not.toBeNull();
     expect(screen.getByRole('button', { name: 'Badges' })).not.toBeNull();
     expect(screen.getByRole('button', { name: 'Logout' })).not.toBeNull();
+    expect(screen.getByRole('button', { name: 'Profile' })).not.toBeNull();
+    expect(screen.getByRole('button', { name: 'Settings' })).not.toBeNull();
+    expect(screen.getByRole('button', { name: 'Friends' })).not.toBeNull();
   });
 
   it('navigations are called to the proper route', async () => {
@@ -80,7 +91,9 @@ describe('Navbar', () => {
       name: 'Study Session',
     });
     const badgesButton = screen.getByRole('button', { name: 'Badges' });
-
+    const friendsButton = screen.getByRole('button', { name: 'Friends' });
+    const profileButton = screen.getByRole('button', { name: 'Profile' });
+    const settingsButton = screen.getByRole('button', { name: 'Settings' });
     await act(async () => {
       fireEvent.click(homeButton);
     });
@@ -97,6 +110,24 @@ describe('Navbar', () => {
       fireEvent.click(badgesButton);
     });
     expect(mockNavigate).toHaveBeenCalledWith(BADGES);
+    mockNavigate.mockClear();
+
+    await act(async () => {
+      fireEvent.click(friendsButton);
+    });
+    expect(mockNavigate).toHaveBeenCalledWith(FRIENDS);
+    mockNavigate.mockClear();
+
+    await act(async () => {
+      fireEvent.click(profileButton);
+    });
+    expect(mockNavigate).toHaveBeenCalledWith(PROFILE);
+    mockNavigate.mockClear();
+
+    await act(async () => {
+      fireEvent.click(settingsButton);
+    });
+    expect(mockNavigate).toHaveBeenCalledWith(SETTINGS);
     mockNavigate.mockClear();
   });
 

@@ -1,7 +1,10 @@
-vi.mock('~/api', () => ({
-  fetchBio: vi.fn(),
-}));
-
+const mockLoaderData = {
+  data: {
+    profileBio: { data: { bio: 'This is my Bio' } },
+    sessionSummary: { sessionsLogged: 0, totalMinutesStudied: 0 },
+  },
+  error: false,
+};
 // Mock useNavigate
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', async () => {
@@ -9,13 +12,18 @@ vi.mock('react-router-dom', async () => {
     await vi.importActual<typeof import('react-router-dom')>(
       'react-router-dom',
     );
-  return { ...actual, useNavigate: () => mockNavigate };
+  return {
+    ...actual,
+    useLoaderData: () => mockLoaderData,
+    useNavigate: () => mockNavigate,
+  };
 });
 
 vi.mock('~/store', () => {
   return {
     userInfo: {
       getState: () => ({
+        avatarState: 'online',
         bio: '',
         email: 'testUser@gmail.com',
         name: 'Test User',
@@ -29,12 +37,8 @@ vi.mock('~/store', () => {
 
 import { fireEvent, screen } from '@testing-library/react';
 import fetchPolyfill, { Request as RequestPolyfill } from 'node-fetch';
-import { createMemoryRouter, RouterProvider } from 'react-router-dom';
-import { describe, expect, it, type Mock, vi } from 'vitest';
-import * as auth from '~/api';
-import { PageSpinner } from '~/components';
-import { LOGIN, SETTINGS } from '~/constants';
-import { ProfileLoader } from '~/routes';
+import { describe, expect, it, vi } from 'vitest';
+import { SETTINGS } from '~/constants';
 import { render } from '~/utilities/testing';
 import { UserCard } from './UserCard';
 
@@ -51,54 +55,32 @@ Object.defineProperty(global, 'Request', {
   writable: false,
 });
 
-describe('Profile Card tests', () => {
-  const router = createMemoryRouter([
-    {
-      element: <UserCard />,
-      loader: ProfileLoader,
-      path: LOGIN,
-    },
-  ]);
+describe('User Card tests', () => {
   it('displays all elements', async () => {
-    render(<RouterProvider router={router} />);
+    render(<UserCard />);
 
     const nameField = await screen.findByTestId('name-text');
     const emailField = await screen.findByTestId('email-text');
     const bioField = await screen.findByTestId('bio-text');
     const editBtn = await screen.findByTestId('edit-btn');
     const shareBtn = await screen.findByTestId('share-btn');
+    const avatarComponent = await screen.findByTestId('avatar');
+    const statusDot = screen.getByTestId('status-dot');
 
     expect(nameField).toHaveTextContent('Test User');
     expect(emailField).toHaveTextContent('testUser@gmail.com');
-    expect(bioField).toHaveTextContent('Edit Profile to update your bio');
+    expect(bioField).toHaveTextContent('This is my Bio');
     expect(editBtn).toHaveTextContent('Edit');
     expect(shareBtn).toHaveTextContent('Share');
+    expect(avatarComponent).toBeInTheDocument();
+    expect(statusDot).toBeInTheDocument();
   });
   it('naviagtes to settings when edit button is clicked', () => {
-    render(<RouterProvider router={router} />);
+    render(<UserCard />);
     fireEvent.click(screen.getByTestId('edit-btn'));
     expect(mockNavigate).toHaveBeenCalledWith(SETTINGS);
   });
   it('displays the result from the fetch bio api call in the bio field', () => {
-    (auth.fetchBio as Mock).mockResolvedValue({
-      data: {
-        data: {
-          bio: 'This is my Bio',
-          userId: '1',
-        },
-      },
-      error: null,
-    });
-
-    const router = createMemoryRouter([
-      {
-        element: <UserCard />,
-        hydrateFallbackElement: <PageSpinner />,
-        loader: ProfileLoader,
-        path: LOGIN,
-      },
-    ]);
-
-    render(<RouterProvider router={router} />);
+    render(<UserCard />);
   });
 });

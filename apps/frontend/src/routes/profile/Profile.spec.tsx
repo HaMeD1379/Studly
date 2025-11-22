@@ -1,16 +1,16 @@
 import { screen } from '@testing-library/react';
 import fetchPolyfill, { Request as RequestPolyfill } from 'node-fetch';
-import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { describe, expect, it, type Mock, vi } from 'vitest';
-import * as auth from '~/api';
-import { PageSpinner } from '~/components';
-import { LOGIN } from '~/constants';
-import { ProfileLoader, UserProfile } from '~/routes';
+import { UserProfile } from '~/routes';
 import { render } from '~/utilities/testing';
 
-vi.mock('~/api', () => ({
-  fetchBio: vi.fn(),
-}));
+const mockLoaderData = {
+  data: {
+    profileBio: { data: { bio: 'This is my Bio' } },
+    sessionSummary: { sessionsLogged: 0, totalMinutesStudied: 0 },
+  },
+  error: false,
+};
 
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', async () => {
@@ -18,7 +18,11 @@ vi.mock('react-router-dom', async () => {
     await vi.importActual<typeof import('react-router-dom')>(
       'react-router-dom',
     );
-  return { ...actual, useNavigate: () => mockNavigate };
+  return {
+    ...actual,
+    useLoaderData: () => mockLoaderData,
+    useNavigate: () => mockNavigate,
+  };
 });
 
 const mockSetName = vi.fn();
@@ -44,7 +48,7 @@ type MockZustandStore = Mock & {
   setState: (newState: Partial<typeof mockStore>) => void;
 };
 
-vi.mock('~/store/userInfo', () => {
+vi.mock('~/store', () => {
   const store = vi.fn(() => mockStore) as MockZustandStore;
   store.getState = () => mockStore;
   store.setState = (newState: Partial<typeof mockStore>) =>
@@ -62,25 +66,9 @@ Object.defineProperty(global, 'Request', {
   value: RequestPolyfill,
   writable: false,
 });
-
-describe('User Profile Tests', () => {
+describe('UserProfile Tests', () => {
   it('renders all nested components', async () => {
-    (auth.fetchBio as Mock).mockResolvedValue({
-      data: { data: { bio: 'This is my Bio', userId: '1' } },
-      error: null,
-    });
-
-    const router = createMemoryRouter([
-      {
-        element: <UserProfile />,
-        hydrateFallbackElement: <PageSpinner />,
-        loader: ProfileLoader,
-        path: LOGIN,
-      },
-    ]);
-
-    render(<RouterProvider router={router} />);
-
+    render(<UserProfile />);
     const name_field = await screen.findByTestId('name-text');
     const email_field = await screen.findByTestId('email-text');
     const bio_field = await screen.findByTestId('bio-text');
@@ -95,7 +83,6 @@ describe('User Profile Tests', () => {
     const total_study = await screen.findByTestId('total-study-card');
     const badges = await screen.findByTestId('badges-card');
     const friends = await screen.findByTestId('friends-card');
-
     expect(name_field).toHaveTextContent('Test User');
     expect(email_field).toHaveTextContent('testUser@gmail.com');
     expect(bio_field).toHaveTextContent('This is my Bio');
@@ -108,6 +95,5 @@ describe('User Profile Tests', () => {
     expect(total_study).toHaveTextContent('Total Study');
     expect(badges).toHaveTextContent('Badges');
     expect(friends).toHaveTextContent('Friends');
-    expect(auth.fetchBio).toHaveBeenCalled();
   });
 });

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { AVATAR_OFFLINE } from '~/constants';
 import type { UserStore } from '~/types';
 
 // Zustand docs were used for persistance: https://zustand.docs.pmnd.rs/integrations/persisting-store-data
@@ -7,6 +8,7 @@ export const userInfo = create<UserStore>()(
   persist(
     (set, get) => ({
       accessToken: '',
+      avatarState: AVATAR_OFFLINE,
       bio: '',
       email: '',
       isAccessStored: false,
@@ -16,6 +18,7 @@ export const userInfo = create<UserStore>()(
       setAccessStored: (newAccessStored) =>
         set({ isAccessStored: newAccessStored }),
       setAccessToken: (newAccessToken) => set({ accessToken: newAccessToken }),
+      setAvatarState: (newState) => set({ avatarState: newState }),
       setBio: (newBio) => set({ bio: newBio }),
       setCheckAccess: () => {
         const { isAccessStored } = get();
