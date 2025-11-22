@@ -57,7 +57,7 @@ test('skips enforcement in test env', () => {
 });
 
 test('returns 500 when token is missing in non-test env', () => {
-  withEnv({ NODE_ENV: 'production' }, () => {
+  withEnv({ NODE_ENV: 'production', STUDLY_USE_MOCK: undefined }, () => {
     const ctx = makeCtx();
     requireInternalApiKey(ctx.req, ctx.res, ctx.next);
     assert.equal(ctx.calledNext, false);
@@ -67,25 +67,31 @@ test('returns 500 when token is missing in non-test env', () => {
 });
 
 test('returns 401 when header missing or mismatched', () => {
-  withEnv({ NODE_ENV: 'production', INTERNAL_API_TOKEN: 'secret-xyz' }, () => {
-    // Missing
-    let ctx = makeCtx();
-    requireInternalApiKey(ctx.req, ctx.res, ctx.next);
-    assert.equal(ctx.calledNext, false);
-    assert.equal(ctx.res._status, 401);
+  withEnv(
+    { NODE_ENV: 'production', INTERNAL_API_TOKEN: 'secret-xyz', STUDLY_USE_MOCK: undefined },
+    () => {
+      // Missing
+      let ctx = makeCtx();
+      requireInternalApiKey(ctx.req, ctx.res, ctx.next);
+      assert.equal(ctx.calledNext, false);
+      assert.equal(ctx.res._status, 401);
 
-    // Mismatched
-    ctx = makeCtx({ 'x-api-key': 'wrong' });
-    requireInternalApiKey(ctx.req, ctx.res, ctx.next);
-    assert.equal(ctx.calledNext, false);
-    assert.equal(ctx.res._status, 401);
-  });
+      // Mismatched
+      ctx = makeCtx({ 'x-api-key': 'wrong' });
+      requireInternalApiKey(ctx.req, ctx.res, ctx.next);
+      assert.equal(ctx.calledNext, false);
+      assert.equal(ctx.res._status, 401);
+    },
+  );
 });
 
 test('calls next() when header matches token', () => {
-  withEnv({ NODE_ENV: 'production', INTERNAL_API_TOKEN: 'secret-abc' }, () => {
-    const ctx = makeCtx({ 'x-api-key': 'secret-abc' });
-    requireInternalApiKey(ctx.req, ctx.res, ctx.next);
-    assert.equal(ctx.calledNext, true);
-  });
+  withEnv(
+    { NODE_ENV: 'production', INTERNAL_API_TOKEN: 'secret-abc', STUDLY_USE_MOCK: undefined },
+    () => {
+      const ctx = makeCtx({ 'x-api-key': 'secret-abc' });
+      requireInternalApiKey(ctx.req, ctx.res, ctx.next);
+      assert.equal(ctx.calledNext, true);
+    },
+  );
 });

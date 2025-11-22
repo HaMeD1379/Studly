@@ -289,11 +289,12 @@ describe('sessions.service', () => {
   });
 
   describe('summarizeSessionsByDate', () => {
-    it('aggregates total minutes and session counts', async () => {
+    it('aggregates total minutes, session counts, and per-subject breakdown', async () => {
       const rows = [
         {
           id: 'session-1',
           user_id: 'user-1',
+          subject: 'Math',
           session_type: 2,
           end_time: '2024-01-01T01:00:00.000Z',
           total_time: 60,
@@ -301,9 +302,26 @@ describe('sessions.service', () => {
         {
           id: 'session-2',
           user_id: 'user-1',
+          subject: 'Math',
           session_type: 2,
           end_time: '2024-01-02T03:00:00.000Z',
           total_time: 180,
+        },
+        {
+          id: 'session-3',
+          user_id: 'user-1',
+          subject: 'History',
+          session_type: 2,
+          end_time: '2024-01-02T04:00:00.000Z',
+          total_time: 30,
+        },
+        {
+          id: 'session-4',
+          user_id: 'user-1',
+          subject: null,
+          session_type: 2,
+          end_time: '2024-01-02T05:00:00.000Z',
+          total_time: 15,
         },
       ];
 
@@ -324,8 +342,33 @@ describe('sessions.service', () => {
       assert.ok(builder.gte.mock.calls.length >= 1);
       assert.ok(builder.lte.mock.calls.length >= 1);
 
-      assert.equal(summary.totalMinutesStudied, 240);
-      assert.equal(summary.sessionsLogged, 2);
+      // top-level totals include all sessions, including those without subject
+      assert.equal(summary.totalMinutesStudied, 285);
+      assert.equal(summary.sessionsLogged, 4);
+
+      // subject breakdown excludes missing-subject rows
+      assert.deepEqual(summary.subjectSummaries, [
+        { subject: 'Math', totalMinutesStudied: 240, sessionsLogged: 2 },
+        { subject: 'History', totalMinutesStudied: 30, sessionsLogged: 1 },
+      ]);
+    });
+
+    it('returns zeroed totals and empty subjectSummaries when no sessions match', async () => {
+      const builder = createSelectBuilder([]);
+      const from = mock.fn(() => builder);
+      const client = { from };
+      const service = createSessionsService(client, { sessionColumns: SESSION_COLUMNS });
+
+      const summary = await service.summarizeSessionsByDate({
+        userId: 'user-1',
+        sessionType: 99,
+        from: '2024-01-01T00:00:00.000Z',
+        to: '2024-01-03T00:00:00.000Z',
+      });
+
+      assert.equal(summary.totalMinutesStudied, 0);
+      assert.equal(summary.sessionsLogged, 0);
+      assert.deepEqual(summary.subjectSummaries, []);
     });
 
     it('surfaces Supabase errors during aggregation', async () => {

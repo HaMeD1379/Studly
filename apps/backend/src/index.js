@@ -56,23 +56,27 @@ app.use(express.json());
 app.use(profiling);
 
 // Public endpoints
-app.get("/health", (_req, res) => res.status(200).send("ok"));
-app.get("/", (_req, res) => res.send({ status: "studly api running" }));
+app.get(STRINGS.API.HEALTHCHECK_ROUTE, (_req, res) =>
+  res.status(200).send(STRINGS.GENERAL.OK),
+);
+app.get(STRINGS.API.ROOT_ROUTE, (_req, res) =>
+  res.send({ status: STRINGS.GENERAL.SERVER_STATUS_OK }),
+);
 
 // Protect all versioned API routes under /api with INTERNAL_API_TOKEN
-app.use("/api", requireInternalApiKey);
+app.use(STRINGS.API.PROTECTED_API_PREFIX, requireInternalApiKey);
 
 app.use(STRINGS.API.AUTH_ROUTE, authRoutes);
-app.use("/api/v1/sessions", sessionsRoutes);
-app.use("/api/v1/profile", profileRoutes);
-app.use("/api/v1/badges", badgesRoutes);
-app.use("/api/v1/leaderboard", leaderboardRoutes);
+app.use(STRINGS.API.SESSIONS_ROUTE, sessionsRoutes);
+app.use(STRINGS.API.PROFILE_ROUTE, profileRoutes);
+app.use(STRINGS.API.BADGES_ROUTE, badgesRoutes);
+app.use(STRINGS.API.LEADERBOARD_ROUTE, leaderboardRoutes);
 
 const port = process.env.PORT || 3000;
 
 if (process.env.NODE_ENV !== "test") {
   app.listen(port, () =>
-    console.log(`🚀 Studly API listening on port :${port}`)
+    console.log(`🚀 Studly API listening on port :${port}`),
   );
 }
 
