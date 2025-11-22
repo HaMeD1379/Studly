@@ -1,4 +1,5 @@
 import type { AvatarState } from '~/constants';
+import { UnlockedBadge } from './badges';
 
 export type UserStore = {
   accessToken: string;
@@ -26,3 +27,8 @@ export type ProfileStore = {
   allTimeHoursStudied: string;
   setAllTimeHoursStudied: (newAllTime: string) => void;
 };
+
+export type BadgesStore = {
+  userBadges: UnlockedBadge[]
+  setUserBadges: (newUserBadges: UnlockedBadge[]) => void;
+}

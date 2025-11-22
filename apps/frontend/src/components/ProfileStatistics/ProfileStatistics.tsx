@@ -4,22 +4,36 @@ import {
   Card,
   Flex,
   Progress,
+  ScrollArea,
   SegmentedControl,
   SimpleGrid,
   Stack,
   Text,
   Title,
 } from "@mantine/core";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLoaderData } from "react-router-dom";
-import { profileInfo } from "~/store/profileInfo";
+import { profileInfo, badgesStore } from "~/store";
 import { hoursAndMinutes } from "~/utilities/time";
-import { calculateHistoryStatistics } from "~/utilities/profileStatistics/calculateHistoryStatistics";
+import {
+  calculateHistoryStatistics,
+  sortBadgesByEarnedDate,
+  randomColour,
+} from "~/utilities/profileStatistics";
+import { tabs } from "~/constants/profile";
+import { subjectSummaries, UnlockedBadge } from "~/types";
+
 export const ProfileStatistics = () => {
-  const tabs = ["Overview", "Detailed Stats", "Achievements"];
   const { setAllTimeHoursStudied } = profileInfo();
+  const { userBadges } = badgesStore();
+
+  const [badges, setBadges] = useState<UnlockedBadge[]>([]);
   const loaderdata = useLoaderData();
   const summary = loaderdata.data.sessionSummary;
+  const subjectsStudiedThisWeek: Set<subjectSummaries> = new Set(
+    summary.subjectSummaries
+  );
+  console.log(subjectsStudiedThisWeek);
   const allTimeStats = useMemo(
     () => calculateHistoryStatistics(loaderdata.data.sessions),
     [loaderdata.data.sessions]
@@ -30,6 +44,11 @@ export const ProfileStatistics = () => {
     const [, totalHours] = allTimeStats;
     setAllTimeHoursStudied(totalHours);
   }, [loaderdata, setAllTimeHoursStudied, allTimeStats]);
+
+  useEffect(() => {
+    if (!userBadges) return;
+    setBadges(sortBadgesByEarnedDate(userBadges));
+  }, [userBadges]);
 
   const mapped = Object.fromEntries(
     Object.entries(allTimeStats[0]).map(([key, value]) => [key, value])
@@ -66,14 +85,18 @@ export const ProfileStatistics = () => {
             <Text
               data-testid={"SessionCompleted"}
             >{`Sessions Completed: ${summary.sessionsLogged}`}</Text>
-            <Text>Subjects Studied: 3</Text>
+            <Text>{`Subjects Studied: ${subjectsStudiedThisWeek.size}`}</Text>
             <Text fw={500} mt="sm">
               Subjects This Week:
             </Text>
             <Stack>
-              <Badge color="blue">Biology</Badge>
-              <Badge color="green">Chemistry</Badge>
-              <Badge color="orange">Mathematics</Badge>
+              <SimpleGrid cols={2} spacing="md">
+                {[...subjectsStudiedThisWeek].map((summary) => (
+                  <Badge key={summary.subject} color={randomColour()}>
+                    {summary.subject}
+                  </Badge>
+                ))}
+              </SimpleGrid>
             </Stack>
           </Stack>
         </Card>
@@ -91,15 +114,11 @@ export const ProfileStatistics = () => {
             Your latest achievements
           </Text>
           <Stack mt="md">
-            <Badge color="orange" size="lg" variant="light">
-              Study Streak Master
-            </Badge>
-            <Badge color="blue" size="lg" variant="light">
-              Night Owl
-            </Badge>
-            <Badge color="grape" size="lg" variant="light">
-              Social Butterfly
-            </Badge>
+            {badges.map((badge) => (
+              <Badge key={badge.name} color={randomColour()} size="xl">
+                {badge.name}
+              </Badge>
+            ))}
           </Stack>
         </Card>
       </SimpleGrid>
@@ -118,15 +137,19 @@ export const ProfileStatistics = () => {
           Time spent on different subjects
         </Text>
         <Stack mt="md">
-          {Object.entries(mapped).map(([key, value]) => (
-            <div key={key}>
-              <Flex justify="space-between">
-                <Text fw={500}>{key}</Text>
-                <Text c="dimmed">{hoursAndMinutes(value)}</Text>
-              </Flex>
-              <Progress size="md" value={(value / 120) * 100} />
-            </div>
-          ))}
+          <ScrollArea h={300} px="sm">
+            <Stack>
+              {Object.entries(mapped).map(([key, value]) => (
+                <div key={key}>
+                  <Flex justify="space-between">
+                    <Text fw={500}>{key}</Text>
+                    <Text c="dimmed">{hoursAndMinutes(value)}</Text>
+                  </Flex>
+                  <Progress size="md" value={(value / 120) * 100} />
+                </div>
+              ))}
+            </Stack>
+          </ScrollArea>
         </Stack>
       </Card>
     </Box>

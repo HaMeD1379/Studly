@@ -75,7 +75,7 @@ export const stopSession = async () => {
   return result;
 };
 
-export const SessionSummary = async () => {
+export const fetchWeeklySessionSummary = async () => {
   const { userId } = userInfo.getState();
 
   const to = new Date(Date.now()).toISOString();
@@ -83,6 +83,16 @@ export const SessionSummary = async () => {
   const from = getSunday(new Date(Date.now()));
   const path = `${SESSIONS_SUMMARY}?userId=${userId}&from=${from}&to=${to}`;
   const result = await request<SessionSummaryLoader>(RequestMethods.GET, path);
-
+  console.log("fetch weekly summaries",result)
   return result;
 };
+
+
+export const fetchAllTimeSummary = async () => {
+  const { userId } = userInfo.getState();
+  const endTime = new Date(Date.now()).toISOString();
+  const path = `${SESSIONS}?userId=${userId}&to=${endTime}`;
+  const result = await request<SessionListLoader>(RequestMethods.GET, path);
+
+  return result;
+}

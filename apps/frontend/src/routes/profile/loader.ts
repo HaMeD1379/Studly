@@ -1,4 +1,4 @@
-import { fetchBio, fetchSessionsList, SessionSummary } from '~/api';
+import { fetchAllTimeSummary, fetchBio, fetchWeeklySessionSummary } from '~/api';
 import { userInfo } from '~/store';
 import type { ProfileBio, StudySession, TodaysStudyStatistics } from '~/types';
 
@@ -15,9 +15,9 @@ export const loader = async (): Promise<StudyLoader> => {
   const { userId } = userInfo.getState();
 
   const [sessionSummary, profileBio, sessionsList] = await Promise.all([
-    await SessionSummary(),
+    await fetchWeeklySessionSummary(),
     await fetchBio(userId),
-    await fetchSessionsList(),
+    await fetchAllTimeSummary(),
   ]);
 
   return {
