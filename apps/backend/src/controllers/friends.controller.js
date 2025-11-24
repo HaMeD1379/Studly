@@ -29,9 +29,9 @@
  * ────────────────────────────────────────────────────────────────────────────────
  */
 
+import STRINGS from "../config/strings.config.js";
 import supabase from "../config/supabase.client.js";
 import { handleError, handleSuccess } from "../utils/server.utils.js";
-import STRINGS from "../config/strings.config.js";
 
 /**
  * Get count of friends by status
@@ -48,7 +48,7 @@ export const getFriendsCount = async (req, res) => {
       .or(`from_user.eq.${userId},to_user.eq.${userId}`);
 
     if (status) {
-      const statusNum = parseInt(status, 10);
+      const statusNum = Number.parseInt(status, 10);
       if (![1, 2, 3].includes(statusNum)) {
         handleError(res, 400, STRINGS.FRIENDS.INVALID_STATUS);
         return;
@@ -122,7 +122,7 @@ export const getAllFriends = async (req, res) => {
       .or(`from_user.eq.${userId},to_user.eq.${userId}`);
 
     if (status) {
-      const statusNum = parseInt(status, 10);
+      const statusNum = Number.parseInt(status, 10);
       if (![1, 2, 3].includes(statusNum)) {
         handleError(res, 400, STRINGS.FRIENDS.INVALID_STATUS);
         return;
@@ -217,7 +217,7 @@ export const updateFriendStatus = async (req, res) => {
     return;
   }
 
-  const statusNum = parseInt(status, 10);
+  const statusNum = Number.parseInt(status, 10);
   if (![2, 3].includes(statusNum)) {
     handleError(res, 400, STRINGS.FRIENDS.INVALID_STATUS_UPDATE);
     return;
