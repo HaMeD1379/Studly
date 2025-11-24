@@ -44,9 +44,10 @@ process.env.NODE_ENV = "test";
 const { default: app } = await import("../../src/index.js");
 
 const originalAuth = { ...supabase.auth };
+const originalFrom = supabase.from.bind(supabase);
 
 const baseMocks = () => ({
-  async signUp({ email, password, options }) {
+  async signUp({ email, password }) {
     if (!email || !password) {
       return {
         data: null,
@@ -63,9 +64,6 @@ const baseMocks = () => ({
         user: {
           id: STRINGS.MOCK.MOCK_ID,
           email,
-          user_metadata: {
-            full_name: options?.data?.full_name ?? null,
-          },
         },
       },
       error: null,
@@ -81,7 +79,6 @@ const baseMocks = () => ({
         user: {
           id: STRINGS.MOCK.MOCK_ID,
           email,
-          user_metadata: { full_name: STRINGS.MOCK.MOCK_FULL_NAME },
         },
       },
       error: null,
@@ -115,10 +112,31 @@ const baseMocks = () => ({
   },
 });
 
-const restoreAuth = () => Object.assign(supabase.auth, originalAuth);
+const restoreAuth = () => {
+  Object.assign(supabase.auth, originalAuth);
+  supabase.from = originalFrom;
+};
 
 beforeEach(() => {
   Object.assign(supabase.auth, baseMocks());
+
+  // Mock the user_profile table operations
+  supabase.from = (table) => {
+    if (table === "user_profile") {
+      return {
+        insert: async () => ({ data: null, error: null }),
+        select: (columns) => ({
+          eq: (column, value) => ({
+            single: async () => ({
+              data: { full_name: STRINGS.MOCK.MOCK_FULL_NAME },
+              error: null,
+            }),
+          }),
+        }),
+      };
+    }
+    return originalFrom(table);
+  };
 });
 
 afterEach(() => {
@@ -164,6 +182,20 @@ const request = async (method, path, body) => {
 
 const override = (method, impl) => {
   supabase.auth[method] = impl;
+};
+
+const overrideDB = (table, operation, impl) => {
+  const currentFrom = supabase.from;
+  supabase.from = (tableName) => {
+    if (tableName === table) {
+      if (operation === "insert") {
+        return { insert: impl };
+      } else if (operation === "select") {
+        return { select: impl };
+      }
+    }
+    return currentFrom(tableName);
+  };
 };
 
 test(STRINGS.TEST.SIGNUP_SUCCESS, async () => {
@@ -246,7 +278,8 @@ test(STRINGS.TEST.LOGIN_VALID_CREDENTIALS, async () => {
   });
 
   assert.equal(response.status, 200);
-  assert.equal(response.body.data.user.full_name, STRINGS.MOCK.MOCK_FULL_NAME);
+  assert.equal(response.body.data.user.id, STRINGS.MOCK.MOCK_ID);
+  assert.equal(response.body.data.user.email, STRINGS.MOCK.MOCK_USER_EMAIL);
 });
 
 test(STRINGS.TEST.LOGIN_INVALID_CREDENTIALS, async () => {

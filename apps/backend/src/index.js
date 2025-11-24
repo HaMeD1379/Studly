@@ -44,6 +44,7 @@ import STRINGS from "./config/strings.config.js";
 import authRoutes from "./routes/v1/authentication.routes.js";
 import sessionsRoutes from "./routes/v1/sessions.routes.js";
 import profileRoutes from "./routes/v1/profile.routes.js";
+import friendsRoutes from "./routes/v1/friends.routes.js";
 import requireInternalApiKey from "./middleware/internal-api-key.middleware.js";
 import badgesRoutes from "./routes/v1/badges.routes.js";
 import leaderboardRoutes from "./routes/v1/leaderboard.routes.js";
@@ -57,10 +58,10 @@ app.use(profiling);
 
 // Public endpoints
 app.get(STRINGS.API.HEALTHCHECK_ROUTE, (_req, res) =>
-  res.status(200).send(STRINGS.GENERAL.OK),
+  res.status(200).send(STRINGS.GENERAL.OK)
 );
 app.get(STRINGS.API.ROOT_ROUTE, (_req, res) =>
-  res.send({ status: STRINGS.GENERAL.SERVER_STATUS_OK }),
+  res.send({ status: STRINGS.GENERAL.SERVER_STATUS_OK })
 );
 
 // Protect all versioned API routes under /api with INTERNAL_API_TOKEN
@@ -69,6 +70,7 @@ app.use(STRINGS.API.PROTECTED_API_PREFIX, requireInternalApiKey);
 app.use(STRINGS.API.AUTH_ROUTE, authRoutes);
 app.use(STRINGS.API.SESSIONS_ROUTE, sessionsRoutes);
 app.use(STRINGS.API.PROFILE_ROUTE, profileRoutes);
+app.use(STRINGS.API.FRIENDS_ROUTE, friendsRoutes);
 app.use(STRINGS.API.BADGES_ROUTE, badgesRoutes);
 app.use(STRINGS.API.LEADERBOARD_ROUTE, leaderboardRoutes);
 
@@ -76,7 +78,7 @@ const port = process.env.PORT || 3000;
 
 if (process.env.NODE_ENV !== "test") {
   app.listen(port, () =>
-    console.log(`🚀 Studly API listening on port :${port}`),
+    console.log(`🚀 Studly API listening on port :${port}`)
   );
 }
 
