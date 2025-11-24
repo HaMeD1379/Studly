@@ -125,8 +125,8 @@ beforeEach(() => {
     if (table === "user_profile") {
       return {
         insert: async () => ({ data: null, error: null }),
-        select: (columns) => ({
-          eq: (column, value) => ({
+        select: () => ({
+          eq: () => ({
             single: async () => ({
               data: { full_name: STRINGS.MOCK.MOCK_FULL_NAME },
               error: null,
@@ -182,20 +182,6 @@ const request = async (method, path, body) => {
 
 const override = (method, impl) => {
   supabase.auth[method] = impl;
-};
-
-const overrideDB = (table, operation, impl) => {
-  const currentFrom = supabase.from;
-  supabase.from = (tableName) => {
-    if (tableName === table) {
-      if (operation === "insert") {
-        return { insert: impl };
-      } else if (operation === "select") {
-        return { select: impl };
-      }
-    }
-    return currentFrom(tableName);
-  };
 };
 
 test(STRINGS.TEST.SIGNUP_SUCCESS, async () => {
