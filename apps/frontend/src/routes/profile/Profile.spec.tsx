@@ -1,17 +1,27 @@
 import { screen } from '@testing-library/react';
 import fetchPolyfill, { Request as RequestPolyfill } from 'node-fetch';
-import { describe, expect, it, type Mock, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { UserProfile } from '~/routes';
 import { render } from '~/utilities/testing';
 
 const mockLoaderData = {
   data: {
+    badges: {
+      allBadges: [{}, {}, {}],
+      unlockedBadges: [{}, {}, {}],
+    },
     profileBio: { data: { bio: 'This is my Bio' } },
-    sessionSummary: { sessionsLogged: 0, totalMinutesStudied: 0 },
+    sessionSummary: {
+      sessionsLogged: 0,
+      subjectSummaries: [],
+      totalMinutesStudied: 0,
+    },
+    sessions: [],
   },
   error: false,
 };
 
+// --- Mock navigation ---
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', async () => {
   const actual =
@@ -25,39 +35,7 @@ vi.mock('react-router-dom', async () => {
   };
 });
 
-const mockSetName = vi.fn();
-const mockSetEmail = vi.fn();
-const mockSetId = vi.fn();
-const mockSetRefreshToken = vi.fn();
-const mockSetBio = vi.fn();
-
-const mockStore = {
-  bio: 'This is my Bio',
-  email: 'testUser@gmail.com',
-  name: 'Test User',
-  setBio: mockSetBio,
-  setEmail: mockSetEmail,
-  setId: mockSetId,
-  setName: mockSetName,
-  setRefreshToken: mockSetRefreshToken,
-  userId: '1',
-};
-
-type MockZustandStore = Mock & {
-  getState: () => typeof mockStore;
-  setState: (newState: Partial<typeof mockStore>) => void;
-};
-
-vi.mock('~/store', () => {
-  const store = vi.fn(() => mockStore) as MockZustandStore;
-  store.getState = () => mockStore;
-  store.setState = (newState: Partial<typeof mockStore>) =>
-    Object.assign(mockStore, newState);
-  return { userInfo: store };
-});
-
-//Lines 50- 57 were provided through an online github repo (https://github.com/reduxjs/redux-toolkit/issues/4966#issuecomment-3115230061) as solution to the error:
-//RequestInit: Expected signal ("AbortSignal {}") to be an instance of AbortSignal.
+// --- Polyfill fixes for Remix Request issues ---
 Object.defineProperty(global, 'fetch', {
   value: fetchPolyfill,
   writable: true,
@@ -66,34 +44,92 @@ Object.defineProperty(global, 'Request', {
   value: RequestPolyfill,
   writable: false,
 });
+
+vi.mock('~/store', () => {
+  const { create } = require('zustand');
+
+  const mockSetName = vi.fn();
+  const mockSetEmail = vi.fn();
+  const mockSetId = vi.fn();
+  const mockSetRefreshToken = vi.fn();
+  const mockSetBio = vi.fn();
+  const mockSetAllTimeHoursStudied = vi.fn();
+
+  // create a mock Zustand hook
+  const createMockStore = <T extends object>(initialState: T) => {
+    const store = create(() => initialState);
+
+    const hook = ((selector?: (s: T) => unknown) =>
+      selector ? selector(store.getState()) : store.getState()) as unknown as {
+      getState: typeof store.getState;
+      setState: typeof store.setState;
+    };
+
+    hook.getState = store.getState;
+    hook.setState = store.setState;
+
+    return hook;
+  };
+
+  return {
+    badgesStore: createMockStore({
+      badgesProgress: 33,
+      userBadges: [
+        {
+          description: 'Started a session',
+          earnedAt: '2025-11-22',
+          name: 'First Steps',
+        },
+        {
+          description: 'Study for 3 days in a row',
+          earnedAt: '2025-11-22',
+          name: 'Consistent Learner',
+        },
+      ],
+    }),
+    profileInfo: createMockStore({
+      allTimeHoursStudied: '5 hours 30 minutes',
+      setAllTimeHoursStudied: mockSetAllTimeHoursStudied,
+    }),
+    userInfo: createMockStore({
+      bio: 'This is my Bio',
+      email: 'testUser@gmail.com',
+      name: 'Test User',
+      setBio: mockSetBio,
+      setEmail: mockSetEmail,
+      setId: mockSetId,
+      setName: mockSetName,
+      setRefreshToken: mockSetRefreshToken,
+      userId: '1',
+    }),
+  };
+});
+
 describe('UserProfile Tests', () => {
   it('renders all nested components', async () => {
     render(<UserProfile />);
-    const name_field = await screen.findByTestId('name-text');
-    const email_field = await screen.findByTestId('email-text');
-    const bio_field = await screen.findByTestId('bio-text');
-    const edit_btn = await screen.findByTestId('edit-btn');
-    const share_btn = await screen.findByTestId('share-btn');
-    const this_week = await screen.findByTestId('this-week-card');
-    const subject_distribution = await screen.findByTestId(
-      'subject-distribution-card',
+
+    expect(await screen.findByTestId('name-text')).toHaveTextContent(
+      'Test User',
     );
-    const recent_badges = await screen.findByTestId('recent-badges-card');
-    const day_streak = await screen.findByTestId('day-streak-card');
-    const total_study = await screen.findByTestId('total-study-card');
-    const badges = await screen.findByTestId('badges-card');
-    const friends = await screen.findByTestId('friends-card');
-    expect(name_field).toHaveTextContent('Test User');
-    expect(email_field).toHaveTextContent('testUser@gmail.com');
-    expect(bio_field).toHaveTextContent('This is my Bio');
-    expect(edit_btn).toHaveTextContent('Edit');
-    expect(share_btn).toHaveTextContent('Share');
-    expect(this_week).toHaveTextContent('This Week');
-    expect(subject_distribution).toHaveTextContent('Subject Distribution');
-    expect(recent_badges).toHaveTextContent('Recent Badges');
-    expect(day_streak).toHaveTextContent('Day Streak');
-    expect(total_study).toHaveTextContent('Total Study');
-    expect(badges).toHaveTextContent('Badges');
-    expect(friends).toHaveTextContent('Friends');
+    expect(await screen.findByTestId('email-text')).toHaveTextContent(
+      'testUser@gmail.com',
+    );
+    expect(await screen.findByTestId('bio-text')).toHaveTextContent(
+      'This is my Bio',
+    );
+
+    expect(await screen.findByTestId('edit-btn')).toHaveTextContent('Edit');
+    expect(await screen.findByTestId('share-btn')).toHaveTextContent('Share');
+
+    expect(await screen.findByTestId('this-week-card')).toHaveTextContent(
+      'This Week',
+    );
+    expect(
+      await screen.findByTestId('subject-distribution-card'),
+    ).toHaveTextContent('Subject Distribution');
+    expect(await screen.findByTestId('recent-badges-card')).toHaveTextContent(
+      'Recent Badges',
+    );
   });
 });

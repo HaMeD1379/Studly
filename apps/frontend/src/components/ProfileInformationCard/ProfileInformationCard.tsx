@@ -2,7 +2,17 @@ import { Button, Card, Flex, Text, TextInput } from '@mantine/core';
 import { IconCamera } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { Form, useActionData } from 'react-router-dom';
-import { userInfo } from '~/store/userInfo';
+import {
+  PROFILE_AVATAR_IMAGE_SPECS,
+  PROFILE_BIO_TEXT,
+  PROFILE_CHANGE_AVATAR,
+  PROFILE_CHARACTER_LIMIT,
+  PROFILE_EMAIL_ADDRESS_TEXT,
+  PROFILE_FULL_NAME_TEXT,
+  PROFILE_INFORMATION_TEXT,
+  PROFILE_UPDATE_INFORMATION_TEXT,
+} from '~/constants';
+import { userInfo } from '~/store';
 import { displayNotifications } from '~/utilities/notifications';
 import { Avatar } from '../Avatar/Avatar';
 
@@ -12,7 +22,8 @@ export const profileInformationCard = () => {
   const [bioText, _setBioText] = useState('');
   const [textCount, setTextCount] = useState(0);
   const actionData = useActionData();
-  const { bio, name, email, setName, setEmail } = userInfo.getState();
+  const { bio, name, email, avatarState, setName, setEmail } =
+    userInfo.getState();
   const userName = name || 'John Doe';
 
   const changeName = (name: string) => {
@@ -56,10 +67,10 @@ export const profileInformationCard = () => {
     <Card p='lg' radius='lg' shadow='sm' w='100%' withBorder>
       <Form id='profile-form' method='PATCH' onSubmit={onClick}>
         <Text data-testid='profile-info-text' fw={700}>
-          Profile Information
+          {PROFILE_INFORMATION_TEXT}
         </Text>
         <Text c='dimmed' data-testid='profile-info-subtext'>
-          Update your personal information and profile details
+          {PROFILE_UPDATE_INFORMATION_TEXT}
         </Text>
         <Flex align='center' direction='row' gap='md' p='xs'>
           <Avatar
@@ -67,6 +78,7 @@ export const profileInformationCard = () => {
             data-testid='avatar-user'
             name={userName}
             size={80}
+            status={avatarState}
             textColor='#fff'
           />
           <Flex direction='column' p='sm'>
@@ -85,17 +97,17 @@ export const profileInformationCard = () => {
               style={{ borderColor: 'black' }}
               variant='outline'
             >
-              Change Avatar
+              {PROFILE_CHANGE_AVATAR}
             </Button>
             <Text c='dimmed' data-testid='accepted-images'>
-              JPG,PNG up to 5MB
+              {PROFILE_AVATAR_IMAGE_SPECS}
             </Text>
           </Flex>
         </Flex>
         <Flex direction='row' gap='sm' w='100%'>
           <Flex direction='column' flex={1} gap='sm'>
             <Text data-testid='name-text' fw={700}>
-              Full Name
+              {PROFILE_FULL_NAME_TEXT}
             </Text>
             <TextInput
               data-testid='name-text-update'
@@ -111,7 +123,7 @@ export const profileInformationCard = () => {
 
           <Flex direction='column' flex={1} gap='sm'>
             <Text data-testid='email-text' fw={700}>
-              Email Address
+              {PROFILE_EMAIL_ADDRESS_TEXT}
             </Text>
             <TextInput
               data-testid='email-text-update'
@@ -125,7 +137,7 @@ export const profileInformationCard = () => {
           </Flex>
         </Flex>
         <Text data-testid='bio-text' fw={600}>
-          Bio
+          {PROFILE_BIO_TEXT}
         </Text>
         <TextInput
           data-testid='bio-text-update'
@@ -139,7 +151,8 @@ export const profileInformationCard = () => {
           w='100%'
         ></TextInput>
         <Text c='dimmed' data-testid='word-counter'>
-          {textCount}/200 characters
+          {textCount}
+          {PROFILE_CHARACTER_LIMIT}
         </Text>
       </Form>
     </Card>

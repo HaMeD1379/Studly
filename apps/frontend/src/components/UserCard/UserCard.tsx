@@ -1,9 +1,15 @@
 import { Button, Card, Flex, Progress, Stack, Text } from '@mantine/core';
 import { IconEdit, IconShare } from '@tabler/icons-react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 import { Avatar } from '~/components/';
-import { PROFILE_BIO_DEFAULT, SETTINGS } from '~/constants';
+import {
+  PROFILE_BIO_DEFAULT,
+  PROFILE_EDIT_TEXT,
+  PROFILE_EXPERIENCE_POINTS_TEXT,
+  PROFILE_SHARE_TEXT,
+  SETTINGS,
+} from '~/constants';
 import { userInfo } from '~/store';
 
 export const UserCard = () => {
@@ -12,12 +18,21 @@ export const UserCard = () => {
   const userEmail = email || 'alex@example.com';
   const navigate = useNavigate();
   const loaderdata = useLoaderData();
+  const [badgesProgress, setBadgesProgress] = useState(0);
 
   const bio = loaderdata.data.profileBio.data.bio;
-
+  const unlockedBadges = loaderdata.data.badges.unlockedBadges;
+  const allBadges = loaderdata.data.badges.allBadges;
   useEffect(() => {
     setBio(bio);
   }, [setBio, bio]);
+
+  useEffect(() => {
+    if (!unlockedBadges) return;
+    setBadgesProgress(
+      Math.round((unlockedBadges.length / allBadges.length) * 100),
+    );
+  }, [unlockedBadges, allBadges]);
 
   return (
     <Card p='lg' radius='md' shadow='sm' w='100%' withBorder>
@@ -55,7 +70,7 @@ export const UserCard = () => {
             style={{ borderColor: 'black' }}
             variant='outline'
           >
-            Edit
+            {PROFILE_EDIT_TEXT}
           </Button>
           <Button
             c='dark'
@@ -64,14 +79,14 @@ export const UserCard = () => {
             style={{ borderColor: 'black' }}
             variant='outline'
           >
-            Share
+            {PROFILE_SHARE_TEXT}
           </Button>
         </Flex>
       </Flex>
 
       <Stack data-testid='xp bar' mt='md'>
-        <Text fw={500}>Experience Points</Text>
-        <Progress size='lg' transitionDuration={200} value={68} />
+        <Text fw={500}>{PROFILE_EXPERIENCE_POINTS_TEXT}</Text>
+        <Progress size='lg' transitionDuration={200} value={badgesProgress} />
       </Stack>
     </Card>
   );

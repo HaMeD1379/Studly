@@ -9,7 +9,7 @@ export type ProfileBio = {
 };
 
 export type subjectSummaries = {
-  subject:string;
+  subject: string;
   totalMinutesStudied: number;
-  sessionsLogged: number
-}
+  sessionsLogged: number;
+};

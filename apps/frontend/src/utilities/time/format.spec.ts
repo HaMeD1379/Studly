@@ -1,7 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { mockUnlockedBadgeTimestamp } from '~/mocks';
-import { formatISOToYYYYMMDD, formatMinutesToHoursAndMinutes, getSunday, hoursAndMinutes } from './format';
-
+import {
+  formatISOToYYYYMMDD,
+  formatMinutesToHoursAndMinutes,
+  getSunday,
+  hoursAndMinutes,
+} from './format';
 
 describe('format', () => {
   it('formats timestamp date properly', () => {
@@ -77,11 +81,11 @@ describe('format', () => {
     const dateCopy = new Date(date);
     getSunday(date);
     expect(date.getTime()).toBe(dateCopy.getTime());
-    });
+  });
 
   it('format minutes time properly', () => {
     expect(formatMinutesToHoursAndMinutes(59)).toEqual('59m');
     expect(formatMinutesToHoursAndMinutes(60)).toEqual('1h 0m');
     expect(formatMinutesToHoursAndMinutes(61)).toEqual('1h 1m');
   });
-})
+});

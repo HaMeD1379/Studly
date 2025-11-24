@@ -1,3 +1,3 @@
-export * from './calculateHistoryStatistics'
-export * from './sortBadgesByDate'
-export * from './randomColor'
+export * from './calculateHistoryStatistics';
+export * from './randomColor';
+export * from './sortBadgesByDate';

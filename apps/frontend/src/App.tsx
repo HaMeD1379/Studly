@@ -1,7 +1,7 @@
-import { MantineProvider } from "@mantine/core";
-import { Notifications } from "@mantine/notifications";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { ErrorBoundary, Navbar, PageSpinner } from "~/components";
+import { MantineProvider } from '@mantine/core';
+import { Notifications } from '@mantine/notifications';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { ErrorBoundary, Navbar, PageSpinner } from '~/components';
 import {
   Badges,
   badgesLoader,
@@ -23,10 +23,10 @@ import {
   studyLoader,
   UpdatePassword,
   UserProfile,
-} from "~/routes";
-import "@mantine/core/styles.css";
-import "@mantine/notifications/styles.css";
-import "@mantine/dates/styles.css";
+} from '~/routes';
+import '@mantine/core/styles.css';
+import '@mantine/notifications/styles.css';
+import '@mantine/dates/styles.css';
 import {
   BADGES,
   CHANGE_PASSWORD,
@@ -40,7 +40,7 @@ import {
   SETTINGS,
   SIGNUP,
   STUDY,
-} from "./constants";
+} from './constants';
 
 const router = createBrowserRouter([
   {

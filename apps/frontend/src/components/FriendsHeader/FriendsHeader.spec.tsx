@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import {
   FRIENDS_CARD_ONLINE,
   FRIENDS_CARD_STUDYING,
@@ -9,6 +9,16 @@ import {
 } from '~/constants';
 import { render } from '~/utilities/testing';
 import { FriendsHeader } from './FriendsHeader';
+
+vi.mock('~/constants/friends', () => ({
+  friendsTabs: ['Friends', 'Requests', 'Suggestions'],
+  stats: [
+    { icon: null, label: 'Friends', value: 4 },
+    { icon: null, label: 'Requests', value: 2 },
+    { icon: null, label: 'Online', value: 2 },
+    { icon: null, label: 'Studying', value: 1 },
+  ],
+}));
 
 describe('FriendsHeader', () => {
   it('renders header, description, and search input', () => {

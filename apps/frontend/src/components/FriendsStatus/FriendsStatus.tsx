@@ -9,6 +9,7 @@ import {
 } from '@mantine/core';
 
 import { IconClock, IconMessageCircle, IconTrophy } from '@tabler/icons-react';
+import { FRIENDS_VIEW_PROFILE } from '~/constants';
 import { Avatar } from '../Avatar/Avatar';
 export const FriendsStatus = () => {
   interface Friend {
@@ -145,7 +146,7 @@ export const FriendsStatus = () => {
                     </Button>
 
                     <Button color='black' variant='outline'>
-                      View Profile
+                      {FRIENDS_VIEW_PROFILE}
                     </Button>
                   </Flex>
                 </Flex>

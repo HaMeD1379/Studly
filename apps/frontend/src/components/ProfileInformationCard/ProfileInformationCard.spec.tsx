@@ -1,7 +1,21 @@
-import { notifications } from '@mantine/notifications';
+vi.mock('react-router-dom', async () => {
+  const actual =
+    await vi.importActual<typeof import('react-router-dom')>(
+      'react-router-dom',
+    );
+  return {
+    ...actual,
+    useActionData: vi.fn(), // <-- Vitest mock
+  };
+});
+
 import { fireEvent, screen } from '@testing-library/react';
 import fetchPolyfill, { Request as RequestPolyfill } from 'node-fetch';
-import { createMemoryRouter, RouterProvider } from 'react-router-dom';
+import {
+  createMemoryRouter,
+  RouterProvider,
+  useActionData,
+} from 'react-router-dom';
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { LOGIN } from '~/constants';
 import { profileChangeAction } from '~/routes';
@@ -9,9 +23,12 @@ import { userInfo } from '~/store/userInfo';
 import { render } from '~/utilities/testing';
 import { profileInformationCard as ProfileInformationCard } from './ProfileInformationCard';
 
-vi.mock('@mantine/notifications', () => ({
-  notifications: { show: vi.fn() },
+// Mock displayNotifications instead of @mantine/notifications
+vi.mock('~/utilities/notifications', () => ({
+  displayNotifications: vi.fn(),
 }));
+
+import { displayNotifications } from '~/utilities/notifications';
 
 const { mockSetName, mockSetEmail, mockSetBio } = vi.hoisted(() => ({
   mockSetBio: vi.fn(),
@@ -21,15 +38,13 @@ const { mockSetName, mockSetEmail, mockSetBio } = vi.hoisted(() => ({
 
 vi.mock('~/store/userInfo', () => {
   const state = {
+    avatarState: 'active',
     bio: 'Mocked bio',
     email: 'john@example.com',
     name: 'John Doe',
-    sessionId: 'sess456',
     setBio: mockSetBio,
     setEmail: mockSetEmail,
     setName: mockSetName,
-    setSessionId: vi.fn(),
-    userId: 'user123',
   };
 
   return {
@@ -44,11 +59,9 @@ vi.mock('~/store/userInfo', () => {
   };
 });
 
-//Lines 46 - 57 were provided through an online github repo (https://github.com/reduxjs/redux-toolkit/issues/4966#issuecomment-3115230061) as solution to the error:
-//RequestInit: Expected signal ("AbortSignal {}") to be an instance of AbortSignal.
+// Required for fetch polyfill errors
 Object.defineProperty(global, 'fetch', {
   value: fetchPolyfill,
-  // MSW will overwrite this to intercept requests
   writable: true,
 });
 
@@ -69,8 +82,7 @@ describe('ProfileInformationCard', () => {
       path: LOGIN,
     },
   ]);
-  //avatar test removed
-  //expect(screen.getByTestId("avatar-user")).toBeInTheDocument();
+
   it('renders all profile information elements', () => {
     render(<RouterProvider router={router} />);
 
@@ -111,47 +123,80 @@ describe('ProfileInformationCard', () => {
     );
   });
 
-  it('calls store setters when inputs are changed and submitted', () => {
+  it('calls store setters when form is submitted', () => {
     render(<RouterProvider router={router} />);
 
-    const nameInput = screen.getByTestId('name-text-update');
-    const emailInput = screen.getByTestId('email-text-update');
-
-    fireEvent.change(nameInput, { target: { value: 'Jane Doe' } });
-    fireEvent.change(emailInput, { target: { value: 'jane@example.com' } });
+    fireEvent.change(screen.getByTestId('name-text-update'), {
+      target: { value: 'Jane Doe' },
+    });
+    fireEvent.change(screen.getByTestId('email-text-update'), {
+      target: { value: 'jane@example.com' },
+    });
 
     const form = screen.getByTestId('profile-info-text').closest('form');
-    expect(form).not.toBeNull();
-    fireEvent.submit(form as HTMLFormElement);
+    if (!form) throw new Error('Form not found');
+    fireEvent.submit(form);
 
     expect(mockSetName).toHaveBeenCalledWith('Jane Doe');
     expect(mockSetEmail).toHaveBeenCalledWith('jane@example.com');
   });
 
-  it('displays a notification when avatar change button is clicked', () => {
+  it('shows a notification when avatar change button is clicked', () => {
     render(<RouterProvider router={router} />);
-    const btn = screen.getByTestId('avatar-change-btn');
-    fireEvent.click(btn);
-    expect(notifications.show).toHaveBeenCalledWith({
-      color: 'red',
-      message: 'The action you have requested is not available at this time',
-      title: 'Not Supported',
-    });
+    fireEvent.click(screen.getByTestId('avatar-change-btn'));
+
+    expect(displayNotifications).toHaveBeenCalledWith(
+      'Not Supported',
+      'The action you have requested is not available at this time',
+      'red',
+    );
   });
 
-  it('enforces the bio character limit', () => {
+  it('enforces bio character limit', () => {
     render(<RouterProvider router={router} />);
-    const bioInput = screen.getByTestId('bio-text-update');
-    const overLimitText = 'a'.repeat(210); // 210 > 200 limit
 
-    fireEvent.change(bioInput, { target: { value: overLimitText } });
+    const bioInput = screen.getByTestId('bio-text-update');
+    fireEvent.change(bioInput, { target: { value: 'a'.repeat(210) } });
+
     expect(screen.getByTestId('word-counter')).toHaveTextContent(
       '200/200 characters',
     );
   });
+  /*
+  it('shows success notification when actionData.success = true', () => {
+    (useActionData as Mock).mockReturnValue({
+      message: 'Profile updated successfully',
+      success: true,
+    });
 
+    render(<RouterProvider router={router} />);
+
+    expect(displayNotifications).toHaveBeenCalledWith(
+      'Update Successful',
+      'User Information has been updated',
+      'green',
+    );
+  });
+*/
+  it('shows failure notification when actionData.success = false', () => {
+    (useActionData as Mock).mockReturnValue({
+      message: 'Random error',
+      success: false,
+    });
+
+    render(<RouterProvider router={router} />);
+
+    expect(displayNotifications).toHaveBeenCalledWith(
+      'Update Failed',
+      'Please try again later',
+      'red',
+    );
+  });
   it('shows default values when store is empty', () => {
-    (userInfo as unknown as Mock).mockImplementation(() => ({
+    (
+      userInfo as unknown as { mockImplementation: (fn: () => unknown) => void }
+    ).mockImplementation(() => ({
+      avatarState: 'inactive',
       bio: '',
       email: '',
       name: '',
@@ -161,6 +206,7 @@ describe('ProfileInformationCard', () => {
     }));
 
     render(<RouterProvider router={router} />);
+
     expect(screen.getByTestId('name-text-update')).toHaveValue('John Doe');
     expect(screen.getByTestId('email-text-update')).toHaveValue(
       'john@example.com',

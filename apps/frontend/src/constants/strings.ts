@@ -1,5 +1,3 @@
-export const PROFILE_BIO_DEFAULT = 'Edit Profile to update your bio';
-
 // account actions
 export const ACCOUNT_ACTIONS = 'Account Actions';
 export const ACCOUNT_ACTIONS_SAVE = 'Save Changes';
@@ -25,6 +23,11 @@ export const DELETE_ACCOUNT_HEADER = 'Delete Account';
 export const DELETE_ACCOUNT_TEXT =
   'Permanently delete your account and all data';
 export const DELETE_ACCOUNT_BUTTON_TEXT = 'Delete';
+
+//badge route
+export const BADGE_COLLECTION_HEADER = 'Badge Collection';
+export const BADGE_EARN_BADGES_TEXT =
+  'Earn badges by completing and hitting milestones';
 
 // badge collection
 export const NO_UNLOCKED_BADGES_LINE_1 = 'No badges unlocked yet!';
@@ -135,6 +138,7 @@ export const FRIENDS_TAB_SUGGESTIONS = 'Suggestions';
 export const FRIENDS_CARD_ONLINE = 'Online';
 export const FRIENDS_CARD_STUDYING = 'Studying';
 export const FRIENDS_SEARCHBAR_PLACEHOLDER = 'Search friends...';
+export const FRIENDS_VIEW_PROFILE = 'View Profile';
 // study page
 export const STUDY_ROUTE_HEADER = 'Study Session';
 export const STUDY_ROUTE_SUBHEADER = 'Focus and track your study time';
@@ -152,3 +156,31 @@ export const LEADERBOARD_NO_DATA = 'There is no data for this leaderboard';
 export const LEADERBOARD_SINGLE_BADGES_TEXT = 'badge';
 export const LEADERBOARD_MULTIPLE_BADGES_TEXT = 'badges';
 export const LEADERBOARD_NO_NAME = 'Unknown';
+
+//Profile strings
+export const PROFILE_EDIT_TEXT = 'Edit';
+export const PROFILE_SHARE_TEXT = 'Share';
+export const PROFILE_EXPERIENCE_POINTS_TEXT = 'Experience Points';
+export const PROFILE_BIO_DEFAULT = 'Edit Profile to update your bio';
+export const PROFILE_THIS_WEEKS_STATS_HEADER = 'Your study activity this week';
+export const PROFILE_SUBJECTS_THIS_WEEK_TEXT = 'Subjects This Week:';
+export const PROFILE_LATEST_ACHIEVEMENT_TEXT = 'Your latest achievements';
+export const PROFILE_SUBJECT_DISTRIBUTION_TEXT = 'Subject Distribution';
+export const PROFILE_TIME_SPENT_ON_DIFFERENT_SUBJECTS_TEXT =
+  'Time spent on different subjects';
+export const PROFILE_RECENT_BADGES = 'Recent Badges';
+export const PROFILE_THIS_WEEK_HEADER = 'This Week';
+export const PROFILE_INFORMATION_TEXT = 'Profile Information';
+export const PROFILE_UPDATE_INFORMATION_TEXT =
+  'Update your personal information and profile details';
+export const PROFILE_CHANGE_AVATAR = 'Change Avatar';
+export const PROFILE_AVATAR_IMAGE_SPECS = 'JPG,PNG up to 5MB';
+export const PROFILE_FULL_NAME_TEXT = 'Full Name';
+export const PROFILE_EMAIL_ADDRESS_TEXT = 'Email Address';
+export const PROFILE_BIO_TEXT = 'Bio';
+export const PROFILE_CHARACTER_LIMIT = '/200 characters';
+
+//settings constants
+export const SETTINGS_HEADER = 'Settings';
+export const SETTINGS_DESCRIPTION =
+  'Manage your account settings and preferences. (Profile is the only tab accessible currently)';
