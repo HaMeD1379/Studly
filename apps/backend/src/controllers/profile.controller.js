@@ -32,88 +32,48 @@
  */
 
 import supabase from "../config/supabase.client.js";
-import { createClient } from "@supabase/supabase-js";
 import { handleError, handleSuccess } from "../utils/server.utils.js";
 import STRINGS from "../config/strings.config.js";
 
-// Factory function for creating Supabase clients - can be mocked in tests
-export let createSupabaseClient = createClient;
-
-// Allow tests to override the createClient function
-export const setCreateSupabaseClient = (fn) => {
-  createSupabaseClient = fn;
-};
-
 export const updateProfile = async (req, res) => {
-  const {
-    user_id: userId,
-    full_name: fullName,
-    bio,
-    refresh_token: refreshToken,
-  } = req.body;
-  const accessToken = req.headers.authorization?.replace("Bearer ", "");
+  const { user_id: userId, full_name: fullName, bio } = req.body;
 
   try {
-    const useMock = process.env.STUDLY_USE_MOCK === "1";
-    const isTest = process.env.NODE_ENV === "test";
-    const hasSupabaseEnv = Boolean(
-      process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY
-    );
+    // Build the update object dynamically - only include provided fields
+    const updateData = {};
+    if (fullName !== undefined) updateData.full_name = fullName;
+    if (bio !== undefined) updateData.bio = bio;
 
-    // Update full_name in auth.users metadata if provided and access token exists
-    // In test mode, we still need to run this code to test error handling with mocked client
-    if (
-      fullName !== undefined &&
-      accessToken &&
-      refreshToken &&
-      (isTest || (!useMock && hasSupabaseEnv))
-    ) {
-      // Create a temporary client with the user's session
-      const userSupabase = createSupabaseClient(
-        process.env.SUPABASE_URL || "http://mock-url",
-        process.env.SUPABASE_ANON_KEY || "mock-key"
-      );
-
-      // Set the session using both access_token and refresh_token
-      await userSupabase.auth.setSession({
-        access_token: accessToken,
-        refresh_token: refreshToken,
-      });
-
-      const { error: authError } = await userSupabase.auth.updateUser({
-        data: { full_name: fullName },
-      });
-
-      if (authError) {
-        console.error(STRINGS.PROFILE.UPDATE_ERROR, authError.message);
-        handleError(res, 400, authError.message);
-        return;
-      }
+    // Ensure at least one field is being updated
+    if (Object.keys(updateData).length === 0) {
+      handleError(res, 400, "No fields provided to update");
+      return;
     }
 
-    // Update bio in user_profile table if provided
-    if (bio !== undefined) {
-      const { error: profileError } = await supabase
-        .from("user_profile")
-        .upsert(
-          {
-            user_id: userId,
-            bio,
-          },
-          { onConflict: "user_id" }
-        );
+    // Update user_profile table (only updates provided fields)
+    const { data, error: profileError } = await supabase
+      .from("user_profile")
+      .update(updateData)
+      .eq("user_id", userId)
+      .select();
 
-      if (profileError) {
-        console.error(STRINGS.PROFILE.UPDATE_ERROR, profileError.message);
-        handleError(res, 400, profileError.message);
-        return;
-      }
+    if (profileError) {
+      console.error(STRINGS.PROFILE.UPDATE_ERROR, profileError.message);
+      handleError(res, 400, profileError.message);
+      return;
+    }
+
+    // Check if profile was found and updated
+    if (!data || data.length === 0) {
+      handleError(res, 404, "Profile not found");
+      return;
     }
 
     handleSuccess(res, 200, STRINGS.PROFILE.UPDATE_SUCCESS, {
       user_id: userId,
-      full_name: fullName,
-      bio,
+      email: data[0].email,
+      full_name: data[0].full_name,
+      bio: data[0].bio,
     });
   } catch (error) {
     console.error(STRINGS.PROFILE.UNEXPECTED_UPDATE_ERROR, error.message);
@@ -125,20 +85,17 @@ export const getProfileData = async (req, res) => {
   const { id: userId } = req.params;
 
   try {
-    // Retrieve bio from user_profile table
+    // Retrieve email, full_name, and bio from user_profile table
     const { data, error } = await supabase
       .from("user_profile")
-      .select("bio")
+      .select("email, full_name, bio")
       .eq("user_id", userId)
       .single();
 
     if (error) {
-      // If no profile found (PGRST116), return empty bio
+      // If no profile found (PGRST116), return 404
       if (error.code === "PGRST116") {
-        handleSuccess(res, 200, STRINGS.PROFILE.GET_SUCCESS, {
-          user_id: userId,
-          bio: "",
-        });
+        handleError(res, 404, STRINGS.PROFILE.USER_NOT_FOUND);
         return;
       }
       console.error(STRINGS.PROFILE.GET_ERROR, error.message);
@@ -148,6 +105,8 @@ export const getProfileData = async (req, res) => {
 
     handleSuccess(res, 200, STRINGS.PROFILE.GET_SUCCESS, {
       user_id: userId,
+      email: data?.email || "",
+      full_name: data?.full_name || "",
       bio: data?.bio || "",
     });
   } catch (error) {
@@ -156,7 +115,39 @@ export const getProfileData = async (req, res) => {
   }
 };
 
+export const searchProfiles = async (req, res) => {
+  const { str } = req.query;
+
+  if (!str || str.trim().length === 0) {
+    handleError(res, 400, "Search string is required");
+    return;
+  }
+
+  try {
+    // Search for profiles where email or full_name contains the search string
+    const { data, error } = await supabase
+      .from("user_profile")
+      .select("user_id, email, full_name, bio")
+      .or(`email.ilike.%${str}%,full_name.ilike.%${str}%`);
+
+    if (error) {
+      console.error("Profile search error:", error.message);
+      handleError(res, 400, error.message);
+      return;
+    }
+
+    handleSuccess(res, 200, "Profiles found successfully", {
+      results: data || [],
+      count: data?.length || 0,
+    });
+  } catch (error) {
+    console.error("Unexpected profile search error:", error.message);
+    handleError(res, 500, STRINGS.SERVER.INTERNAL_ERROR);
+  }
+};
+
 export default {
   updateProfile,
   getProfileData,
+  searchProfiles,
 };

@@ -62,7 +62,7 @@ export const createLeaderboardService = (repository = leaderboardRepository) => 
 
   /**
    * Map database study time leaderboard entry to API format.
-   * @param {object} dbStudyTimeEntry - Raw entry from database (user_id, total_minutes, bio)
+   * @param {object} dbStudyTimeEntry - Raw entry from database (user_id, total_minutes, full_name)
    * @param {string} requestingUserId - UUID of requesting user (for isSelf flag)
    * @returns {object} Entry in API format (camelCase)
    */
@@ -76,7 +76,7 @@ export const createLeaderboardService = (repository = leaderboardRepository) => 
 
     return {
       userId: dbStudyTimeEntry.user_id,
-      displayName: isSelf ? 'You' : (dbStudyTimeEntry.bio || null),
+      displayName: isSelf ? 'You' : (dbStudyTimeEntry.full_name || null),
       totalMinutes: dbStudyTimeEntry.total_minutes,
       isSelf
     };
@@ -84,7 +84,7 @@ export const createLeaderboardService = (repository = leaderboardRepository) => 
 
   /**
    * Map database badge count leaderboard entry to API format.
-   * @param {object} dbBadgeCountEntry - Raw entry from database (user_id, badge_count, bio)
+   * @param {object} dbBadgeCountEntry - Raw entry from database (user_id, badge_count, full_name)
    * @param {string} requestingUserId - UUID of requesting user (for isSelf flag)
    * @returns {object} Entry in API format (camelCase)
    */
@@ -98,7 +98,7 @@ export const createLeaderboardService = (repository = leaderboardRepository) => 
 
     return {
       userId: dbBadgeCountEntry.user_id,
-      displayName: isSelf ? 'You' : (dbBadgeCountEntry.bio || null),
+      displayName: isSelf ? 'You' : (dbBadgeCountEntry.full_name || null),
       badgeCount: dbBadgeCountEntry.badge_count,
       isSelf
     };

@@ -13,6 +13,8 @@
 -- user_profile: basic profile info keyed by Supabase auth user id
 create table if not exists public.user_profile (
   user_id uuid not null,
+  email character varying(255) not null,
+  full_name character varying(255) not null,
   bio character varying(200) null,
   constraint user_profile_pkey primary key (user_id)
   -- Real Supabase FK (disabled in local/mock):

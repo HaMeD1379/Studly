@@ -5,21 +5,19 @@
  *  Project: Studly
  *  Author: Shiv Bhagat
  *  Comments: Curated by GPT (Large Language Model)
- *  Last-Updated: 2025-11-02
+ *  Last-Updated: 2025-11-23
  * ────────────────────────────────────────────────────────────────────────────────
  *  Summary
  *  -------
  *  Express middleware responsible for validating profile update request payloads
- *  prior to reaching profile controllers. Ensures authentication tokens are
- *  present and profile data meets validation requirements.
+ *  prior to reaching profile controllers. Ensures profile data meets validation
+ *  requirements.
  *
  *  Features
  *  --------
  *  • Validates user_id is present in request body.
- *  • Ensures access_token is provided in Authorization header (Bearer format).
- *  • Requires refresh_token in request body for session management.
  *  • Validates bio length does not exceed 200 characters.
- *  • Allows optional full_name updates with no specific validation.
+ *  • Allows optional full_name and bio updates.
  *
  *  Design Principles
  *  -----------------
@@ -40,21 +38,10 @@ import { handleError } from "../utils/server.utils.js";
 import STRINGS from "../config/strings.config.js";
 
 export const validateProfileUpdate = (req, res, next) => {
-  const { user_id: userId, bio, refresh_token: refreshToken } = req.body;
-  const accessToken = req.headers.authorization;
+  const { user_id: userId, bio } = req.body;
 
   if (!userId) {
     handleError(res, 400, STRINGS.VALIDATION.MISSING_USER_ID);
-    return;
-  }
-
-  if (!accessToken || !accessToken.startsWith("Bearer ")) {
-    handleError(res, 400, STRINGS.VALIDATION.MISSING_ACCESS_TOKEN);
-    return;
-  }
-
-  if (!refreshToken) {
-    handleError(res, 400, STRINGS.VALIDATION.MISSING_REFRESH_TOKEN);
     return;
   }
 
