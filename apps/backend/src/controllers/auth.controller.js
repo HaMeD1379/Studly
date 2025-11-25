@@ -46,9 +46,6 @@ export const signup = async (req, res) => {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: {
-        data: { full_name: fullName },
-      },
     });
 
     if (error) {
@@ -61,11 +58,25 @@ export const signup = async (req, res) => {
       return;
     }
 
+    // Insert user profile data into user_profile table
+    const { error: profileError } = await supabase.from("user_profile").insert({
+      user_id: data.user.id,
+      email: email,
+      full_name: fullName,
+      bio: "",
+    });
+
+    if (profileError) {
+      console.error(STRINGS.PROFILE.UPDATE_ERROR, profileError.message);
+      handleError(res, 400, profileError.message);
+      return;
+    }
+
     handleSuccess(res, 201, STRINGS.AUTH.USER_CREATED_SUCCESS, {
       user: {
         id: data.user.id,
-        email: data.user.email,
-        full_name: data.user.user_metadata.full_name,
+        email: email,
+        full_name: fullName,
       },
       session: data.session,
     });
@@ -93,7 +104,6 @@ export const login = async (req, res) => {
       user: {
         id: data.user.id,
         email: data.user.email,
-        full_name: data.user.user_metadata.full_name,
       },
     });
   } catch (error) {

@@ -39,12 +39,14 @@ import { Router } from "express";
 import {
   updateProfile,
   getProfileData,
+  searchProfiles,
 } from "../../controllers/profile.controller.js";
 import { validateProfileUpdate } from "../../middleware/profile.validation.middleware.js";
 
 const router = Router();
 
 router.patch("/update", validateProfileUpdate, updateProfile);
+router.get("/search", searchProfiles);
 router.get("/:id", getProfileData);
 
 export default router;
