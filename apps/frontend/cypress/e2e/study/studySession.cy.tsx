@@ -1,9 +1,10 @@
-//import { URL } from 'cypress/constants';
-
 describe('study session timer', () => {
-  // TODO: Add back once e2e auth is finished
-  /*it('can click start and see countdown', () => {
-    cy.visit(`${URL}/study`);
+  beforeEach(() => {
+    cy.login();
+  })
+
+  it('both start and stop are disabled buttons on page enter', () => {
+    cy.contains('button', 'Study Session').click();
 
     cy.get('[data-disabled="true"]')
       .should('exist')
@@ -11,5 +12,5 @@ describe('study session timer', () => {
       cy.get('[data-disabled="true"]')
       .should('exist')
       .should('contain.text', 'Start');
-  });*/
+  });
 });

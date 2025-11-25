@@ -37,6 +37,7 @@ coverage/
 .env.*
 !.env.example     # keep example templates for sharing
 *.local
+apps/frontend/cypress.env.json
 apps/frontend/.env
 apps/backend/.env
 
