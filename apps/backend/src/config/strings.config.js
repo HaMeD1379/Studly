@@ -129,6 +129,33 @@ const STRINGS = {
     INTERNAL_ERROR: "An internal server error occurred.",
   },
 
+  // FRIENDS
+  FRIENDS: {
+    COUNT_SUCCESS: "Friends count retrieved successfully",
+    COUNT_ERROR: "Supabase friends count error: ",
+    UNEXPECTED_COUNT_ERROR: "Unexpected friends count error:",
+    GET_ALL_SUCCESS: "Friends retrieved successfully",
+    GET_ALL_ERROR: "Supabase get all friends error: ",
+    UNEXPECTED_GET_ALL_ERROR: "Unexpected get all friends error:",
+    PENDING_REQUESTS_SUCCESS: "Pending requests retrieved successfully",
+    PENDING_REQUESTS_ERROR: "Supabase get pending requests error: ",
+    UNEXPECTED_PENDING_REQUESTS_ERROR: "Unexpected get pending requests error:",
+    REQUEST_SUCCESS: "Friend request sent successfully",
+    REQUEST_ERROR: "Supabase send friend request error: ",
+    UNEXPECTED_REQUEST_ERROR: "Unexpected send friend request error:",
+    UPDATE_SUCCESS: "Friend status updated successfully",
+    UPDATE_ERROR: "Supabase update friend status error: ",
+    UNEXPECTED_UPDATE_ERROR: "Unexpected update friend status error:",
+    INVALID_STATUS:
+      "Invalid status. Must be 1 (pending), 2 (accepted), or 3 (rejected)",
+    MISSING_USERS: "Both from_user and to_user are required",
+    CANNOT_FRIEND_SELF: "Users cannot send friend requests to themselves",
+    ALREADY_EXISTS: "Friendship already exists between these users",
+    MISSING_FIELDS: "from_user, to_user, and status are required fields",
+    INVALID_STATUS_UPDATE:
+      "Status must be 2 (accept) or 3 (reject) for updates",
+  },
+
   //MOCK
   MOCK: {
     MOCK_USER_EMAIL: "test@example.com",
@@ -181,6 +208,12 @@ const STRINGS = {
     PROFILE_UPDATE_PATCH: "PATCH /api/v1/profile/update",
     PROFILE_DATA: "/api/v1/profile",
     PROFILE_DATA_GET: "GET /api/v1/profile/:id",
+    // Friends API routes
+    FRIENDS_ROUTE: "/api/v1/friends",
+    FRIENDS_COUNT_GET: "GET /api/v1/friends/count/:id",
+    FRIENDS_ALL_GET: "GET /api/v1/friends/all/:id",
+    FRIENDS_REQUEST_POST: "POST /api/v1/friends/request",
+    FRIENDS_STATUS_PATCH: "PATCH /api/v1/friends/status",
     // Sessions API routes
     SESSIONS_ROUTE: "/api/v1/sessions",
     SESSIONS_CREATE_POST: "POST /api/v1/sessions",
