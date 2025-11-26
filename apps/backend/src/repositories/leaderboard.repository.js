@@ -20,7 +20,7 @@
  *  friends: id, from_user, to_user, status, updated_at
  *  sessions: id, user_id, start_time, end_time, total_time, date, subject, etc.
  *  user_badge: badge_id, user_id, earned_at
- *  user_profile: user_id, bio
+ *  user_profile: user_id, email, full_name, bio
  *
  *  Design Notes
  *  ------------
@@ -105,7 +105,7 @@ export const createLeaderboardRepository = (client = supabase) => {
    * @param {Array<string>} [options.userIds] - Optional array of user IDs to filter
    * @param {number} [options.limit=7] - Maximum number of results (used as a guideline)
    * @param {string} [options.ensureUserId] - User ID that must be included if they have data
-   * @returns {Promise<Array>} Array of leaderboard entries with user_id, total_minutes, bio
+   * @returns {Promise<Array>} Array of leaderboard entries with user_id, total_minutes, full_name
    * @throws {Error} If query fails
    */
   const findStudyTimeLeaderboard = async ({ userIds: filterUserIds = null, limit = 7, ensureUserId = null }) => {
@@ -149,7 +149,7 @@ export const createLeaderboardRepository = (client = supabase) => {
       if (userIds.length > 0) {
         const { data: profileRows, error: profileError } = await client
           .from('user_profile')
-          .select('user_id, bio')
+          .select('user_id, full_name')
           .in('user_id', userIds);
 
         if (profileError) {
@@ -157,7 +157,7 @@ export const createLeaderboardRepository = (client = supabase) => {
           console.error('[Leaderboard Repository] Failed to fetch user_profile for studyTime leaderboard:', profileError.message);
         } else if (profileRows && profileRows.length > 0) {
           profilesByUserId = profileRows.reduce((acc, row) => {
-            acc[row.user_id] = row.bio || null;
+            acc[row.user_id] = row.full_name || null;
             return acc;
           }, {});
         }
@@ -167,7 +167,7 @@ export const createLeaderboardRepository = (client = supabase) => {
         .map(([userId, totalMinutes]) => ({
           user_id: userId,
           total_minutes: totalMinutes,
-          bio: Object.prototype.hasOwnProperty.call(profilesByUserId, userId)
+          full_name: Object.prototype.hasOwnProperty.call(profilesByUserId, userId)
             ? profilesByUserId[userId]
             : null,
         }))
@@ -202,7 +202,7 @@ export const createLeaderboardRepository = (client = supabase) => {
    * @param {Array<string>} [options.userIds] - Optional array of user IDs to filter
    * @param {number} [options.limit=7] - Maximum number of results (used as a guideline)
    * @param {string} [options.ensureUserId] - User ID that must be included if they have data
-   * @returns {Promise<Array>} Array of leaderboard entries with user_id, badge_count, bio
+   * @returns {Promise<Array>} Array of leaderboard entries with user_id, badge_count, full_name
    * @throws {Error} If query fails
    */
   const findBadgeCountLeaderboard = async ({ userIds: filterUserIds = null, limit = 7, ensureUserId = null }) => {
@@ -244,14 +244,14 @@ export const createLeaderboardRepository = (client = supabase) => {
       if (userIds.length > 0) {
         const { data: profileRows, error: profileError } = await client
           .from('user_profile')
-          .select('user_id, bio')
+          .select('user_id, full_name')
           .in('user_id', userIds);
 
         if (profileError) {
           console.error('[Leaderboard Repository] Failed to fetch user_profile for badge leaderboard:', profileError.message);
         } else if (profileRows && profileRows.length > 0) {
           profilesByUserId = profileRows.reduce((acc, row) => {
-            acc[row.user_id] = row.bio || null;
+            acc[row.user_id] = row.full_name || null;
             return acc;
           }, {});
         }
@@ -261,7 +261,7 @@ export const createLeaderboardRepository = (client = supabase) => {
         .map(([userId, badgeCount]) => ({
           user_id: userId,
           badge_count: badgeCount,
-          bio: Object.prototype.hasOwnProperty.call(profilesByUserId, userId)
+          full_name: Object.prototype.hasOwnProperty.call(profilesByUserId, userId)
             ? profilesByUserId[userId]
             : null,
         }))
