@@ -74,10 +74,10 @@ const mockUserBadges = [
 ];
 
 const mockProfiles = [
-  { user_id: TEST_USER_ID, bio: 'Test User' },
-  { user_id: TEST_FRIEND_1, bio: 'Friend One' },
-  { user_id: TEST_FRIEND_2, bio: 'Friend Two' },
-  { user_id: TEST_OTHER_USER, bio: 'Top User' }
+  { user_id: TEST_USER_ID, full_name: 'Test User' },
+  { user_id: TEST_FRIEND_1, full_name: 'Friend One' },
+  { user_id: TEST_FRIEND_2, full_name: 'Friend Two' },
+  { user_id: TEST_OTHER_USER, full_name: 'Top User' }
 ];
 
 let server;
