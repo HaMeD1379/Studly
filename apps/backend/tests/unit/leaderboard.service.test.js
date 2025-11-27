@@ -47,12 +47,12 @@ test('getLeaderboards - should return all four leaderboards with correct structu
   const mockRepo = createMockRepository({
     findAcceptedFriendsForUser: async () => [MOCK_FRIEND_ID_1, MOCK_FRIEND_ID_2],
     findStudyTimeLeaderboard: async () => [
-      { user_id: MOCK_FRIEND_ID_1, total_minutes: 1000, bio: 'Friend One' },
-      { user_id: MOCK_USER_ID, total_minutes: 500, bio: 'Me' }
+      { user_id: MOCK_FRIEND_ID_1, total_minutes: 1000, full_name: 'Friend One' },
+      { user_id: MOCK_USER_ID, total_minutes: 500, full_name: 'Me' }
     ],
     findBadgeCountLeaderboard: async () => [
-      { user_id: MOCK_FRIEND_ID_2, badge_count: 15, bio: 'Friend Two' },
-      { user_id: MOCK_USER_ID, badge_count: 10, bio: 'Me' }
+      { user_id: MOCK_FRIEND_ID_2, badge_count: 15, full_name: 'Friend Two' },
+      { user_id: MOCK_USER_ID, badge_count: 10, full_name: 'Me' }
     ]
   });
 
@@ -77,10 +77,10 @@ test('getLeaderboards - should mark requesting user with isSelf=true and display
   const mockRepo = createMockRepository({
     findAcceptedFriendsForUser: async () => [],
     findStudyTimeLeaderboard: async () => [
-      { user_id: MOCK_USER_ID, total_minutes: 500, bio: 'My Bio' }
+      { user_id: MOCK_USER_ID, total_minutes: 500, full_name: 'My Bio' }
     ],
     findBadgeCountLeaderboard: async () => [
-      { user_id: MOCK_USER_ID, badge_count: 10, bio: 'My Bio' }
+      { user_id: MOCK_USER_ID, badge_count: 10, full_name: 'My Bio' }
     ]
   });
 
@@ -101,9 +101,9 @@ test('getLeaderboards - should add sequential rankings starting from 1', async (
   const mockRepo = createMockRepository({
     findAcceptedFriendsForUser: async () => [MOCK_FRIEND_ID_1, MOCK_FRIEND_ID_2],
     findStudyTimeLeaderboard: async () => [
-      { user_id: MOCK_FRIEND_ID_1, total_minutes: 1000, bio: 'First' },
-      { user_id: MOCK_FRIEND_ID_2, total_minutes: 800, bio: 'Second' },
-      { user_id: MOCK_USER_ID, total_minutes: 600, bio: 'Third' }
+      { user_id: MOCK_FRIEND_ID_1, total_minutes: 1000, full_name: 'First' },
+      { user_id: MOCK_FRIEND_ID_2, total_minutes: 800, full_name: 'Second' },
+      { user_id: MOCK_USER_ID, total_minutes: 600, full_name: 'Third' }
     ],
     findBadgeCountLeaderboard: async () => []
   });
@@ -132,7 +132,7 @@ test('getLeaderboards - should map study time fields correctly to camelCase', as
   const mockRepo = createMockRepository({
     findAcceptedFriendsForUser: async () => [],
     findStudyTimeLeaderboard: async () => [
-      { user_id: MOCK_FRIEND_ID_1, total_minutes: 1234.56, bio: 'Test User' }
+      { user_id: MOCK_FRIEND_ID_1, total_minutes: 1234.56, full_name: 'Test User' }
     ],
     findBadgeCountLeaderboard: async () => []
   });
@@ -153,7 +153,7 @@ test('getLeaderboards - should map badge count fields correctly to camelCase', a
     findAcceptedFriendsForUser: async () => [],
     findStudyTimeLeaderboard: async () => [],
     findBadgeCountLeaderboard: async () => [
-      { user_id: MOCK_FRIEND_ID_1, badge_count: 42, bio: 'Badge Master' }
+      { user_id: MOCK_FRIEND_ID_1, badge_count: 42, full_name: 'Badge Master' }
     ]
   });
 
@@ -168,11 +168,11 @@ test('getLeaderboards - should map badge count fields correctly to camelCase', a
   assert.strictEqual(entry.isSelf, false);
 });
 
-test('getLeaderboards - should handle null bio by returning null displayName', async () => {
+test('getLeaderboards - should handle null full_name by returning null displayName', async () => {
   const mockRepo = createMockRepository({
     findAcceptedFriendsForUser: async () => [],
     findStudyTimeLeaderboard: async () => [
-      { user_id: MOCK_FRIEND_ID_1, total_minutes: 500, bio: null }
+      { user_id: MOCK_FRIEND_ID_1, total_minutes: 500, full_name: null }
     ],
     findBadgeCountLeaderboard: async () => []
   });
@@ -189,7 +189,7 @@ test('getLeaderboards - should include requesting user even with no friends', as
   const mockRepo = createMockRepository({
     findAcceptedFriendsForUser: async () => [],
     findStudyTimeLeaderboard: async () => [
-      { user_id: MOCK_USER_ID, total_minutes: 100, bio: 'Solo' }
+      { user_id: MOCK_USER_ID, total_minutes: 100, full_name: 'Solo' }
     ],
     findBadgeCountLeaderboard: async () => []
   });
