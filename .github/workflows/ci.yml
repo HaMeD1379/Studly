@@ -3,8 +3,9 @@
 # Project: Studly
 # Author: Hamed Esmaeilzadeh (team member)
 # Generated / scaffolded with assistance from ChatGPT (GPT-5 Thinking mini)
+# Help with e2e examples from: https://docs.cypress.io/app/continuous-integration/github-actions
 # Date: 2025-10-07
-# Modified: 2025-10-27
+# Modified: 2025-11-27
 # ----------------------------------------------------------------------------
 name: CI
 
@@ -101,10 +102,10 @@ jobs:
           build: npm run build
           start: npm run preview
           browser: chrome
+          working-directory: apps/frontend
         env:
-          email: $E2E_TEST_EMAIL
-          password: $E2E_TEST_PASSWORD
-        working-directory: apps/frontend
+          CYPRESS_email: $E2E_TEST_EMAIL
+          CYPRESS_password: $E2E_TEST_PASSWORD
 
       - name: Build frontend
         run: npm run build
