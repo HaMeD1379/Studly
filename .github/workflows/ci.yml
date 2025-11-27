@@ -98,10 +98,10 @@ jobs:
 
       - name: Run frontend e2e tests
         uses: cypress-io/github-action@v6
+        working-directory: apps/frontend
         with:
           start: npm run start
           wait-on: 'http://localhost:5173'
-          working-directory: apps/frontend
         env:
           CYPRESS_email: $E2E_TEST_EMAIL
           CYPRESS_password: $E2E_TEST_PASSWORD
