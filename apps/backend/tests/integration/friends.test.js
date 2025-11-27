@@ -59,7 +59,7 @@ test("GET /api/v1/friends/count/:id - should return total friends count for a us
     if (table === "friends") {
       return {
         select: () => ({
-          or: () => Promise.resolve({ count: 5, error: null }),
+          eq: () => Promise.resolve({ count: 5, error: null }),
         }),
       };
     }
@@ -96,7 +96,7 @@ test("GET /api/v1/friends/count/:id - should return friends count filtered by st
     if (table === "friends") {
       return {
         select: () => ({
-          or: () => ({
+          eq: () => ({
             eq: () => Promise.resolve({ count: 3, error: null }),
           }),
         }),
@@ -133,7 +133,7 @@ test("GET /api/v1/friends/count/:id - should return 400 for invalid status param
     if (table === "friends") {
       return {
         select: () => ({
-          or: () => ({
+          eq: () => ({
             eq: () => Promise.resolve({ count: 0, error: null }),
           }),
         }),
@@ -170,7 +170,7 @@ test("GET /api/v1/friends/count/:id - should handle Supabase error during count"
     if (table === "friends") {
       return {
         select: () => ({
-          or: () =>
+          eq: () =>
             Promise.resolve({
               count: null,
               error: { message: "Database error" },
