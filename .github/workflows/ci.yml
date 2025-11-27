@@ -99,7 +99,9 @@ jobs:
       - name: Run frontend e2e tests
         uses: cypress-io/github-action@v6
         with:
-          start: npm run start
+          build: npm run build
+          start: npm run preview -- --port 5173
+          wait-on: 'http://localhost:5173'
           browser: chrome
           working-directory: apps/frontend
         env:
