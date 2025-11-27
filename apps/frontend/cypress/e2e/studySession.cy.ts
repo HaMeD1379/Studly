@@ -2,7 +2,7 @@ describe('study session timer', () => {
   beforeEach(() => {
     cy.login();
     cy.contains('button', 'Study Session').click();
-  })
+  });
 
   it('both start and stop are disabled buttons on page enter', () => {
     cy.get('[data-disabled="true"]')

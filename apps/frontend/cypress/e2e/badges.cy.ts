@@ -8,10 +8,10 @@ describe('badges', () => {
     cy.contains('5');
     cy.contains('15');
     cy.contains('33%');
-  
+
     cy.contains('5 of 15 badges unlocked');
     cy.get('[role="progressbar"]').should('have.attr', 'aria-valuenow', '33');
-  
+
     cy.contains('Getting Started');
     cy.contains('Complete 5 study sessions');
     cy.contains('Unlocked 2025-11-27');
