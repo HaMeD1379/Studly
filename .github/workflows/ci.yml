@@ -65,6 +65,8 @@ jobs:
       SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
       VITE_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       VITE_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+      E2E_TEST_EMAIL: ${{ secrets.E2E_TEST_EMAIL }}
+      E2E_TEST_PASS: ${{ secrets.E2E_TEST_PASS }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -89,11 +91,15 @@ jobs:
         run: npm run format
         working-directory: apps/frontend
 
-      - name: Run frontend tests
-        run: npm test
+      - name: Run frontend unit tests
+        run: npm run test:unit
         working-directory: apps/frontend
 
-      - name: Build frontend (Vite)
+      - name: Run frontend e2e tests
+        run: start-server-and-test 'npm run start' http://localhost:5173 'npx cypress run --env email=E2E_TEST_EMAIL,passsword=E2E_TEST_PASSWORD'
+        working-directory: apps/frontend
+
+      - name: Build frontend
         run: npm run build
         working-directory: apps/frontend
 

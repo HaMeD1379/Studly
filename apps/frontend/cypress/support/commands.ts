@@ -11,7 +11,7 @@ declare global {
 Cypress.Commands.add('login', () => {
   cy.visit(URL);
 
-  cy.get('[name="email"]').type(`${Cypress.env('E2E_TEST_EMAIL')}`);
-  cy.get('[name="password"]').type(`${Cypress.env('E2E_TEST_PASS')}`);
+  cy.get('[name="email"]').type(`${Cypress.env('email')}`);
+  cy.get('[name="password"]').type(`${Cypress.env('password')}`);
   cy.contains('button', 'Sign In').click();
 });
