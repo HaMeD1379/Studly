@@ -96,7 +96,7 @@ jobs:
         working-directory: apps/frontend
 
       - name: Run frontend e2e tests
-        run: start-server-and-test 'npm run start' http://localhost:5173 'npx cypress run --env email=E2E_TEST_EMAIL,passsword=E2E_TEST_PASSWORD'
+        run: npx start-server-and-test 'npm run start' http://localhost:5173 'npx cypress run --env email=E2E_TEST_EMAIL,passsword=E2E_TEST_PASSWORD'
         working-directory: apps/frontend
 
       - name: Build frontend
