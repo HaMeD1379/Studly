@@ -99,12 +99,8 @@ jobs:
       - name: Run frontend e2e tests
         uses: cypress-io/github-action@v6
         with:
-          start: npm start
-          wait-on: 'http://localhost:5173'
-          working-directory: apps/frontend
-        env:
-          CYPRESS_email: $E2E_TEST_EMAIL
-          CYPRESS_password: $E2E_TEST_PASSWORD
+          runTests: false
+        run: npx start-server-and-test 'npm run start' http://localhost:5173 'npx cypress run --env email=$E2E_TEST_EMAIL,password=$E2E_TEST_PASS'
 
       - name: Build frontend
         run: npm run build
