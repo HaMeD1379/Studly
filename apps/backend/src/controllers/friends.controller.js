@@ -34,7 +34,7 @@ import supabase from "../config/supabase.client.js";
 import { handleError, handleSuccess } from "../utils/server.utils.js";
 
 /**
- * Get count of friends by status
+ * Get count of friends by status (sent requests only)
  * GET /api/v1/friends/count/:id?status=1
  */
 export const getFriendsCount = async (req, res) => {
@@ -45,7 +45,7 @@ export const getFriendsCount = async (req, res) => {
     let query = supabase
       .from("friends")
       .select("*", { count: "exact", head: true })
-      .or(`from_user.eq.${userId},to_user.eq.${userId}`);
+      .eq("from_user", userId);
 
     if (status) {
       const statusNum = Number.parseInt(status, 10);
@@ -108,7 +108,7 @@ export const getPendingRequests = async (req, res) => {
 };
 
 /**
- * Get all friends with details by status
+ * Get all friends sent by user (from_user = userId)
  * GET /api/v1/friends/all/:id?status=2
  */
 export const getAllFriends = async (req, res) => {
@@ -116,10 +116,7 @@ export const getAllFriends = async (req, res) => {
   const { status } = req.query;
 
   try {
-    let query = supabase
-      .from("friends")
-      .select("*")
-      .or(`from_user.eq.${userId},to_user.eq.${userId}`);
+    let query = supabase.from("friends").select("*").eq("from_user", userId);
 
     if (status) {
       const statusNum = Number.parseInt(status, 10);
