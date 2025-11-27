@@ -100,9 +100,8 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           build: npm run build
-          start: npm run preview -- --host --port 5173
+          start: npm run preview -- --port 5173
           wait-on: 'http://localhost:5173'
-          browser: chrome
           working-directory: apps/frontend
         env:
           CYPRESS_email: $E2E_TEST_EMAIL
