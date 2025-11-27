@@ -98,7 +98,6 @@ jobs:
 
       - name: Setup cypress action
         uses: cypress-io/github-action@v6
-        working-directory: apps/frontend
         with:
           runTests: false
 
