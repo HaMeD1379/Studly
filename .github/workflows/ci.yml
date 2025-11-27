@@ -102,6 +102,7 @@ jobs:
           start: npm start
           wait-on: 'http://localhost:5173'
           working-directory: apps/frontend
+          browser: chrome
         env:
           CYPRESS_email: $E2E_TEST_EMAIL
           CYPRESS_password: $E2E_TEST_PASSWORD
