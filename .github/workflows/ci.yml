@@ -93,7 +93,7 @@ jobs:
         working-directory: apps/frontend
 
       - name: Run frontend unit tests
-        run: npm run test
+        run: npm test
         working-directory: apps/frontend
 
     #  - name: Setup cypress action
