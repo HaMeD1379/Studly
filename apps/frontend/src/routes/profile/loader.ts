@@ -4,6 +4,7 @@ import {
   fetchWeeklySessionSummary,
 } from '~/api';
 import { fetchAllUserBadges } from '~/api/badges';
+import { getFriendsCount } from '~/api/friends';
 import { userInfo } from '~/store';
 import type {
   Badge,
@@ -11,6 +12,7 @@ import type {
   StudySession,
   TodaysStudyStatistics,
   UnlockedBadge,
+  FriendCount
 } from '~/types';
 import { formatISOToYYYYMMDD } from '~/utilities/time';
 
@@ -23,6 +25,7 @@ type CombinedLoader = {
       unlockedBadges: UnlockedBadge[];
       allBadges: Badge[];
     };
+    friendCount?: FriendCount
   };
   error: boolean;
 };
@@ -30,12 +33,13 @@ type CombinedLoader = {
 export const loader = async (): Promise<CombinedLoader> => {
   const { userId } = userInfo.getState();
 
-  const [sessionSummary, profileBio, sessionsList, badgesResponse] =
+  const [sessionSummary, profileBio, sessionsList, badgesResponse, friendCount] =
     await Promise.all([
       fetchWeeklySessionSummary(),
       fetchBio(userId),
       fetchAllTimeSummary(),
       fetchAllUserBadges(),
+      getFriendsCount()
     ]);
 
   const allBadges: Badge[] = [];
@@ -63,8 +67,9 @@ export const loader = async (): Promise<CombinedLoader> => {
       profileBio: profileBio.data,
       sessionSummary: sessionSummary.data,
       sessions: sessionsList.data?.sessions,
+      friendCount: friendCount.data
     },
     error:
-      !!sessionSummary.error || !!profileBio.error || !!badgesResponse.error,
+      !!sessionSummary.error || !!profileBio.error || !!badgesResponse.error || !!friendCount.error,
   };
 };

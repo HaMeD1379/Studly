@@ -134,11 +134,12 @@ export const FRIENDS_HEADER_DESCRIPTION =
   'Connect with fellow students and study together';
 export const FRIENDS_TAB_FRIENDS = 'Friends';
 export const FRIENDS_TAB_REQUESTS = 'Requests';
-export const FRIENDS_TAB_SUGGESTIONS = 'Suggestions';
+export const FRIENDS_TAB_RECEIVED_REQUESTS = 'Requests Received';
 export const FRIENDS_CARD_ONLINE = 'Online';
 export const FRIENDS_CARD_STUDYING = 'Studying';
 export const FRIENDS_SEARCHBAR_PLACEHOLDER = 'Search friends...';
 export const FRIENDS_VIEW_PROFILE = 'View Profile';
+export const FRIENDS_SEARCH_NO_USERS = 'No users found'
 // study page
 export const STUDY_ROUTE_HEADER = 'Study Session';
 export const STUDY_ROUTE_SUBHEADER = 'Focus and track your study time';
@@ -184,3 +185,12 @@ export const PROFILE_CHARACTER_LIMIT = '/200 characters';
 export const SETTINGS_HEADER = 'Settings';
 export const SETTINGS_DESCRIPTION =
   'Manage your account settings and preferences. (Profile is the only tab accessible currently)';
+
+//Home constants
+export const HOME_WELCOME_MESSAGE = 'Welcome back,'
+export const HOME_WELCOME_DESCRIPTION = 'Ready to continue your learning journey?'
+export const HOME_QUICK_ACTIONS_TEXT = 'Quick Actions'
+export const HOME_NEXT_BADGE_PROGRESS_TEXT = 'Next Badge Progress'
+export const HOME_TODAYS_GOAL_TEXT = `Today's goal`
+export const HOME_START_STUDY_SESSION_TEXT = 'Start Study Session'
+export const HOME_NEXT_BADGE_PROGRESS_DESCRIPTION = 'hours until next badge'

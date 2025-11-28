@@ -1,13 +1,16 @@
-import { MantineProvider } from '@mantine/core';
-import { Notifications } from '@mantine/notifications';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { ErrorBoundary, Navbar, PageSpinner } from '~/components';
+import { MantineProvider } from "@mantine/core";
+import { Notifications } from "@mantine/notifications";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { ErrorBoundary, Navbar, PageSpinner } from "~/components";
 import {
   Badges,
   badgesLoader,
   Forgot,
   Friends,
+  friendsAction,
+  friendsLoader,
   Home,
+  homeLoader,
   Leaderboard,
   Login,
   leaderboardLoader,
@@ -23,10 +26,10 @@ import {
   studyLoader,
   UpdatePassword,
   UserProfile,
-} from '~/routes';
-import '@mantine/core/styles.css';
-import '@mantine/notifications/styles.css';
-import '@mantine/dates/styles.css';
+} from "~/routes";
+import "@mantine/core/styles.css";
+import "@mantine/notifications/styles.css";
+import "@mantine/dates/styles.css";
 import {
   BADGES,
   CHANGE_PASSWORD,
@@ -40,7 +43,7 @@ import {
   SETTINGS,
   SIGNUP,
   STUDY,
-} from './constants';
+} from "./constants";
 
 const router = createBrowserRouter([
   {
@@ -67,9 +70,21 @@ const router = createBrowserRouter([
         loader: ProfileLoader,
         path: PROFILE,
       },
-      { element: <Home />, path: HOME },
       { action: profileChangeAction, element: <Settings />, path: SETTINGS },
-      { element: <Friends />, path: FRIENDS },
+      {
+        action: friendsAction,
+        element: <Friends />,
+        //errorElement: <ErrorBoundary />,
+        hydrateFallbackElement: <PageSpinner />,
+        path: FRIENDS,
+        loader: friendsLoader,
+      },
+      {
+        loader: homeLoader,
+        element: <Home />,
+        hydrateFallbackElement: <PageSpinner />,
+        path: HOME,
+      },
       {
         element: <Leaderboard />,
         errorElement: <ErrorBoundary />,

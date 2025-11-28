@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { login } from '~/api';
-import { AVATAR_ONLINE, STUDY } from '~/constants';
+import { AVATAR_ONLINE, HOME } from '~/constants';
 import { action } from './action';
 
 vi.mock('~/api', () => ({
@@ -94,7 +94,7 @@ describe('login action', () => {
     expect(result).toBeInstanceOf(Response);
     if (result instanceof Response) {
       expect(result.status).toBe(302);
-      expect(result.headers.get('Location')).toBe(STUDY);
+      expect(result.headers.get('Location')).toBe(HOME);
     }
 
     expect(mockSetAccessToken).toHaveBeenCalledWith('access123');

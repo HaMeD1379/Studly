@@ -81,7 +81,6 @@ export const fetchWeeklySessionSummary = async () => {
   const to = toLocalISOString(new Date(Date.now()));
 
   const from = toLocalISOString(getSunday(new Date(Date.now())));
-  console.log(`from ${from} to ${to}`);
   const path = `${SESSIONS_SUMMARY}?userId=${userId}&from=${from}&to=${to}`;
   const result = await request<SessionSummaryLoader>(RequestMethods.GET, path);
   return result;

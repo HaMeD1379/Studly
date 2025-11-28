@@ -1,7 +1,7 @@
 // Using fetchers and actions from: https://reactrouter.com/how-to/fetchers
-import { Container, Flex, Grid, Text } from '@mantine/core';
-import { useState } from 'react';
-import { useFetcher, useLoaderData } from 'react-router';
+import { Container, Flex, Grid, Text } from "@mantine/core";
+import { useEffect, useState } from "react";
+import { useFetcher, useLoaderData } from "react-router";
 import {
   ErrorBoundary,
   RecentStudySessions,
@@ -9,9 +9,10 @@ import {
   StudySession,
   StudyTips,
   TodaysStudyStatistics,
-} from '~/components';
-import { STUDY_ROUTE_HEADER, STUDY_ROUTE_SUBHEADER } from '~/constants';
-import { RequestMethods } from '~/types';
+} from "~/components";
+import { STUDY_ROUTE_HEADER, STUDY_ROUTE_SUBHEADER } from "~/constants";
+import { RequestMethods } from "~/types";
+import { userInfo } from "~/store";
 
 export const Study = () => {
   const loaderData = useLoaderData();
@@ -20,7 +21,7 @@ export const Study = () => {
 
   const [startStudyTimestamp, setStartStudyTimestamp] = useState<number>(0);
   const [endStudyTimestamp, setEndStudyTimestamp] = useState<number>(0);
-  const [subject, setSubject] = useState<string | null>('');
+  const [subject, setSubject] = useState<string | null>("");
   const [sessionLength, setSessionLength] = useState<number>(0);
 
   const summaryData = loaderData.data?.summary;
@@ -37,11 +38,11 @@ export const Study = () => {
         endTime: endTimestamp,
         startTime: startTimestamp,
         subject,
-        type: 'start',
+        type: "start",
       },
       {
         method: RequestMethods.POST,
-      },
+      }
     );
   };
 
@@ -51,29 +52,29 @@ export const Study = () => {
 
     fetcher.submit(
       {
-        type: 'stop',
+        type: "stop",
       },
       {
         method: RequestMethods.PATCH,
-      },
+      }
     );
   };
 
   return (
-    <Container fluid p='xl'>
+    <Container fluid p="xl">
       {loaderData?.error || actionData?.error ? (
         <ErrorBoundary />
       ) : (
         <>
-          <Text fw={700} size='xl'>
+          <Text fw={700} size="xl">
             {STUDY_ROUTE_HEADER}
           </Text>
-          <Text fw={300} mb={32} size='md'>
+          <Text fw={300} mb={32} size="md">
             {STUDY_ROUTE_SUBHEADER}
           </Text>
-          <Grid grow gutter='lg'>
-            <Grid.Col span='auto'>
-              <Flex direction='column' gap='lg'>
+          <Grid grow gutter="lg">
+            <Grid.Col span="auto">
+              <Flex direction="column" gap="lg">
                 <StudySession
                   endStudyTimestamp={endStudyTimestamp}
                   isSessionSetup={!!subject && !!sessionLength}
@@ -87,8 +88,8 @@ export const Study = () => {
                 />
               </Flex>
             </Grid.Col>
-            <Grid.Col span='auto'>
-              <Flex direction='column' gap='lg'>
+            <Grid.Col span="auto">
+              <Flex direction="column" gap="lg">
                 <TodaysStudyStatistics
                   sessionsLogged={summaryData?.sessionsLogged ?? 0}
                   totalMinutesStudied={summaryData?.totalMinutesStudied ?? 0}

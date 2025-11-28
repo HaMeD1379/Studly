@@ -22,3 +22,6 @@ export * from './StudyTips/StudyTips';
 export * from './TodaysStudyStatistics/TodaysStudyStatistics';
 export * from './UpdatePassword/UpdatePassword';
 export * from './UserCard/UserCard';
+export * from './HomeHeader/HomeHeader'
+export * from './FindFriends/FindFriends'
+export * from './FriendRequest/FriendRequest'

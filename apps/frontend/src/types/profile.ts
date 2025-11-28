@@ -13,3 +13,14 @@ export type subjectSummaries = {
   totalMinutesStudied: number;
   sessionsLogged: number;
 };
+
+export type findUserProfile = {
+  id: string;
+  profile: profile
+}
+
+export type profile = {
+  full_name: string;
+  email: string;
+  bio: string;
+}
