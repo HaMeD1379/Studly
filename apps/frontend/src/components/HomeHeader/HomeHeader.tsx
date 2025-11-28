@@ -1,14 +1,14 @@
-import { userInfo } from "~/store";
-import { Text, Box, Flex, Pill, Card, Button, Stack } from "@mantine/core";
+import { Box, Button, Card, Flex, Pill, Stack, Text } from "@mantine/core";
+import { IconClock, IconTarget, IconTrendingUp, IconTrophy } from "@tabler/icons-react";
+import { useEffect } from "react";
+import { useLoaderData, useNavigate } from "react-router";
 import {
+  BADGES,
   HOME_WELCOME_DESCRIPTION,
   HOME_WELCOME_MESSAGE,
   STUDY,
-  BADGES,
 } from "~/constants";
-import { useLoaderData, useNavigate } from "react-router";
-import { useEffect } from "react";
-import { IconClock, IconTrendingUp, IconTrophy, IconTarget } from "@tabler/icons-react";
+import { userInfo } from "~/store";
 import { hoursAndMinutes } from "~/utilities/time";
 
 export const HomeHeader = () => {
@@ -31,13 +31,13 @@ export const HomeHeader = () => {
       setName(name);
       setBio(bio);
     }
-  }, [profileData, setName, setBio, name, bio]);
+  }, [setName, setBio, name, bio]);
 
   return (
     <Box>
       <Flex direction="column" p="md">
         {/* Header with stats pills */}
-        <Flex direction="row" justify="space-between" align="center">
+        <Flex align="center" direction="row" justify="space-between">
           <Flex direction="column">
             <Text fw={700} size="lg">
               {`${HOME_WELCOME_MESSAGE} ${name}! 👋`}
@@ -80,9 +80,9 @@ export const HomeHeader = () => {
             w="100%"
             withBorder
           >
-            <Flex direction="column" align="center" justify="center" style={{ minHeight: 120 }}>
-              <IconTarget size={40} color="gray" style={{ marginBottom: 8 }} />
-              <Text fw={500} size="md" c="dimmed" ta="center">
+            <Flex align="center" direction="column" justify="center" style={{ minHeight: 120 }}>
+              <IconTarget color="gray" size={40} style={{ marginBottom: 8 }} />
+              <Text c="dimmed" fw={500} size="md" ta="center">
                 View upcoming badges...
               </Text>
             </Flex>
@@ -97,25 +97,25 @@ export const HomeHeader = () => {
             w="100%"
             withBorder
           >
-            <Text fw={500} size="xl" mb="md">
+            <Text fw={500} mb="md" size="xl">
               Quick Actions
             </Text>
             <Stack gap="sm">
               <Button
-                leftSection={<IconClock />}
-                variant="filled"
                 color="black"
                 fullWidth
+                leftSection={<IconClock />}
                 onClick={() => navigate(STUDY)}
+                variant="filled"
               >
                 Start Study Session
               </Button>
               <Button
-                leftSection={<IconTrophy />}
-                variant="outline"
                 color="black"
                 fullWidth
+                leftSection={<IconTrophy />}
                 onClick={() => navigate(BADGES)}
+                variant="outline"
               >
                 View Badges
               </Button>
@@ -131,11 +131,11 @@ export const HomeHeader = () => {
             w="100%"
             withBorder
           >
-            <Flex direction="column" align="center" justify="center" style={{ minHeight: 120 }}>
-              <Text fw={500} size="sm" c="dimmed" mb="xs">
+            <Flex align="center" direction="column" justify="center" style={{ minHeight: 120 }}>
+              <Text c="dimmed" fw={500} mb="xs" size="sm">
                 Total Time Studied Today
               </Text>
-              <Text fw={700} size="2rem" c="black">
+              <Text c="black" fw={700} size="2rem">
                 {hoursAndMinutes(hoursToday)}
               </Text>
             </Flex>
