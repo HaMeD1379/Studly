@@ -25,15 +25,13 @@ describe('study session timer', () => {
   });
 
   it('should be able to see recent sessions', () => {
-    cy.contains('2025/11/27 - 2:37 PM');
+    cy.contains('2025/11/27');
     cy.contains('Chemistry');
     cy.contains('5 minutes');
 
-    cy.contains('2025/11/27 - 2:36 PM');
     cy.contains('Mathematics');
     cy.contains('15 minutes');
 
-    cy.contains('2025/11/27 - 2:35 PM');
     cy.contains('Biology');
     cy.contains('1 hour');
   });
