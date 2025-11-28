@@ -45,6 +45,7 @@ import authRoutes from "./routes/v1/authentication.routes.js";
 import sessionsRoutes from "./routes/v1/sessions.routes.js";
 import profileRoutes from "./routes/v1/profile.routes.js";
 import friendsRoutes from "./routes/v1/friends.routes.js";
+import feedRoutes from "./routes/v1/feed.routes.js";
 import requireInternalApiKey from "./middleware/internal-api-key.middleware.js";
 import badgesRoutes from "./routes/v1/badges.routes.js";
 import leaderboardRoutes from "./routes/v1/leaderboard.routes.js";
@@ -71,6 +72,7 @@ app.use(STRINGS.API.AUTH_ROUTE, authRoutes);
 app.use(STRINGS.API.SESSIONS_ROUTE, sessionsRoutes);
 app.use(STRINGS.API.PROFILE_ROUTE, profileRoutes);
 app.use(STRINGS.API.FRIENDS_ROUTE, friendsRoutes);
+app.use(STRINGS.API.FEED_ROUTE, feedRoutes);
 app.use(STRINGS.API.BADGES_ROUTE, badgesRoutes);
 app.use(STRINGS.API.LEADERBOARD_ROUTE, leaderboardRoutes);
 
