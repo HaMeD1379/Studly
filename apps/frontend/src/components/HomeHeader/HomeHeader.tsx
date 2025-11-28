@@ -15,15 +15,37 @@ import {
 import { userInfo } from '~/store';
 import { hoursAndMinutes } from '~/utilities/time';
 export const HomeHeader = () => {
-  const loaderData = useLoaderData();
-  const profileData = loaderData.data?.userProfileInfo;
-  const sessionData = loaderData.data?.todaySession;
-  const badgesData = loaderData.data.unlockedBadges;
+  const loaderData = useLoaderData() as
+    | {
+        data?: {
+          userProfileInfo?: { data?: { full_name?: string; bio?: string } };
+          todaySession?: { totalMinutesStudied?: number | string };
+          unlockedBadges?: unknown[];
+        };
+      }
+    | undefined;
 
-  const name = profileData.data.full_name || 'John Doe';
-  const bio = profileData.data.bio || 'No bio provided';
-  const hoursToday = sessionData.totalMinutesStudied || '0 minutes';
-  const numBadges = badgesData.length || 0;
+  const profileData = loaderData?.data?.userProfileInfo?.data ?? {};
+  const sessionData = loaderData?.data?.todaySession ?? {};
+  const badgesData = loaderData?.data?.unlockedBadges ?? [];
+
+  // Safely read and fall back to defaults
+  const name =
+    typeof profileData.full_name === 'string' && profileData.full_name.trim()
+      ? profileData.full_name
+      : 'John Doe';
+
+  const bio =
+    typeof profileData.bio === 'string' && profileData.bio.trim()
+      ? profileData.bio
+      : 'No bio provided';
+
+  const hoursToday =
+    typeof sessionData.totalMinutesStudied === 'number'
+      ? sessionData.totalMinutesStudied
+      : 0;
+
+  const numBadges = Array.isArray(badgesData) ? badgesData.length : 0;
   const { setName, setBio } = userInfo();
   useEffect(() => {
     setName(name);
