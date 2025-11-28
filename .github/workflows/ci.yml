@@ -108,7 +108,7 @@ jobs:
           CYPRESS_email: ${{ env.E2E_TEST_EMAIL }}
           CYPRESS_password: ${{ env.E2E_TEST_PASS }}
 
-      - name: Upload Cypress screenshots
+      - name: Upload cypress screenshots if exists
         if: always()
         uses: actions/upload-artifact@v4
         with:
