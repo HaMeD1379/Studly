@@ -17,6 +17,7 @@ export type subjectSummaries = {
 export type findUserProfile = {
   id: string;
   profile: profile;
+  friendsSince?: string;
 };
 
 export type profile = {

@@ -13,12 +13,23 @@ import {
   FriendRequest,
   FriendsHeader,
   FriendsStatus,
+  ViewUserProfile,
 } from '~/components';
 import { FRIENDS_TAB_FRIENDS, FRIENDS_TAB_REQUESTS } from '~/constants';
 import { friendsTabs as tabs } from '~/constants/friends';
 import type { Result } from '~/types';
 
 export const Friends = () => {
+  const [view, setView] = useState<'default' | 'profile'>('default');
+  const [selectedFriend, setSelectedFriend] = useState<Result | null>(null);
+  const [friendsSince, setFriendsSince] = useState('');
+
+  const displayUserProfile = (friend: Result, since: string) => {
+    setSelectedFriend(friend);
+    setFriendsSince(since);
+    setView('profile');
+  };
+
   const [selectedTab, setSelectedTab] = useState(
     FRIENDS_TAB_FRIENDS.toLowerCase(),
   );
@@ -36,12 +47,24 @@ export const Friends = () => {
 
   const isSearching = searchResults !== null;
 
+  if (view === 'profile' && selectedFriend) {
+    return (
+      <Container fluid p='xl'>
+        <FriendsHeader isHidden={false} />
+        <ViewUserProfile
+          friend={selectedFriend}
+          friendshipStartDate={friendsSince}
+        />
+      </Container>
+    );
+  }
+
   return (
     <Container fluid p='xl'>
       <FriendsHeader isHidden={!isSearching} />
 
       {isSearching ? (
-        <FindFriends results={searchResults} />
+        <FindFriends onAction={displayUserProfile} results={searchResults} />
       ) : (
         <Flex direction='column' gap='lg' w='100%'>
           {/* Top bar: Tabs + Refresh */}
@@ -70,7 +93,7 @@ export const Friends = () => {
 
           <Box>
             {selectedTab === FRIENDS_TAB_FRIENDS.toLowerCase() && (
-              <FriendsStatus />
+              <FriendsStatus onAction={displayUserProfile} />
             )}
             {selectedTab === FRIENDS_TAB_REQUESTS.toLowerCase() && (
               <FriendRequest />

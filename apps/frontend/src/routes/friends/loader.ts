@@ -32,7 +32,6 @@ const buildProfile = async (list: FriendsList): Promise<findUserProfile[]> => {
   return Promise.all(
     list.friends.map(async (entry) => {
       const friendId = entry.to_user;
-      //if(type && type === "request" && friendId !== userId){
 
       const profile = await findUserById(friendId);
       const safeProfile = profile.data ?? {
@@ -40,8 +39,9 @@ const buildProfile = async (list: FriendsList): Promise<findUserProfile[]> => {
         email: '',
         full_name: '',
       };
-
+      const friendsSince = entry.updated_at;
       return {
+        friendsSince: friendsSince,
         id: friendId,
         profile: safeProfile,
       };
@@ -82,6 +82,7 @@ export const loader = async (): Promise<FriendsLoader> => {
   let receivedRequestsProfile: findUserProfile[] = [];
   if (friendsList.data?.data) {
     friendsProfile = await buildProfile(friendsList.data.data);
+    console.log('friends', friendsProfile);
   }
   if (pendingFriendships.data?.data) {
     requestProfile = await buildProfile(pendingFriendships.data.data);

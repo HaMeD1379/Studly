@@ -1,4 +1,10 @@
-import { Card, Flex, Text } from '@mantine/core';
+import { Card, Center, SimpleGrid, Text } from '@mantine/core';
+import {
+  IconAward,
+  IconClock,
+  IconTrendingUp,
+  IconUsers,
+} from '@tabler/icons-react';
 import { useLoaderData } from 'react-router-dom';
 import { profileInfo } from '~/store';
 
@@ -19,33 +25,55 @@ export const ProfileCard = () => {
   };
 
   const stats = [
-    { label: 'Day Streak', testId: 'day-streak-card', value: '12' },
     {
+      icon: <IconTrendingUp color='green' size={28} />,
+      label: 'Day Streak',
+      testId: 'day-streak-card',
+      value: '12',
+    },
+    {
+      icon: <IconClock color='blue' size={28} />,
       label: 'Total Study',
       testId: 'total-study-card',
       value: allTimeHoursStudied,
     },
-    { label: 'Badges', testId: 'badges-card', value: numBadges.toString() },
-    { label: 'Friends', testId: 'friends-card', value: numFriends.toString() },
+    {
+      icon: <IconAward color='orange' size={28} />,
+      label: 'Badges',
+      testId: 'badges-card',
+      value: numBadges.toString(),
+    },
+    {
+      icon: <IconUsers color='purple' size={28} />,
+      label: 'Friends',
+      testId: 'friends-card',
+      value: numFriends.toString(),
+    },
   ];
 
   return (
-    <Flex gap='md' wrap='wrap'>
-      {stats.map(({ label, value, testId }) => (
+    <SimpleGrid cols={{ base: 2, sm: 4 }} spacing='lg' w='100%'>
+      {stats.map((item) => (
         <Card
-          data-testid={testId}
-          key={testId}
+          data-testid={`${item.label.toLowerCase().replace(/\s+/g, '-')}-card`}
+          key={item.label}
           p='lg'
           radius='md'
           shadow='sm'
+          style={{ borderRadius: '12px' }}
           withBorder
         >
-          <Flex align='center' direction='column'>
-            <Text fw={700}>{label}</Text>
-            <Text>{value}</Text>
-          </Flex>
+          <Center style={{ flexDirection: 'column', gap: '6px' }}>
+            {item.icon}
+            <Text fw={700} fz='xl'>
+              {item.value}
+            </Text>
+            <Text c='dimmed' fz='sm'>
+              {item.label}
+            </Text>
+          </Center>
         </Card>
       ))}
-    </Flex>
+    </SimpleGrid>
   );
 };

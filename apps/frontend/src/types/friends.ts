@@ -16,12 +16,6 @@ export type FriendsList = {
   friends: Friends[];
 };
 
-export type FriendsApiResponse = {
-  message: string;
-  data: FriendsList;
-};
-
-// Request function wraps the API response in another `data` layer
 export type FriendsRequestResponse = {
   data: FriendsList;
   error?: {
@@ -53,7 +47,7 @@ export type Result = {
   bio: string;
 };
 
-export type SearchFriends = {
+type SearchFriends = {
   result: Result[];
   count: number;
 };
@@ -65,23 +59,22 @@ export type SearchFriendsWrapper = {
   message: string;
 };
 
-export type SuccessfulSearchResponse = {
+type SuccessfulSearchResponse = {
   data: SearchFriends;
-  formtype: 'searchFriends'; // MUST match the successful return value from action
+  formtype: 'searchFriends';
   error?: undefined;
   message?: undefined;
 };
 
-export type SuccessfulSendRequestResponse = {
+type SuccessfulSendRequestResponse = {
   message: string;
   data: FriendRequest;
   formtype: 'sendFriendRequest';
   error?: undefined;
 };
 
-export type ActionErrorResponse = {
+type ActionErrorResponse = {
   error: string;
-  // Make successful properties absent/undefined to distinguish this from success
   formtype?: string;
   data?: undefined;
   message?: undefined;
@@ -95,4 +88,20 @@ export type FriendsActionResponse =
 export type RequestResponse = {
   user_id: string;
   pending_requests: Friends[];
+};
+
+export type LoaderData = {
+  data: {
+    pendingFriendships: {
+      friends: Result[];
+    };
+    requestProfile: RequestProfile[];
+    receivedRequestsProfile: RequestProfile[];
+  };
+};
+
+export type RequestProfile = {
+  profile: {
+    data: Result;
+  };
 };

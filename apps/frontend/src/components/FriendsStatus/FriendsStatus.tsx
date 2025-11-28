@@ -17,15 +17,20 @@ import {
 import type { Result } from '~/types';
 import { Avatar } from '../Avatar/Avatar';
 
-export const FriendsStatus = () => {
+type props = {
+  onAction: (friend: Result, since: string) => void;
+};
+export const FriendsStatus = ({ onAction }: props) => {
   const loaderdata = useLoaderData() as LoaderData;
 
   const friendsProfile = loaderdata.data.friendsProfile;
+  console.log('frinedsProfilke', friendsProfile);
 
   type RequestProfile = {
     profile: {
       data: Result;
     };
+    friendsSince: string;
   };
 
   type LoaderData = {
@@ -87,7 +92,13 @@ export const FriendsStatus = () => {
                           <IconMessageCircle color='black' />
                         </Button>
 
-                        <Button color='black' variant='outline'>
+                        <Button
+                          color='black'
+                          onClick={() => {
+                            onAction(friend, entry.friendsSince);
+                          }}
+                          variant='outline'
+                        >
                           {FRIENDS_VIEW_PROFILE}
                         </Button>
                       </Flex>

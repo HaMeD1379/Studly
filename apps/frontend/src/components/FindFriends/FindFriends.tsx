@@ -24,6 +24,7 @@ import { Avatar } from '../Avatar/Avatar';
 
 type Props = {
   results?: Result[];
+  onAction: (friend: Result, since: string) => void;
 };
 
 export const FindFriends = ({ results }: Props) => {
@@ -132,7 +133,6 @@ export const FindFriends = ({ results }: Props) => {
                           </Form>
                         )}
 
-                        {/* If already friends, show message + profile */}
                         {!isNotFriend && (
                           <>
                             <Button

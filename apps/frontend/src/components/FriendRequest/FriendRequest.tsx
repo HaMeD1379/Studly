@@ -22,24 +22,8 @@ import {
   FRIENDS_SENT_REQUEST,
 } from '~/constants';
 import { userInfo } from '~/store';
-import type { Result } from '~/types';
+import type { LoaderData, RequestProfile } from '~/types';
 import { Avatar } from '../Avatar/Avatar';
-
-type RequestProfile = {
-  profile: {
-    data: Result;
-  };
-};
-
-export type LoaderData = {
-  data: {
-    pendingFriendships: {
-      friends: Result[];
-    };
-    requestProfile: RequestProfile[];
-    receivedRequestsProfile: RequestProfile[];
-  };
-};
 
 export const FriendRequest = () => {
   const [selectedUser, _setSelectedUser] = useState('');
