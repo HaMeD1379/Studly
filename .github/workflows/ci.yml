@@ -107,6 +107,7 @@ jobs:
           CYPRESS_password: ${{ env.E2E_TEST_PASS }}
 
       - name: Upload Cypress screenshots
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: cypress-screenshots
