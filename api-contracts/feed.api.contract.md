@@ -3,7 +3,7 @@
 ## Base URL
 
 ```
-/api/v1/feed/:id
+/api/v1/feed/:timestampz
 ```
 
 ---
