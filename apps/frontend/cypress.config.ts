@@ -7,4 +7,5 @@ export default defineConfig({
       openMode: 0,
     },
   },
+  watchForFileChanges: false,
 });
