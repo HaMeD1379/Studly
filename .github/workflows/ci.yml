@@ -3,8 +3,9 @@
 # Project: Studly
 # Author: Hamed Esmaeilzadeh (team member)
 # Generated / scaffolded with assistance from ChatGPT (GPT-5 Thinking mini)
+# Help with e2e examples from: https://docs.cypress.io/app/continuous-integration/github-actions
 # Date: 2025-10-07
-# Modified: 2025-10-27
+# Modified: 2025-11-27
 # ----------------------------------------------------------------------------
 name: CI
 
@@ -65,6 +66,10 @@ jobs:
       SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
       VITE_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       VITE_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+      E2E_TEST_EMAIL: ${{ secrets.E2E_TEST_EMAIL }}
+      E2E_TEST_PASS: ${{ secrets.E2E_TEST_PASS }}
+      VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+      VITE_RAILWAY_API_TOKEN: ${{ secrets.VITE_RAILWAY_API_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -89,11 +94,28 @@ jobs:
         run: npm run format
         working-directory: apps/frontend
 
-      - name: Run frontend tests
-        run: npm test
+      - name: Run frontend unit tests
+        run: npm run test:unit
         working-directory: apps/frontend
 
-      - name: Build frontend (Vite)
+      - name: Run frontend e2e tests
+        uses: cypress-io/github-action@v6
+        with:
+          start: npm start
+          wait-on: 'http://localhost:5173'
+          working-directory: apps/frontend
+        env:
+          CYPRESS_email: ${{ env.E2E_TEST_EMAIL }}
+          CYPRESS_password: ${{ env.E2E_TEST_PASS }}
+
+      - name: Upload cypress screenshots if exists
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-screenshots
+          path: apps/frontend/cypress/screenshots
+
+      - name: Build frontend
         run: npm run build
         working-directory: apps/frontend
 
