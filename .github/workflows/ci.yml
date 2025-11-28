@@ -96,11 +96,11 @@ jobs:
         run: npm run test:unit
         working-directory: apps/frontend
 
-      - name: Setup cypress action
-        uses: cypress-io/github-action@v6
-        with:
-          runTests: false
-          working-directory: apps/frontend
+    #  - name: Setup cypress action
+    #    uses: cypress-io/github-action@v6
+    #    with:
+    #      runTests: false
+    #      working-directory: apps/frontend
 
       - name: Run frontend e2e tests
         working-directory: apps/frontend
