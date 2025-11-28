@@ -104,7 +104,7 @@ jobs:
           working-directory: apps/frontend
         env:
           CYPRESS_email: $E2E_TEST_EMAIL
-          CYPRESS_password: $E2E_TEST_PASSWORD
+          CYPRESS_password: $E2E_TEST_PASS
 
       - name: Build frontend
         run: npm run build
