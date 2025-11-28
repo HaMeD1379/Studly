@@ -1,8 +1,8 @@
-import { Box, Button, Card, Flex, Pill, Text } from '@mantine/core';
-import { IconClock, IconTrendingUp, IconTrophy } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
-import { useLoaderData } from 'react-router';
-import { useNavigate } from 'react-router-dom';
+import { Box, Button, Card, Flex, Pill, Text } from "@mantine/core";
+import { IconClock, IconTrendingUp, IconTrophy } from "@tabler/icons-react";
+import { useEffect, useState } from "react";
+import { useLoaderData } from "react-router";
+import { useNavigate } from "react-router-dom";
 import {
   HOME_NEXT_BADGE_PROGRESS_TEXT,
   HOME_QUICK_ACTIONS_TEXT,
@@ -11,19 +11,19 @@ import {
   HOME_WELCOME_DESCRIPTION,
   HOME_WELCOME_MESSAGE,
   STUDY,
-} from '~/constants';
-import { userInfo } from '~/store';
-import { hoursAndMinutes } from '~/utilities/time';
+} from "~/constants";
+import { userInfo } from "~/store";
+import { hoursAndMinutes } from "~/utilities/time";
 export const HomeHeader = () => {
   const loaderData = useLoaderData();
   const profileData = loaderData.data?.userProfileInfo;
   const sessionData = loaderData.data?.todaySession;
   const badgesData = loaderData.data.unlockedBadges;
 
-  const name = profileData.data.full_name;
-  const bio = profileData.data.bio;
-  const hoursToday = sessionData.totalMinutesStudied;
-  const numBadges = badgesData.length;
+  const name = profileData.data.full_name || "John Doe";
+  const bio = profileData.data.bio || "No bio provided";
+  const hoursToday = sessionData.totalMinutesStudied || "0 minutes";
+  const numBadges = badgesData.length || 0;
   const { setName, setBio } = userInfo();
   useEffect(() => {
     setName(name);
@@ -31,71 +31,71 @@ export const HomeHeader = () => {
   }, [setName, setBio, bio, name]);
 
   const navigate = useNavigate();
-  const [startBtnStyle, setStartBtnStyle] = useState('outline');
-  const [findBtnStyle, setFindBtnStyle] = useState('outline');
-  const [challengesBtnStyle, setChallengesBtnStyle] = useState('outline');
+  const [startBtnStyle, setStartBtnStyle] = useState("outline");
+  const [findBtnStyle, setFindBtnStyle] = useState("outline");
+  const [challengesBtnStyle, setChallengesBtnStyle] = useState("outline");
   return (
     <Box>
-      <Flex direction='column' p='md'>
-        <Flex align='center' direction='row' justify='space-between'>
-          <Flex direction='column'>
-            <Text fs='lg' fw={700}>
+      <Flex direction="column" p="md">
+        <Flex align="center" direction="row" justify="space-between">
+          <Flex direction="column">
+            <Text fs="lg" fw={700}>
               {`${HOME_WELCOME_MESSAGE} ${name}! 👋`}
             </Text>
-            <Text c='dimmed'>{HOME_WELCOME_DESCRIPTION}</Text>
+            <Text c="dimmed">{HOME_WELCOME_DESCRIPTION}</Text>
           </Flex>
-          <Flex gap='sm'>
-            <Pill size='xl'>
-              <Flex align='center'>
+          <Flex gap="sm">
+            <Pill size="xl">
+              <Flex align="center">
                 <IconClock size={20} style={{ marginRight: 6 }} />
                 {`${hoursAndMinutes(hoursToday)} today`}
               </Flex>
             </Pill>
 
-            <Pill size='xl'>
-              <Flex align='center'>
+            <Pill size="xl">
+              <Flex align="center">
                 <IconTrendingUp size={20} style={{ marginRight: 6 }} />
                 {`${hoursAndMinutes(hoursToday)} streak`}
               </Flex>
             </Pill>
 
-            <Pill size='xl'>
-              <Flex align='center'>
+            <Pill size="xl">
+              <Flex align="center">
                 <IconTrophy size={20} style={{ marginRight: 6 }} />
                 {`${numBadges} badges`}
               </Flex>
             </Pill>
           </Flex>
         </Flex>
-        <Flex direction='row' gap='sm' py='xl'>
+        <Flex direction="row" gap="sm" py="xl">
           <Card
-            p='lg'
-            radius='md'
-            shadow='sm'
-            style={{ borderRadius: '12px' }}
-            w='100%'
+            p="lg"
+            radius="md"
+            shadow="sm"
+            style={{ borderRadius: "12px" }}
+            w="100%"
             withBorder
           >
             <Text>{HOME_NEXT_BADGE_PROGRESS_TEXT}</Text>
           </Card>
           <Card
-            p='lg'
-            radius='md'
-            shadow='sm'
-            style={{ borderRadius: '12px' }}
-            w='100%'
+            p="lg"
+            radius="md"
+            shadow="sm"
+            style={{ borderRadius: "12px" }}
+            w="100%"
             withBorder
           >
-            <Text fw={500} fz='xl'>
+            <Text fw={500} fz="xl">
               {HOME_QUICK_ACTIONS_TEXT}
             </Text>
             <Button
-              color='black'
+              color="black"
               leftSection={<IconClock />}
               onClick={() => {
-                setChallengesBtnStyle('outline');
-                setFindBtnStyle('outline');
-                setStartBtnStyle('filled');
+                setChallengesBtnStyle("outline");
+                setFindBtnStyle("outline");
+                setStartBtnStyle("filled");
                 navigate(STUDY);
               }}
               variant={startBtnStyle}
@@ -103,24 +103,24 @@ export const HomeHeader = () => {
               {HOME_START_STUDY_SESSION_TEXT}
             </Button>
             <Button
-              color='black'
+              color="black"
               leftSection={<IconClock />}
               onClick={() => {
-                setChallengesBtnStyle('outline');
-                setFindBtnStyle('filled');
-                setStartBtnStyle('outline');
+                setChallengesBtnStyle("outline");
+                setFindBtnStyle("filled");
+                setStartBtnStyle("outline");
               }}
               variant={findBtnStyle}
             >
               {HOME_START_STUDY_SESSION_TEXT}
             </Button>
             <Button
-              color='black'
+              color="black"
               leftSection={<IconClock />}
               onClick={() => {
-                setChallengesBtnStyle('filled');
-                setFindBtnStyle('outline');
-                setStartBtnStyle('outline');
+                setChallengesBtnStyle("filled");
+                setFindBtnStyle("outline");
+                setStartBtnStyle("outline");
               }}
               variant={challengesBtnStyle}
             >
@@ -128,11 +128,11 @@ export const HomeHeader = () => {
             </Button>
           </Card>
           <Card
-            p='lg'
-            radius='md'
-            shadow='sm'
-            style={{ borderRadius: '12px' }}
-            w='100%'
+            p="lg"
+            radius="md"
+            shadow="sm"
+            style={{ borderRadius: "12px" }}
+            w="100%"
             withBorder
           >
             <Text>{HOME_TODAYS_GOAL_TEXT}</Text>
