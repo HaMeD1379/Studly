@@ -16,11 +16,11 @@ export type subjectSummaries = {
 
 export type findUserProfile = {
   id: string;
-  profile: profile
-}
+  profile: profile;
+};
 
 export type profile = {
   full_name: string;
   email: string;
   bio: string;
-}
+};

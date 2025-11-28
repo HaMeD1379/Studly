@@ -1,21 +1,20 @@
 export type Friends = {
-    id: string,
-    from_user: string,
-    to_user: string,
-    status: number,
-    updated_at: string
-}
-
+  id: string;
+  from_user: string;
+  to_user: string;
+  status: number;
+  updated_at: string;
+};
 
 export type FriendCount = {
-    user_id: string,
-    count: number
-}
+  user_id: string;
+  count: number;
+};
 
 export type FriendsList = {
-     user_id : string,
-    friends: Friends[]
-}
+  user_id: string;
+  friends: Friends[];
+};
 
 export type FriendsApiResponse = {
   message: string;
@@ -24,7 +23,7 @@ export type FriendsApiResponse = {
 
 // Request function wraps the API response in another `data` layer
 export type FriendsRequestResponse = {
-  data:FriendsList;
+  data: FriendsList;
   error?: {
     message: string;
     status: number;
@@ -32,7 +31,7 @@ export type FriendsRequestResponse = {
 };
 
 export type SentRequestResponse = {
-  data:RequestResponse;
+  data: RequestResponse;
   error?: {
     message: string;
     status: number;
@@ -40,35 +39,35 @@ export type SentRequestResponse = {
 };
 
 export type FriendRequest = {
-    id: string,
-    from_user: string,
-    to_user: string,
-    status: number,
-    updated_at: string
-}
+  id: string;
+  from_user: string;
+  to_user: string;
+  status: number;
+  updated_at: string;
+};
 
-export type Result={
-    user_id: string,
-email: string,
-full_name: string,
-bio: string
-}
+export type Result = {
+  user_id: string;
+  email: string;
+  full_name: string;
+  bio: string;
+};
 
 export type SearchFriends = {
-    result: Result[]
-    count: number
-}
+  result: Result[];
+  count: number;
+};
 
 export type SearchFriendsWrapper = {
-    data: {
-        data: SearchFriends
-    },
-    message: string
-}
+  data: {
+    data: SearchFriends;
+  };
+  message: string;
+};
 
 export type SuccessfulSearchResponse = {
   data: SearchFriends;
-  formtype: "searchFriends"; // MUST match the successful return value from action
+  formtype: 'searchFriends'; // MUST match the successful return value from action
   error?: undefined;
   message?: undefined;
 };
@@ -76,25 +75,24 @@ export type SuccessfulSearchResponse = {
 export type SuccessfulSendRequestResponse = {
   message: string;
   data: FriendRequest;
-  formtype: "sendFriendRequest";
+  formtype: 'sendFriendRequest';
   error?: undefined;
 };
 
 export type ActionErrorResponse = {
   error: string;
   // Make successful properties absent/undefined to distinguish this from success
-  formtype?: string; 
+  formtype?: string;
   data?: undefined;
   message?: undefined;
 };
 
-export type FriendsActionResponse = 
+export type FriendsActionResponse =
   | SuccessfulSearchResponse
   | SuccessfulSendRequestResponse
   | ActionErrorResponse;
 
-  export 
-type RequestResponse = {
+export type RequestResponse = {
   user_id: string;
-  pending_requests: Friends[]
-}
+  pending_requests: Friends[];
+};

@@ -1,4 +1,5 @@
 import {
+  ActionIcon,
   Box,
   Card,
   Center,
@@ -7,24 +8,36 @@ import {
   SimpleGrid,
   Text,
   TextInput,
-} from "@mantine/core";
-import { IconSearch } from "@tabler/icons-react";
+} from '@mantine/core';
 import {
+  IconArrowLeft,
+  IconCircleFilled,
+  IconSearch,
+  IconUserPlus,
+  IconUsers,
+} from '@tabler/icons-react';
+import { useEffect, useRef, useState } from 'react';
+import { Form, useLoaderData, useNavigate, useSubmit } from 'react-router-dom';
+import {
+  FRIENDS,
+  FRIENDS_CARD_ONLINE,
+  FRIENDS_CARD_STUDYING,
   FRIENDS_HEADER_DESCRIPTION,
   FRIENDS_SEARCHBAR_PLACEHOLDER,
   FRIENDS_TAB_FRIENDS,
-  FRIENDS_CARD_ONLINE,
-  FRIENDS_CARD_STUDYING,
   FRIENDS_TAB_REQUESTS,
-} from "~/constants";
-import { IconCircleFilled, IconUserPlus, IconUsers } from "@tabler/icons-react";
-import { useLoaderData, Form, useSubmit } from "react-router-dom";
-import { useEffect, useState, useRef } from "react";
-export const FriendsHeader = () => {
-  const [searchTerm, setSearchTerm] = useState("");
+} from '~/constants';
+
+type props = {
+  isHidden: boolean;
+};
+
+export const FriendsHeader = ({ isHidden }: props) => {
+  const [searchTerm, setSearchTerm] = useState('');
   const [inputValue, setInputValue] = useState(searchTerm);
   const formRef = useRef<HTMLFormElement>(null);
   const submit = useSubmit();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Set a timeout to update the searchTerm state after 500ms of inactivity
@@ -40,9 +53,10 @@ export const FriendsHeader = () => {
 
   useEffect(() => {
     if (searchTerm) {
+      localStorage.setItem('searchTerm', searchTerm);
       submit(formRef.current);
     }
-  }, [searchTerm]);
+  }, [searchTerm, submit]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
@@ -54,66 +68,82 @@ export const FriendsHeader = () => {
 
   const stats = [
     {
-      icon: <IconUsers color="blue" size={28} />,
+      icon: <IconUsers color='blue' size={28} />,
       label: FRIENDS_TAB_FRIENDS,
       value: friendCount,
     },
     {
-      icon: <IconUserPlus color="#40c057" size={28} />,
+      icon: <IconUserPlus color='#40c057' size={28} />,
       label: FRIENDS_TAB_REQUESTS,
       value: requestCount,
     },
     {
-      icon: <IconCircleFilled color="#40c057" size={28} />,
+      icon: <IconCircleFilled color='#40c057' size={28} />,
       label: FRIENDS_CARD_ONLINE,
-      value: "2",
+      value: '2',
     },
     {
-      icon: <IconCircleFilled color="blue" size={28} />,
+      icon: <IconCircleFilled color='blue' size={28} />,
       label: FRIENDS_CARD_STUDYING,
-      value: "1",
+      value: '1',
     },
   ];
+  const prevSearch = localStorage.getItem('searchTerm');
 
   return (
     <Box>
-      <Flex direction="column" gap="md" p="lg" w="30%">
-        <Text data-testid="Friends header" fw={700} fz="h1">
+      <Flex direction='column' gap='md' p='lg' w='30%'>
+        <Text data-testid='Friends header' fw={700} fz='h1'>
           {FRIENDS_TAB_FRIENDS}
         </Text>
-        <Text c="dimmed">{FRIENDS_HEADER_DESCRIPTION}</Text>
-        <Form ref={formRef} method="post">
-          <Input type="hidden" name="formtype" value="searchFriend" />
-          <TextInput
-            name="searchUser"
-            leftSection={<IconSearch />}
-            placeholder={FRIENDS_SEARCHBAR_PLACEHOLDER}
-            variant="filled"
-            onChange={(e) => handleInputChange(e)}
-          />
+        <Text c='dimmed'>{FRIENDS_HEADER_DESCRIPTION}</Text>
+        <Form method='post' ref={formRef}>
+          <Input name='formtype' type='hidden' value='searchFriend' />
+          <Flex direction='row' gap='sm'>
+            {!isHidden && (
+              <ActionIcon
+                color='black'
+                onClick={() => {
+                  localStorage.removeItem('searchTerm');
+                  navigate(FRIENDS);
+                }}
+                variant='outline'
+              >
+                <IconArrowLeft />
+              </ActionIcon>
+            )}
+            <TextInput
+              defaultValue={prevSearch ? prevSearch : ''}
+              leftSection={<IconSearch />}
+              name='searchUser'
+              onChange={(e) => handleInputChange(e)}
+              placeholder={FRIENDS_SEARCHBAR_PLACEHOLDER}
+              variant='filled'
+            />
+          </Flex>
         </Form>
       </Flex>
 
-      <Flex direction="row" gap="md" p="lg">
-        <SimpleGrid cols={{ base: 2, sm: 4 }} spacing="lg" w="100%">
+      <Flex direction='row' gap='md' p='lg'>
+        <SimpleGrid cols={{ base: 2, sm: 4 }} spacing='lg' w='100%'>
           {stats.map((item) => (
             <Card
               data-testid={`${item.label
                 .toLowerCase()
-                .replace(/\s+/g, "-")}-card`}
+                .replace(/\s+/g, '-')}-card`}
               key={item.label}
-              p="lg"
-              radius="md"
-              shadow="sm"
-              style={{ borderRadius: "12px" }}
+              p='lg'
+              radius='md'
+              shadow='sm'
+              style={{ borderRadius: '12px' }}
               withBorder
             >
-              <Center style={{ flexDirection: "column", gap: "6px" }}>
+              <Center style={{ flexDirection: 'column', gap: '6px' }}>
                 {item.icon}
-                <Text fw={700} fz="xl">
+                <Text fw={700} fz='xl'>
                   {item.value}
                 </Text>
-                <Text c="dimmed" fz="sm">
+                <Text c='dimmed' fz='sm'>
                   {item.label}
                 </Text>
               </Center>

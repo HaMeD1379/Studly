@@ -1,10 +1,14 @@
-import { PROFILE_CHANGES_BIO, RETRIEVE_BIO,PROFILE_FIND_USER } from '~/constants';
+import {
+  PROFILE_CHANGES_BIO,
+  PROFILE_FIND_USER,
+  RETRIEVE_BIO,
+} from '~/constants';
 import {
   type BackendLoginResponse,
   type ProfileBio,
+  type profile,
   RequestMethods,
   type RequestResolve,
-  type profile
 } from '~/types';
 import { request } from '~/utilities/requests';
 
@@ -37,7 +41,7 @@ export const fetchBio = async (
   return await request<ProfileBio>(RequestMethods.GET, path);
 };
 
-export const findUserById = async(userId:string) => {
+export const findUserById = async (userId: string) => {
   const path = `${PROFILE_FIND_USER}/${userId}`;
   return await request<profile>(RequestMethods.GET, path);
-}
+};

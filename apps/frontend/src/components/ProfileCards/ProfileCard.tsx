@@ -1,76 +1,51 @@
-import { Card, Center, SimpleGrid, Text } from "@mantine/core";
-import {
-  IconAward,
-  IconClock,
-  IconTrendingUp,
-  IconUsers,
-} from "@tabler/icons-react";
-import { useEffect, useState } from "react";
-import { useLoaderData } from "react-router-dom";
-import { profileInfo } from "~/store";
+import { Card, Flex, Text } from '@mantine/core';
+import { useLoaderData } from 'react-router-dom';
+import { profileInfo } from '~/store';
 
 export const ProfileCard = () => {
-  const loaderdata = useLoaderData();
-  const unlockedBadges = loaderdata.data.badges.unlockedBadges;
-  const numFriends = loaderdata.data.friendCount.data.count;
+  const loaderData = useLoaderData() as ProfileCardLoaderData;
+  const unlockedBadges = loaderData?.data?.badges?.unlockedBadges ?? [];
+  const numBadges = unlockedBadges.length;
+  const numFriends = loaderData?.data?.friendCount?.data?.count ?? 24; // fallback if undefined
   const { allTimeHoursStudied } = profileInfo();
-  const [totalHours, setTotalHours] = useState("");
-  const [numBadges, setNumBadges] = useState(0);
 
-  useEffect(() => {
-    setTotalHours(allTimeHoursStudied);
-  });
-  useEffect(() => {
-    if (!unlockedBadges) return;
-    setNumBadges(unlockedBadges.length);
-  }, [unlockedBadges]);
+  type ProfileCardLoaderData = {
+    data?: {
+      badges?: { unlockedBadges: { name: string; earnedAt?: string }[] };
+      friendCount?: {
+        data: { count: number };
+      };
+    };
+  };
 
   const stats = [
+    { label: 'Day Streak', testId: 'day-streak-card', value: '12' },
     {
-      icon: <IconTrendingUp color="green" size={28} />,
-      label: "Day Streak",
-      value: "12",
+      label: 'Total Study',
+      testId: 'total-study-card',
+      value: allTimeHoursStudied,
     },
-    {
-      icon: <IconClock color="blue" size={28} />,
-      label: "Total Study",
-      value: totalHours,
-    },
-    {
-      icon: <IconAward color="orange" size={28} />,
-      label: "Badges",
-      value: numBadges,
-    },
-    {
-      icon: <IconUsers color="purple" size={28} />,
-      label: "Friends",
-      value: numFriends,
-    },
+    { label: 'Badges', testId: 'badges-card', value: numBadges.toString() },
+    { label: 'Friends', testId: 'friends-card', value: numFriends.toString() },
   ];
 
   return (
-    <SimpleGrid cols={{ base: 2, sm: 4 }} spacing="lg" w="100%">
-      {stats.map((item) => (
+    <Flex gap='md' wrap='wrap'>
+      {stats.map(({ label, value, testId }) => (
         <Card
-          data-testid={`${item.label.toLowerCase().replace(/\s+/g, "-")}-card`}
-          key={item.label}
-          p="lg"
-          radius="md"
-          shadow="sm"
-          style={{ borderRadius: "12px" }}
+          data-testid={testId}
+          key={testId}
+          p='lg'
+          radius='md'
+          shadow='sm'
           withBorder
         >
-          <Center style={{ flexDirection: "column", gap: "6px" }}>
-            {item.icon}
-            <Text fw={700} fz="xl">
-              {item.value}
-            </Text>
-            <Text c="dimmed" fz="sm">
-              {item.label}
-            </Text>
-          </Center>
+          <Flex align='center' direction='column'>
+            <Text fw={700}>{label}</Text>
+            <Text>{value}</Text>
+          </Flex>
         </Card>
       ))}
-    </SimpleGrid>
+    </Flex>
   );
 };

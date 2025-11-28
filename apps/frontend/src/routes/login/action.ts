@@ -1,5 +1,5 @@
 import { type ActionFunctionArgs, redirect } from 'react-router';
-import { getProfile, login } from '~/api';
+import { login } from '~/api';
 import { AVATAR_ONLINE, HOME } from '~/constants';
 import { userInfo } from '~/store/userInfo';
 
@@ -7,14 +7,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const email = formData.get('email')?.toString();
   const password = formData.get('password')?.toString();
-  const {
-    setAccessToken,
-    setEmail,
-    setName,
-    setId,
-    setRefreshToken,
-    setAvatarState,
-  } = userInfo.getState();
+  const { setAccessToken, setEmail, setId, setRefreshToken, setAvatarState } =
+    userInfo.getState();
 
   if (!email || !password) return { error: 'Missing credentials' }; // early exit if missing
   const res = await login(email, password);
@@ -27,7 +21,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   }
 
   if (!res.error && res.data) {
-    console.log("login info",res.data.data )
     const accessToken = res.data.data.session.access_token;
     const email = res.data.data.user.email;
     const userid = res.data.data.user.id;

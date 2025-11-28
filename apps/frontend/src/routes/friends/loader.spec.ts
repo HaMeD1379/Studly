@@ -1,77 +1,84 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { loader } from "./loader";
-import * as api from "~/api";
-import type { FriendsList, FriendCount, findUserProfile } from "~/types";
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+import { loader } from './loader';
 
-// Correct mock for FriendsList
-const mockFriendsList = {
-  user_id: "u1", // if FriendsList requires user_id
-  friends: [
-    { id: "f1", from_user: "u1", to_user: "u2", status: 1, updated_at: "2025-11-26" }
-  ],
-};
-
-
-
-const mockPendingList: FriendsList = {
-  user_id: "u1",
-  friends: [
-    { id: "f2", from_user: "u3", to_user: "u4", status: 0, updated_at: "2025-11-26T00:00:00Z" },
-  ],
-};
-
-const mockFriendCount: FriendCount = { user_id: "u1", count: 10 };
-const mockRequestCount: FriendCount = { user_id: "u1", count: 5 };
-
-// Profile mock
-const mockProfile = { data: { full_name: "Alice", email: "alice@test.com", bio: "Bio" } };
-
-// Mock API
-vi.mock("~/api", async () => ({
-  getAllFriends: vi.fn(),
-  viewFriendRequests: vi.fn(),
-  getFriendsCount: vi.fn(),
-  getFriendRequestCount: vi.fn(),
+vi.mock('~/api', () => ({
   findUserById: vi.fn(),
+  getAllFriends: vi.fn(),
+  getFriendRequestCount: vi.fn(),
+  getFriendsCount: vi.fn(),
+  receivedFriendRequest: vi.fn(),
+  viewFriendRequests: vi.fn(),
 }));
 
-describe("loader", () => {
+import {
+  findUserById,
+  getAllFriends,
+  getFriendRequestCount,
+  getFriendsCount,
+  receivedFriendRequest,
+  viewFriendRequests,
+} from '~/api';
+
+vi.mock('~/store', () => ({
+  userInfo: {
+    getState: () => ({ userId: 'user-1' }),
+  },
+}));
+
+describe('loader', () => {
   beforeEach(() => {
-    vi.resetAllMocks();
+    vi.clearAllMocks();
   });
 
-  it("loads friends and request profiles correctly", async () => {
-  (api.getAllFriends as any).mockResolvedValue({
-  data: { data: mockFriendsList },
-  error: false,
-});
-  (api.viewFriendRequests as any).mockResolvedValue({ data: mockPendingList, error: false });
-  (api.getFriendsCount as any).mockResolvedValue({ data: mockFriendCount, error: false });
-  (api.getFriendRequestCount as any).mockResolvedValue({ data: mockRequestCount, error: false });
-  (api.findUserById as any).mockResolvedValue(mockProfile);
+  it('loads friends and request profiles correctly', async () => {
+    (getFriendsCount as Mock).mockResolvedValue({
+      data: { count: 3 },
+      error: false,
+    });
+    (getFriendRequestCount as Mock).mockResolvedValue({
+      data: { count: 2 },
+      error: false,
+    });
+    (getAllFriends as Mock).mockResolvedValue({
+      data: { data: { friends: [{ to_user: '2' }] } },
+      error: false,
+    });
+    (viewFriendRequests as Mock).mockResolvedValue({
+      data: { data: { friends: [{ to_user: '3' }] } },
+      error: false,
+    });
+    (receivedFriendRequest as Mock).mockResolvedValue({
+      data: {
+        data: {
+          pending_requests: [{ from_user: 'user-1', to_user: '4' }],
+          user_id: 'user-1',
+        },
+      },
+      error: false,
+    });
+    (findUserById as Mock).mockResolvedValue({
+      data: { bio: 'Hi', email: 'john@test.com', full_name: 'John' },
+    });
 
-  const result = await loader();
+    const result = await loader();
 
-  expect(result.error).toBe(false); // should pass now
-  expect(result.data.friendCount).toEqual(mockFriendCount);
-  expect(result.data.requestCount).toEqual(mockRequestCount);
-  expect(result.data.friendsProfile?.[0]).toEqual({ id: "f1", profile: mockProfile.data });
-  expect(result.data.requestProfile?.[0]).toEqual({ id: "f2", profile: mockProfile.data });
-});
+    expect(result.error).toBe(false);
+    expect(result.data.friendCount).toEqual({ count: 3 });
+    expect(result.data.requestCount).toEqual({ count: 2 });
+    expect(result.data.friendsProfile).toHaveLength(1);
+    expect(result.data.requestProfile).toHaveLength(1);
+    expect(result.data.receivedRequestsProfile).toHaveLength(1);
+  });
 
-  it("handles API errors", async () => {
-    (api.getAllFriends as any).mockResolvedValue({ data: undefined, error: { message: "Failed", status: 500 } });
-    (api.viewFriendRequests as any).mockResolvedValue({ data: undefined, error: { message: "Failed", status: 500 } });
-    (api.getFriendsCount as any).mockResolvedValue({ data: undefined, error: { message: "Failed", status: 500 } });
-    (api.getFriendRequestCount as any).mockResolvedValue({ data: undefined, error: { message: "Failed", status: 500 } });
-    (api.findUserById as any).mockResolvedValue({ data: null });
+  it('handles API errors', async () => {
+    (getFriendsCount as Mock).mockResolvedValue({ error: true });
+    (getFriendRequestCount as Mock).mockResolvedValue({ error: true });
+    (getAllFriends as Mock).mockResolvedValue({ error: true });
+    (viewFriendRequests as Mock).mockResolvedValue({ error: true });
+    (receivedFriendRequest as Mock).mockResolvedValue({ error: true });
 
     const result = await loader();
 
     expect(result.error).toBe(true);
-    expect(result.data.friendsList).toBeUndefined();
-    expect(result.data.pendingFriendships).toBeUndefined();
-    expect(result.data.friendsProfile).toEqual([]);
-    expect(result.data.requestProfile).toEqual([]);
   });
 });

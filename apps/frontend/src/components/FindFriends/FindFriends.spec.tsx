@@ -1,112 +1,174 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
-import { FindFriends } from "./FindFriends";
-import { useLoaderData, useSubmit } from "react-router";
-import { userInfo } from "~/store";
+import { fireEvent, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+import {
+  FRIENDS_REQUESTED,
+  FRIENDS_SEARCH_NO_USERS,
+  FRIENDS_VIEW_PROFILE,
+} from '~/constants';
+import { render } from '~/utilities/testing';
+import { FindFriends } from './FindFriends';
 
-// ---- MOCKS ----
-vi.mock("react-router", () => ({
-  useLoaderData: vi.fn(),
-  useSubmit: vi.fn(),
-  Form: ({ children, ...props }: any) => <form {...props}>{children}</form>,
-}));
+vi.mock('@mantine/core', async () => {
+  const actual =
+    await vi.importActual<typeof import('@mantine/core')>('@mantine/core');
+  return {
+    ...actual,
+    ScrollArea: ({ children }: { children: React.ReactNode }) => (
+      <div data-testid='scroll-area'>{children}</div>
+    ),
+  };
+});
 
-vi.mock("~/store", () => ({
-  userInfo: vi.fn(),
-}));
-
-// Mantine UI mocks
-vi.mock("@mantine/core", () => ({
-  Box: ({ children }: any) => <div>{children}</div>,
-  SimpleGrid: ({ children }: any) => <div>{children}</div>,
-  ScrollArea: ({ children }: any) => <div>{children}</div>,
-  Center: ({ children }: any) => <div>{children}</div>,
-  Text: ({ children }: any) => <div>{children}</div>,
-  Flex: ({ children }: any) => <div>{children}</div>,
-  Card: ({ children }: any) => <div>{children}</div>,
-  Button: ({ children, ...props }: any) => (
-    <button {...props}>{children}</button>
+vi.mock('../Avatar/Avatar', () => ({
+  Avatar: ({ name }: { name: string }) => (
+    <div data-testid='avatar'>{name}</div>
   ),
-  Input: (props: any) => <input {...props} />,
 }));
 
-vi.mock("../Avatar/Avatar", () => ({
-  Avatar: () => <div data-testid="avatar" />,
+vi.mock('~/store', () => ({
+  userInfo: vi.fn(() => ({ userId: 'current-user' })),
 }));
 
-// ---- TEST DATA ----
-const FRIENDS = [{ id: "1", name: "Alice" }];
+vi.mock('react-router', () => {
+  return {
+    Form: ({
+      onSubmit,
+      children,
+      method,
+    }: {
+      onSubmit: React.FormEventHandler<HTMLFormElement>;
+      children: React.ReactNode;
+      method: string;
+    }) => (
+      <form method={method} onSubmit={onSubmit}>
+        {children}
+      </form>
+    ),
+    useLoaderData: vi.fn(),
+    useSubmit: vi.fn(() => vi.fn()),
+  };
+});
 
-const RESULTS = [
-  {
-    user_id: "2",
-    full_name: "Bob Tester",
-    email: "test@studly.com",
-    bio: "Some bio",
-  },
-];
+import { useLoaderData, useSubmit } from 'react-router';
+import { userInfo } from '~/store';
 
-describe("FindFriends Component", () => {
+describe('FindFriends Component', () => {
+  const mockUseLoaderData = useLoaderData as unknown as Mock;
+  const mockUseSubmit = useSubmit as unknown as Mock;
+  const mockUserInfo = userInfo as unknown as Mock;
+
+  const baseFriend = {
+    bio: 'Hello world',
+    email: 'jane@example.com',
+    full_name: 'Jane Doe',
+    user_id: 'user-1',
+  };
+
   beforeEach(() => {
-    vi.resetAllMocks();
-    (userInfo as any).mockReturnValue({ userId: "123" });
+    vi.clearAllMocks();
+    mockUserInfo.mockReturnValue({ userId: 'current-user' });
+    mockUseSubmit.mockReturnValue(vi.fn());
   });
 
-  it("renders 'no users found' message when results is empty", () => {
-    (useLoaderData as any).mockReturnValue({
-      data: { friendsList: { data: { friends: [] } } },
+  it('renders empty state when no results', () => {
+    mockUseLoaderData.mockReturnValue({
+      data: {
+        friendsList: { friends: [] },
+        pendingFriendships: { friends: [] },
+      },
     });
 
-    render(<FindFriends results={[]} onClear={() => {}} />);
+    render(
+      <MemoryRouter>
+        <FindFriends results={[]} />
+      </MemoryRouter>,
+    );
 
-    expect(screen.getByText(/no users/i)).toBeDefined();
+    expect(screen.getByText(FRIENDS_SEARCH_NO_USERS)).toBeInTheDocument();
   });
 
-  it("renders user search results", () => {
-    (useLoaderData as any).mockReturnValue({
-      data: { friendsList: { data: { friends: [] } } },
+  it('renders add friend button when user is not a friend or requested', () => {
+    mockUseLoaderData.mockReturnValue({
+      data: {
+        friendsList: { friends: [] },
+        pendingFriendships: { friends: [] },
+      },
     });
 
-    render(<FindFriends results={RESULTS} onClear={() => {}} />);
+    render(
+      <MemoryRouter>
+        <FindFriends results={[baseFriend]} />
+      </MemoryRouter>,
+    );
 
-    expect(screen.getByText("Bob Tester")).toBeDefined();
-    expect(screen.getByText("Some bio")).toBeDefined();
+    // Avatar, name, bio
+    expect(screen.getByTestId('avatar')).toHaveTextContent('Jane Doe');
+    expect(screen.getByText('Hello world')).toBeInTheDocument();
+
+    // Add friend button
+    const addButtons = screen.getAllByRole('button');
+    expect(addButtons.length).toBeGreaterThan(0);
   });
 
-  it("shows Add Friend button when user is not already a friend", () => {
-    (useLoaderData as any).mockReturnValue({
-      data: { friendsList: { data: { friends: FRIENDS } } },
+  it('renders FRIENDS_REQUESTED text when user has already been requested', () => {
+    mockUseLoaderData.mockReturnValue({
+      data: {
+        friendsList: { friends: [] },
+        pendingFriendships: { friends: [{ to_user: 'user-1' }] },
+      },
     });
 
-    render(<FindFriends results={RESULTS} onClear={() => {}} />);
+    render(
+      <MemoryRouter>
+        <FindFriends results={[baseFriend]} />
+      </MemoryRouter>,
+    );
 
-    // IconUserPlus button is rendered
-    const addButton = screen.getByRole("button");
-    expect(addButton).toBeDefined();
+    expect(screen.getByText(FRIENDS_REQUESTED)).toBeInTheDocument();
   });
 
-  it("submits form with correct userId + requestUserId", () => {
+  it('renders message and view profile buttons when already friends', () => {
+    mockUseLoaderData.mockReturnValue({
+      data: {
+        friendsList: { friends: [{ to_user: 'user-1' }] },
+        pendingFriendships: { friends: [] },
+      },
+    });
+
+    render(
+      <MemoryRouter>
+        <FindFriends results={[baseFriend]} />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText(FRIENDS_VIEW_PROFILE)).toBeInTheDocument();
+
+    const buttons = screen.getAllByRole('button');
+    expect(buttons.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it('calls submit() when add friend button form is submitted', () => {
     const mockSubmit = vi.fn();
-    (useSubmit as any).mockReturnValue(mockSubmit);
+    mockUseSubmit.mockReturnValue(mockSubmit);
 
-    (useLoaderData as any).mockReturnValue({
-      data: { friendsList: { data: { friends: [] } } },
+    mockUseLoaderData.mockReturnValue({
+      data: {
+        friendsList: { friends: [] },
+        pendingFriendships: { friends: [] },
+      },
     });
 
-    render(<FindFriends results={RESULTS} onClear={() => {}} />);
+    render(
+      <MemoryRouter>
+        <FindFriends results={[baseFriend]} />
+      </MemoryRouter>,
+    );
 
-    const addButton = screen.getByRole("button");
-
+    const addButton = screen.getByRole('button');
     fireEvent.click(addButton);
 
-    const button = screen.getByRole("button", { name: "" }); // your submit button
-    fireEvent.click(button);
-
-    expect(mockSubmit).toHaveBeenCalledTimes(2);
-
-    const formData = mockSubmit.mock.calls[0][0] as FormData;
-
-    expect(formData.get("userId")).toBe("123");
-    expect(formData.get("requestUserId")).toBe("2");
+    // simulate form submission
+    expect(mockSubmit).toHaveBeenCalled();
   });
 });

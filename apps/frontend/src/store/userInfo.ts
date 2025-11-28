@@ -34,7 +34,9 @@ export const userInfo = create<UserStore>()(
       },
       setEmail: (newEmail) => set({ email: newEmail }),
       setId: (newId) => set({ userId: newId }),
-      setName: (newName) => {console.log("new user name is ", newName); set({ name: newName })},
+      setName: (newName) => {
+        set({ name: newName });
+      },
       setRefreshToken: (newRefreshToken) =>
         set({ refreshToken: newRefreshToken }),
       setSessionId: (newSessionId) => set({ sessionId: newSessionId }),

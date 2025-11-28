@@ -2,17 +2,20 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { formatISOToYYYYMMDD } from '~/utilities/time';
 import { loader } from './loader';
 
-const { mockWeekly, mockBio, mockAllTime, mockBadges } = vi.hoisted(() => ({
-  mockAllTime: vi.fn(),
-  mockBadges: vi.fn(),
-  mockBio: vi.fn(),
-  mockWeekly: vi.fn(),
-}));
+const { mockWeekly, mockBio, mockAllTime, mockBadges, mockFriends } =
+  vi.hoisted(() => ({
+    mockAllTime: vi.fn(),
+    mockBadges: vi.fn(),
+    mockBio: vi.fn(),
+    mockFriends: vi.fn(),
+    mockWeekly: vi.fn(),
+  }));
 
 vi.mock('~/api', () => ({
   fetchAllTimeSummary: mockAllTime,
   fetchBio: mockBio,
   fetchWeeklySessionSummary: mockWeekly,
+  getFriendsCount: mockFriends,
 }));
 
 vi.mock('~/api/badges', () => ({
@@ -44,6 +47,11 @@ describe('loader()', () => {
 
     mockAllTime.mockResolvedValue({
       data: { sessions: [{ id: 1 }, { id: 2 }] },
+      error: false,
+    });
+
+    mockFriends.mockResolvedValue({
+      data: { count: 5 },
       error: false,
     });
 
@@ -80,6 +88,7 @@ describe('loader()', () => {
             },
           ],
         },
+        friendCount: { count: 5 },
         profileBio: { bio: 'Hello world', userId: 'user-1' },
         sessionSummary: { sessionsStudied: 5 },
         sessions: [{ id: 1 }, { id: 2 }],

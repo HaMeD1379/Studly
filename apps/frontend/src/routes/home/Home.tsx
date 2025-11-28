@@ -1,5 +1,5 @@
-import { Container } from "@mantine/core";
-import { HomeHeader } from "~/components";
+import { Container } from '@mantine/core';
+import { HomeHeader } from '~/components';
 export const Home = () => {
   return (
     <Container fluid>

@@ -2,17 +2,17 @@ import {
   fetchAllTimeSummary,
   fetchBio,
   fetchWeeklySessionSummary,
+  getFriendsCount,
 } from '~/api';
 import { fetchAllUserBadges } from '~/api/badges';
-import { getFriendsCount } from '~/api/friends';
 import { userInfo } from '~/store';
 import type {
   Badge,
+  FriendCount,
   ProfileBio,
   StudySession,
   TodaysStudyStatistics,
   UnlockedBadge,
-  FriendCount
 } from '~/types';
 import { formatISOToYYYYMMDD } from '~/utilities/time';
 
@@ -25,7 +25,7 @@ type CombinedLoader = {
       unlockedBadges: UnlockedBadge[];
       allBadges: Badge[];
     };
-    friendCount?: FriendCount
+    friendCount?: FriendCount;
   };
   error: boolean;
 };
@@ -33,14 +33,19 @@ type CombinedLoader = {
 export const loader = async (): Promise<CombinedLoader> => {
   const { userId } = userInfo.getState();
 
-  const [sessionSummary, profileBio, sessionsList, badgesResponse, friendCount] =
-    await Promise.all([
-      fetchWeeklySessionSummary(),
-      fetchBio(userId),
-      fetchAllTimeSummary(),
-      fetchAllUserBadges(),
-      getFriendsCount()
-    ]);
+  const [
+    sessionSummary,
+    profileBio,
+    sessionsList,
+    badgesResponse,
+    friendCount,
+  ] = await Promise.all([
+    fetchWeeklySessionSummary(),
+    fetchBio(userId),
+    fetchAllTimeSummary(),
+    fetchAllUserBadges(),
+    getFriendsCount(),
+  ]);
 
   const allBadges: Badge[] = [];
   const unlockedBadges: UnlockedBadge[] = [];
@@ -64,12 +69,16 @@ export const loader = async (): Promise<CombinedLoader> => {
         allBadges,
         unlockedBadges,
       },
+      friendCount: friendCount?.data,
       profileBio: profileBio.data,
       sessionSummary: sessionSummary.data,
       sessions: sessionsList.data?.sessions,
-      friendCount: friendCount.data
     },
-    error:
-      !!sessionSummary.error || !!profileBio.error || !!badgesResponse.error || !!friendCount.error,
+    error: Boolean(
+      sessionSummary?.error ||
+        profileBio?.error ||
+        badgesResponse?.error ||
+        friendCount?.error,
+    ),
   };
 };

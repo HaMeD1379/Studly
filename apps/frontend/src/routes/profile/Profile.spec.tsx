@@ -10,6 +10,10 @@ const mockLoaderData = {
       allBadges: [{}, {}, {}],
       unlockedBadges: [{}, {}, {}],
     },
+    friendCount: {
+      data: { count: 3 },
+      error: false,
+    },
     profileBio: { data: { bio: 'This is my Bio' } },
     sessionSummary: {
       sessionsLogged: 0,

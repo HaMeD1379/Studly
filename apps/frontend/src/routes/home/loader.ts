@@ -1,46 +1,50 @@
-import {fetchTodaysSessionSummary, getProfile} from '~/api'
-import { SessionSummaryLoader,userProfileInfo,UnlockedBadge } from '~/types';
+import { fetchTodaysSessionSummary, getProfile } from '~/api';
+import { fetchAllUserBadges } from '~/api/badges';
 import { userInfo } from '~/store';
-import { fetchAllUserBadges} from '~/api/badges';
+import type {
+  SessionSummaryLoader,
+  UnlockedBadge,
+  userProfileInfo,
+} from '~/types';
 import { formatISOToYYYYMMDD } from '~/utilities/time';
 
 type combinedLoader = {
-    data: {
-        todaySession?: SessionSummaryLoader
-        userProfileInfo?: userProfileInfo
-        unlockedBadges?: UnlockedBadge[];
-    };
-    error: boolean
-}
+  data: {
+    todaySession?: SessionSummaryLoader;
+    userProfileInfo?: userProfileInfo;
+    unlockedBadges?: UnlockedBadge[];
+  };
+  error: boolean;
+};
 
-export const loader = async ():Promise<combinedLoader> => {
-    const {userId} = userInfo.getState()
-    const [todaySession,userProfileInfo,badgesResponse] = await Promise.all([
-            fetchTodaysSessionSummary(),
-            getProfile(userId),
-            fetchAllUserBadges()
-          ]);
-          const allBadges = [];
-            const unlockedBadges = [];
-          
-            if (badgesResponse.data && !badgesResponse.error) {
-              for (const badgeData of badgesResponse.data.badges) {
-                allBadges.push(badgeData.badge);
-          
-                if (badgeData.earnedAt) {
-                  unlockedBadges.push({
-                    ...badgeData.badge,
-                    earnedAt: formatISOToYYYYMMDD(badgeData.earnedAt),
-                  });
-                }
-              }
-            }  
-    return {
-        data:{
-            todaySession: todaySession.data ?? undefined,
-            userProfileInfo: userProfileInfo.data ?? undefined,
-            unlockedBadges: unlockedBadges ?? []
-        },
-        error: !!(todaySession.error || userProfileInfo.error)
+export const loader = async (): Promise<combinedLoader> => {
+  const { userId } = userInfo.getState();
+  const [todaySession, userProfileInfo, badgesResponse] = await Promise.all([
+    fetchTodaysSessionSummary(),
+    getProfile(userId),
+    fetchAllUserBadges(),
+  ]);
+  const allBadges = [];
+  const unlockedBadges = [];
+
+  if (badgesResponse.data && !badgesResponse.error) {
+    for (const badgeData of badgesResponse.data.badges) {
+      allBadges.push(badgeData.badge);
+
+      if (badgeData.earnedAt) {
+        unlockedBadges.push({
+          ...badgeData.badge,
+          earnedAt: formatISOToYYYYMMDD(badgeData.earnedAt),
+        });
+      }
     }
-}
+  }
+  return {
+    data: {
+      todaySession: todaySession.data ?? undefined,
+      unlockedBadges: unlockedBadges ?? [],
+      userProfileInfo: userProfileInfo.data ?? undefined,
+    },
+    error: !!(todaySession.error || userProfileInfo.error),
+  };
+};

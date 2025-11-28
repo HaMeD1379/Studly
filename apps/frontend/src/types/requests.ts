@@ -31,7 +31,7 @@ export type UserMetadata = {
   id: string;
   email: string;
   full_name: string;
-  bio: string
+  bio: string;
 };
 
 export type BackendLoginResponse = {
@@ -40,10 +40,10 @@ export type BackendLoginResponse = {
 };
 
 export type userProfileInfo = {
-  data:{
+  data: {
     id: string;
-  email: string;
-  full_name: string;
-  bio: string
-  }
-}
+    email: string;
+    full_name: string;
+    bio: string;
+  };
+};

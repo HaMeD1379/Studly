@@ -139,7 +139,13 @@ export const FRIENDS_CARD_ONLINE = 'Online';
 export const FRIENDS_CARD_STUDYING = 'Studying';
 export const FRIENDS_SEARCHBAR_PLACEHOLDER = 'Search friends...';
 export const FRIENDS_VIEW_PROFILE = 'View Profile';
-export const FRIENDS_SEARCH_NO_USERS = 'No users found'
+export const FRIENDS_SEARCH_NO_USERS = 'No users found';
+export const FRIENDS_NO_REQUESTS = 'No pending friend requests';
+export const FRIENDS_PENDING = 'Pending';
+export const FRIENDS_SENT_REQUEST = 'Friend Request sent';
+export const FRIENDS_SEARCH_TO_FIND_A_FRIENDS =
+  'Search and make a new friend today!';
+export const FRIENDS_REQUESTED = 'Requested';
 // study page
 export const STUDY_ROUTE_HEADER = 'Study Session';
 export const STUDY_ROUTE_SUBHEADER = 'Focus and track your study time';
@@ -187,10 +193,11 @@ export const SETTINGS_DESCRIPTION =
   'Manage your account settings and preferences. (Profile is the only tab accessible currently)';
 
 //Home constants
-export const HOME_WELCOME_MESSAGE = 'Welcome back,'
-export const HOME_WELCOME_DESCRIPTION = 'Ready to continue your learning journey?'
-export const HOME_QUICK_ACTIONS_TEXT = 'Quick Actions'
-export const HOME_NEXT_BADGE_PROGRESS_TEXT = 'Next Badge Progress'
-export const HOME_TODAYS_GOAL_TEXT = `Today's goal`
-export const HOME_START_STUDY_SESSION_TEXT = 'Start Study Session'
-export const HOME_NEXT_BADGE_PROGRESS_DESCRIPTION = 'hours until next badge'
+export const HOME_WELCOME_MESSAGE = 'Welcome back,';
+export const HOME_WELCOME_DESCRIPTION =
+  'Ready to continue your learning journey?';
+export const HOME_QUICK_ACTIONS_TEXT = 'Quick Actions';
+export const HOME_NEXT_BADGE_PROGRESS_TEXT = 'Next Badge Progress';
+export const HOME_TODAYS_GOAL_TEXT = `Today's goal`;
+export const HOME_START_STUDY_SESSION_TEXT = 'Start Study Session';
+export const HOME_NEXT_BADGE_PROGRESS_DESCRIPTION = 'hours until next badge';

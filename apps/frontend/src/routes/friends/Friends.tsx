@@ -1,28 +1,35 @@
-import { Container, SegmentedControl, Text } from "@mantine/core";
 import {
-  FriendsHeader,
-  FriendsStatus,
+  ActionIcon,
+  Box,
+  Container,
+  Flex,
+  SegmentedControl,
+} from '@mantine/core';
+import { IconRefresh } from '@tabler/icons-react';
+import { useEffect, useState } from 'react';
+import { useActionData, useRevalidator } from 'react-router-dom';
+import {
   FindFriends,
   FriendRequest,
-} from "~/components";
-import { friendsTabs as tabs } from "~/constants/friends";
-import { useEffect, useState } from "react";
-import { useActionData } from "react-router-dom";
-import {
-  FRIENDS_TAB_FRIENDS,
-  FRIENDS_TAB_REQUESTS,
-  FRIENDS_TAB_RECEIVED_REQUESTS,
-} from "~/constants";
-import { Result } from "~/types";
+  FriendsHeader,
+  FriendsStatus,
+} from '~/components';
+import { FRIENDS_TAB_FRIENDS, FRIENDS_TAB_REQUESTS } from '~/constants';
+import { friendsTabs as tabs } from '~/constants/friends';
+import type { Result } from '~/types';
 
 export const Friends = () => {
-  const [selectedTab, setSelectedTab] = useState(tabs[0]);
+  const [selectedTab, setSelectedTab] = useState(
+    FRIENDS_TAB_FRIENDS.toLowerCase(),
+  );
   const [searchResults, setSearchResults] = useState<Result[] | null>(null);
 
   const actionData = useActionData();
 
+  const revalidator = useRevalidator();
+
   useEffect(() => {
-    if (actionData && actionData.formtype === "searchFriends") {
+    if (actionData && actionData.formtype === 'searchFriends') {
       setSearchResults(actionData.data.results);
     }
   }, [actionData]);
@@ -30,34 +37,46 @@ export const Friends = () => {
   const isSearching = searchResults !== null;
 
   return (
-    <Container fluid p="xl">
-      <FriendsHeader />
+    <Container fluid p='xl'>
+      <FriendsHeader isHidden={!isSearching} />
+
       {isSearching ? (
-        <FindFriends
-          results={searchResults}
-          onClear={() => setSearchResults(null)}
-        />
+        <FindFriends results={searchResults} />
       ) : (
-        <>
-          <SegmentedControl
-            data={tabs.map((t) => ({ label: t, value: t.toLowerCase() }))}
-            fullWidth
-            radius="xl"
-            size="md"
-            onChange={(value) => {
-              setSelectedTab(value);
-            }}
-          />
-          {selectedTab === FRIENDS_TAB_FRIENDS.toLowerCase() && (
-            <FriendsStatus />
-          )}
-          {selectedTab === FRIENDS_TAB_REQUESTS.toLowerCase() && (
-            <FriendRequest />
-          )}
-          {selectedTab === FRIENDS_TAB_RECEIVED_REQUESTS.toLowerCase() && (
-            <Text>Show suggested friends here</Text>
-          )}
-        </>
+        <Flex direction='column' gap='lg' w='100%'>
+          {/* Top bar: Tabs + Refresh */}
+          <Flex align='center' justify='space-between' w='100%'>
+            <Box style={{ flex: 1 }}>
+              <SegmentedControl
+                data={tabs.map((t) => ({ label: t, value: t.toLowerCase() }))}
+                fullWidth
+                onChange={setSelectedTab}
+                radius='xl'
+                size='md'
+                value={selectedTab}
+              />
+            </Box>
+
+            <ActionIcon
+              color='black'
+              ml='md'
+              onClick={() => revalidator.revalidate()}
+              size='lg'
+              variant='outline'
+            >
+              <IconRefresh size={24} />
+            </ActionIcon>
+          </Flex>
+
+          <Box>
+            {selectedTab === FRIENDS_TAB_FRIENDS.toLowerCase() && (
+              <FriendsStatus />
+            )}
+            {selectedTab === FRIENDS_TAB_REQUESTS.toLowerCase() && (
+              <FriendRequest />
+            )}
+          </Box>
+        </Flex>
       )}
     </Container>
   );

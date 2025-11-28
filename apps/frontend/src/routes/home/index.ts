@@ -1,2 +1,2 @@
-export {loader as homeLoader} from './loader'
-export * from './Home'
+export * from './Home';
+export { loader as homeLoader } from './loader';

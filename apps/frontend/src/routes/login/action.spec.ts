@@ -9,7 +9,6 @@ vi.mock('~/api', () => ({
 
 const mockSetAccessToken = vi.fn();
 const mockSetEmail = vi.fn();
-const mockSetName = vi.fn();
 const mockSetId = vi.fn();
 const mockSetRefreshToken = vi.fn();
 const mockSetAvatarState = vi.fn();
@@ -21,7 +20,6 @@ vi.mock('~/store/userInfo', () => ({
       setAvatarState: mockSetAvatarState,
       setEmail: mockSetEmail,
       setId: mockSetId,
-      setName: mockSetName,
       setRefreshToken: mockSetRefreshToken,
     }),
   },
@@ -99,7 +97,6 @@ describe('login action', () => {
 
     expect(mockSetAccessToken).toHaveBeenCalledWith('access123');
     expect(mockSetEmail).toHaveBeenCalledWith('john@example.com');
-    expect(mockSetName).toHaveBeenCalledWith('John Doe');
     expect(mockSetId).toHaveBeenCalledWith('user123');
     expect(mockSetRefreshToken).toHaveBeenCalledWith('refresh123');
     expect(mockSetAvatarState).toHaveBeenCalledWith(AVATAR_ONLINE);

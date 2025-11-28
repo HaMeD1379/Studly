@@ -1,135 +1,156 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { screen, fireEvent, waitFor } from "@testing-library/react";
-import { RouterProvider, createMemoryRouter } from "react-router-dom";
-import { FriendsHeader } from "./FriendsHeader";
-import { render } from "~/utilities/testing";
-import fetchPolyfill, { Request as RequestPolyfill } from "node-fetch";
-import {
-  FRIENDS_HEADER_DESCRIPTION,
-  FRIENDS_SEARCHBAR_PLACEHOLDER,
-  FRIENDS_TAB_FRIENDS,
-  FRIENDS_TAB_REQUESTS,
-  FRIENDS_CARD_ONLINE,
-  FRIENDS_CARD_STUDYING,
-  FRIENDS,
-} from "~/constants";
+import { act, fireEvent, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { render } from '~/utilities/testing';
+import { FriendsHeader } from './FriendsHeader';
 
-//Lines 15 - 24 were provided through an online github repo (https://github.com/reduxjs/redux-toolkit/issues/4966#issuecomment-3115230061) as solution to the error:
-//RequestInit: Expected signal ("AbortSignal {}") to be an instance of AbortSignal.
-Object.defineProperty(global, "fetch", {
-  value: fetchPolyfill,
-  // MSW will overwrite this to intercept requests
-  writable: true,
+// 👇 all mocks created INSIDE the factory
+vi.mock('react-router-dom', async () => {
+  const actual =
+    await vi.importActual<typeof import('react-router-dom')>(
+      'react-router-dom',
+    );
+
+  const useLoaderData = vi.fn();
+  const useSubmit = vi.fn(() => vi.fn());
+  const useNavigate = vi.fn(() => vi.fn());
+
+  const Form = ({
+    onSubmit,
+    children,
+    method,
+  }: {
+    onSubmit: React.FormEventHandler<HTMLFormElement>;
+    children: React.ReactNode;
+    method: string;
+  }) => (
+    <form method={method} onSubmit={onSubmit}>
+      {children}
+    </form>
+  );
+
+  // expose mocks through a helper getter
+  return Object.assign({}, actual, {
+    __mocks: { useLoaderData, useNavigate, useSubmit },
+    Form,
+    useLoaderData,
+    useNavigate,
+    useSubmit,
+  });
 });
 
-Object.defineProperty(global, "Request", {
-  value: RequestPolyfill,
-  writable: false,
-});
+// import after mocks
+import * as Router from 'react-router-dom';
 
-// Spy for submit()
-const submitSpy = vi.fn();
+describe('FriendsHeader', () => {
+  // grab the mocks that were exported from inside the factory
+  const mocks = (
+    Router as unknown as {
+      __mocks: {
+        useLoaderData: ReturnType<typeof vi.fn>;
+        useSubmit: ReturnType<typeof vi.fn>;
+        useNavigate: ReturnType<typeof vi.fn>;
+      };
+    }
+  ).__mocks;
 
-// Mock react-router hooks
-vi.mock("react-router", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("react-router")>();
-  return {
-    ...actual,
-    useSubmit: () => submitSpy,
-  };
-});
+  const { useLoaderData, useSubmit, useNavigate } = mocks;
 
-const mockLoaderData = {
-  data: {
-    friendCount: { data: { count: 4 } },
-    requestCount: { data: { count: 2 } },
-  },
-};
-
-function createTestRouter() {
-  return createMemoryRouter([
-    {
-      path: "/",
-      element: <FriendsHeader />,
-      loader: () => mockLoaderData,
+  const mockLoaderData = {
+    data: {
+      friendCount: { data: { count: 5 } },
+      requestCount: { data: { count: 2 } },
     },
-  ]);
-}
+  };
 
-describe("FriendsHeader", () => {
   beforeEach(() => {
-    submitSpy.mockClear();
+    vi.useFakeTimers();
+    useLoaderData.mockReturnValue(mockLoaderData);
+    useSubmit.mockReturnValue(vi.fn());
+    useNavigate.mockReturnValue(vi.fn());
+    localStorage.clear();
   });
 
-  it("renders header and description", () => {
-    const router = createTestRouter();
-    render(<RouterProvider router={router} />);
+  afterEach(() => {
+    vi.useRealTimers();
+  });
 
-    expect(screen.getByTestId("Friends header")).toHaveTextContent(
-      FRIENDS_TAB_FRIENDS
+  it('renders search input', () => {
+    render(
+      <MemoryRouter>
+        <FriendsHeader isHidden />
+      </MemoryRouter>,
+    );
+    expect(
+      screen.getByPlaceholderText('Search friends...'),
+    ).toBeInTheDocument();
+  });
+
+  it('allows typing in search field', () => {
+    render(
+      <MemoryRouter>
+        <FriendsHeader isHidden />
+      </MemoryRouter>,
+    );
+    const input = screen.getByPlaceholderText('Search friends...');
+    fireEvent.change(input, { target: { value: 'john' } });
+    expect((input as HTMLInputElement).value).toBe('john');
+  });
+
+  it('calls submit() after debounce delay', async () => {
+    const submitSpy = vi.fn();
+    useSubmit.mockReturnValue(submitSpy);
+
+    render(
+      <MemoryRouter>
+        <FriendsHeader isHidden />
+      </MemoryRouter>,
     );
 
-    expect(screen.getByText(FRIENDS_HEADER_DESCRIPTION)).toBeInTheDocument();
-  });
+    const input = screen.getByPlaceholderText('Search friends...');
+    fireEvent.change(input, { target: { value: 'alex' } });
 
-  it("renders search input", () => {
-    const router = createTestRouter();
-    render(<RouterProvider router={router} />);
-
-    const input = screen.getByPlaceholderText(FRIENDS_SEARCHBAR_PLACEHOLDER);
-
-    expect(input).toBeInTheDocument();
-  });
-
-  it("allows typing in search field", () => {
-    const router = createTestRouter();
-    render(<RouterProvider router={router} />);
-
-    const input = screen.getByPlaceholderText(
-      FRIENDS_SEARCHBAR_PLACEHOLDER
-    ) as HTMLInputElement;
-
-    fireEvent.change(input, { target: { value: "Alice" } });
-
-    expect(input.value).toBe("Alice");
-  });
-
-  it("renders stats cards correctly", () => {
-    const router = createTestRouter();
-    render(<RouterProvider router={router} />);
-
-    const cards = [
-      { label: FRIENDS_TAB_FRIENDS, value: "4" },
-      { label: FRIENDS_TAB_REQUESTS, value: "2" },
-      { label: FRIENDS_CARD_ONLINE, value: "2" },
-      { label: FRIENDS_CARD_STUDYING, value: "1" },
-    ];
-
-    cards.forEach(({ label, value }) => {
-      const testId = `${label.toLowerCase().replace(/\s+/g, "-")}-card`;
-      const card = screen.getByTestId(testId);
-
-      expect(card).toBeInTheDocument();
-      expect(card).toHaveTextContent(label);
-      expect(card).toHaveTextContent(value);
+    await act(async () => {
+      vi.advanceTimersByTime(700);
     });
+
+    expect(submitSpy).toHaveBeenCalled();
   });
 
-  it("calls submit() after debounce", async () => {
-    const router = createTestRouter();
-    render(<RouterProvider router={router} />);
-
-    const input = screen.getByPlaceholderText(
-      FRIENDS_SEARCHBAR_PLACEHOLDER
-    ) as HTMLInputElement;
-
-    fireEvent.change(input, { target: { value: "Alice" } });
-
-    await waitFor(
-      () => {
-        expect(submitSpy).toHaveBeenCalled();
-      },
-      { timeout: 1000 }
+  it('renders stats cards correctly', () => {
+    render(
+      <MemoryRouter>
+        <FriendsHeader isHidden />
+      </MemoryRouter>,
     );
+    expect(screen.getByTestId('friends-card')).toBeInTheDocument();
+    expect(screen.getByTestId('requests-card')).toBeInTheDocument();
+    expect(screen.getByTestId('online-card')).toBeInTheDocument();
+    expect(screen.getByTestId('studying-card')).toBeInTheDocument();
+  });
+
+  it('renders back button when isHidden = false', () => {
+    render(
+      <MemoryRouter>
+        <FriendsHeader isHidden={false} />
+      </MemoryRouter>,
+    );
+    expect(screen.getByRole('button')).toBeInTheDocument();
+  });
+
+  it('clears searchTerm and navigates when back button is clicked', () => {
+    const navigateSpy = vi.fn();
+    useNavigate.mockReturnValue(navigateSpy);
+    localStorage.setItem('searchTerm', 'hello');
+
+    render(
+      <MemoryRouter>
+        <FriendsHeader isHidden={false} />
+      </MemoryRouter>,
+    );
+
+    fireEvent.click(screen.getByRole('button'));
+    expect(localStorage.getItem('searchTerm')).toBeNull();
+    expect(navigateSpy).toHaveBeenCalled();
   });
 });

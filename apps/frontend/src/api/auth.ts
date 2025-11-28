@@ -3,14 +3,13 @@ import {
   AUTH_LOGIN,
   AUTH_LOGOUT,
   AUTH_SIGNUP,
-  RETRIEVE_BIO
+  RETRIEVE_BIO,
 } from '~/constants';
 import {
   type BackendLoginResponse,
   RequestMethods,
   type RequestResolve,
-  UserMetadata,
-  type userProfileInfo
+  type userProfileInfo,
 } from '~/types';
 import { request } from '~/utilities/requests';
 
@@ -58,14 +57,13 @@ export const logout = async (token: string) => {
 };
 
 export const getProfile = async (
-  userId: string
+  userId: string,
 ): Promise<RequestResolve<userProfileInfo>> => {
-
   const path = `${RETRIEVE_BIO}/${userId}`;
 
   const res: RequestResolve<userProfileInfo> = await request(
     RequestMethods.GET,
-    path
+    path,
   );
 
   return res;

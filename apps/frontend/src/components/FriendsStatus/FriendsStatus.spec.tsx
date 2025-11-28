@@ -1,57 +1,142 @@
 import { screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { MemoryRouter } from 'react-router-dom';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+import {
+  FRIENDS_SEARCH_TO_FIND_A_FRIENDS,
+  FRIENDS_VIEW_PROFILE,
+} from '~/constants';
 import { render } from '~/utilities/testing';
 import { FriendsStatus } from './FriendsStatus';
 
+// --- Mock Mantine components with simple replacements for layout ---
+vi.mock('@mantine/core', async () => {
+  const actual =
+    await vi.importActual<typeof import('@mantine/core')>('@mantine/core');
+  return {
+    ...actual,
+    ScrollArea: ({ children }: { children: React.ReactNode }) => (
+      <div data-testid='scroll-area'>{children}</div>
+    ),
+  };
+});
+
+// --- Mock Avatar ---
+vi.mock('../Avatar/Avatar', () => ({
+  Avatar: ({ name }: { name: string }) => (
+    <div data-testid='avatar'>{name}</div>
+  ),
+}));
+
+// --- Mock useLoaderData safely ---
+vi.mock('react-router', () => ({
+  useLoaderData: vi.fn(),
+}));
+
+import { useLoaderData } from 'react-router';
+
 describe('FriendsStatus', () => {
-  it('renders all friends cards', () => {
-    render(<FriendsStatus />);
+  const mockUseLoaderData = useLoaderData as unknown as Mock;
 
-    // Friend names
-    const friendNames = [
-      'Sarah Chen',
-      'Mike Johnson',
-      'Emma Wilson',
-      'Alex Rodriguez',
-    ];
-    friendNames.forEach((name) => {
-      const nameElement = screen.getByText(name);
-      expect(nameElement).toBeInTheDocument();
-    });
+  const sampleFriend = {
+    bio: 'Friendly tester',
+    email: 'jane@example.com',
+    full_name: 'Jane Doe',
+    user_id: 'friend-1',
+  };
 
-    // Friend subjects and statuses
-    expect(screen.getByText(/Physics - 2 hours ago/)).toBeInTheDocument();
+  const populatedData = {
+    data: {
+      friendsList: { friends: [sampleFriend] },
+      friendsProfile: [
+        {
+          profile: { data: sampleFriend },
+        },
+      ],
+      receivedRequestsProfile: [],
+    },
+  };
+
+  const emptyData = {
+    data: {
+      friendsList: { friends: [] },
+      friendsProfile: [],
+      receivedRequestsProfile: [],
+    },
+  };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('renders empty state when no friends', () => {
+    mockUseLoaderData.mockReturnValue(emptyData);
+
+    render(
+      <MemoryRouter>
+        <FriendsStatus />
+      </MemoryRouter>,
+    );
+
     expect(
-      screen.getByText(/Mathematics - Currently Studying/),
+      screen.getByText(FRIENDS_SEARCH_TO_FIND_A_FRIENDS),
     ).toBeInTheDocument();
-    expect(screen.getByText(/Chemistry - 6 hours ago/)).toBeInTheDocument();
-    expect(screen.getByText(/History - 1 hours ago/)).toBeInTheDocument();
+  });
 
-    // Friend stats
-    expect(screen.getByText(/15 day streak/)).toBeInTheDocument();
-    expect(screen.getByText(/206h/)).toBeInTheDocument();
-    expect(screen.getByText(/24 badges/)).toBeInTheDocument();
+  it('renders friend card with name, bio, avatar, and buttons', () => {
+    mockUseLoaderData.mockReturnValue(populatedData);
 
-    expect(screen.getByText(/8 day streak/)).toBeInTheDocument();
-    expect(screen.getByText(/148h/)).toBeInTheDocument();
-    expect(screen.getByText(/16 badges/)).toBeInTheDocument();
+    render(
+      <MemoryRouter>
+        <FriendsStatus />
+      </MemoryRouter>,
+    );
 
-    expect(screen.getByText(/22 day streak/)).toBeInTheDocument();
-    expect(screen.getByText(/311h/)).toBeInTheDocument();
-    expect(screen.getByText(/35 badges/)).toBeInTheDocument();
+    // Avatar
+    expect(screen.getByTestId('avatar')).toHaveTextContent('Jane Doe');
 
-    expect(screen.getByText(/3 day streak/)).toBeInTheDocument();
-    expect(screen.getByText(/93h/)).toBeInTheDocument();
-    expect(screen.getByText(/12 badges/)).toBeInTheDocument();
+    // Friend name and bio
+    expect(screen.getAllByText('Jane Doe').length).toBeGreaterThan(0);
+    expect(screen.getByText('Friendly tester')).toBeInTheDocument();
 
     // Buttons
-    expect(
-      screen.getAllByRole('button', { name: /View Profile/i }),
-    ).toHaveLength(4);
-    expect(screen.getAllByRole('button')).toHaveLength(8); // 4 message + 4 view profile buttons
+    expect(screen.getByText(FRIENDS_VIEW_PROFILE)).toBeInTheDocument();
 
-    // Avatars
-    const avatars = screen.getAllByTestId('avatar');
-    expect(avatars).toHaveLength(4);
+    // Icon button (message icon)
+    const iconButtons = screen.getAllByRole('button');
+    expect(iconButtons.length).toBeGreaterThanOrEqual(2);
+
+    // ScrollArea present
+    expect(screen.getByTestId('scroll-area')).toBeInTheDocument();
+  });
+
+  it('renders fallback bio when missing', () => {
+    const noBioData = {
+      data: {
+        friendsList: { friends: [] },
+        friendsProfile: [
+          {
+            profile: {
+              data: {
+                bio: undefined,
+                email: 'john@example.com',
+                full_name: 'John Doe',
+                user_id: 'friend-2',
+              },
+            },
+          },
+        ],
+        receivedRequestsProfile: [],
+      },
+    };
+
+    mockUseLoaderData.mockReturnValue(noBioData);
+
+    render(
+      <MemoryRouter>
+        <FriendsStatus />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText('No bio provided')).toBeInTheDocument();
   });
 });
