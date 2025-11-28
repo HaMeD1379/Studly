@@ -1,7 +1,8 @@
-import type { UnlockedBadge } from '~/types';
+import type { UnlockedBadge } from "~/types";
+
 export const sortBadgesByEarnedDate = (
   badges: UnlockedBadge[],
-  ascending = true,
+  ascending = true
 ): UnlockedBadge[] => {
   return badges
     .filter((badge) => badge.earnedAt)

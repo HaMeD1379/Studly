@@ -14,6 +14,7 @@ export const formatMinutesToHoursAndMinutes = (minutes: number): string => {
 
   return `${formattedHours}${space}${formattedMinutes}`;
 };
+
 export const getSunday = (date: Date) => {
   const d = new Date(date); // avoid mutating original
   const day = d.getDay(); // Sunday = 0
