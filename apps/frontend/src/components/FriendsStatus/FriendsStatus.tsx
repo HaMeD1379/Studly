@@ -24,7 +24,6 @@ export const FriendsStatus = ({ onAction }: props) => {
   const loaderdata = useLoaderData() as LoaderData;
 
   const friendsProfile = loaderdata.data.friendsProfile;
-  console.log('frinedsProfilke', friendsProfile);
 
   type RequestProfile = {
     profile: {

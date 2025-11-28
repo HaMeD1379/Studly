@@ -10,7 +10,6 @@ type props = {
 };
 
 export const ViewUserProfile = ({ friend, friendshipStartDate }: props) => {
-  console.log('bio is:', friend.bio);
   return (
     <Card
       key={friend.user_id}

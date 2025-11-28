@@ -82,7 +82,6 @@ export const loader = async (): Promise<FriendsLoader> => {
   let receivedRequestsProfile: findUserProfile[] = [];
   if (friendsList.data?.data) {
     friendsProfile = await buildProfile(friendsList.data.data);
-    console.log('friends', friendsProfile);
   }
   if (pendingFriendships.data?.data) {
     requestProfile = await buildProfile(pendingFriendships.data.data);
