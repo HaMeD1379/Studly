@@ -14,4 +14,5 @@ Cypress.Commands.add('login', () => {
   cy.get('[name="email"]').type(`${Cypress.env('email')}`);
   cy.get('[name="password"]').type(`${Cypress.env('password')}`);
   cy.contains('button', 'Sign In').click();
+  cy.url().should('not.include', '/login');
 });
