@@ -11,11 +11,11 @@ describe('navbar', () => {
     cy.url().should('include', 'study');
     cy.get('[data-variant="transparent"]').eq(1).click();
     cy.url().should('include', 'badges');
-    cy.get('[data-variant="transparent"]').eq(2).click();
-    cy.url().should('include', 'leaderboard');
     cy.get('[data-variant="transparent"]').eq(3).click();
-    cy.url().should('include', 'profile');
+    cy.url().should('include', 'leaderboard');
     cy.get('[data-variant="transparent"]').eq(4).click();
+    cy.url().should('include', 'profile');
+    cy.get('[data-variant="transparent"]').eq(5).click();
     cy.url().should('include', 'settings');
   });
 });
