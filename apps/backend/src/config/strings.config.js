@@ -129,6 +129,14 @@ const STRINGS = {
     INTERNAL_ERROR: "An internal server error occurred.",
   },
 
+  // FEED
+  FEED: {
+    GET_SUCCESS: "Feed retrieved successfully",
+    GET_ERROR: "Supabase get feed error: ",
+    UNEXPECTED_GET_ERROR: "Unexpected get feed error:",
+    INVALID_TIMESTAMP: "Invalid timestamp format",
+  },
+
   // FRIENDS
   FRIENDS: {
     COUNT_SUCCESS: "Friends count retrieved successfully",
@@ -137,6 +145,9 @@ const STRINGS = {
     GET_ALL_SUCCESS: "Friends retrieved successfully",
     GET_ALL_ERROR: "Supabase get all friends error: ",
     UNEXPECTED_GET_ALL_ERROR: "Unexpected get all friends error:",
+    GET_ACCEPTED_SUCCESS: "Accepted friends retrieved successfully",
+    GET_ACCEPTED_ERROR: "Supabase get accepted friends error: ",
+    UNEXPECTED_GET_ACCEPTED_ERROR: "Unexpected get accepted friends error:",
     PENDING_REQUESTS_SUCCESS: "Pending requests retrieved successfully",
     PENDING_REQUESTS_ERROR: "Supabase get pending requests error: ",
     UNEXPECTED_PENDING_REQUESTS_ERROR: "Unexpected get pending requests error:",
@@ -208,6 +219,9 @@ const STRINGS = {
     PROFILE_UPDATE_PATCH: "PATCH /api/v1/profile/update",
     PROFILE_DATA: "/api/v1/profile",
     PROFILE_DATA_GET: "GET /api/v1/profile/:id",
+    // Feed API routes
+    FEED_ROUTE: "/api/v1/feed",
+    FEED_GET: "GET /api/v1/feed/:timestamp",
     // Friends API routes
     FRIENDS_ROUTE: "/api/v1/friends",
     FRIENDS_COUNT_GET: "GET /api/v1/friends/count/:id",
