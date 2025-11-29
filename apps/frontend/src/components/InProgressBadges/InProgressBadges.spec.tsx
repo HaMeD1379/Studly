@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { HOME, HOME_DISPLAYING_UPCOMING_BADGES } from '~/constants';
 import { mockLoaderData as loaderdataMock } from '~/mocks/home';
 import { render } from '~/utilities/testing';
-import { DisplayUnlockedBadges } from './InProgressBadges';
+import { InProgressBadges } from './InProgressBadges';
 
 const mockNavigate = vi.fn();
 
@@ -17,13 +17,13 @@ vi.mock('react-router', async () => {
   };
 });
 
-describe('DisplayUnlockedBadges Component', () => {
+describe('InProgressBadges Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it('renders the header and all badges sorted by progress (desc)', () => {
-    render(<DisplayUnlockedBadges />);
+    render(<InProgressBadges />);
 
     expect(
       screen.getByText(HOME_DISPLAYING_UPCOMING_BADGES),
@@ -42,7 +42,7 @@ describe('DisplayUnlockedBadges Component', () => {
   });
 
   it('navigates back to HOME when back button clicked', () => {
-    render(<DisplayUnlockedBadges />);
+    render(<InProgressBadges />);
 
     const backButton = screen.getByRole('button');
     fireEvent.click(backButton);
