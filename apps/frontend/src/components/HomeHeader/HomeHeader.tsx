@@ -84,7 +84,7 @@ export const HomeHeader = () => {
 
         {/* Three cards section */}
         <Flex direction='row' gap='sm' py='xl'>
-          {/* Left Card - Upcoming Badge (Placeholder) */}
+          {/* Left Card - Upcoming Badge (Just a Placeholder for now, will implement logic later on) */}
           <Card
             p='lg'
             radius='md'
