@@ -26,12 +26,12 @@ vi.mock('~/context', () => ({
 describe('Home test file', () => {
   it('renders home page when view more is false', () => {
     render(<Home />);
-    expect(screen.getByText('View upcoming badges...')).toBeInTheDocument();
+    expect(screen.getByText('View in progress badges')).toBeInTheDocument();
     expect(screen.getByText('Quick Actions')).toBeInTheDocument();
     expect(screen.getByText('Total Time Studied Today')).toBeInTheDocument();
   });
 
-  it('shows DisplayUnlockedBadges after calling action', () => {
+  it('shows InProgressBadges after calling action', () => {
     render(<Home />);
 
     const viewMoreButton = screen.getByRole('button', { name: /view more/i });

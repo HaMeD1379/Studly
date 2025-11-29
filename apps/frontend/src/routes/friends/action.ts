@@ -59,7 +59,6 @@ export const action = async ({
       } as FriendsActionResponse;
     }
     case 'rejectRequest': {
-      console.log('reject rquest');
       const from_user = formData.get('from_user')?.toString();
       const to_user = formData.get('to_user')?.toString();
       if (!from_user || !to_user) return { error: 'Missing credentials' };

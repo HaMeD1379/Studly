@@ -3,7 +3,7 @@ import { fetchAllUserBadges } from '~/api/badges';
 import { userInfo } from '~/store';
 import type {
   Badge,
-  inProgressBadge,
+  InProgressBadge,
   SessionSummaryLoader,
   UnlockedBadge,
   userProfileInfo,
@@ -16,7 +16,7 @@ type combinedLoader = {
     userProfileInfo?: userProfileInfo;
     unlockedBadges?: UnlockedBadge[];
     allBadges?: Badge[];
-    inProgressBadges?: inProgressBadge[];
+    inProgressBadges?: InProgressBadge[];
   };
   error: boolean;
 };

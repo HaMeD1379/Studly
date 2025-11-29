@@ -10,19 +10,19 @@ import {
 import { IconArrowLeft } from '@tabler/icons-react';
 import { useLoaderData, useNavigate } from 'react-router';
 import { HOME, HOME_DISPLAYING_UPCOMING_BADGES } from '~/constants';
-import type { inProgressBadge } from '~/types';
+import type { InProgressBadge } from '~/types';
 
-export const DisplayUnlockedBadges = () => {
+export const InProgressBadges = () => {
   const loaderData = useLoaderData();
   const navigate = useNavigate();
   const inProgressBadges = loaderData.data?.inProgressBadges;
   inProgressBadges.sort(
-    (a: inProgressBadge, b: inProgressBadge) => b.progress - a.progress,
+    (a: InProgressBadge, b: InProgressBadge) => b.progress - a.progress,
   );
   return (
     <Box w='100%'>
       <ActionIcon
-        color='black'
+        color='blue'
         onClick={() => {
           navigate(HOME);
         }}
@@ -34,7 +34,7 @@ export const DisplayUnlockedBadges = () => {
         {HOME_DISPLAYING_UPCOMING_BADGES}
       </Text>
       <SimpleGrid spacing='lg' w='100%'>
-        {inProgressBadges.map((item: inProgressBadge) => {
+        {inProgressBadges.map((item: InProgressBadge) => {
           return (
             <Card
               data-testid='badge-card'
@@ -49,7 +49,7 @@ export const DisplayUnlockedBadges = () => {
               <Text>{item.name}</Text>
               <Text c='dimmed'>{item.description}</Text>
               <Tooltip label={`${item.name} - ${item.progress}%`}>
-                <Progress color='black' value={item.progress}></Progress>
+                <Progress color='blue' value={item.progress}></Progress>
               </Tooltip>
             </Card>
           );

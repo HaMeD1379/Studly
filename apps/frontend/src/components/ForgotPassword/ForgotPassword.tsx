@@ -92,9 +92,6 @@ export const ForgotPassword = () => {
             <Button
               styles={{
                 root: {
-                  '&:hover': { backgroundColor: '#222' },
-                  backgroundColor: 'black',
-                  color: 'white',
                   fontWeight: 500,
                   textAlign: 'center',
                   width: '100%',

@@ -30,7 +30,7 @@ import {
 } from '~/constants';
 import { useNavbar } from '~/context';
 import { userInfo } from '~/store';
-import type { inProgressBadge } from '~/types';
+import type { InProgressBadge } from '~/types';
 import { hoursAndMinutes } from '~/utilities/time';
 
 type props = {
@@ -45,10 +45,10 @@ export const HomeHeader = ({ action }: props) => {
   const inProgressBadges = loaderData.data?.inProgressBadges;
   const DISPLAY_SIZE = 1;
   inProgressBadges.sort(
-    (a: inProgressBadge, b: inProgressBadge) => b.progress - a.progress,
+    (a: InProgressBadge, b: InProgressBadge) => b.progress - a.progress,
   );
 
-  const displayedBadges: inProgressBadge[] = inProgressBadges.slice(
+  const displayedBadges: InProgressBadge[] = inProgressBadges.slice(
     0,
     DISPLAY_SIZE,
   );
@@ -87,24 +87,22 @@ export const HomeHeader = ({ action }: props) => {
           </Flex>
 
           <Flex gap='sm'>
-            <Pill size='xl'>
+            <Pill pt={4} size='xl'>
               <Flex align='center'>
                 <IconClock size={20} style={{ marginRight: 6 }} />
-                {`${hoursAndMinutes(hoursToday)} today`}
+                <Text>{hoursAndMinutes(hoursToday)} today</Text>
               </Flex>
             </Pill>
-
-            <Pill size='xl'>
+            <Pill pt={4} size='xl'>
               <Flex align='center'>
                 <IconTrendingUp size={20} style={{ marginRight: 6 }} />
-                {`${currentStreak} day streak`}
+                <Text>${currentStreak} day streak</Text>
               </Flex>
             </Pill>
-
-            <Pill size='xl'>
+            <Pill pt={4} size='xl'>
               <Flex align='center'>
                 <IconTrophy size={20} style={{ marginRight: 6 }} />
-                {`${numBadges} badges`}
+                <Text>${numBadges} badges</Text>
               </Flex>
             </Pill>
           </Flex>
@@ -115,28 +113,27 @@ export const HomeHeader = ({ action }: props) => {
           <Card
             p='lg'
             radius='md'
-            shadow='sm'
             style={{ borderRadius: '12px' }}
             w='100%'
             withBorder
           >
             {displayedBadges.length > 0 ? (
               <>
-                <Text fw={800}>{HOME_VIEW_UPCOMING_BADGES} </Text>
+                <Text fw={700}>{HOME_VIEW_UPCOMING_BADGES} </Text>
                 <Stack py='md'>
-                  {displayedBadges.map((item: inProgressBadge) => (
+                  {displayedBadges.map((item: InProgressBadge) => (
                     <Card
                       key={item.name}
-                      p='lg'
+                      p='md'
                       radius='md'
                       shadow='sm'
                       style={{ borderRadius: '12px' }}
                       withBorder
                     >
-                      <Text fw={700}>{item.name}</Text>
+                      <Text fw={500}>{item.name}</Text>
                       <Text c='dimmed'>{item.description}</Text>
 
-                      <Progress color='black' value={item.progress} />
+                      <Progress color='blue' value={item.progress} />
                     </Card>
                   ))}
                 </Stack>
@@ -159,12 +156,12 @@ export const HomeHeader = ({ action }: props) => {
               </Flex>
             )}
             <Button
-              color='black'
+              color='blue'
               onClick={action}
               radius='md'
               variant='outline'
             >
-              <Text c='black'>{HOME_VIEW_MORE_BADGES}</Text>
+              <Text>{HOME_VIEW_MORE_BADGES}</Text>
             </Button>
           </Card>
 
@@ -172,52 +169,49 @@ export const HomeHeader = ({ action }: props) => {
           <Card
             p='lg'
             radius='md'
-            shadow='sm'
             style={{ borderRadius: '12px' }}
             w='100%'
             withBorder
           >
-            <Text fw={800}>{HOME_QUICK_ACTIONS_TEXT}</Text>
-            <Stack gap='sm' py='md'>
+            <Text fw={700}>{HOME_QUICK_ACTIONS_TEXT}</Text>
+            <Flex direction='column' align='center' gap='md' justify='center' h='100%'>
               <Button
-                color='black'
                 fullWidth
                 leftSection={<IconClock />}
                 onClick={() => updatePath(STUDY)}
-                variant='filled'
+                variant='outline'
+                bdrs={8}
               >
                 {HOME_START_STUDY_SESSION_TEXT}
               </Button>
               <Button
-                color='black'
+                color='blue'
                 fullWidth
                 leftSection={<IconTrophy />}
                 onClick={() => updatePath(BADGES)}
                 variant='outline'
+                bdrs={8}
               >
                 {HOME_VIEW_BADGES}
               </Button>
-            </Stack>
+            </Flex>
           </Card>
 
           {/* Right Card - Today's Study Time */}
           <Card
             p='lg'
             radius='md'
-            shadow='sm'
             style={{ borderRadius: '12px' }}
             w='100%'
             withBorder
           >
+            <Text fw={700}>{HOME_TIME_STUDIED_TODAY}</Text>
             <Flex
               align='center'
               direction='column'
               justify='center'
               style={{ minHeight: 120 }}
             >
-              <Text c='dimmed' fw={500} mb='xs' size='sm'>
-                {HOME_TIME_STUDIED_TODAY}
-              </Text>
               <Text c='black' fw={700} size='2rem'>
                 {hoursAndMinutes(hoursToday)}
               </Text>

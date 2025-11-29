@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { HOME, HOME_DISPLAYING_UPCOMING_BADGES } from '~/constants';
 import { mockLoaderData as loaderdataMock } from '~/mocks/home';
 import { render } from '~/utilities/testing';
-import { DisplayUnlockedBadges } from './DisplayUnlockedBadges';
+import { DisplayUnlockedBadges } from './InProgressBadges';
 
 const mockNavigate = vi.fn();
 
