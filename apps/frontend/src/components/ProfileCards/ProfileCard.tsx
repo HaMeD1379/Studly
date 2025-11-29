@@ -12,7 +12,7 @@ export const ProfileCard = () => {
   const loaderData = useLoaderData() as ProfileCardLoaderData;
   const unlockedBadges = loaderData?.data?.badges?.unlockedBadges ?? [];
   const numBadges = unlockedBadges.length;
-  const numFriends = loaderData?.data?.friendCount?.data?.count ?? 24; // fallback if undefined
+  const numFriends = loaderData?.data?.friendCount?.data?.count ?? 24;
   const { allTimeHoursStudied } = profileInfo();
 
   type ProfileCardLoaderData = {

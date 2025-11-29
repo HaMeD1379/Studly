@@ -6,12 +6,12 @@ import {
   FRIENDS_PENDING,
   FRIENDS_SENT_REQUEST,
 } from '~/constants';
+import { sampleData } from '~/mocks';
 import { userInfo } from '~/store';
+import type { LoaderData } from '~/types';
 import { render } from '~/utilities/testing';
-import type { LoaderData } from './FriendRequest';
 import { FriendRequest } from './FriendRequest';
 
-// Mock Mantine components
 vi.mock('@mantine/core', async () => {
   const actual =
     await vi.importActual<typeof import('@mantine/core')>('@mantine/core');
@@ -23,7 +23,6 @@ vi.mock('@mantine/core', async () => {
   };
 });
 
-// Mock react-router
 vi.mock('react-router', () => ({
   Form: ({
     onSubmit,
@@ -42,7 +41,6 @@ vi.mock('react-router', () => ({
   useSubmit: vi.fn(),
 }));
 
-// Mock store and avatar
 vi.mock('~/store', () => ({ userInfo: vi.fn() }));
 vi.mock('../Avatar/Avatar', () => ({
   Avatar: ({ name }: { name: string }) => (
@@ -64,21 +62,6 @@ describe('FriendRequest Component', () => {
     mockedUserInfo.mockReturnValue({ userId: mockUserId });
   });
 
-  const sampleFriend = {
-    bio: 'Testing bio',
-    email: 'jane@example.com',
-    full_name: 'Jane Doe',
-    user_id: 'friend1',
-  };
-
-  const sampleData: LoaderData = {
-    data: {
-      pendingFriendships: { friends: [sampleFriend] },
-      receivedRequestsProfile: [{ profile: { data: sampleFriend } }],
-      requestProfile: [{ profile: { data: sampleFriend } }],
-    },
-  };
-
   it('renders received and sent requests correctly', () => {
     mockedUseLoaderData.mockReturnValue(sampleData);
 
@@ -87,7 +70,6 @@ describe('FriendRequest Component', () => {
     expect(screen.getByText('RECEIVED REQUESTS')).toBeInTheDocument();
     expect(screen.getByText('SENT REQUESTS')).toBeInTheDocument();
 
-    // Multiple "Jane Doe" appear (Avatar + Text)
     const nameElements = screen.getAllByText('Jane Doe');
     expect(nameElements.length).toBeGreaterThan(0);
 

@@ -1,9 +1,9 @@
+//This test function was generated with help from chatGPT
 import type { ActionFunctionArgs } from 'react-router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { REQUEST_ACCEPTED_STATUS, REQUEST_REJECTED_STATUS } from '~/constants';
 import { action } from './action';
 
-// --- Define mocks using vi.hoisted() ---
 const { mockSearchFriends, mockSendFriendRequest, mockUpdateFriendRequest } =
   vi.hoisted(() => ({
     mockSearchFriends: vi.fn(),
@@ -11,14 +11,12 @@ const { mockSearchFriends, mockSendFriendRequest, mockUpdateFriendRequest } =
     mockUpdateFriendRequest: vi.fn(),
   }));
 
-// --- Mock API module ---
 vi.mock('~/api', () => ({
   searchFriends: mockSearchFriends,
   sendFriendRequest: mockSendFriendRequest,
   updateFriendRequest: mockUpdateFriendRequest,
 }));
 
-// --- Helper to create a fake Request object ---
 const createMockRequest = (entries: Record<string, string>): Request => {
   const formData = new FormData();
   for (const [k, v] of Object.entries(entries)) {

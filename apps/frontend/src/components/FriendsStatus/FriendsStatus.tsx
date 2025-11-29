@@ -17,10 +17,10 @@ import {
 import type { Result } from '~/types';
 import { Avatar } from '../Avatar/Avatar';
 
-type props = {
+type Props = {
   onAction: (friend: Result, since: string) => void;
 };
-export const FriendsStatus = ({ onAction }: props) => {
+export const FriendsStatus = ({ onAction }: Props) => {
   const loaderdata = useLoaderData() as LoaderData;
 
   const friendsProfile = loaderdata.data.friendsProfile;

@@ -1,4 +1,13 @@
-import { Box, Button, Card, Flex, Pill, Stack, Text } from '@mantine/core';
+import {
+  Box,
+  Button,
+  Card,
+  Flex,
+  Pill,
+  Progress,
+  Stack,
+  Text,
+} from '@mantine/core';
 import {
   IconClock,
   IconTarget,
@@ -9,20 +18,40 @@ import { useEffect } from 'react';
 import { useLoaderData, useNavigate } from 'react-router';
 import {
   BADGES,
+  HOME_QUICK_ACTIONS_TEXT,
+  HOME_START_STUDY_SESSION_TEXT,
+  HOME_TIME_STUDIED_TODAY,
+  HOME_VIEW_BADGES,
+  HOME_VIEW_MORE_BADGES,
+  HOME_VIEW_UPCOMING_BADGES,
   HOME_WELCOME_DESCRIPTION,
   HOME_WELCOME_MESSAGE,
   STUDY,
 } from '~/constants';
 import { useNavbar } from '~/context';
 import { userInfo } from '~/store';
+import type { inProgressBadge } from '~/types';
 import { hoursAndMinutes } from '~/utilities/time';
 
-export const HomeHeader = () => {
+type props = {
+  action: () => void;
+};
+
+export const HomeHeader = ({ action }: props) => {
   const loaderData = useLoaderData();
   const profileData = loaderData.data?.userProfileInfo;
   const sessionData = loaderData.data?.todaySession;
   const badgesData = loaderData.data?.unlockedBadges;
+  const inProgressBadges = loaderData.data?.inProgressBadges;
+  const DISPLAY_SIZE = 1;
+  inProgressBadges.sort(
+    (a: inProgressBadge, b: inProgressBadge) => b.progress - a.progress,
+  );
 
+  const displayedBadges: inProgressBadge[] = inProgressBadges.slice(
+    0,
+    DISPLAY_SIZE,
+  );
   const name = profileData?.data?.full_name || 'Student';
   const bio = profileData?.data?.bio;
   const hoursToday = sessionData?.totalMinutesStudied || 0;
@@ -84,7 +113,6 @@ export const HomeHeader = () => {
 
         {/* Three cards section */}
         <Flex direction='row' gap='sm' py='xl'>
-          {/* Left Card - Upcoming Badge (Placeholder) */}
           <Card
             p='lg'
             radius='md'
@@ -93,17 +121,52 @@ export const HomeHeader = () => {
             w='100%'
             withBorder
           >
-            <Flex
-              align='center'
-              direction='column'
-              justify='center'
-              style={{ minHeight: 120 }}
+            {displayedBadges.length > 0 ? (
+              <>
+                <Text fw={800}>{HOME_VIEW_UPCOMING_BADGES} </Text>
+                <Stack py='md'>
+                  {displayedBadges.map((item: inProgressBadge) => (
+                    <Card
+                      key={item.name}
+                      p='lg'
+                      radius='md'
+                      shadow='sm'
+                      style={{ borderRadius: '12px' }}
+                      withBorder
+                    >
+                      <Text fw={700}>{item.name}</Text>
+                      <Text c='dimmed'>{item.description}</Text>
+
+                      <Progress color='black' value={item.progress} />
+                    </Card>
+                  ))}
+                </Stack>
+              </>
+            ) : (
+              <Flex
+                align='center'
+                direction='column'
+                justify='center'
+                style={{ minHeight: 120 }}
+              >
+                <IconTarget
+                  color='gray'
+                  size={40}
+                  style={{ marginBottom: 8 }}
+                />
+                <Text c='dimmed' fw={500} size='md' ta='center'>
+                  {HOME_VIEW_UPCOMING_BADGES}
+                </Text>
+              </Flex>
+            )}
+            <Button
+              color='black'
+              onClick={action}
+              radius='md'
+              variant='outline'
             >
-              <IconTarget color='gray' size={40} style={{ marginBottom: 8 }} />
-              <Text c='dimmed' fw={500} size='md' ta='center'>
-                View upcoming badges...
-              </Text>
-            </Flex>
+              <Text c='black'>{HOME_VIEW_MORE_BADGES}</Text>
+            </Button>
           </Card>
 
           {/* Middle Card - Quick Actions */}
@@ -115,10 +178,8 @@ export const HomeHeader = () => {
             w='100%'
             withBorder
           >
-            <Text fw={500} mb='md' size='xl'>
-              Quick Actions
-            </Text>
-            <Stack gap='sm'>
+            <Text fw={800}>{HOME_QUICK_ACTIONS_TEXT}</Text>
+            <Stack gap='sm' py='md'>
               <Button
                 color='black'
                 fullWidth
@@ -126,7 +187,7 @@ export const HomeHeader = () => {
                 onClick={() => updatePath(STUDY)}
                 variant='filled'
               >
-                Start Study Session
+                {HOME_START_STUDY_SESSION_TEXT}
               </Button>
               <Button
                 color='black'
@@ -135,7 +196,7 @@ export const HomeHeader = () => {
                 onClick={() => updatePath(BADGES)}
                 variant='outline'
               >
-                View Badges
+                {HOME_VIEW_BADGES}
               </Button>
             </Stack>
           </Card>
@@ -156,7 +217,7 @@ export const HomeHeader = () => {
               style={{ minHeight: 120 }}
             >
               <Text c='dimmed' fw={500} mb='xs' size='sm'>
-                Total Time Studied Today
+                {HOME_TIME_STUDIED_TODAY}
               </Text>
               <Text c='black' fw={700} size='2rem'>
                 {hoursAndMinutes(hoursToday)}

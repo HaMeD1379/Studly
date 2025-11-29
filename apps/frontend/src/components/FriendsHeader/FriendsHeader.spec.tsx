@@ -29,7 +29,6 @@ vi.mock('react-router-dom', async () => {
     </form>
   );
 
-  // expose mocks through a helper getter
   return Object.assign({}, actual, {
     __mocks: { useLoaderData, useNavigate, useSubmit },
     Form,

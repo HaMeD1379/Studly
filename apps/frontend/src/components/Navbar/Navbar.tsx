@@ -63,7 +63,7 @@ export const Navbar = () => {
   const [currentlySelectedPath, setCurrentlySelectedPath] =
     useState<string>(location);
 
-  const { globalPath, setGlobalPath } = useNavbar(); // global
+  const { globalPath, setGlobalPath } = useNavbar();
 
   useEffect(() => {
     if (globalPath !== currentlySelectedPath)
@@ -71,9 +71,9 @@ export const Navbar = () => {
   }, [globalPath, currentlySelectedPath]);
 
   const handleNavClick = (path: string) => {
-    setCurrentlySelectedPath(path); // update UI immediately
-    setGlobalPath(path); // sync context
-    navigate(path); // actually navigate
+    setCurrentlySelectedPath(path);
+    setGlobalPath(path);
+    navigate(path);
   };
 
   return (
@@ -172,8 +172,8 @@ export const Navbar = () => {
               action={LOGOUT}
               method='post'
               onSubmit={() => {
-                setGlobalPath(HOME); // or ""
-                setCurrentlySelectedPath(HOME); // clear highlight
+                setGlobalPath(HOME);
+                setCurrentlySelectedPath(HOME);
               }}
             >
               <StyledButton

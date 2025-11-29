@@ -7,9 +7,14 @@ export type UnlockedBadge = Badge & {
   earnedAt: string;
 };
 
+export type inProgressBadge = Badge & {
+  progress: number;
+};
+
 export type BadgeLoader = {
   badges: {
     earnedAt: string;
     badge: Badge;
+    progress?: number;
   }[];
 };

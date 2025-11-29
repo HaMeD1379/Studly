@@ -2,6 +2,7 @@ export * from './AccountActions/AccountActions';
 export * from './Avatar/Avatar';
 export * from './BadgeCollection/BadgeCollection';
 export * from './BadgeStatistics/BadgeStatistics';
+export * from './DisplayUnlockedBadges/DisplayUnlockedBadges';
 export * from './ErrorBoundary/ErrorBoundary';
 export * from './FindFriends/FindFriends';
 export * from './ForgotPassword/ForgotPassword';

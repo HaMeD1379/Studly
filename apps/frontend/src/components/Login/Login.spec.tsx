@@ -36,17 +36,18 @@ Object.defineProperty(global, 'Request', {
   writable: false,
 });
 
-// Mock useNavigate
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', async () => {
   const actual =
     await vi.importActual<typeof import('react-router-dom')>(
       'react-router-dom',
     );
-  return { ...actual, useNavigate: () => mockNavigate };
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
 });
 
-// Mock Mantine notifications
 vi.mock('@mantine/notifications', () => ({
   notifications: { show: vi.fn() },
 }));

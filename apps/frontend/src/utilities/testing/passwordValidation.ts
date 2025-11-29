@@ -84,5 +84,3 @@ const checkPasswordLength = (password_1: string, passwordLen: number) => {
   }
   return true;
 };
-//open close
-//single responsibility

@@ -4,12 +4,12 @@ import type { Result } from '~/types';
 import { formatDateString } from '~/utilities/time';
 import { Avatar } from '../Avatar/Avatar';
 
-type props = {
+type Props = {
   friend: Result;
   friendshipStartDate: string;
 };
 
-export const ViewUserProfile = ({ friend, friendshipStartDate }: props) => {
+export const ViewUserProfile = ({ friend, friendshipStartDate }: Props) => {
   return (
     <Card
       key={friend.user_id}

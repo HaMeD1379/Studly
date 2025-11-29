@@ -19,7 +19,7 @@ export const action = async ({
       const res = await searchFriends(userName);
       if (res.error) return { error: res.error.message ?? 'Unknown error' };
 
-      const parsed = res.data?.data; // SearchFriends
+      const parsed = res.data?.data;
       if (!parsed) return { error: 'Invalid API response' };
 
       return {

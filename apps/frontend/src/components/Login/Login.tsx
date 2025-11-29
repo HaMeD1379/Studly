@@ -46,8 +46,6 @@ export const LoginForm = () => {
 
   useEffect(() => {
     if (!actionData) return;
-
-    // success false but message might not exist
     const message = actionData.message;
 
     if (typeof message === 'string' && message.includes('401')) {

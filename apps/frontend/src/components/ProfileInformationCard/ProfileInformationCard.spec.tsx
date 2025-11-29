@@ -5,7 +5,7 @@ vi.mock('react-router-dom', async () => {
     );
   return {
     ...actual,
-    useActionData: vi.fn(), // <-- Vitest mock
+    useActionData: vi.fn(),
   };
 });
 
@@ -23,7 +23,6 @@ import { userInfo } from '~/store/userInfo';
 import { render } from '~/utilities/testing';
 import { profileInformationCard as ProfileInformationCard } from './ProfileInformationCard';
 
-// Mock displayNotifications instead of @mantine/notifications
 vi.mock('~/utilities/notifications', () => ({
   displayNotifications: vi.fn(),
 }));
@@ -59,7 +58,6 @@ vi.mock('~/store/userInfo', () => {
   };
 });
 
-// Required for fetch polyfill errors
 Object.defineProperty(global, 'fetch', {
   value: fetchPolyfill,
   writable: true,
@@ -162,22 +160,7 @@ describe('ProfileInformationCard', () => {
       '200/200 characters',
     );
   });
-  /*
-  it('shows success notification when actionData.success = true', () => {
-    (useActionData as Mock).mockReturnValue({
-      message: 'Profile updated successfully',
-      success: true,
-    });
 
-    render(<RouterProvider router={router} />);
-
-    expect(displayNotifications).toHaveBeenCalledWith(
-      'Update Successful',
-      'User Information has been updated',
-      'green',
-    );
-  });
-*/
   it('shows failure notification when actionData.success = false', () => {
     (useActionData as Mock).mockReturnValue({
       message: 'Random error',

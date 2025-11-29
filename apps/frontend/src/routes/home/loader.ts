@@ -2,6 +2,8 @@ import { fetchTodaysSessionSummary, getProfile } from '~/api';
 import { fetchAllUserBadges } from '~/api/badges';
 import { userInfo } from '~/store';
 import type {
+  Badge,
+  inProgressBadge,
   SessionSummaryLoader,
   UnlockedBadge,
   userProfileInfo,
@@ -13,6 +15,8 @@ type combinedLoader = {
     todaySession?: SessionSummaryLoader;
     userProfileInfo?: userProfileInfo;
     unlockedBadges?: UnlockedBadge[];
+    allBadges?: Badge[];
+    inProgressBadges?: inProgressBadge[];
   };
   error: boolean;
 };
@@ -26,11 +30,18 @@ export const loader = async (): Promise<combinedLoader> => {
   ]);
   const allBadges = [];
   const unlockedBadges = [];
+  const inProgressBadges = [];
 
   if (badgesResponse.data && !badgesResponse.error) {
     for (const badgeData of badgesResponse.data.badges) {
       allBadges.push(badgeData.badge);
-
+      console.log('progress:', typeof badgeData.progress);
+      if (badgeData.progress !== undefined && badgeData.progress < 100) {
+        inProgressBadges.push({
+          ...badgeData.badge,
+          progress: badgeData.progress,
+        });
+      }
       if (badgeData.earnedAt) {
         unlockedBadges.push({
           ...badgeData.badge,
@@ -41,6 +52,8 @@ export const loader = async (): Promise<combinedLoader> => {
   }
   return {
     data: {
+      allBadges: allBadges ?? [],
+      inProgressBadges: inProgressBadges ?? [],
       todaySession: todaySession.data ?? undefined,
       unlockedBadges: unlockedBadges ?? [],
       userProfileInfo: userProfileInfo.data ?? undefined,

@@ -1,48 +1,3 @@
-const mockLoaderData = {
-  data: {
-    badges: {
-      allBadges: [
-        {
-          description: 'Completed 5 sessions',
-          earnedAt: '2025-01-01',
-          name: '5 Sessions',
-        },
-        {
-          description: 'Total 3 hours',
-          earnedAt: '2025-01-02',
-          name: '3 Hours',
-        },
-        {
-          description: 'Study for a total of 30 minutes',
-          earnedAt: '2025-11-21',
-          name: 'Half Hour Hero',
-        },
-        {
-          description: 'Study for a total of 1 hour',
-          earnedAt: '2025-11-21',
-          name: 'Hour Hero',
-        },
-      ],
-      unlockedBadges: [
-        {
-          description: 'Completed 5 sessions',
-          earnedAt: '2025-01-01',
-          name: '5 Sessions',
-        },
-        {
-          description: 'Total 3 hours',
-          earnedAt: '2025-01-02',
-          name: '3 Hours',
-        },
-        {},
-      ],
-    },
-    profileBio: { data: { bio: 'This is my Bio' } },
-    sessionSummary: { sessionsLogged: 0, totalMinutesStudied: 0 },
-  },
-  error: false,
-};
-// Mock useNavigate
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', async () => {
   const actual =
@@ -51,7 +6,7 @@ vi.mock('react-router-dom', async () => {
     );
   return {
     ...actual,
-    useLoaderData: () => mockLoaderData,
+    useLoaderData: () => mockProfileLoaderData,
     useNavigate: () => mockNavigate,
   };
 });
@@ -77,6 +32,7 @@ import fetchPolyfill, { Request as RequestPolyfill } from 'node-fetch';
 import { describe, expect, it, vi } from 'vitest';
 import { SETTINGS } from '~/constants';
 import { NavbarProvider } from '~/context';
+import { mockProfileLoaderData } from '~/mocks';
 import { render } from '~/utilities/testing';
 import { UserCard } from './UserCard';
 

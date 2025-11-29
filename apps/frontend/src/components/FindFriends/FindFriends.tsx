@@ -37,13 +37,10 @@ export const FindFriends = ({ results }: Props) => {
   const requested: Friends[] =
     loaderData?.data?.pendingFriendships?.friends ?? [];
 
-  // IDs of people you are already friends with
   const friendIds = new Set(friends.map((f) => f.to_user));
 
-  // IDs of people you have already requested
   const requestedIds = new Set(requested.map((f) => f.to_user));
 
-  // Filter search results
   const notFriends = results?.filter((r) => !friendIds.has(r.user_id));
   const notRequested = results?.filter((r) => !requestedIds.has(r.user_id));
 

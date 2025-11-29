@@ -53,6 +53,7 @@ vi.mock('react-router', () => {
 import { useLoaderData, useSubmit } from 'react-router';
 import { userInfo } from '~/store';
 
+const mockAction = vi.fn();
 describe('FindFriends Component', () => {
   const mockUseLoaderData = useLoaderData as unknown as Mock;
   const mockUseSubmit = useSubmit as unknown as Mock;
@@ -81,7 +82,7 @@ describe('FindFriends Component', () => {
 
     render(
       <MemoryRouter>
-        <FindFriends results={[]} />
+        <FindFriends onAction={mockAction} results={[]} />
       </MemoryRouter>,
     );
 
@@ -98,7 +99,7 @@ describe('FindFriends Component', () => {
 
     render(
       <MemoryRouter>
-        <FindFriends results={[baseFriend]} />
+        <FindFriends onAction={mockAction} results={[baseFriend]} />
       </MemoryRouter>,
     );
 
@@ -119,7 +120,7 @@ describe('FindFriends Component', () => {
 
     render(
       <MemoryRouter>
-        <FindFriends results={[baseFriend]} />
+        <FindFriends onAction={mockAction} results={[baseFriend]} />
       </MemoryRouter>,
     );
 
@@ -136,7 +137,7 @@ describe('FindFriends Component', () => {
 
     render(
       <MemoryRouter>
-        <FindFriends results={[baseFriend]} />
+        <FindFriends onAction={mockAction} results={[baseFriend]} />
       </MemoryRouter>,
     );
 
@@ -159,7 +160,7 @@ describe('FindFriends Component', () => {
 
     render(
       <MemoryRouter>
-        <FindFriends results={[baseFriend]} />
+        <FindFriends onAction={mockAction} results={[baseFriend]} />
       </MemoryRouter>,
     );
 

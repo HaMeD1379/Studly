@@ -3,7 +3,6 @@ import { profileInfo } from '~/store/profileInfo';
 
 describe('profileInfo store', () => {
   beforeEach(() => {
-    // reset store before each test
     profileInfo.setState({ allTimeHoursStudied: '' });
   });
 

@@ -57,7 +57,7 @@ export const Avatar = ({
           data-testid='status-dot'
           style={{ ...commonStyle, backgroundColor: '#40c057' }}
         />
-      ); // green
+      );
     }
 
     if (status === 'studying') {
@@ -66,7 +66,7 @@ export const Avatar = ({
           data-testid='status-dot'
           style={{ ...commonStyle, backgroundColor: '#228be6' }}
         />
-      ); // blue
+      );
     }
 
     return (
@@ -74,7 +74,7 @@ export const Avatar = ({
         data-testid='status-dot'
         style={{ ...commonStyle, backgroundColor: '#adb5bd' }}
       />
-    ); // grey (offline)
+    );
   };
 
   return (
