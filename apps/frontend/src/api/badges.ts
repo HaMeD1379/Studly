@@ -9,6 +9,6 @@ export const fetchAllUserBadges = async () => {
   const path = `${BADGES_ALL_USER}/${userId}?includeProgress=true`;
 
   const result = await request<BadgeLoader>(RequestMethods.GET, path);
-  console.log(result);
+
   return result;
 };

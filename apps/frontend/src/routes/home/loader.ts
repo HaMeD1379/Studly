@@ -35,7 +35,6 @@ export const loader = async (): Promise<combinedLoader> => {
   if (badgesResponse.data && !badgesResponse.error) {
     for (const badgeData of badgesResponse.data.badges) {
       allBadges.push(badgeData.badge);
-      console.log('progress:', typeof badgeData.progress);
       if (badgeData.progress !== undefined && badgeData.progress < 100) {
         inProgressBadges.push({
           ...badgeData.badge,

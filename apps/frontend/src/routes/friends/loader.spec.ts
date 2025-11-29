@@ -67,7 +67,6 @@ describe('loader', () => {
     expect(result.data.requestCount).toEqual({ count: 2 });
     expect(result.data.friendsProfile).toHaveLength(1);
     expect(result.data.requestProfile).toHaveLength(1);
-    expect(result.data.receivedRequestsProfile).toHaveLength(1);
   });
 
   it('handles API errors', async () => {

@@ -19,7 +19,6 @@ export const DisplayUnlockedBadges = () => {
   inProgressBadges.sort(
     (a: inProgressBadge, b: inProgressBadge) => b.progress - a.progress,
   );
-  console.log(inProgressBadges);
   return (
     <Box w='100%'>
       <ActionIcon

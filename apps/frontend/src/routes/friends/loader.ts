@@ -10,6 +10,7 @@ import { userInfo } from '~/store';
 import type { findUserProfile } from '~/types';
 import type {
   FriendCount,
+  Friends,
   FriendsList,
   RequestResponse,
 } from '~/types/friends';
@@ -31,7 +32,8 @@ type FriendsLoader = {
 const buildProfile = async (list: FriendsList): Promise<findUserProfile[]> => {
   return Promise.all(
     list.friends.map(async (entry) => {
-      const friendId = entry.to_user;
+      const friendId =
+        list.user_id === entry.to_user ? entry.from_user : entry.to_user;
 
       const profile = await findUserById(friendId);
       const safeProfile = profile.data ?? {
@@ -47,18 +49,6 @@ const buildProfile = async (list: FriendsList): Promise<findUserProfile[]> => {
       };
     }),
   );
-};
-
-const rename = (list: RequestResponse): FriendsList => {
-  for (let i = 0; i < list.pending_requests.length; i++) {
-    const userId = list.pending_requests[i].from_user;
-    list.pending_requests[i].from_user = list.pending_requests[i].to_user;
-    list.pending_requests[i].to_user = userId;
-  }
-  return {
-    friends: list.pending_requests,
-    user_id: list.user_id,
-  };
 };
 
 export const loader = async (): Promise<FriendsLoader> => {
@@ -84,12 +74,23 @@ export const loader = async (): Promise<FriendsLoader> => {
     friendsProfile = await buildProfile(friendsList.data.data);
   }
   if (pendingFriendships.data?.data) {
-    requestProfile = await buildProfile(pendingFriendships.data.data);
+    const filterList: FriendsList = pendingFriendships.data.data;
+    const userId = filterList.user_id;
+    const friend: Friends[] = filterList.friends.filter(
+      (entry) => userId === entry.from_user,
+    );
+    requestProfile = await buildProfile({ friends: friend, user_id: userId });
   }
   if (receivedRequests.data?.data) {
-    receivedRequestsProfile = await buildProfile(
-      rename(receivedRequests.data.data),
+    const filterList: RequestResponse = receivedRequests.data.data;
+    const userId = filterList.user_id;
+    const friend: Friends[] = filterList.pending_requests.filter(
+      (entry) => userId === entry.to_user,
     );
+    receivedRequestsProfile = await buildProfile({
+      friends: friend,
+      user_id: userId,
+    });
   }
 
   return {

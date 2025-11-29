@@ -63,7 +63,6 @@ export const HomeHeader = ({ action }: props) => {
   const { setGlobalPath } = useNavbar();
 
   const updatePath = (path: string) => {
-    console.log('navigating to path:', path);
     setGlobalPath(path);
     navigate(path);
   };
