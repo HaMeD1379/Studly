@@ -1,6 +1,6 @@
 import { Container } from '@mantine/core';
 import { useState } from 'react';
-import { InProgressBadges, HomeHeader } from '~/components';
+import { HomeHeader, InProgressBadges } from '~/components';
 
 export const Home = () => {
   const [viewMore, setViewMore] = useState(false);

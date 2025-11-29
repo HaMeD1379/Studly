@@ -155,12 +155,7 @@ export const HomeHeader = ({ action }: props) => {
                 </Text>
               </Flex>
             )}
-            <Button
-              color='blue'
-              onClick={action}
-              radius='md'
-              variant='outline'
-            >
+            <Button color='blue' onClick={action} radius='md' variant='outline'>
               <Text>{HOME_VIEW_MORE_BADGES}</Text>
             </Button>
           </Card>
@@ -174,23 +169,29 @@ export const HomeHeader = ({ action }: props) => {
             withBorder
           >
             <Text fw={700}>{HOME_QUICK_ACTIONS_TEXT}</Text>
-            <Flex direction='column' align='center' gap='md' justify='center' h='100%'>
+            <Flex
+              align='center'
+              direction='column'
+              gap='md'
+              h='100%'
+              justify='center'
+            >
               <Button
+                bdrs={8}
                 fullWidth
                 leftSection={<IconClock />}
                 onClick={() => updatePath(STUDY)}
                 variant='outline'
-                bdrs={8}
               >
                 {HOME_START_STUDY_SESSION_TEXT}
               </Button>
               <Button
+                bdrs={8}
                 color='blue'
                 fullWidth
                 leftSection={<IconTrophy />}
                 onClick={() => updatePath(BADGES)}
                 variant='outline'
-                bdrs={8}
               >
                 {HOME_VIEW_BADGES}
               </Button>
