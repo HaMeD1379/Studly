@@ -6,7 +6,11 @@ import {
   Badges,
   badgesLoader,
   Forgot,
+  Friends,
+  friendsAction,
+  friendsLoader,
   Home,
+  homeLoader,
   Leaderboard,
   Login,
   leaderboardLoader,
@@ -30,6 +34,7 @@ import {
   BADGES,
   CHANGE_PASSWORD,
   FORGOT_PASSWORD,
+  FRIENDS,
   HOME,
   LEADERBOARD,
   LOGIN,
@@ -39,6 +44,7 @@ import {
   SIGNUP,
   STUDY,
 } from './constants';
+import { NavbarProvider } from './context/navbarContext';
 
 const router = createBrowserRouter([
   {
@@ -65,8 +71,21 @@ const router = createBrowserRouter([
         loader: ProfileLoader,
         path: PROFILE,
       },
-      { element: <Home />, path: HOME },
       { action: profileChangeAction, element: <Settings />, path: SETTINGS },
+      {
+        action: friendsAction,
+        element: <Friends />,
+        //errorElement: <ErrorBoundary />,
+        hydrateFallbackElement: <PageSpinner />,
+        loader: friendsLoader,
+        path: FRIENDS,
+      },
+      {
+        element: <Home />,
+        hydrateFallbackElement: <PageSpinner />,
+        loader: homeLoader,
+        path: HOME,
+      },
       {
         element: <Leaderboard />,
         errorElement: <ErrorBoundary />,
@@ -86,8 +105,10 @@ const router = createBrowserRouter([
 export const App = () => {
   return (
     <MantineProvider>
-      <RouterProvider router={router} />
-      <Notifications />
+      <NavbarProvider>
+        <RouterProvider router={router} />
+        <Notifications />
+      </NavbarProvider>
     </MantineProvider>
   );
 };

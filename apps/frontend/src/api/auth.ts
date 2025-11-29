@@ -3,11 +3,13 @@ import {
   AUTH_LOGIN,
   AUTH_LOGOUT,
   AUTH_SIGNUP,
+  RETRIEVE_BIO,
 } from '~/constants';
 import {
   type BackendLoginResponse,
   RequestMethods,
   type RequestResolve,
+  type userProfileInfo,
 } from '~/types';
 import { request } from '~/utilities/requests';
 
@@ -52,4 +54,17 @@ export const logout = async (token: string) => {
   return await request(RequestMethods.POST, AUTH_LOGOUT, {
     Authorization: `Bearer ${token}`,
   });
+};
+
+export const getProfile = async (
+  userId: string,
+): Promise<RequestResolve<userProfileInfo>> => {
+  const path = `${RETRIEVE_BIO}/${userId}`;
+
+  const res: RequestResolve<userProfileInfo> = await request(
+    RequestMethods.GET,
+    path,
+  );
+
+  return res;
 };

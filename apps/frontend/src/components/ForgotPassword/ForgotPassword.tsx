@@ -96,8 +96,8 @@ export const ForgotPassword = () => {
                   backgroundColor: 'black',
                   color: 'white',
                   fontWeight: 500,
-                  textAlign: 'center', // move inside root
-                  width: '100%', // move inside root
+                  textAlign: 'center',
+                  width: '100%',
                 },
               }}
               type='submit'

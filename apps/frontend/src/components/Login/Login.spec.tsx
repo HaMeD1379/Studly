@@ -2,6 +2,7 @@ vi.mock('~/store/userInfo', () => ({
   userInfo: {
     getState: () => ({
       setAccessToken: vi.fn(),
+      setAvatarState: vi.fn(),
       setEmail: vi.fn(),
       setId: vi.fn(),
       setName: vi.fn(),
@@ -18,7 +19,7 @@ import { notifications } from '@mantine/notifications';
 import fetchPolyfill, { Request as RequestPolyfill } from 'node-fetch';
 import { createMemoryRouter, RouterProvider, redirect } from 'react-router-dom';
 import * as auth from '~/api/auth';
-import { FORGOT_PASSWORD, LOGIN, SIGNUP, STUDY } from '~/constants';
+import { FORGOT_PASSWORD, HOME, LOGIN, SIGNUP } from '~/constants';
 import { loginAction } from '~/routes/login';
 import { render } from '~/utilities/testing';
 
@@ -35,17 +36,18 @@ Object.defineProperty(global, 'Request', {
   writable: false,
 });
 
-// Mock useNavigate
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', async () => {
   const actual =
     await vi.importActual<typeof import('react-router-dom')>(
       'react-router-dom',
     );
-  return { ...actual, useNavigate: () => mockNavigate };
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
 });
 
-// Mock Mantine notifications
 vi.mock('@mantine/notifications', () => ({
   notifications: { show: vi.fn() },
 }));
@@ -86,7 +88,7 @@ describe('Login Tests', () => {
     });
   });
 
-  it('Navigates to /study after successful login', async () => {
+  it('Navigates to /home after successful login', async () => {
     (auth.login as Mock).mockResolvedValue({
       data: {
         data: {
@@ -115,7 +117,7 @@ describe('Login Tests', () => {
       request: req,
     });
 
-    expect(result).toEqual(redirect(STUDY));
+    expect(result).toEqual(redirect(HOME));
   });
 
   it('Navigates to forgot password page', () => {

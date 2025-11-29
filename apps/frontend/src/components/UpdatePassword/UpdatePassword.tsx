@@ -37,7 +37,7 @@ export const UpdatePassword = () => {
 
   const [password_1, setPassword_1] = useState('');
   const [password_2, setPassword_2] = useState('');
-  const [error, setError] = useState('');
+  const [_error, setError] = useState('');
 
   const rules = checkRules(password_1);
   const handleClick = async (e: React.FormEvent) => {
@@ -52,10 +52,8 @@ export const UpdatePassword = () => {
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
-        console.log(err);
       } else {
         setError('An unexpected error occurred');
-        console.log(error);
       }
     }
   };

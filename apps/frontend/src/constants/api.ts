@@ -22,3 +22,13 @@ export const RETRIEVE_BIO = 'profile';
 export const LEADERBOARD_ALL = 'leaderboard';
 
 export const ACCESS_TOKEN = 'accessToken';
+export const PROFILE_INFO = 'profile/search';
+export const PROFILE_FIND_USER = 'profile';
+
+export const FRIENDS_COUNT = 'friends/count';
+export const ALL_FRIENDS = 'friends/all';
+export const FRIEND_REQUEST = 'friends/request';
+export const UPDATE_FRIENDS_STATUS = 'friends/status';
+export const SEND_FRIEND_REQUEST = 'friends/request';
+export const RECEIVED_FRIEND_REQUEST = 'friends/pending';
+export const UPDATE_FRIEND_REQUEST = 'friends/status';

@@ -10,7 +10,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   const { accessToken, userId, refreshToken } = userInfo.getState();
   if (!(bio || fullName) || !userId || !accessToken || !refreshToken)
-    return { error: 'Missing credentials' }; // early exit if missing
+    return { error: 'Missing credentials' };
 
   const res = await updateBio(accessToken, refreshToken, userId, fullName, bio);
   if (res.error) {

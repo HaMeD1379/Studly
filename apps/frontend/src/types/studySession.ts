@@ -7,4 +7,5 @@ export type StudySession = {
 export type TodaysStudyStatistics = {
   totalMinutesStudied: number;
   sessionsLogged: number;
+  subjectStudied?: [];
 };

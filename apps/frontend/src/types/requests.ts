@@ -27,13 +27,23 @@ export type LoginResponse = {
   user: UserMetadata;
 };
 
-type UserMetadata = {
+export type UserMetadata = {
   id: string;
   email: string;
   full_name: string;
+  bio: string;
 };
 
 export type BackendLoginResponse = {
   message: string;
   data: LoginResponse;
+};
+
+export type userProfileInfo = {
+  data: {
+    id: string;
+    email: string;
+    full_name: string;
+    bio: string;
+  };
 };

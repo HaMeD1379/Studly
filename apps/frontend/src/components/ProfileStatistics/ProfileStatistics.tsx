@@ -4,22 +4,64 @@ import {
   Card,
   Flex,
   Progress,
+  ScrollArea,
   SegmentedControl,
   SimpleGrid,
   Stack,
   Text,
   Title,
 } from '@mantine/core';
+import { useEffect, useMemo, useState } from 'react';
+import { useLoaderData } from 'react-router-dom';
+import {
+  PROFILE_LATEST_ACHIEVEMENT_TEXT,
+  PROFILE_RECENT_BADGES,
+  PROFILE_SUBJECT_DISTRIBUTION_TEXT,
+  PROFILE_SUBJECTS_THIS_WEEK_TEXT,
+  PROFILE_THIS_WEEK_HEADER,
+  PROFILE_THIS_WEEKS_STATS_HEADER,
+  PROFILE_TIME_SPENT_ON_DIFFERENT_SUBJECTS_TEXT,
+} from '~/constants';
+import { tabs } from '~/constants/profile';
+import { profileInfo } from '~/store';
+import type { subjectSummaries, UnlockedBadge } from '~/types';
+import {
+  calculateHistoryStatistics,
+  randomColour,
+  sortBadgesByEarnedDate,
+} from '~/utilities/profileStatistics';
+import { hoursAndMinutes } from '~/utilities/time';
 
 export const ProfileStatistics = () => {
-  const tabs = ['Overview', 'Detailed Stats', 'Achievements'];
-  const subjects = [
-    { hours: 120, label: 'Biology' },
-    { hours: 95, label: 'Chemistry' },
-    { hours: 80, label: 'Mathematics' },
-    { hours: 65, label: 'Physics' },
-  ];
+  const { setAllTimeHoursStudied } = profileInfo();
 
+  const [badges, setBadges] = useState<UnlockedBadge[]>([]);
+  const loaderdata = useLoaderData();
+  const summary = loaderdata.data.sessionSummary;
+  const unlockedBadges = loaderdata.data.badges.unlockedBadges;
+
+  const subjectsStudiedThisWeek: Set<subjectSummaries> = new Set(
+    summary.subjectSummaries,
+  );
+  const allTimeStats = useMemo(
+    () => calculateHistoryStatistics(loaderdata.data.sessions),
+    [loaderdata.data.sessions],
+  );
+  useEffect(() => {
+    if (!loaderdata?.data?.sessions) return;
+
+    const [, totalHours] = allTimeStats;
+    setAllTimeHoursStudied(totalHours);
+  }, [loaderdata, setAllTimeHoursStudied, allTimeStats]);
+
+  useEffect(() => {
+    if (!unlockedBadges) return;
+    setBadges(sortBadgesByEarnedDate(unlockedBadges));
+  }, [unlockedBadges]);
+
+  const mapped = Object.fromEntries(
+    Object.entries(allTimeStats[0]).map(([key, value]) => [key, value]),
+  );
   return (
     <Box w='100%'>
       {/* Tab Control */}
@@ -39,21 +81,31 @@ export const ProfileStatistics = () => {
       >
         {/* This Week */}
         <Card p='lg' radius='md' shadow='sm' withBorder>
-          <Title order={5}>This Week</Title>
+          <Title order={5}>{PROFILE_THIS_WEEK_HEADER}</Title>
           <Text c='dimmed' fz='sm'>
-            Your study activity this week
+            {PROFILE_THIS_WEEKS_STATS_HEADER}
           </Text>
           <Stack mt='md'>
-            <Text>Study Time: 12h 0m</Text>
-            <Text>Sessions Completed: 12</Text>
-            <Text>Subjects Studied: 3</Text>
+            <Text
+              data-testid={'totalMinStudied'}
+            >{`Study Time: ${hoursAndMinutes(
+              summary.totalMinutesStudied,
+            )}`}</Text>
+            <Text
+              data-testid={'SessionCompleted'}
+            >{`Sessions Completed: ${summary.sessionsLogged}`}</Text>
+            <Text>{`Subjects Studied: ${subjectsStudiedThisWeek.size}`}</Text>
             <Text fw={500} mt='sm'>
-              Subjects This Week:
+              {PROFILE_SUBJECTS_THIS_WEEK_TEXT}
             </Text>
             <Stack>
-              <Badge color='blue'>Biology</Badge>
-              <Badge color='green'>Chemistry</Badge>
-              <Badge color='orange'>Mathematics</Badge>
+              <SimpleGrid cols={2} spacing='md'>
+                {[...subjectsStudiedThisWeek].map((summary) => (
+                  <Badge color={randomColour()} key={summary.subject}>
+                    {summary.subject}
+                  </Badge>
+                ))}
+              </SimpleGrid>
             </Stack>
           </Stack>
         </Card>
@@ -66,20 +118,16 @@ export const ProfileStatistics = () => {
           shadow='sm'
           withBorder
         >
-          <Title order={5}>Recent Badges</Title>
+          <Title order={5}>{PROFILE_RECENT_BADGES}</Title>
           <Text c='dimmed' fz='sm'>
-            Your latest achievements
+            {PROFILE_LATEST_ACHIEVEMENT_TEXT}
           </Text>
           <Stack mt='md'>
-            <Badge color='orange' size='lg' variant='light'>
-              Study Streak Master
-            </Badge>
-            <Badge color='blue' size='lg' variant='light'>
-              Night Owl
-            </Badge>
-            <Badge color='grape' size='lg' variant='light'>
-              Social Butterfly
-            </Badge>
+            {badges.map((badge) => (
+              <Badge color={randomColour()} key={badge.name} size='lg'>
+                {badge.name}
+              </Badge>
+            ))}
           </Stack>
         </Card>
       </SimpleGrid>
@@ -93,20 +141,24 @@ export const ProfileStatistics = () => {
         shadow='sm'
         withBorder
       >
-        <Title order={5}>Subject Distribution</Title>
+        <Title order={5}>{PROFILE_SUBJECT_DISTRIBUTION_TEXT}</Title>
         <Text c='dimmed' fz='sm'>
-          Time spent on different subjects
+          {PROFILE_TIME_SPENT_ON_DIFFERENT_SUBJECTS_TEXT}
         </Text>
         <Stack mt='md'>
-          {subjects.map((s) => (
-            <div key={s.label}>
-              <Flex justify='space-between'>
-                <Text fw={500}>{s.label}</Text>
-                <Text c='dimmed'>{s.hours}h</Text>
-              </Flex>
-              <Progress size='md' value={(s.hours / 120) * 100} />
-            </div>
-          ))}
+          <ScrollArea h={300} px='sm'>
+            <Stack>
+              {Object.entries(mapped).map(([key, value]) => (
+                <div key={key}>
+                  <Flex justify='space-between'>
+                    <Text fw={500}>{key}</Text>
+                    <Text c='dimmed'>{hoursAndMinutes(value)}</Text>
+                  </Flex>
+                  <Progress size='md' value={(value / 120) * 100} />
+                </div>
+              ))}
+            </Stack>
+          </ScrollArea>
         </Stack>
       </Card>
     </Box>

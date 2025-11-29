@@ -12,6 +12,7 @@ import {
   type SessionSummaryLoader,
 } from '~/types';
 import { request } from '~/utilities/requests';
+import { getSunday, toLocalISOString } from '~/utilities/time';
 
 export const fetchTodaysSessionSummary = async () => {
   const { userId } = userInfo.getState();
@@ -70,6 +71,26 @@ export const stopSession = async () => {
       endTime: new Date(Date.now()).toISOString(),
     }),
   );
+
+  return result;
+};
+
+export const fetchWeeklySessionSummary = async () => {
+  const { userId } = userInfo.getState();
+
+  const to = toLocalISOString(new Date(Date.now()));
+
+  const from = toLocalISOString(getSunday(new Date(Date.now())));
+  const path = `${SESSIONS_SUMMARY}?userId=${userId}&from=${from}&to=${to}`;
+  const result = await request<SessionSummaryLoader>(RequestMethods.GET, path);
+  return result;
+};
+
+export const fetchAllTimeSummary = async () => {
+  const { userId } = userInfo.getState();
+  const endTime = new Date(Date.now()).toISOString();
+  const path = `${SESSIONS}?userId=${userId}&to=${endTime}`;
+  const result = await request<SessionListLoader>(RequestMethods.GET, path);
 
   return result;
 };

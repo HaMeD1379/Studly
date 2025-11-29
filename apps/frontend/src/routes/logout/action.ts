@@ -16,6 +16,7 @@ export const action = async () => {
       setAccessToken('');
       setAccessStored(false);
       setCheckAccess();
+      localStorage.removeItem('searchTerm');
       return redirect(LOGIN);
     }
   }

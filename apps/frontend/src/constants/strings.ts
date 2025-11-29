@@ -1,8 +1,17 @@
-export const PROFILE_BIO_DEFAULT = 'Edit Profile to update your bio';
-
 // account actions
 export const ACCOUNT_ACTIONS = 'Account Actions';
 export const ACCOUNT_ACTIONS_SAVE = 'Save Changes';
+
+//avatar states
+export const AVATAR_ONLINE = 'online';
+export const AVATAR_OFFLINE = 'offline';
+export const AVATAR_STUDYING = 'studying';
+export const AVATAR_STATES = [
+  AVATAR_ONLINE,
+  AVATAR_OFFLINE,
+  AVATAR_STUDYING,
+] as const;
+export type AvatarState = (typeof AVATAR_STATES)[number];
 
 // change password
 export const CHANGE_PASSWORD_HEADER = 'Change Password';
@@ -14,6 +23,11 @@ export const DELETE_ACCOUNT_HEADER = 'Delete Account';
 export const DELETE_ACCOUNT_TEXT =
   'Permanently delete your account and all data';
 export const DELETE_ACCOUNT_BUTTON_TEXT = 'Delete';
+
+//badge route
+export const BADGE_COLLECTION_HEADER = 'Badge Collection';
+export const BADGE_EARN_BADGES_TEXT =
+  'Earn badges by completing and hitting milestones';
 
 // badge collection
 export const NO_UNLOCKED_BADGES_LINE_1 = 'No badges unlocked yet!';
@@ -114,6 +128,25 @@ export const TODAYS_STUDY_SESSIONS = 'Sessions';
 // update password
 export const UPDATE_PASSWORD_BUTTON_TEXT = 'Update Password';
 
+//Friends page
+export const FRIENDS_HEADER = 'FRIENDS';
+export const FRIENDS_HEADER_DESCRIPTION =
+  'Connect with fellow students and study together';
+export const FRIENDS_TAB_FRIENDS = 'Friends';
+export const FRIENDS_TAB_REQUESTS = 'Requests';
+export const FRIENDS_TAB_RECEIVED_REQUESTS = 'Requests Received';
+export const FRIENDS_CARD_ONLINE = 'Online';
+export const FRIENDS_CARD_STUDYING = 'Studying';
+export const FRIENDS_SEARCHBAR_PLACEHOLDER = 'Search friends...';
+export const FRIENDS_VIEW_PROFILE = 'View Profile';
+export const FRIENDS_SEARCH_NO_USERS = 'No users found';
+export const FRIENDS_NO_REQUESTS = 'No pending friend requests';
+export const FRIENDS_PENDING = 'Pending';
+export const FRIENDS_SENT_REQUEST = 'Friend Request sent';
+export const FRIENDS_SEARCH_TO_FIND_A_FRIENDS =
+  'Search and make a new friend today!';
+export const FRIENDS_REQUESTED = 'Requested';
+export const FRIENDS_FRIENDS_SINCE = 'Youve been friends with this user since:';
 // study page
 export const STUDY_ROUTE_HEADER = 'Study Session';
 export const STUDY_ROUTE_SUBHEADER = 'Focus and track your study time';
@@ -131,3 +164,47 @@ export const LEADERBOARD_NO_DATA = 'There is no data for this leaderboard';
 export const LEADERBOARD_SINGLE_BADGES_TEXT = 'badge';
 export const LEADERBOARD_MULTIPLE_BADGES_TEXT = 'badges';
 export const LEADERBOARD_NO_NAME = 'Unknown';
+
+//Profile strings
+export const PROFILE_EDIT_TEXT = 'Edit';
+export const PROFILE_SHARE_TEXT = 'Share';
+export const PROFILE_EXPERIENCE_POINTS_TEXT = 'Experience Points';
+export const PROFILE_BIO_DEFAULT = 'Edit Profile to update your bio';
+export const PROFILE_THIS_WEEKS_STATS_HEADER = 'Your study activity this week';
+export const PROFILE_SUBJECTS_THIS_WEEK_TEXT = 'Subjects This Week:';
+export const PROFILE_LATEST_ACHIEVEMENT_TEXT = 'Your latest achievements';
+export const PROFILE_SUBJECT_DISTRIBUTION_TEXT = 'Subject Distribution';
+export const PROFILE_TIME_SPENT_ON_DIFFERENT_SUBJECTS_TEXT =
+  'Time spent on different subjects';
+export const PROFILE_RECENT_BADGES = 'Recent Badges';
+export const PROFILE_THIS_WEEK_HEADER = 'This Week';
+export const PROFILE_INFORMATION_TEXT = 'Profile Information';
+export const PROFILE_UPDATE_INFORMATION_TEXT =
+  'Update your personal information and profile details';
+export const PROFILE_CHANGE_AVATAR = 'Change Avatar';
+export const PROFILE_AVATAR_IMAGE_SPECS = 'JPG,PNG up to 5MB';
+export const PROFILE_FULL_NAME_TEXT = 'Full Name';
+export const PROFILE_EMAIL_ADDRESS_TEXT = 'Email Address';
+export const PROFILE_BIO_TEXT = 'Bio';
+export const PROFILE_CHARACTER_LIMIT = '/200 characters';
+
+//settings constants
+export const SETTINGS_HEADER = 'Settings';
+export const SETTINGS_DESCRIPTION =
+  'Manage your account settings and preferences. (Profile is the only tab accessible currently)';
+
+//Home constants
+export const HOME_WELCOME_MESSAGE = 'Welcome back,';
+export const HOME_WELCOME_DESCRIPTION =
+  'Ready to continue your learning journey?';
+export const HOME_QUICK_ACTIONS_TEXT = 'Quick Actions';
+export const HOME_NEXT_BADGE_PROGRESS_TEXT = 'Next Badge Progress';
+export const HOME_TODAYS_GOAL_TEXT = `Today's goal`;
+export const HOME_START_STUDY_SESSION_TEXT = 'Start Study Session';
+export const HOME_NEXT_BADGE_PROGRESS_DESCRIPTION = 'hours until next badge';
+export const HOME_VIEW_UPCOMING_BADGES = 'View upcoming badges...';
+export const HOME_VIEW_BADGES = 'View Badges';
+export const HOME_TIME_STUDIED_TODAY = 'Total Time Studied Today';
+export const HOME_VIEW_MORE_BADGES = 'View More';
+export const HOME_DISPLAYING_UPCOMING_BADGES =
+  'Start a new session to get even closer to a new badge';

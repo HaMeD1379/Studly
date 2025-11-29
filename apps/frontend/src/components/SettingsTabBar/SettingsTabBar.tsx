@@ -7,9 +7,13 @@ import {
   IconUser,
 } from '@tabler/icons-react';
 import { useState } from 'react';
+import {
+  SETTINGS_DESCRIPTION,
+  SETTINGS_HEADER,
+  settingsTabs as tabs,
+} from '~/constants';
 
 export const SettingsTabBar = () => {
-  const tabs = ['Profile', 'Notifications', 'Privacy', 'Study', 'Appearance'];
   const [value, setValue] = useState('profile');
 
   const loadIcon = (tab: string) => {
@@ -33,11 +37,8 @@ export const SettingsTabBar = () => {
 
   return (
     <Box py='md' w='100%'>
-      <h1>Settings</h1>
-      <Text c='dimmed'>
-        Manage your account settings and preferences. (Profile is the only tab
-        accessible currently)
-      </Text>
+      <h1>{SETTINGS_HEADER}</h1>
+      <Text c='dimmed'>{SETTINGS_DESCRIPTION}</Text>
 
       <SegmentedControl
         data={tabs.map((t) => ({

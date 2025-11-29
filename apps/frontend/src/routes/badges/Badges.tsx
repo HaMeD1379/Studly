@@ -1,6 +1,7 @@
 import { Container, Text } from '@mantine/core';
 import { useLoaderData } from 'react-router';
 import { BadgeCollection, BadgeStatistics, ErrorBoundary } from '~/components';
+import { BADGE_COLLECTION_HEADER, BADGE_EARN_BADGES_TEXT } from '~/constants';
 
 export const Badges = () => {
   const loaderData = useLoaderData();
@@ -13,10 +14,10 @@ export const Badges = () => {
       ) : (
         <>
           <Text fw={700} size='xl'>
-            Badge Collection
+            {BADGE_COLLECTION_HEADER}
           </Text>
           <Text fw={300} mb={32} size='md'>
-            Earn badges by completing and hitting milestones
+            {BADGE_EARN_BADGES_TEXT}
           </Text>
           <BadgeStatistics
             badgesUnlocked={unlockedBadges.length}

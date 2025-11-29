@@ -5,28 +5,49 @@ import {
   IconTrendingUp,
   IconUsers,
 } from '@tabler/icons-react';
+import { useLoaderData } from 'react-router-dom';
+import { profileInfo } from '~/store';
 
 export const ProfileCard = () => {
+  const loaderData = useLoaderData() as ProfileCardLoaderData;
+  const unlockedBadges = loaderData?.data?.badges?.unlockedBadges ?? [];
+  const numBadges = unlockedBadges.length;
+  const numFriends = loaderData?.data?.friendCount?.data?.count ?? 24;
+  const { allTimeHoursStudied } = profileInfo();
+
+  type ProfileCardLoaderData = {
+    data?: {
+      badges?: { unlockedBadges: { name: string; earnedAt?: string }[] };
+      friendCount?: {
+        data: { count: number };
+      };
+    };
+  };
+
   const stats = [
     {
       icon: <IconTrendingUp color='green' size={28} />,
       label: 'Day Streak',
+      testId: 'day-streak-card',
       value: '12',
     },
     {
       icon: <IconClock color='blue' size={28} />,
       label: 'Total Study',
-      value: '257h',
+      testId: 'total-study-card',
+      value: allTimeHoursStudied,
     },
     {
       icon: <IconAward color='orange' size={28} />,
       label: 'Badges',
-      value: '18',
+      testId: 'badges-card',
+      value: numBadges.toString(),
     },
     {
       icon: <IconUsers color='purple' size={28} />,
       label: 'Friends',
-      value: '24',
+      testId: 'friends-card',
+      value: numFriends.toString(),
     },
   ];
 
