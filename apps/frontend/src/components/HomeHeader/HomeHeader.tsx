@@ -38,12 +38,14 @@ type props = {
 };
 
 export const HomeHeader = ({ action }: props) => {
-  const loaderData = useLoaderData();
-  const profileData = loaderData.data?.userProfileInfo;
-  const sessionData = loaderData.data?.todaySession;
-  const badgesData = loaderData.data?.unlockedBadges;
-  const inProgressBadges = loaderData.data?.inProgressBadges;
+  const loaderData = useLoaderData().data;
+
+  const profileData = loaderData?.userProfileInfo;
+  const sessionData = loaderData?.todaySession;
+  const badgesData = loaderData?.unlockedBadges;
+  const inProgressBadges = loaderData?.inProgressBadges;
   const DISPLAY_SIZE = 1;
+
   inProgressBadges.sort(
     (a: InProgressBadge, b: InProgressBadge) => b.progress - a.progress,
   );
@@ -52,6 +54,7 @@ export const HomeHeader = ({ action }: props) => {
     0,
     DISPLAY_SIZE,
   );
+
   const name = profileData?.data?.full_name || 'Student';
   const bio = profileData?.data?.bio;
   const hoursToday = sessionData?.totalMinutesStudied || 0;
