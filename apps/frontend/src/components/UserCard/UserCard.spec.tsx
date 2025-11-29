@@ -76,6 +76,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import fetchPolyfill, { Request as RequestPolyfill } from 'node-fetch';
 import { describe, expect, it, vi } from 'vitest';
 import { SETTINGS } from '~/constants';
+import { NavbarProvider } from '~/context';
 import { render } from '~/utilities/testing';
 import { UserCard } from './UserCard';
 
@@ -94,7 +95,11 @@ Object.defineProperty(global, 'Request', {
 
 describe('User Card tests', () => {
   it('displays all elements', async () => {
-    render(<UserCard />);
+    render(
+      <NavbarProvider>
+        <UserCard />
+      </NavbarProvider>,
+    );
 
     const nameField = await screen.findByTestId('name-text');
     const emailField = await screen.findByTestId('email-text');
@@ -113,11 +118,19 @@ describe('User Card tests', () => {
     expect(statusDot).toBeInTheDocument();
   });
   it('naviagtes to settings when edit button is clicked', () => {
-    render(<UserCard />);
+    render(
+      <NavbarProvider>
+        <UserCard />
+      </NavbarProvider>,
+    );
     fireEvent.click(screen.getByTestId('edit-btn'));
     expect(mockNavigate).toHaveBeenCalledWith(SETTINGS);
   });
   it('displays the result from the fetch bio api call in the bio field', () => {
-    render(<UserCard />);
+    render(
+      <NavbarProvider>
+        <UserCard />
+      </NavbarProvider>,
+    );
   });
 });

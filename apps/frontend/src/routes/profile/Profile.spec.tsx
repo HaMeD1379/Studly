@@ -1,6 +1,7 @@
 import { screen } from '@testing-library/react';
 import fetchPolyfill, { Request as RequestPolyfill } from 'node-fetch';
 import { describe, expect, it, vi } from 'vitest';
+import { NavbarProvider } from '~/context';
 import { UserProfile } from '~/routes';
 import { render } from '~/utilities/testing';
 
@@ -111,7 +112,11 @@ vi.mock('~/store', () => {
 
 describe('UserProfile Tests', () => {
   it('renders all nested components', async () => {
-    render(<UserProfile />);
+    render(
+      <NavbarProvider>
+        <UserProfile />
+      </NavbarProvider>,
+    );
 
     expect(await screen.findByTestId('name-text')).toHaveTextContent(
       'Test User',

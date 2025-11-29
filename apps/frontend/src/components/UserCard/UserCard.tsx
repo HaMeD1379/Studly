@@ -10,6 +10,7 @@ import {
   PROFILE_SHARE_TEXT,
   SETTINGS,
 } from '~/constants';
+import { useNavbar } from '~/context';
 import { userInfo } from '~/store';
 
 export const UserCard = () => {
@@ -17,12 +18,19 @@ export const UserCard = () => {
   const userName = name || 'Alex Student';
   const userEmail = email || 'alex@example.com';
   const navigate = useNavigate();
+  const { setGlobalPath } = useNavbar();
   const loaderdata = useLoaderData();
   const [badgesProgress, setBadgesProgress] = useState(0);
 
   const bio = loaderdata.data.profileBio.data.bio;
   const unlockedBadges = loaderdata.data.badges.unlockedBadges;
   const allBadges = loaderdata.data.badges.allBadges;
+
+  const updatePath = (path: string) => {
+    setGlobalPath(path);
+    navigate(path);
+  };
+
   useEffect(() => {
     setBio(bio);
   }, [setBio, bio]);
@@ -64,9 +72,7 @@ export const UserCard = () => {
             c='dark'
             data-testid='edit-btn'
             leftSection={<IconEdit size={14} />}
-            onClick={() => {
-              navigate(SETTINGS);
-            }}
+            onClick={() => updatePath(SETTINGS)}
             style={{ borderColor: 'black' }}
             variant='outline'
           >

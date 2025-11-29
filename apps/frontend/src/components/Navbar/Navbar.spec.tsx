@@ -39,6 +39,7 @@ import {
   SETTINGS,
   STUDY,
 } from '~/constants';
+import { NavbarProvider } from '~/context';
 import { mockAccessToken } from '~/mocks';
 import { logoutAction } from '~/routes/logout';
 import { render } from '~/utilities/testing';
@@ -64,7 +65,11 @@ describe('Navbar', () => {
   const router = createMemoryRouter([
     {
       children: [{ element: <div>MOCK_CHILDREN</div> }],
-      element: <Navbar />,
+      element: (
+        <NavbarProvider>
+          <Navbar />
+        </NavbarProvider>
+      ),
       path: LOGIN,
     },
   ]);

@@ -44,6 +44,7 @@ import {
   SIGNUP,
   STUDY,
 } from './constants';
+import { NavbarProvider } from './context/navbarContext';
 
 const router = createBrowserRouter([
   {
@@ -104,8 +105,10 @@ const router = createBrowserRouter([
 export const App = () => {
   return (
     <MantineProvider>
-      <RouterProvider router={router} />
-      <Notifications />
+      <NavbarProvider>
+        <RouterProvider router={router} />
+        <Notifications />
+      </NavbarProvider>
     </MantineProvider>
   );
 };

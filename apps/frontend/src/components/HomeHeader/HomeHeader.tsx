@@ -13,6 +13,7 @@ import {
   HOME_WELCOME_MESSAGE,
   STUDY,
 } from '~/constants';
+import { useNavbar } from '~/context';
 import { userInfo } from '~/store';
 import { hoursAndMinutes } from '~/utilities/time';
 
@@ -30,6 +31,13 @@ export const HomeHeader = () => {
 
   const { setName, setBio } = userInfo();
   const navigate = useNavigate();
+  const { setGlobalPath } = useNavbar();
+
+  const updatePath = (path: string) => {
+    console.log('navigating to path:', path);
+    setGlobalPath(path);
+    navigate(path);
+  };
 
   useEffect(() => {
     if (name && bio !== undefined) {
@@ -115,7 +123,7 @@ export const HomeHeader = () => {
                 color='black'
                 fullWidth
                 leftSection={<IconClock />}
-                onClick={() => navigate(STUDY)}
+                onClick={() => updatePath(STUDY)}
                 variant='filled'
               >
                 Start Study Session
@@ -124,7 +132,7 @@ export const HomeHeader = () => {
                 color='black'
                 fullWidth
                 leftSection={<IconTrophy />}
-                onClick={() => navigate(BADGES)}
+                onClick={() => updatePath(BADGES)}
                 variant='outline'
               >
                 View Badges
