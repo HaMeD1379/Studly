@@ -149,22 +149,22 @@ test("GET /api/v1/feed/:timestamp - should return combined feed with badges and 
   assert.strictEqual(body.data.count, 2);
   assert.strictEqual(body.data.feed.length, 2);
 
-  // Should be sorted oldest to newest
-  assert.strictEqual(body.data.feed[0].type, "session");
-  assert.strictEqual(body.data.feed[0].timestamp, "2025-11-27T09:15:00Z");
-  assert.strictEqual(body.data.feed[1].type, "badge");
-  assert.strictEqual(body.data.feed[1].timestamp, "2025-11-27T10:30:00Z");
+  // Should be sorted newest to oldest
+  assert.strictEqual(body.data.feed[0].type, "badge");
+  assert.strictEqual(body.data.feed[0].timestamp, "2025-11-27T10:30:00Z");
+  assert.strictEqual(body.data.feed[1].type, "session");
+  assert.strictEqual(body.data.feed[1].timestamp, "2025-11-27T09:15:00Z");
 
-  // Validate session structure
-  assert.strictEqual(body.data.feed[0].user.user_id, "user-2-uuid");
-  assert.strictEqual(body.data.feed[0].user.full_name, "Jane Smith");
-  assert.strictEqual(body.data.feed[0].session.id, "session-1-uuid");
-  assert.strictEqual(body.data.feed[0].session.subject, "Mathematics");
+  // Validate badge structure (now first)
+  assert.strictEqual(body.data.feed[0].user.user_id, "user-1-uuid");
+  assert.strictEqual(body.data.feed[0].user.full_name, "John Doe");
+  assert.strictEqual(body.data.feed[0].badge.name, "First Study Session");
 
-  // Validate badge structure
-  assert.strictEqual(body.data.feed[1].user.user_id, "user-1-uuid");
-  assert.strictEqual(body.data.feed[1].user.full_name, "John Doe");
-  assert.strictEqual(body.data.feed[1].badge.name, "First Study Session");
+  // Validate session structure (now second)
+  assert.strictEqual(body.data.feed[1].user.user_id, "user-2-uuid");
+  assert.strictEqual(body.data.feed[1].user.full_name, "Jane Smith");
+  assert.strictEqual(body.data.feed[1].session.id, "session-1-uuid");
+  assert.strictEqual(body.data.feed[1].session.subject, "Mathematics");
 
   await stopServer(server);
 });
@@ -1508,11 +1508,11 @@ test("GET /api/v1/feed/:timestamp - should properly map multiple badges with all
 
   assert.strictEqual(response.status, 200);
   assert.strictEqual(body.data.count, 2);
-  // Verify all array mapping worked correctly
-  assert.strictEqual(body.data.feed[0].badge.name, "Badge One");
-  assert.strictEqual(body.data.feed[0].user.full_name, "User One");
-  assert.strictEqual(body.data.feed[1].badge.name, "Badge Two");
-  assert.strictEqual(body.data.feed[1].user.full_name, "User Two");
+  // Verify all array mapping worked correctly (newest to oldest)
+  assert.strictEqual(body.data.feed[0].badge.name, "Badge Two");
+  assert.strictEqual(body.data.feed[0].user.full_name, "User Two");
+  assert.strictEqual(body.data.feed[1].badge.name, "Badge One");
+  assert.strictEqual(body.data.feed[1].user.full_name, "User One");
 
   await stopServer(server);
 });
@@ -1598,11 +1598,11 @@ test("GET /api/v1/feed/:timestamp - should properly map multiple sessions with a
 
   assert.strictEqual(response.status, 200);
   assert.strictEqual(body.data.count, 2);
-  // Verify all session mapping worked correctly
-  assert.strictEqual(body.data.feed[0].session.subject, "Math");
-  assert.strictEqual(body.data.feed[0].user.full_name, "Student One");
-  assert.strictEqual(body.data.feed[1].session.subject, "Science");
-  assert.strictEqual(body.data.feed[1].user.full_name, "Student Two");
+  // Verify all session mapping worked correctly (newest to oldest)
+  assert.strictEqual(body.data.feed[0].session.subject, "Science");
+  assert.strictEqual(body.data.feed[0].user.full_name, "Student Two");
+  assert.strictEqual(body.data.feed[1].session.subject, "Math");
+  assert.strictEqual(body.data.feed[1].user.full_name, "Student One");
 
   await stopServer(server);
 });
