@@ -99,13 +99,13 @@ export const HomeHeader = ({ action }: props) => {
             <Pill pt={4} size='xl'>
               <Flex align='center'>
                 <IconTrendingUp size={20} style={{ marginRight: 6 }} />
-                <Text>${currentStreak} day streak</Text>
+                <Text>{currentStreak} day streak</Text>
               </Flex>
             </Pill>
             <Pill pt={4} size='xl'>
               <Flex align='center'>
                 <IconTrophy size={20} style={{ marginRight: 6 }} />
-                <Text>${numBadges} badges</Text>
+                <Text>{numBadges} badges</Text>
               </Flex>
             </Pill>
           </Flex>
@@ -129,7 +129,6 @@ export const HomeHeader = ({ action }: props) => {
                       key={item.name}
                       p='md'
                       radius='md'
-                      shadow='sm'
                       style={{ borderRadius: '12px' }}
                       withBorder
                     >

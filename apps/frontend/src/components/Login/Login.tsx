@@ -16,7 +16,7 @@ import {
 } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { Form, useActionData, useNavigate } from 'react-router-dom';
-import placeholder from '~/assets/landscape-placeholder.svg';
+import logo from '~/assets/logo.png';
 import {
   FORGOT_PASSWORD,
   LOGIN_BUTTON_TEXT,
@@ -68,7 +68,6 @@ export const LoginForm = () => {
         <Paper
           p={30}
           radius='xl'
-          shadow='xl'
           style={{
             background: 'white',
             border: '1px solid rgba(0,0,0,0.08)',
@@ -77,7 +76,7 @@ export const LoginForm = () => {
           withBorder
         >
           <Center mb='md'>
-            <Image alt='Logo' height={120} src={placeholder} width={120} />
+            <Image alt='Logo' height={220} src={logo} width='auto' />
           </Center>
 
           <Stack>

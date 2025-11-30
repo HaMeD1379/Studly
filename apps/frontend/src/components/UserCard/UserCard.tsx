@@ -43,7 +43,7 @@ export const UserCard = () => {
   }, [unlockedBadges, allBadges]);
 
   return (
-    <Card p='lg' radius='md' shadow='sm' w='100%' withBorder>
+    <Card p='lg' radius='md' w='100%' withBorder>
       <Flex align='center' gap='md' justify='space-between' wrap='wrap'>
         {/* User Info */}
         <Flex align='center' gap='md'>

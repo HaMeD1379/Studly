@@ -57,7 +57,7 @@ export const ForgotPassword = () => {
         {FORGOT_PASSWORD_EMAIL}
       </Text>
 
-      <Paper mt='xl' p={30} radius='md' shadow='md' withBorder>
+      <Paper mt='xl' p={30} radius='md' withBorder>
         <form onSubmit={handleClick}>
           <TextInput
             label='Your email'

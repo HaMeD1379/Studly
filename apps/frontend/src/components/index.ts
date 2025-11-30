@@ -18,7 +18,6 @@ export * from './ProfileCards/ProfileCard.js';
 export * from './ProfileInformationCard/ProfileInformationCard';
 export * from './ProfileStatistics/ProfileStatistics';
 export * from './RecentStudySessions/RecentStudySessions';
-export * from './SettingsTabBar/SettingsTabBar';
 export * from './SetupStudySession/SetupStudySession';
 export * from './SignUp/SignUp';
 export * from './StudySession/StudySession';

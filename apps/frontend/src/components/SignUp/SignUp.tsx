@@ -15,7 +15,7 @@ import {
 } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { Form, useActionData, useNavigate } from 'react-router-dom';
-import placeholder from '~/assets/landscape-placeholder.svg';
+import logo from '~/assets/logo.png';
 import {
   LOGIN,
   SIGN_UP_ALREADY_HAVE_ACCOUNT_TEXT,
@@ -104,22 +104,14 @@ export const SignUpForm = () => {
       }}
     >
       <Container className='classes.container' my={40} size={420}>
-        <Paper mt={30} p={22} radius='lg' shadow='xl' withBorder>
+        <Paper mt={30} p={22} radius='lg' withBorder>
           <Text c={rules.matchesLen ? 'green' : 'red'}>{SIGN_UP_RULE_1}</Text>
           <Text c={rules.hasLowercase ? 'green' : 'red'}>{SIGN_UP_RULE_2}</Text>
           <Text c={rules.hasUppercase ? 'green' : 'red'}>{SIGN_UP_RULE_3}</Text>
           <Text c={rules.hasDigit ? 'green' : 'red'}>{SIGN_UP_RULE_4}</Text>
           <Text c={rules.hasSpecial ? 'green' : 'red'}>{SIGN_UP_RULE_5}</Text>
         </Paper>
-        <Paper mt={30} p={22} radius='lg' shadow='sm' withBorder>
-          <Center>
-            <Image
-              alt='Description of your image'
-              h={150}
-              src={placeholder}
-              w='auto'
-            />
-          </Center>
+        <Paper mt={30} p={22} radius='lg' withBorder>
           <Title ff='Inter, sans-serif' ta='center'>
             {SIGN_UP_HEADER}
           </Title>

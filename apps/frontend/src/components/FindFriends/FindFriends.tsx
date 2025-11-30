@@ -64,7 +64,7 @@ export const FindFriends = ({ results }: Props) => {
 
   return (
     <Box>
-      <Flex direction='row' gap='md' p='lg'>
+      <Flex direction='row' gap='md'>
         <ScrollArea h={500} type='scroll' w='100%'>
           <SimpleGrid spacing='lg' w='100%'>
             {!results || results.length === 0 ? (
@@ -81,7 +81,6 @@ export const FindFriends = ({ results }: Props) => {
                     key={friend.user_id}
                     p='lg'
                     radius='md'
-                    shadow='sm'
                     style={{ borderRadius: '12px' }}
                     w='100%'
                     withBorder

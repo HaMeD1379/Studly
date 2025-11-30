@@ -41,7 +41,6 @@ export const InProgressBadges = () => {
               key={item.name}
               p='lg'
               radius='md'
-              shadow='sm'
               style={{ borderRadius: '12px' }}
               w='100%'
               withBorder

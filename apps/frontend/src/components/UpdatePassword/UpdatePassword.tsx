@@ -71,14 +71,14 @@ export const UpdatePassword = () => {
       }}
     >
       <Container className='classes.container' my={40} size={420}>
-        <Paper mt={30} p={22} radius='lg' shadow='xl' withBorder>
+        <Paper mt={30} p={22} radius='lg' withBorder>
           <Text c={rules.matchesLen ? 'green' : 'red'}>{SIGN_UP_RULE_1}</Text>
           <Text c={rules.hasLowercase ? 'green' : 'red'}>{SIGN_UP_RULE_2}</Text>
           <Text c={rules.hasUppercase ? 'green' : 'red'}>{SIGN_UP_RULE_3}</Text>
           <Text c={rules.hasDigit ? 'green' : 'red'}>{SIGN_UP_RULE_4}</Text>
           <Text c={rules.hasSpecial ? 'green' : 'red'}>{SIGN_UP_RULE_5}</Text>
         </Paper>
-        <Paper mt={30} p={22} radius='md' shadow='sm' withBorder>
+        <Paper mt={30} p={22} radius='md' withBorder>
           <Title ff='Inter, sans-serif' ta='center'>
             {SIGN_UP_HEADER}
           </Title>
