@@ -8,6 +8,7 @@ export * from './ForgotPassword/ForgotPassword';
 export * from './FriendRequest/FriendRequest';
 export * from './FriendsHeader/FriendsHeader';
 export * from './FriendsStatus/FriendsStatus';
+export * from './HomeActivityFeed/HomeActivityFeed';
 export * from './HomeHeader/HomeHeader';
 export * from './InProgressBadges/InProgressBadges';
 export * from './LeaderboardPage/LeaderboardPage';

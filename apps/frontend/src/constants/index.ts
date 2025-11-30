@@ -1,5 +1,6 @@
 export * from './api';
 export * from './badges';
+export * from './feed';
 export * from './friends';
 export * from './profile';
 export * from './routes';

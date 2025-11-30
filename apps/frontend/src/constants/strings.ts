@@ -54,7 +54,6 @@ export const BACK_TO_LOGIN = 'Back to the login page';
 export const RESET_PASSWORD_BUTTON_TEXT = 'Reset password';
 
 // login
-export const LOGIN_HEADER = 'Welcome to Studly';
 export const LOGIN_DESCRIPTION =
   'Sign in to your account and continue your learning journey';
 export const LOGIN_FORGOT_PASSWORD_BUTTON_TEXT = 'Forgot password?';
@@ -208,3 +207,9 @@ export const HOME_TIME_STUDIED_TODAY = 'Total Time Studied Today';
 export const HOME_VIEW_MORE_BADGES = 'View More';
 export const HOME_DISPLAYING_UPCOMING_BADGES =
   'Start a new session to get even closer to a new badge';
+export const HOME_FEED_BADGE_PILL_TEXT = 'Badge';
+export const HOME_FEED_BADGE_TEXT = 'earned a badge:';
+export const HOME_FEED_SESSION_PILL_TEXT = 'Session';
+export const HOME_FEED_SESSION_TEXT = 'completed a session:';
+export const HOME_FEED_BADGE_TIMESTAMP_PREFIX = 'Awarded at';
+export const HOME_FEED_SESSION_TIMESTAMP_PREFIX = 'Completed at';

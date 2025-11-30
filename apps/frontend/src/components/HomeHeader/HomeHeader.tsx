@@ -79,7 +79,7 @@ export const HomeHeader = ({ action }: props) => {
 
   return (
     <Box>
-      <Flex direction='column' p='md'>
+      <Flex direction='column' pt='md' px='md'>
         {/* Header with stats pills */}
         <Flex align='center' direction='row' justify='space-between'>
           <Flex direction='column'>
@@ -112,7 +112,7 @@ export const HomeHeader = ({ action }: props) => {
         </Flex>
 
         {/* Three cards section */}
-        <Flex direction='row' gap='sm' py='xl'>
+        <Flex direction='row' gap='sm' pb='md' pt='xl'>
           <Card
             p='lg'
             radius='md'

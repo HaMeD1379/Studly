@@ -9,3 +9,9 @@ export type TodaysStudyStatistics = {
   sessionsLogged: number;
   subjectStudied?: [];
 };
+
+export type SessionSummaryLoader = TodaysStudyStatistics;
+
+export type SessionListLoader = {
+  sessions: StudySession[];
+};
