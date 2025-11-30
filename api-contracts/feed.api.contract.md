@@ -21,7 +21,7 @@ Content-Type: application/json
 
 ## Overview
 
-The Feed API provides a combined social feed of badge achievements and study sessions. It returns all badges earned and sessions completed by users since a given timestamp, including user profile information, complete badge details, and session data. Results are combined, sorted oldest to newest, and limited to 100 items. This enables building activity feeds showing recent accomplishments and study activity across the platform.
+The Feed API provides a combined social feed of badge achievements and study sessions. It returns all badges earned and sessions completed by users since a given timestamp, including user profile information, complete badge details, and session data. Results are combined, sorted newest to oldest, and limited to 100 items. This enables building activity feeds showing recent accomplishments and study activity across the platform.
 
 ---
 
@@ -31,7 +31,7 @@ The Feed API provides a combined social feed of badge achievements and study ses
 
 **Endpoint:** `GET /feed/:timestamp`
 
-**Description:** Retrieve all badge achievements and study sessions since the specified timestamp. Results include both types of feed items, combined and sorted oldest to newest, limited to 100 items total.
+**Description:** Retrieve all badge achievements and study sessions since the specified timestamp. Results include both types of feed items, combined and sorted newest to oldest, limited to 100 items total.
 
 #### Request Parameters
 
@@ -116,7 +116,7 @@ GET /api/v1/feed/2025-11-27T14:30:45.123Z
 
 | Field | Type    | Description                                                                   |
 | ----- | ------- | ----------------------------------------------------------------------------- |
-| feed  | array   | Array of feed items (badge achievements and sessions) sorted oldest to newest |
+| feed  | array   | Array of feed items (badge achievements and sessions) sorted newest to oldest |
 | count | integer | Total number of feed items returned (max 100)                                 |
 
 **Feed Item Structure:**
