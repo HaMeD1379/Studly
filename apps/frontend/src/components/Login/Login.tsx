@@ -7,22 +7,26 @@ import {
   Container,
   Group,
   Image,
+  Loader,
   Paper,
   PasswordInput,
   Stack,
   Text,
   TextInput,
-  Title,
 } from '@mantine/core';
 import { useEffect, useState } from 'react';
-import { Form, useActionData, useNavigate } from 'react-router-dom';
-import placeholder from '~/assets/landscape-placeholder.svg';
+import {
+  Form,
+  useActionData,
+  useNavigate,
+  useNavigation,
+} from 'react-router-dom';
+import logo from '~/assets/logo.png';
 import {
   FORGOT_PASSWORD,
   LOGIN_BUTTON_TEXT,
   LOGIN_DESCRIPTION,
   LOGIN_FORGOT_PASSWORD_BUTTON_TEXT,
-  LOGIN_HEADER,
   LOGIN_SIGN_UP_BUTTON_TEXT,
   LOGIN_SIGN_UP_PREFIX,
   SIGNUP,
@@ -32,6 +36,8 @@ import { validateEmail } from '~/utilities/validation';
 
 export const LoginForm = () => {
   const navigate = useNavigate();
+  const isSubmitting = useNavigation().state === 'submitting';
+
   const actionData = useActionData();
 
   const [email, setEmail] = useState('');
@@ -68,7 +74,6 @@ export const LoginForm = () => {
         <Paper
           p={30}
           radius='xl'
-          shadow='xl'
           style={{
             background: 'white',
             border: '1px solid rgba(0,0,0,0.08)',
@@ -77,13 +82,10 @@ export const LoginForm = () => {
           withBorder
         >
           <Center mb='md'>
-            <Image alt='Logo' height={120} src={placeholder} width={120} />
+            <Image alt='Logo' height={220} src={logo} width={220} />
           </Center>
 
           <Stack>
-            <Title c='#222' fw={700} order={2} ta='center'>
-              {LOGIN_HEADER}
-            </Title>
             <Text c='dimmed' ta='center'>
               {LOGIN_DESCRIPTION}
             </Text>
@@ -132,7 +134,11 @@ export const LoginForm = () => {
             </Group>
 
             <Button fullWidth mt='xl' radius='md' size='md' type='submit'>
-              {LOGIN_BUTTON_TEXT}
+              {isSubmitting ? (
+                <Loader aria-label='loading-spinner' c='white' size='sm' />
+              ) : (
+                LOGIN_BUTTON_TEXT
+              )}
             </Button>
           </Form>
 

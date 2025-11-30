@@ -4,12 +4,20 @@ export const formatISOToYYYYMMDD = (timestamp: string) => {
   return split?.length > 0 ? split[0] : timestamp;
 };
 
-export const formatMinutesToHoursAndMinutes = (minutes: number): string => {
+export const formatMinutesToHoursAndMinutes = (
+  minutes: number,
+  fullWords: boolean = false,
+): string => {
   const actualMinutes = Math.floor(minutes % 60);
   const actualHours = Math.floor((minutes / 60) % 60);
 
-  const formattedHours = actualHours > 0 ? `${actualHours}h` : '';
-  const formattedMinutes = `${actualMinutes}m`;
+  const hoursText = fullWords ? ` hour${actualHours > 1 ? 's' : ''}` : 'h';
+  const minutesText = fullWords
+    ? ` minute${actualMinutes > 1 ? 's' : ''}`
+    : 'm';
+
+  const formattedHours = actualHours > 0 ? `${actualHours}${hoursText}` : '';
+  const formattedMinutes = `${actualMinutes}${minutesText}`;
   const space = actualHours > 0 ? ' ' : '';
 
   return `${formattedHours}${space}${formattedMinutes}`;

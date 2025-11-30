@@ -15,7 +15,6 @@ export const ViewUserProfile = ({ friend, friendshipStartDate }: Props) => {
       key={friend.user_id}
       p='lg'
       radius='md'
-      shadow='sm'
       style={{ borderRadius: '12px' }}
       w='100%'
       withBorder

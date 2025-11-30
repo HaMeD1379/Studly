@@ -83,7 +83,6 @@ export const FriendRequest = () => {
                     key={friend.user_id}
                     p='lg'
                     radius='md'
-                    shadow='sm'
                     style={{ borderRadius: 12 }}
                     withBorder
                   >

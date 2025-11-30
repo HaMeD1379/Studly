@@ -15,10 +15,12 @@ import { displayNotifications } from '~/utilities/notifications';
 export const AccountActions = () => {
   return (
     <Box py='md' w='100%'>
-      <Card p='lg' radius='md' shadow='sm' w='100%' withBorder>
-        <Text data-testid='account-actions-text'>{ACCOUNT_ACTIONS}</Text>
-        <Box py='md' w='100%'>
-          <Card p='lg' radius='lg' shadow='sm' w='100%' withBorder>
+      <Card p='lg' radius='md' w='100%' withBorder>
+        <Text data-testid='account-actions-text' fw={700}>
+          {ACCOUNT_ACTIONS}
+        </Text>
+        <Box py='sm' w='100%'>
+          <Card p='lg' radius='lg' w='100%' withBorder>
             <Flex align='center' justify='space-between'>
               <div>
                 <Text data-testid='change-password-text' fw={600}>
@@ -49,11 +51,10 @@ export const AccountActions = () => {
             </Flex>
           </Card>
         </Box>
-        <Box py='md' w='100%'>
+        <Box pb='md' w='100%'>
           <Card
             p='lg'
             radius='lg'
-            shadow='sm'
             style={{ borderColor: 'red' }}
             w='100%'
             withBorder

@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 import { Avatar } from '~/components/';
 import {
+  BADGE_COLLECTION_PROGRESS,
   PROFILE_BIO_DEFAULT,
   PROFILE_EDIT_TEXT,
-  PROFILE_EXPERIENCE_POINTS_TEXT,
   PROFILE_SHARE_TEXT,
   SETTINGS,
 } from '~/constants';
@@ -43,7 +43,7 @@ export const UserCard = () => {
   }, [unlockedBadges, allBadges]);
 
   return (
-    <Card p='lg' radius='md' shadow='sm' w='100%' withBorder>
+    <Card p='lg' radius='md' w='100%' withBorder>
       <Flex align='center' gap='md' justify='space-between' wrap='wrap'>
         {/* User Info */}
         <Flex align='center' gap='md'>
@@ -91,7 +91,7 @@ export const UserCard = () => {
       </Flex>
 
       <Stack data-testid='xp bar' mt='md'>
-        <Text fw={500}>{PROFILE_EXPERIENCE_POINTS_TEXT}</Text>
+        <Text fw={500}>{BADGE_COLLECTION_PROGRESS}</Text>
         <Progress size='lg' transitionDuration={200} value={badgesProgress} />
       </Stack>
     </Card>

@@ -1,6 +1,6 @@
 import { fireEvent, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { mockLoaderData } from '~/mocks';
+import { mockHomePageLoaderData } from '~/mocks';
 import { render } from '~/utilities/testing';
 import { Home } from './Home';
 
@@ -12,7 +12,7 @@ vi.mock('react-router', async () => {
     await vi.importActual<typeof import('react-router')>('react-router');
   return {
     ...actual,
-    useLoaderData: () => mockLoaderData,
+    useLoaderData: () => mockHomePageLoaderData,
     useNavigate: () => mockNavigate,
   };
 });
@@ -26,12 +26,12 @@ vi.mock('~/context', () => ({
 describe('Home test file', () => {
   it('renders home page when view more is false', () => {
     render(<Home />);
-    expect(screen.getByText('View upcoming badges...')).toBeInTheDocument();
+    expect(screen.getByText('In Progress Badges')).toBeInTheDocument();
     expect(screen.getByText('Quick Actions')).toBeInTheDocument();
     expect(screen.getByText('Total Time Studied Today')).toBeInTheDocument();
   });
 
-  it('shows DisplayUnlockedBadges after calling action', () => {
+  it('shows InProgressBadges after calling action', () => {
     render(<Home />);
 
     const viewMoreButton = screen.getByRole('button', { name: /view more/i });

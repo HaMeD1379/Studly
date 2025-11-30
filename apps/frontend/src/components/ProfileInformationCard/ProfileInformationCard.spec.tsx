@@ -21,7 +21,7 @@ import { LOGIN } from '~/constants';
 import { profileChangeAction } from '~/routes';
 import { userInfo } from '~/store/userInfo';
 import { render } from '~/utilities/testing';
-import { profileInformationCard as ProfileInformationCard } from './ProfileInformationCard';
+import { ProfileInformationCard } from './ProfileInformationCard';
 
 vi.mock('~/utilities/notifications', () => ({
   displayNotifications: vi.fn(),

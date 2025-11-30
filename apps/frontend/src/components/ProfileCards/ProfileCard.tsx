@@ -59,7 +59,6 @@ export const ProfileCard = () => {
           key={item.label}
           p='lg'
           radius='md'
-          shadow='sm'
           style={{ borderRadius: '12px' }}
           withBorder
         >
