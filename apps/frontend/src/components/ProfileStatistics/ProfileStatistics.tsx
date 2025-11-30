@@ -100,12 +100,7 @@ export const ProfileStatistics = () => {
         </Card>
 
         {/* Recent Badges */}
-        <Card
-          data-testid={'recent-badges-card'}
-          p='lg'
-          radius='md'
-          withBorder
-        >
+        <Card data-testid={'recent-badges-card'} p='lg' radius='md' withBorder>
           <Title order={5}>{PROFILE_RECENT_BADGES}</Title>
           <Text c='dimmed' fz='sm'>
             {PROFILE_LATEST_ACHIEVEMENT_TEXT}

@@ -2,11 +2,9 @@ import {
   Anchor,
   Box,
   Button,
-  Center,
   Checkbox,
   Container,
   Group,
-  Image,
   Paper,
   PasswordInput,
   Text,
@@ -15,7 +13,6 @@ import {
 } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { Form, useActionData, useNavigate } from 'react-router-dom';
-import logo from '~/assets/logo.png';
 import {
   LOGIN,
   SIGN_UP_ALREADY_HAVE_ACCOUNT_TEXT,
