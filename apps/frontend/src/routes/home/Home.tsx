@@ -1,4 +1,4 @@
-import { Container } from '@mantine/core';
+import { Container, Divider } from '@mantine/core';
 import { useState } from 'react';
 import { HomeActivityFeed, HomeHeader, InProgressBadges } from '~/components';
 
@@ -16,6 +16,7 @@ export const Home = () => {
       ) : (
         <>
           <HomeHeader action={action} />
+          <Divider mx='md' />
           <HomeActivityFeed />
         </>
       )}
