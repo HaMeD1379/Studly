@@ -213,3 +213,5 @@ export const HOME_FEED_SESSION_PILL_TEXT = 'Session';
 export const HOME_FEED_SESSION_TEXT = 'completed a session:';
 export const HOME_FEED_BADGE_TIMESTAMP_PREFIX = 'Awarded at';
 export const HOME_FEED_SESSION_TIMESTAMP_PREFIX = 'Completed at';
+export const HOME_NOTHING_FOUND_1 = 'Nothing was found for your feed';
+export const HOME_NOTHING_FOUND_2 = 'Please try again later';

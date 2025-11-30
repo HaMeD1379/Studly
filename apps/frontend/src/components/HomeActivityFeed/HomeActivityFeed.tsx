@@ -9,6 +9,8 @@ import {
   HOME_FEED_SESSION_PILL_TEXT,
   HOME_FEED_SESSION_TEXT,
   HOME_FEED_SESSION_TIMESTAMP_PREFIX,
+  HOME_NOTHING_FOUND_1,
+  HOME_NOTHING_FOUND_2,
 } from '~/constants';
 import type { FeedItem } from '~/types';
 import {
@@ -34,7 +36,7 @@ export const HomeActivityFeed = () => {
 
   return loaderData?.error ? (
     <ErrorBoundary />
-  ) : (
+  ) : visibleRows.length > 0 ? (
     <Flex direction='column' h={435} justify='space-between' pt='md' px='md'>
       <SimpleGrid cols={3} spacing='sm'>
         {visibleRows.map((dataRow: FeedItem) => (
@@ -93,6 +95,15 @@ export const HomeActivityFeed = () => {
       <Flex justify='center'>
         <Pagination onChange={setPage} total={totalPages} value={page} />
       </Flex>
+    </Flex>
+  ) : (
+    <Flex align='center' direction='column' h={200} justify='center'>
+      <Text c='gray' pt={16} size='xl'>
+        {HOME_NOTHING_FOUND_1}
+      </Text>
+      <Text c='gray' size='xl'>
+        {HOME_NOTHING_FOUND_2}
+      </Text>
     </Flex>
   );
 };

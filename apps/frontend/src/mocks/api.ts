@@ -1,6 +1,6 @@
 import { MS_IN_A_DAY, SESSIONS } from '~/constants';
-import { mockSessionId, mockUserId } from './session';
 import { mockFeedTimestamp } from './feed';
+import { mockSessionId, mockUserId } from './session';
 
 export const mockStartSessionStart = MS_IN_A_DAY;
 export const mockStartSessionStop = MS_IN_A_DAY * 2;
@@ -26,4 +26,4 @@ export const mockFetchAllUserBadgesPath = `badges/users/${mockUserId}?includePro
 
 export const mockFetchLeaderboardsPath = `leaderboard?userId=${mockUserId}`;
 
-export const mockFetchHomeFeedPath = `feed/${mockFeedTimestamp}`
+export const mockFetchHomeFeedPath = `feed/${mockFeedTimestamp}`;

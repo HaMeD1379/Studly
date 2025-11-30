@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 import { Avatar } from '~/components/';
 import {
+  BADGE_COLLECTION_PROGRESS,
   PROFILE_BIO_DEFAULT,
   PROFILE_EDIT_TEXT,
-  BADGE_COLLECTION_PROGRESS,
   PROFILE_SHARE_TEXT,
   SETTINGS,
 } from '~/constants';

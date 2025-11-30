@@ -6,11 +6,11 @@ vi.mock('~/utilities/requests/requests', () => ({
   request: requestMock,
 }));
 
-import { vi, expect, describe, it, beforeEach } from 'vitest';
-import { fetchHomeFeed } from './feed';
-import { RequestMethods } from '~/types';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockFetchHomeFeedPath } from '~/mocks';
 import { mockFeedTimestamp } from '~/mocks/feed';
+import { RequestMethods } from '~/types';
+import { fetchHomeFeed } from './feed';
 
 describe('feed', () => {
   beforeEach(() => {

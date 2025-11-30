@@ -9,13 +9,17 @@ vi.mock('react-router', async () => {
   };
 });
 
-import { describe, it, expect, vi } from 'vitest';
-import { render } from '~/utilities/testing';
-import { HomeActivityFeed } from './HomeActivityFeed';
-import { mockHomePageLoaderData } from '~/mocks';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ERROR_BOUNDARY_PAGE_TEXT } from '~/constants';
+import { describe, expect, it, vi } from 'vitest';
+import {
+  ERROR_BOUNDARY_PAGE_TEXT,
+  HOME_NOTHING_FOUND_1,
+  HOME_NOTHING_FOUND_2,
+} from '~/constants';
+import { mockHomePageLoaderData } from '~/mocks';
+import { render } from '~/utilities/testing';
+import { HomeActivityFeed } from './HomeActivityFeed';
 
 describe('HomeActivityFeed', () => {
   beforeEach(() => {
@@ -64,7 +68,9 @@ describe('HomeActivityFeed', () => {
 
     expect(screen.queryByText('MOCK_FULL_NAME_6')).not.toBeInTheDocument();
     expect(screen.queryByText('MOCK_BADGE_5')).not.toBeInTheDocument();
-    expect(screen.queryByText('MOCK_BADGE_DESCRIPTION_5')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('MOCK_BADGE_DESCRIPTION_5'),
+    ).not.toBeInTheDocument();
     expect(screen.queryByText('Awarded at 2025-11-05')).not.toBeInTheDocument();
 
     expect(screen.getByText('MOCK_FULL_NAME_7')).toBeInTheDocument();
@@ -76,11 +82,23 @@ describe('HomeActivityFeed', () => {
   it('shows error if loader data has an error', () => {
     mockUseLoaderData.mockReturnValue({
       data: {},
-      error: true
+      error: true,
     });
 
     render(<HomeActivityFeed />);
 
     expect(screen.getByText(ERROR_BOUNDARY_PAGE_TEXT)).toBeInTheDocument();
+  });
+
+  it('shows nothing found display if no data is returned', () => {
+    mockUseLoaderData.mockReturnValue({
+      data: {},
+      error: false,
+    });
+
+    render(<HomeActivityFeed />);
+
+    expect(screen.getByText(HOME_NOTHING_FOUND_1)).toBeInTheDocument();
+    expect(screen.getByText(HOME_NOTHING_FOUND_2)).toBeInTheDocument();
   });
 });
