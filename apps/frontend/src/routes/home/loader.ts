@@ -57,7 +57,7 @@ export const loader = async (): Promise<CombinedLoader> => {
   }
 
   if (homeFeedResponse.data && !homeFeedResponse.error) {
-    const dataFeed = homeFeedResponse.data.data.feed;
+    const dataFeed = homeFeedResponse.data?.data?.feed;
     if (dataFeed) {
       for (const data of dataFeed) {
         const badgeData = data.badge;
@@ -83,7 +83,7 @@ export const loader = async (): Promise<CombinedLoader> => {
   return {
     data: {
       allBadges: allBadges ?? [],
-      homeFeed: homeFeed ?? undefined,
+      homeFeed: homeFeed ?? [],
       inProgressBadges: inProgressBadges ?? [],
       todaySession: todaySession.data ?? undefined,
       unlockedBadges: unlockedBadges ?? [],

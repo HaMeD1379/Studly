@@ -21,7 +21,7 @@ export const HomeActivityFeed = () => {
   const [page, setPage] = useState<number>(1);
 
   const loaderData = useLoaderData();
-  const data = loaderData.data?.homeFeed;
+  const data = loaderData.data?.homeFeed ?? [];
 
   const totalPages = useMemo(
     () => Math.ceil(data.length / FEED_ITEMS_PER_PAGE),

@@ -4,11 +4,9 @@ import { request } from '~/utilities/requests';
 
 export const fetchHomeFeed = async () => {
   const lastWeek = new Date();
-
   lastWeek.setDate(lastWeek.getDate() - 7);
-  const lastWeekISO = lastWeek.toISOString();
 
-  console.log(lastWeekISO);
+  const lastWeekISO = lastWeek.toISOString();
   const path = `${FEED}/${lastWeekISO}`;
 
   const result = await request<FeedLoader>(RequestMethods.GET, path);

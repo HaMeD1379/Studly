@@ -6,7 +6,7 @@ import { Avatar } from '~/components/';
 import {
   PROFILE_BIO_DEFAULT,
   PROFILE_EDIT_TEXT,
-  PROFILE_EXPERIENCE_POINTS_TEXT,
+  BADGE_COLLECTION_PROGRESS,
   PROFILE_SHARE_TEXT,
   SETTINGS,
 } from '~/constants';
@@ -91,7 +91,7 @@ export const UserCard = () => {
       </Flex>
 
       <Stack data-testid='xp bar' mt='md'>
-        <Text fw={500}>{PROFILE_EXPERIENCE_POINTS_TEXT}</Text>
+        <Text fw={500}>{BADGE_COLLECTION_PROGRESS}</Text>
         <Progress size='lg' transitionDuration={200} value={badgesProgress} />
       </Stack>
     </Card>

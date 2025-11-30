@@ -1,7 +1,7 @@
 import { fireEvent, screen, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { HOME, HOME_DISPLAYING_UPCOMING_BADGES } from '~/constants';
-import { mockLoaderData as loaderdataMock } from '~/mocks/home';
+import { mockHomePageLoaderData } from '~/mocks/home';
 import { render } from '~/utilities/testing';
 import { InProgressBadges } from './InProgressBadges';
 
@@ -12,7 +12,7 @@ vi.mock('react-router', async () => {
     await vi.importActual<typeof import('react-router')>('react-router');
   return {
     ...actual,
-    useLoaderData: () => loaderdataMock,
+    useLoaderData: () => mockHomePageLoaderData,
     useNavigate: () => mockNavigate,
   };
 });

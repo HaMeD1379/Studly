@@ -2,15 +2,18 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { formatISOToYYYYMMDD } from '~/utilities/time';
 import { loader } from './loader';
+import { mockHomeFeed, mockHomeFeedResponse } from '~/mocks/feed';
 
 const {
   mockFetchTodaysSessionSummary,
   mockGetProfile,
   mockFetchAllUserBadges,
+  mockFetchHomeFeed,
 } = vi.hoisted(() => ({
   mockFetchAllUserBadges: vi.fn(),
   mockFetchTodaysSessionSummary: vi.fn(),
   mockGetProfile: vi.fn(),
+  mockFetchHomeFeed: vi.fn(),
 }));
 
 vi.mock('~/api', () => ({
@@ -20,6 +23,10 @@ vi.mock('~/api', () => ({
 
 vi.mock('~/api/badges', () => ({
   fetchAllUserBadges: mockFetchAllUserBadges,
+}));
+
+vi.mock('~/api/feed', () => ({
+  fetchHomeFeed: mockFetchHomeFeed,
 }));
 
 vi.mock('~/store', () => ({
@@ -60,6 +67,8 @@ describe('Home loader()', () => {
       error: false,
     });
 
+    mockFetchHomeFeed.mockResolvedValue(mockHomeFeedResponse);
+
     const result = await loader();
 
     expect(result.error).toBe(false);
@@ -79,6 +88,7 @@ describe('Home loader()', () => {
         name: 'Dedicated',
       },
     ]);
+    expect(result.data.homeFeed).toEqual(mockHomeFeed);
   });
 
   it('handles badges with no progress or earnedAt gracefully', async () => {
@@ -122,14 +132,26 @@ describe('Home loader()', () => {
     expect(result.error).toBe(true);
   });
 
+  it('handles error gracefully if fetchHomeFeed has error', async () => {
+    mockFetchHomeFeed.mockResolvedValue({
+      data: {},
+      error: true,
+    });
+
+    const result = await loader();
+    expect(result.error).toBe(true);
+  });
+
   it('returns empty arrays if badge response is missing data', async () => {
     mockFetchTodaysSessionSummary.mockResolvedValue({ data: {}, error: false });
     mockGetProfile.mockResolvedValue({ data: {}, error: false });
     mockFetchAllUserBadges.mockResolvedValue({ data: null, error: true });
+    mockFetchHomeFeed.mockResolvedValue({ data: {}, error: false});
 
     const result = await loader();
     expect(result.data.allBadges).toEqual([]);
     expect(result.data.unlockedBadges).toEqual([]);
     expect(result.data.inProgressBadges).toEqual([]);
+    expect(result.data.homeFeed).toEqual([]);
   });
 });
