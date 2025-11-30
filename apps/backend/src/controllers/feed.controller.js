@@ -156,9 +156,9 @@ export const getFeed = async (req, res) => {
       timestamp: s.inserted_at,
     }));
 
-    // Step 9: Combine and sort (oldest to newest), limit to 100
+    // Step 9: Combine and sort (newest to oldest), limit to 100
     const allFeedItems = [...badgeFeedItems, ...sessionFeedItems]
-      .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
       .slice(0, 100);
 
     handleSuccess(res, 200, STRINGS.FEED.GET_SUCCESS, {
