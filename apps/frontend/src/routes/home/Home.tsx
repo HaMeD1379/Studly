@@ -1,15 +1,25 @@
-import { Container } from '@mantine/core';
+import { Container, Divider } from '@mantine/core';
 import { useState } from 'react';
-import { DisplayUnlockedBadges, HomeHeader } from '~/components';
+import { HomeActivityFeed, HomeHeader, InProgressBadges } from '~/components';
 
 export const Home = () => {
   const [viewMore, setViewMore] = useState(false);
+
   const action = () => {
     setViewMore(true);
   };
+
   return (
     <Container fluid>
-      {viewMore ? <DisplayUnlockedBadges /> : <HomeHeader action={action} />}
+      {viewMore ? (
+        <InProgressBadges />
+      ) : (
+        <>
+          <HomeHeader action={action} />
+          <Divider mx='md' />
+          <HomeActivityFeed />
+        </>
+      )}
     </Container>
   );
 };

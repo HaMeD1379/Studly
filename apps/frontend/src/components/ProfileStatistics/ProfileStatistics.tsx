@@ -5,7 +5,6 @@ import {
   Flex,
   Progress,
   ScrollArea,
-  SegmentedControl,
   SimpleGrid,
   Stack,
   Text,
@@ -22,7 +21,6 @@ import {
   PROFILE_THIS_WEEKS_STATS_HEADER,
   PROFILE_TIME_SPENT_ON_DIFFERENT_SUBJECTS_TEXT,
 } from '~/constants';
-import { tabs } from '~/constants/profile';
 import { profileInfo } from '~/store';
 import type { subjectSummaries, UnlockedBadge } from '~/types';
 import {
@@ -64,23 +62,14 @@ export const ProfileStatistics = () => {
   );
   return (
     <Box w='100%'>
-      {/* Tab Control */}
-      <SegmentedControl
-        data={tabs.map((t) => ({ label: t, value: t.toLowerCase() }))}
-        fullWidth
-        radius='xl'
-        size='md'
-      />
-
       {/* This Week & Badges */}
       <SimpleGrid
         cols={{ base: 1, md: 2 }}
         data-testid={'this-week-card'}
-        mt='lg'
         spacing='lg'
       >
         {/* This Week */}
-        <Card p='lg' radius='md' shadow='sm' withBorder>
+        <Card p='lg' radius='md' withBorder>
           <Title order={5}>{PROFILE_THIS_WEEK_HEADER}</Title>
           <Text c='dimmed' fz='sm'>
             {PROFILE_THIS_WEEKS_STATS_HEADER}
@@ -111,13 +100,7 @@ export const ProfileStatistics = () => {
         </Card>
 
         {/* Recent Badges */}
-        <Card
-          data-testid={'recent-badges-card'}
-          p='lg'
-          radius='md'
-          shadow='sm'
-          withBorder
-        >
+        <Card data-testid={'recent-badges-card'} p='lg' radius='md' withBorder>
           <Title order={5}>{PROFILE_RECENT_BADGES}</Title>
           <Text c='dimmed' fz='sm'>
             {PROFILE_LATEST_ACHIEVEMENT_TEXT}
@@ -138,7 +121,6 @@ export const ProfileStatistics = () => {
         mt='lg'
         p='lg'
         radius='md'
-        shadow='sm'
         withBorder
       >
         <Title order={5}>{PROFILE_SUBJECT_DISTRIBUTION_TEXT}</Title>
@@ -146,7 +128,7 @@ export const ProfileStatistics = () => {
           {PROFILE_TIME_SPENT_ON_DIFFERENT_SUBJECTS_TEXT}
         </Text>
         <Stack mt='md'>
-          <ScrollArea h={300} px='sm'>
+          <ScrollArea py='sm'>
             <Stack>
               {Object.entries(mapped).map(([key, value]) => (
                 <div key={key}>

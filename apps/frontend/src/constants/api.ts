@@ -32,3 +32,5 @@ export const UPDATE_FRIENDS_STATUS = 'friends/status';
 export const SEND_FRIEND_REQUEST = 'friends/request';
 export const RECEIVED_FRIEND_REQUEST = 'friends/pending';
 export const UPDATE_FRIEND_REQUEST = 'friends/status';
+
+export const FEED = 'feed';

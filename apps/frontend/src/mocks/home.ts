@@ -1,5 +1,8 @@
-export const mockLoaderData = {
+import { mockHomeFeed } from './feed';
+
+export const mockHomePageLoaderData = {
   data: {
+    homeFeed: mockHomeFeed,
     inProgressBadges: [
       { description: 'Study 10 hours', name: 'Marathon', progress: 70 },
       { description: 'Study 3 days straight', name: 'Sprinter', progress: 40 },

@@ -78,7 +78,7 @@ export const BadgeStatistics = ({
         <Text fw={300} size='xs'>
           {badgesUnlocked} of {totalBadges} {BADGES_UNLOCKED_SUFFIX}
         </Text>
-        <Progress color='gray' mt={16} value={badgesProgress} />
+        <Progress color='blue' mt={16} value={badgesProgress} />
       </Flex>
     </Flex>
   );

@@ -16,7 +16,7 @@ import { userInfo } from '~/store';
 import { displayNotifications } from '~/utilities/notifications';
 import { Avatar } from '../Avatar/Avatar';
 
-export const profileInformationCard = () => {
+export const ProfileInformationCard = () => {
   const [fullName, setFullName] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [bioText, _setBioText] = useState('');
@@ -63,7 +63,7 @@ export const profileInformationCard = () => {
   };
 
   return (
-    <Card p='lg' radius='lg' shadow='sm' w='100%' withBorder>
+    <Card mt={32} p='lg' radius='lg' w='100%' withBorder>
       <Form id='profile-form' method='PATCH' onSubmit={onClick}>
         <Text data-testid='profile-info-text' fw={700}>
           {PROFILE_INFORMATION_TEXT}

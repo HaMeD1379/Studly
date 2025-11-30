@@ -87,5 +87,13 @@ describe('format', () => {
     expect(formatMinutesToHoursAndMinutes(59)).toEqual('59m');
     expect(formatMinutesToHoursAndMinutes(60)).toEqual('1h 0m');
     expect(formatMinutesToHoursAndMinutes(61)).toEqual('1h 1m');
+    expect(formatMinutesToHoursAndMinutes(60, true)).toEqual('1 hour 0 minute');
+    expect(formatMinutesToHoursAndMinutes(62, true)).toEqual(
+      '1 hour 2 minutes',
+    );
+    expect(formatMinutesToHoursAndMinutes(1, true)).toEqual('1 minute');
+    expect(formatMinutesToHoursAndMinutes(121, true)).toEqual(
+      '2 hours 1 minute',
+    );
   });
 });

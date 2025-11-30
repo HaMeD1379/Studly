@@ -54,7 +54,6 @@ export const BACK_TO_LOGIN = 'Back to the login page';
 export const RESET_PASSWORD_BUTTON_TEXT = 'Reset password';
 
 // login
-export const LOGIN_HEADER = 'Welcome to Studly';
 export const LOGIN_DESCRIPTION =
   'Sign in to your account and continue your learning journey';
 export const LOGIN_FORGOT_PASSWORD_BUTTON_TEXT = 'Forgot password?';
@@ -168,8 +167,8 @@ export const LEADERBOARD_NO_NAME = 'Unknown';
 //Profile strings
 export const PROFILE_EDIT_TEXT = 'Edit';
 export const PROFILE_SHARE_TEXT = 'Share';
-export const PROFILE_EXPERIENCE_POINTS_TEXT = 'Experience Points';
-export const PROFILE_BIO_DEFAULT = 'Edit Profile to update your bio';
+export const BADGE_COLLECTION_PROGRESS = 'Badge Collection Progress';
+export const PROFILE_BIO_DEFAULT = 'Edit profile to update your bio';
 export const PROFILE_THIS_WEEKS_STATS_HEADER = 'Your study activity this week';
 export const PROFILE_SUBJECTS_THIS_WEEK_TEXT = 'Subjects This Week:';
 export const PROFILE_LATEST_ACHIEVEMENT_TEXT = 'Your latest achievements';
@@ -191,7 +190,7 @@ export const PROFILE_CHARACTER_LIMIT = '/200 characters';
 //settings constants
 export const SETTINGS_HEADER = 'Settings';
 export const SETTINGS_DESCRIPTION =
-  'Manage your account settings and preferences. (Profile is the only tab accessible currently)';
+  'Manage your account settings and preferences';
 
 //Home constants
 export const HOME_WELCOME_MESSAGE = 'Welcome back,';
@@ -202,9 +201,17 @@ export const HOME_NEXT_BADGE_PROGRESS_TEXT = 'Next Badge Progress';
 export const HOME_TODAYS_GOAL_TEXT = `Today's goal`;
 export const HOME_START_STUDY_SESSION_TEXT = 'Start Study Session';
 export const HOME_NEXT_BADGE_PROGRESS_DESCRIPTION = 'hours until next badge';
-export const HOME_VIEW_UPCOMING_BADGES = 'View upcoming badges...';
+export const HOME_VIEW_UPCOMING_BADGES = 'In Progress Badges';
 export const HOME_VIEW_BADGES = 'View Badges';
 export const HOME_TIME_STUDIED_TODAY = 'Total Time Studied Today';
 export const HOME_VIEW_MORE_BADGES = 'View More';
 export const HOME_DISPLAYING_UPCOMING_BADGES =
   'Start a new session to get even closer to a new badge';
+export const HOME_FEED_BADGE_PILL_TEXT = 'Badge';
+export const HOME_FEED_BADGE_TEXT = 'earned a badge:';
+export const HOME_FEED_SESSION_PILL_TEXT = 'Session';
+export const HOME_FEED_SESSION_TEXT = 'completed a session:';
+export const HOME_FEED_BADGE_TIMESTAMP_PREFIX = 'Awarded at';
+export const HOME_FEED_SESSION_TIMESTAMP_PREFIX = 'Completed at';
+export const HOME_NOTHING_FOUND_1 = 'Nothing was found for your feed';
+export const HOME_NOTHING_FOUND_2 = 'Please try again later';

@@ -28,11 +28,11 @@ import {
   FRIENDS_TAB_REQUESTS,
 } from '~/constants';
 
-type props = {
+type Props = {
   isHidden: boolean;
 };
 
-export const FriendsHeader = ({ isHidden }: props) => {
+export const FriendsHeader = ({ isHidden }: Props) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [inputValue, setInputValue] = useState(searchTerm);
   const formRef = useRef<HTMLFormElement>(null);
@@ -93,11 +93,13 @@ export const FriendsHeader = ({ isHidden }: props) => {
 
   return (
     <Box>
-      <Flex direction='column' gap='md' p='lg' w='30%'>
-        <Text data-testid='Friends header' fw={700} fz='h1'>
-          {FRIENDS_TAB_FRIENDS}
-        </Text>
-        <Text c='dimmed'>{FRIENDS_HEADER_DESCRIPTION}</Text>
+      <Flex direction='column' gap='md' w='40%'>
+        <Flex direction='column' mb={8}>
+          <Text data-testid='Friends header' fw={700} size='xl'>
+            {FRIENDS_TAB_FRIENDS}
+          </Text>
+          <Text fw={300}>{FRIENDS_HEADER_DESCRIPTION}</Text>
+        </Flex>
         <Form method='post' ref={formRef}>
           <Input name='formtype' type='hidden' value='searchFriend' />
           <Flex direction='row' gap='sm'>
@@ -125,7 +127,7 @@ export const FriendsHeader = ({ isHidden }: props) => {
         </Form>
       </Flex>
 
-      <Flex direction='row' gap='md' p='lg'>
+      <Flex direction='row' gap='md' py='lg'>
         <SimpleGrid cols={{ base: 2, sm: 4 }} spacing='lg' w='100%'>
           {stats.map((item) => (
             <Card
@@ -135,7 +137,6 @@ export const FriendsHeader = ({ isHidden }: props) => {
               key={item.label}
               p='lg'
               radius='md'
-              shadow='sm'
               style={{ borderRadius: '12px' }}
               withBorder
             >
