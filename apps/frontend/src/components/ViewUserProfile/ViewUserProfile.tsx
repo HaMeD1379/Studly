@@ -1,8 +1,8 @@
-import { Card, Flex, Text } from '@mantine/core';
-import { FRIENDS_FRIENDS_SINCE } from '~/constants';
-import type { Result } from '~/types';
-import { formatISOToYYYYMMDD } from '~/utilities/time';
-import { Avatar } from '../Avatar/Avatar';
+import { Card, Flex, Text } from "@mantine/core";
+import { FRIENDS_FRIENDS_SINCE } from "~/constants";
+import type { Result } from "~/types";
+import { formatISOToYYYYMMDD } from "~/utilities/time";
+import { Avatar } from "../Avatar/Avatar";
 
 type Props = {
   friend: Result;
@@ -13,34 +13,32 @@ export const ViewUserProfile = ({ friend, friendshipStartDate }: Props) => {
   return (
     <Card
       key={friend.user_id}
-      p='lg'
-      radius='md'
-      style={{ borderRadius: '12px' }}
-      w='100%'
+      p="lg"
+      radius="md"
+      style={{ borderRadius: "12px" }}
+      w="100%"
       withBorder
     >
-      <Flex align='center' justify='space-between'>
+      <Flex align="center" justify="space-between">
         {/* LEFT SIDE */}
-        <Flex direction='row'>
+        <Flex direction="row">
           <Avatar
-            backgroundColor='grey'
-            name={friend.full_name || 'User'}
+            backgroundColor="grey"
+            name={friend.full_name || "User"}
             size={64}
-            status='online'
+            status="online"
           />
 
-          <Flex direction='column' px='md'>
-            <Text fw={700} fz='xl'>
+          <Flex direction="column" px="md">
+            <Text fw={700} fz="xl">
               {friend.full_name}
             </Text>
-            <Text c='dimmed' fz='sm'>
-              {friend.bio ?? 'No bio provided'}
+            <Text c="dimmed" fz="sm">
+              {friend.bio ?? "No bio provided"}
             </Text>
-            <Flex dir='row' gap='sm'>
+            <Flex dir="row" gap="sm">
               <Text>{FRIENDS_FRIENDS_SINCE}</Text>
-              <Text fw={700}>
-                {formatISOToYYYYMMDD(friendshipStartDate.split(',')[0])}
-              </Text>
+              <Text fw={700}>{formatISOToYYYYMMDD(friendshipStartDate)}</Text>
             </Flex>
           </Flex>
         </Flex>
