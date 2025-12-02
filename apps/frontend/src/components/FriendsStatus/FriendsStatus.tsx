@@ -43,7 +43,7 @@ export const FriendsStatus = ({ onAction }: Props) => {
 
   return (
     <Box>
-      <Flex direction='row' gap='md' p='lg'>
+      <Flex direction='row' gap='md'>
         <ScrollArea h={500} type='scroll' w='100%'>
           <SimpleGrid spacing='lg' w='100%'>
             {friendsProfile.length === 0 ? (

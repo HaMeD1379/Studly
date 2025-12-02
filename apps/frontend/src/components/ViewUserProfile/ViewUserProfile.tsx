@@ -37,10 +37,9 @@ export const ViewUserProfile = ({ friend, friendshipStartDate }: Props) => {
               {friend.bio ?? 'No bio provided'}
             </Text>
             <Flex dir='row' gap='sm'>
-              <Text>{FRIENDS_FRIENDS_SINCE}</Text>
-              <Text fw={700}>
-                {formatISOToYYYYMMDD(friendshipStartDate.split(',')[0])}
-              </Text>
+              <Text>{`${FRIENDS_FRIENDS_SINCE} ${formatISOToYYYYMMDD(
+                friendshipStartDate,
+              )}`}</Text>
             </Flex>
           </Flex>
         </Flex>
