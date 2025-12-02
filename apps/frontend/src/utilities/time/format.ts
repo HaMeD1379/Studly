@@ -65,7 +65,3 @@ export const toLocalISOString = (date: Date) => {
     pad(date.getSeconds())
   );
 };
-
-export const formatDateString = (dateString: string) => {
-  return new Date(dateString).toLocaleString();
-};

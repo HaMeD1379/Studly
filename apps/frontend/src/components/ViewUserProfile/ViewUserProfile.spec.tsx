@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { FRIENDS_FRIENDS_SINCE } from '~/constants';
 import { render } from '~/utilities/testing';
-import { formatDateString } from '~/utilities/time';
+import { formatISOToYYYYMMDD } from '~/utilities/time';
 import { ViewUserProfile } from './ViewUserProfile';
 
 vi.mock('@mantine/core', async () => {
@@ -29,7 +29,7 @@ vi.mock('../Avatar/Avatar', () => ({
 }));
 
 vi.mock('~/utilities/time', () => ({
-  formatDateString: vi.fn((date: string) => `formatted(${date})`),
+  formatISOToYYYYMMDD: vi.fn((date: string) => `formatted(${date})`),
 }));
 
 describe('ViewUserProfile Component', () => {
@@ -53,7 +53,7 @@ describe('ViewUserProfile Component', () => {
     expect(screen.getByTestId('avatar')).toHaveTextContent('Alice Johnson');
 
     expect(screen.getByText(FRIENDS_FRIENDS_SINCE)).toBeInTheDocument();
-    expect(formatDateString).toHaveBeenCalledWith(mockDate);
+    expect(formatISOToYYYYMMDD).toHaveBeenCalledWith(mockDate);
     expect(screen.getByText(`formatted(${mockDate})`)).toBeInTheDocument();
   });
 

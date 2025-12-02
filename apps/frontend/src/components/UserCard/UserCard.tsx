@@ -81,6 +81,7 @@ export const UserCard = () => {
           <Button
             c='dark'
             data-testid='share-btn'
+            disabled
             leftSection={<IconShare size={14} />}
             style={{ borderColor: 'black' }}
             variant='outline'

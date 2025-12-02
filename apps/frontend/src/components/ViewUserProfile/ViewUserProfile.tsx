@@ -1,7 +1,7 @@
 import { Card, Flex, Text } from '@mantine/core';
 import { FRIENDS_FRIENDS_SINCE } from '~/constants';
 import type { Result } from '~/types';
-import { formatDateString } from '~/utilities/time';
+import { formatISOToYYYYMMDD } from '~/utilities/time';
 import { Avatar } from '../Avatar/Avatar';
 
 type Props = {
@@ -38,7 +38,9 @@ export const ViewUserProfile = ({ friend, friendshipStartDate }: Props) => {
             </Text>
             <Flex dir='row' gap='sm'>
               <Text>{FRIENDS_FRIENDS_SINCE}</Text>
-              <Text fw={700}>{formatDateString(friendshipStartDate)}</Text>
+              <Text fw={700}>
+                {formatISOToYYYYMMDD(friendshipStartDate.split(',')[0])}
+              </Text>
             </Flex>
           </Flex>
         </Flex>
