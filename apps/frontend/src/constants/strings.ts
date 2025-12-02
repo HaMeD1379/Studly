@@ -145,7 +145,7 @@ export const FRIENDS_SENT_REQUEST = 'Friend Request sent';
 export const FRIENDS_SEARCH_TO_FIND_A_FRIENDS =
   'Search and make a new friend today!';
 export const FRIENDS_REQUESTED = 'Requested';
-export const FRIENDS_FRIENDS_SINCE = 'Youve been friends with this user since:';
+export const FRIENDS_FRIENDS_SINCE = `You've been friends with this user since:`;
 // study page
 export const STUDY_ROUTE_HEADER = 'Study Session';
 export const STUDY_ROUTE_SUBHEADER = 'Focus and track your study time';

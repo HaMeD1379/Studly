@@ -85,7 +85,7 @@ export const FriendsStatus = ({ onAction }: Props) => {
 
                       {/* RIGHT SIDE BUTTONS */}
                       <Flex align='center' gap='xs'>
-                        <Button variant='transparent'>
+                        <Button disabled variant='transparent'>
                           <IconMessageCircle color='black' />
                         </Button>
 
