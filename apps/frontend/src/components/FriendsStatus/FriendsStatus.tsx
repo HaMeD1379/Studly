@@ -7,15 +7,15 @@ import {
   ScrollArea,
   SimpleGrid,
   Text,
-} from "@mantine/core";
-import { IconMessageCircle } from "@tabler/icons-react";
-import { useLoaderData } from "react-router";
+} from '@mantine/core';
+import { IconMessageCircle } from '@tabler/icons-react';
+import { useLoaderData } from 'react-router';
 import {
   FRIENDS_SEARCH_TO_FIND_A_FRIENDS,
   FRIENDS_VIEW_PROFILE,
-} from "~/constants";
-import type { Result } from "~/types";
-import { Avatar } from "../Avatar/Avatar";
+} from '~/constants';
+import type { Result } from '~/types';
+import { Avatar } from '../Avatar/Avatar';
 
 type Props = {
   onAction: (friend: Result, since: string) => void;
@@ -43,9 +43,9 @@ export const FriendsStatus = ({ onAction }: Props) => {
 
   return (
     <Box>
-      <Flex direction="row" gap="md">
-        <ScrollArea h={500} type="scroll" w="100%">
-          <SimpleGrid spacing="lg" w="100%">
+      <Flex direction='row' gap='md'>
+        <ScrollArea h={500} type='scroll' w='100%'>
+          <SimpleGrid spacing='lg' w='100%'>
             {friendsProfile.length === 0 ? (
               <Center>
                 <Text>{FRIENDS_SEARCH_TO_FIND_A_FRIENDS}</Text>
@@ -57,44 +57,44 @@ export const FriendsStatus = ({ onAction }: Props) => {
                 return (
                   <Card
                     key={friend.user_id}
-                    p="lg"
-                    radius="md"
+                    p='lg'
+                    radius='md'
                     style={{ borderRadius: 12 }}
                     withBorder
                   >
-                    <Flex align="center" justify="space-between">
+                    <Flex align='center' justify='space-between'>
                       {/* LEFT SIDE */}
-                      <Flex direction="row">
+                      <Flex direction='row'>
                         <Avatar
-                          backgroundColor="grey"
+                          backgroundColor='grey'
                           name={friend.full_name}
                           size={64}
-                          status="online"
+                          status='online'
                         />
 
-                        <Flex direction="column" px="md">
-                          <Text fw={700} fz="xl">
+                        <Flex direction='column' px='md'>
+                          <Text fw={700} fz='xl'>
                             {friend.full_name}
                           </Text>
 
-                          <Text c="dimmed" fz="sm">
-                            {friend.bio ?? "No bio provided"}
+                          <Text c='dimmed' fz='sm'>
+                            {friend.bio ?? 'No bio provided'}
                           </Text>
                         </Flex>
                       </Flex>
 
                       {/* RIGHT SIDE BUTTONS */}
-                      <Flex align="center" gap="xs">
-                        <Button disabled variant="transparent">
-                          <IconMessageCircle color="black" />
+                      <Flex align='center' gap='xs'>
+                        <Button disabled variant='transparent'>
+                          <IconMessageCircle color='black' />
                         </Button>
 
                         <Button
-                          color="black"
+                          color='black'
                           onClick={() => {
                             onAction(friend, entry.friendsSince);
                           }}
-                          variant="outline"
+                          variant='outline'
                         >
                           {FRIENDS_VIEW_PROFILE}
                         </Button>
