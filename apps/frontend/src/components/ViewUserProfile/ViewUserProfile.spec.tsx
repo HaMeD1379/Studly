@@ -1,6 +1,5 @@
 import { screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { FRIENDS_FRIENDS_SINCE } from '~/constants';
 import { render } from '~/utilities/testing';
 import { formatISOToYYYYMMDD } from '~/utilities/time';
 import { ViewUserProfile } from './ViewUserProfile';
@@ -52,9 +51,14 @@ describe('ViewUserProfile Component', () => {
 
     expect(screen.getByTestId('avatar')).toHaveTextContent('Alice Johnson');
 
-    expect(screen.getByText(FRIENDS_FRIENDS_SINCE)).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /You'?ve been friends with this user since:\s*formatted\(2025-02-01\)/i,
+      ),
+    ).toBeInTheDocument();
+
     expect(formatISOToYYYYMMDD).toHaveBeenCalledWith(mockDate);
-    expect(screen.getByText(`formatted(${mockDate})`)).toBeInTheDocument();
+    //expect(screen.getByText(`formatted(${mockDate})`)).toBeInTheDocument();
   });
 
   it('renders fallback name when full_name is missing', () => {
