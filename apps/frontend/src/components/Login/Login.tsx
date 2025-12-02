@@ -124,9 +124,9 @@ export const LoginForm = () => {
             <Group mt='md'>
               <Checkbox label='Remember me' />
               <Anchor
-                component='button'
                 onClick={() => navigate(FORGOT_PASSWORD)}
                 size='sm'
+                type='button'
                 variant='text'
               >
                 {LOGIN_FORGOT_PASSWORD_BUTTON_TEXT}
