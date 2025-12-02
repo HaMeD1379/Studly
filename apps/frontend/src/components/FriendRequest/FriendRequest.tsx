@@ -172,7 +172,7 @@ export const FriendRequest = () => {
   return (
     <Box>
       <Flex direction='row' gap='md'>
-        <Flex direction='column' gap='xl' p='lg'>
+        <Flex direction='column' gap='xl'>
           {/* RECEIVED REQUESTS */}
           <RequestList
             profiles={receivedRequestsProfiles}
