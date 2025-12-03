@@ -168,7 +168,7 @@ https://github.com/HaMeD1379/Studly/actions/workflows/cd.yml
 - Check-ins?
 - Process changes?
 
-Maybe less spread out requirements and more focused on the documenting and process. Ex: No mid-point demos. Some documents about worksheets and presentation requirements overlap each other—we repeat ourselves in a lot of presentations due to this.
+If we could change the course structure, we would consolidate the documentation and presentation requirements to reduce redundancy. Throughout the project, we found that worksheet submissions and presentation expectations often overlapped, causing us to repeat the same information across deliverables. This took time and effort that could have been spent on doing more development. While this process is meant to emulate the real world decision making of making a program, it could have been a few less deliverables with more emphasis on each one. That said, the check ins with the professor(s) were very helpful, they gave us an opportunity to receive feedback and adjust our approach before it was too late. Overall, a more streamlined process with fewer but more meaningful deliverables would have improved both our workflow and the final product.
 
 ### Individual AI / External Resource Reflection
 
