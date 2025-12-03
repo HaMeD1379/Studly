@@ -25,6 +25,8 @@ Studly is an application platform for students to enhance their studying abiliti
 
 [Running Biome on the Frontend](./docs/running-biome-on-the-frontend.md)
 
+[CLI Frontend](./apps/cli-frontend/README.md)
+
 [Docker Quickstart](./infra/docker/QUICKSTART.md)
 
 

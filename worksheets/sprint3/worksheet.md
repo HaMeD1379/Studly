@@ -20,8 +20,6 @@
 
 ## 2. Security Analysis
 
-> *Note: Reports will be added to appendix on repo once we have Sprint 3 branch*
-
 ### Chosen Tool and Execution Method
 
 For this project, I used **GitHub CodeQL** as the static analysis tool. CodeQL is integrated directly into GitHub Actions, and it supports JavaScript and TypeScript, which are the main languages in Studly. The analysis ran automatically on every push to the main branch. Results were viewed through the GitHub Security dashboard under Code Scanning Alerts.
@@ -61,11 +59,20 @@ All high severity issues were resolved by removing `console.error` and `console.
 - **Removal of sensitive logging in utility functions:**  
   https://github.com/HaMeD1379/Studly/commit/d0d865f094881972c265974438ae95f9bf26e358
 
+### CodeQL Report
+
+- **Full CodeQL Report:** [CodeQL Report.csv](./Appendix/CodeQL%20Report.csv)
+
+### Detected Problems
+
+![Detected Problem 1](./Appendix/Detected%20Problems/1.png)
+![Detected Problem 2](./Appendix/Detected%20Problems/2.png)
+![Detected Problem 3](./Appendix/Detected%20Problems/3.png)
+![Detected Problem 4](./Appendix/Detected%20Problems/4.png)
+
 ---
 
 ## 3. Continuous Integration & Deployment (CI/CD)
-
-> *Note: Snapshots will be added to appendix on repo once we have Sprint 3 branch*
 
 ### CI Environment
 
@@ -135,10 +142,13 @@ This workflow runs on Ubuntu and uses Docker Buildx with QEMU enabled for multi-
 **Pipeline link:**  
 https://github.com/HaMeD1379/Studly/actions/workflows/cd.yml
 
-### Snapshots Provided
+### Snapshots
 
-- **Snapshot 1:** CI execution
-- **Snapshot 2:** CD execution
+**Snapshot 1: CI Execution**
+![CI execution](./Appendix/CI-CD%20execution/CI%20execution.png)
+
+**Snapshot 2: CD Execution**
+![CD execution](./Appendix/CI-CD%20execution/CD%20execution.png)
 
 ---
 
@@ -180,9 +190,8 @@ I did not personally use AI or external resources on this project besides framew
 
 I used ai for more of the design phasing of the project. I was part of the backend team for the most part, and at the beginning we needed to design on how to structure our backend to work with the front end. The front end was already for the most part decided as our front end guys were already well experienced with it. So while doing research for how to design the backend, which consisted of watching several youtube tutorials and reading several articles, which allowed me to narrow us down to choosing a MVP pattern. However some aspects needed more refinement and explanation, which I had to help me summarize which saved me lots of time, as there were quite a lot of different options. Which eventually gave us all the info needed. However this was not perfect, as during our initial feedback meeting, it seems I did not consider adding more layers to keep our data separated. Which was a bit of a hindrance, as some refactoring needed to be made to our backend structure so that there was a layer for the data(database) as well, which we did not consider due to supabase handling a lot of it. So while the AI was helpful in coming up with ideas, I needed to double check by following youtube tutorials as well as reading a few articles on backend structure, as there was no one right way to go about this, but was helpful in saving us time, so we could focus on implementing fast. 
 
-#### Team Member 3: [Name]
-
-*(To be completed)*
+#### Team Member 3: Hamed
+I used generative AI tools throughout the project, but always as implementation assistants rather than sources of system design. A concrete example was when I needed to make the CD pipeline push a complete backend container to Docker Hub, which required creating a self-contained image using an in-memory mock database. All the flagship models gave unclear or conflicting guidance on how to handle a memory-only database inside a container, so I designed the approach myself and only used the tools to fill in implementation details once the major decisions were made. The tools produced scaffolds, Dockerfile fragments, and suggested build sequences, but I rewrote large parts of backend.mem.Dockerfile to ensure the mock database was initialized correctly and to align everything with our existing conventions. I validated each step they suggested against the actual build environment because the generated instructions often missed practical constraints. Through this process, I learned how to refine prompts to limit unnecessary abstractions and make the output easier to integrate into our architecture. I avoided using AI for requirement gathering or core design decisions, relying instead on my own understanding of the system and my previous experience with CLI and backend tooling.
 
 #### Team Member 4: [Name]
 
