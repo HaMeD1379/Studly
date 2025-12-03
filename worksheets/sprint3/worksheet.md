@@ -172,9 +172,9 @@ Why not? What influenced that choice, and how did you approach problem-solving i
 
 **Length guideline:** Approximately 5–8 sentences. Focus only on your own actions and understanding.
 
-#### Team Member 1: [Name]
+#### Team Member 1: Ben
 
-*(To be completed)*
+I did not personally use AI or external resources on this project besides framework documentation and a single stack overflow post on a JavaScript date format that was used in our time format utility. Besides those external resources, I wanted to learn the most I could from this project by practicing good standards and delving into documentation in order to really get a grasp for what I am doing. I also have experience in the past from other projects where AI starts hallucinating and going on tangents that just in the end don't help at all and sometimes cause problems with bugs or poor code. I often found it was a better use of my time to actually learn the concepts and apply it myself rather than fight with AI. On the contrary, I do know that when used properly it can be a great tool in software development. I approached problem solving primarly how I did pre-ChatGPT and all the other AIs, by thinking critically, using a pen and paper and debugging until it ended up working properly. Some took a long time and some not at all, but that's the process of software development and in the end I learned a great deal more. If this was a project where I knew all the concepts and didn't have anything major to learn, coding with AI may have been the better decision and it could save me a lot of time, but that was not the case for myself on this project.
 
 #### Team Member 2: Shashika 
 
@@ -185,5 +185,9 @@ I used ai for more of the design phasing of the project. I was part of the backe
 *(To be completed)*
 
 #### Team Member 4: [Name]
+
+*(To be completed)*
+
+#### Team Member 5: [Name]
 
 *(To be completed)*
