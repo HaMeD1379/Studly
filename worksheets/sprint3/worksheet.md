@@ -4,10 +4,20 @@
 
 **Describe your load testing environment:**
 
-- Tools used
-- Load test cases
+- Tools used:
+- Tool Used: Apache JMeter 5.6.3 (GUI + Non-GUI modes)
+	•	Target API: https://studly-backend-server-production.up.railway.app￼
+	•	Deployment Environment: Railway Free Tier (Shared CPU, 512 MB RAM)
+	•	Goal: Simulate concurrent users interacting with some Studly high traffic endpoints endpoints to evaluate performance and identify bottlenecks.
+- Load test cases:
+  • Login test: POST method, simulates users logging in to the app. Arguments: email and password | Endpoint: /api/v1/auth/login
+  • Session test: POST method | Endpoint: api/v1/sessions | arguments: userId, subject, session type, start time, end time, date | simulates user starting a study session
+  • Friends test: GET method | Endpoint: api/v1/friends/:id | arguments: userId | test fetches the users friends under load
+  • Badges Test: GET method | Endpoint: api/v1/badges/users/:id | arguments: userId | test fetches all the badges under load
+  
 - Provide the test report
-- Discuss one bottleneck found
+- Discuss one bottleneck found:
+  • A lot of the irregularities noticed during the tests were from the login tests, the tests generated a couple errors throwing a 401, and also compared to the other tests, the login tests had a much higher difference between the min and max and higher standard deviation as well. I believe this happened for two reasons, firstly the 401 errors were from a rate limiter being used as seen by the error description, "{"error":"Request rate limit reached"}". Secondly, i believe the login tests had a much greater standard deviation because we used supabase authentication so that introduced greater latency.
 - State whether you met your non-functional requirements
   - If not, why? Could you meet them with more resources/money?
 
