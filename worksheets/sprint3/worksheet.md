@@ -4,27 +4,33 @@
 
 **Describe your load testing environment:**
 
-- Tools used:
-- Tool Used: Apache JMeter 5.6.3 (GUI + Non-GUI modes)
-	•	Target API: https://studly-backend-server-production.up.railway.app￼
-	•	Deployment Environment: Railway Free Tier (Shared CPU, 512 MB RAM)
-	•	Goal: Simulate concurrent users interacting with some Studly high traffic endpoints endpoints to evaluate performance and identify bottlenecks.
-- Load test cases:
-  • Login test: POST method, simulates users logging in to the app. Arguments: email and password | Endpoint: /api/v1/auth/login
-  • Session test: POST method | Endpoint: api/v1/sessions | arguments: userId, subject, session type, start time, end time, date | simulates user starting a study session
-  • Friends test: GET method | Endpoint: api/v1/friends/:id | arguments: userId | test fetches the users friends under load
-  • Badges Test: GET method | Endpoint: api/v1/badges/users/:id | arguments: userId | test fetches all the badges under load
+- **Tool Used:** <br>
+  • Apache JMeter <br>
+	•	Target API: https://studly-backend-server-production.up.railway.app￼<br>
+	•	Deployment Environment: Railway Free Tier <br>
+	•	Goal: Simulate concurrent users interacting with some Studly high traffic endpoints endpoints to evaluate performance and identify bottlenecks. <br>
+- **Load test cases:** <br>
+  • Login test: POST method, simulates users logging in to the app. Arguments: email and password | Endpoint: /api/v1/auth/login <br>
+  • Session test: POST method | Endpoint: api/v1/sessions | arguments: userId, subject, session type, start time, end time, date | simulates user starting a study session <br>
+  • Friends test: GET method | Endpoint: api/v1/friends/:id | arguments: userId | test fetches the users friends under load <br>
+  • Badges Test: GET method | Endpoint: api/v1/badges/users/:id | arguments: userId | test fetches all the badges under load <br>
   
-- Provide the test report
-- Discuss one bottleneck found:
+- Provide the test report:
+- Our load testing was done to test what we considered high traffic endpoints, so the login page, starting a session, keeping track of your friends and keeping track of your badges. We conducted these tests using Jmeter using the following metrics **Number of threads: 100**, **Ramp up period: 30 seconds** and finally **The number of loops: 5**. We chose these values because we felt they best represented real user behaviour, the ramp up value gives the system an easier start before it is flooded with requests. However for the login endpoint because we have a rate limiter set up, we chose different metrics, since using the same parameters meant a greater amount of tests would fail, not because of the weight of the load but instead because the system had been designed to protect it from crashing, so the testing for the login endpoint was more about verifying that the rate limiter did what it was supposed to do. So for this endpoint we dropped the number of threads to 10, leaving the other values the same, which reduced the amoount of 401 errors we got from the rate limiter.
+- After running the tests which sent 1556 requests to our backend we discovered that our system was well set up to handle many concurrent requests, however we did notice a slowdown in throughput on the login endpoint understandably because we use supabase to handle authentication, but we only do this through their free tier so maybe with a tier with more processing power, our login endpoint might not be a bottleneck
+- Discuss one bottleneck found: <br>
   • A lot of the irregularities noticed during the tests were from the login tests, the tests generated a couple errors throwing a 401, and also compared to the other tests, the login tests had a much higher difference between the min and max and higher standard deviation as well. I believe this happened for two reasons, firstly the 401 errors were from a rate limiter being used as seen by the error description, "{"error":"Request rate limit reached"}". Secondly, i believe the login tests had a much greater standard deviation because we used supabase authentication so that introduced greater latency.
-- State whether you met your non-functional requirements
-  - If not, why? Could you meet them with more resources/money?
+
+-Non functional Requirements: <br>
+The non functional requirement we defined was to be able to handle requests in at most 1 second but preferrably less time than that, and even with routing our authentication through supabase, we were still able to handle requests in less than 250 ms
 
 **If using JMeter:**
 
-- Upload `.jmx` file to GitHub and provide link
-- Include snapshot of results
+- JMX file:
+- https://github.com/HaMeD1379/Studly/pull/182/files#diff-6fb6af5a156ae213814c5cc468937975a4a4f1322350b93b21c311365410d1f9
+- Results:
+- https://github.com/HaMeD1379/Studly/pull/182/files#diff-d0921091d3c4857e7527594beb96bce0f07c393aeb9d31f18688d83a5df85d20
+- https://github.com/HaMeD1379/Studly/pull/182/files#diff-122eba03d0abf07b21a86423be4b3f0a999067122fa3425a26b92de05f55f5db
 
 ---
 
