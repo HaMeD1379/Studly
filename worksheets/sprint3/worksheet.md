@@ -174,7 +174,7 @@ https://github.com/HaMeD1379/Studly/actions/workflows/cd.yml
 
 *In one paragraph (as a group): What would you change about the design of your project now that you've been through development?*
 
-*(To be completed)*
+Looking back, the main change we would make is redesigning the frontend to be more engaging and rewarding for users. During our presentation, one of the audience mentioned that the interface felt a bit bland and lacked the motivational elements that would keep students coming back for our web front end. If we were to start over, we would design more intentionally from a student's perspective—incorporating more engaging progress indicators, or visual feedback that makes completing sessions or earning badges feel satisfying. We would also consider using a less opinionated UI library like shadcn instead of Mantine, which would have given us more flexibility to create a custom theme with unique animations and a distinctive look tailored to our application. That said, we feel our tech stack choices don't need any major changes, as while other teams used more complex setups like Azure, our combination of Vercel and Railway was simpler to manage and well suited to our timeline and resources.
 
 ### Project Setup Changes
 
