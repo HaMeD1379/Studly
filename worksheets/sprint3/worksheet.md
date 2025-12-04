@@ -21,7 +21,7 @@
 - Discuss one bottleneck found: <br>
   • A lot of the irregularities noticed during the tests were from the login tests, the tests generated a couple errors throwing a 401, and also compared to the other tests, the login tests had a much higher difference between the min and max and higher standard deviation as well. I believe this happened for two reasons, firstly the 401 errors were from a rate limiter being used as seen by the error description, "{"error":"Request rate limit reached"}". Secondly, i believe the login tests had a much greater standard deviation because we used supabase authentication so that introduced greater latency.
 
--Non functional Requirements: <br>
+- Non functional Requirements: <br>
 The non functional requirement we defined was to be able to handle requests in at most 1 second but preferrably less time than that, and even with routing our authentication through supabase, we were still able to handle requests in less than 250 ms
 
 **If using JMeter:**
