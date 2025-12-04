@@ -27,10 +27,10 @@ The non functional requirement we defined was to be able to handle requests in a
 **If using JMeter:**
 
 - JMX file:
-- https://github.com/HaMeD1379/Studly/pull/182/files#diff-6fb6af5a156ae213814c5cc468937975a4a4f1322350b93b21c311365410d1f9
+![JMX File](./Appendix/Load%20Testing/Studly_Load_Test.jmx)
 - Results:
-- https://github.com/HaMeD1379/Studly/pull/182/files#diff-d0921091d3c4857e7527594beb96bce0f07c393aeb9d31f18688d83a5df85d20
-- https://github.com/HaMeD1379/Studly/pull/182/files#diff-122eba03d0abf07b21a86423be4b3f0a999067122fa3425a26b92de05f55f5db
+![Dashboard Results](./Appendix/Load%20Testing/dashboard.png)
+![Statistics Results](./Appendix/Load%20Testing/statistics.png)
 
 ---
 
