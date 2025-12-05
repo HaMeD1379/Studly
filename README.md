@@ -15,12 +15,17 @@ Studly is an application platform for students to enhance their studying abiliti
 - Read this document for our sprint 2 information
 
 
+[Sprint 3](./worksheets/sprint3/worksheet.md)
+- Read this document for our sprint 3 information
+
 ## Extra Documents
 [ADR Docs](./docs/ADR/)
 
 [Running the Frontend](./docs/running-the-frontend.md)
 
 [Running Biome on the Frontend](./docs/running-biome-on-the-frontend.md)
+
+[CLI Frontend](./apps/cli-frontend/README.md)
 
 [Docker Quickstart](./infra/docker/QUICKSTART.md)
 
